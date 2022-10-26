@@ -19,18 +19,16 @@ public class MapSystem : Singleton<MapSystem> {
     }
 
     void LoadTiles() {
-        var childCount = _grid.transform.childCount;
         _mapObjects = new();
-        for (int i = 0; i < childCount; i++) {
-            var child = _grid.transform.GetChild(i);
-            if (child.TryGetComponent<MapObject>(out var mapObject)) {
-                AddMapObject(mapObject, mapObject.GetGridPos());
-            }
+        var objects = _grid.GetComponentsInChildren<MapObject>(true);
+
+        foreach (var obj in objects) {
+            _mapObjects.EnforceKey(obj.GetGridPos(), () => new()).Add(obj);
         }
     }
 
     void AddMapObject(MapObject obj, Vector2Int gridPosition) {
-        var tile = EnforceKey(gridPosition);
+        var tile = _mapObjects.EnforceKey(gridPosition, () => new());
         tile.ForEach(t => t.OnEnter(obj));
         tile.Add(obj);
     }
@@ -66,6 +64,7 @@ public class MapSystem : Singleton<MapSystem> {
 
     public IEnumerator MoveMapObject(MapObject obj, Vector2Int newPosition) {
         RelocateTile(obj, newPosition);
+        Debug.Log($"Moving {obj.name} to {newPosition}");
         LeanTween.move(obj.gameObject, GetWorldPos(newPosition), 1 / _moveSpeed);
         yield return new WaitForSeconds(1 / _moveSpeed);
     }
@@ -96,17 +95,15 @@ public class MapSystem : Singleton<MapSystem> {
         }
     }
 
-    public List<MapObject> EnforceKey(Vector2Int gridPosition) {
-        if (!_mapObjects.ContainsKey(gridPosition)) {
-            _mapObjects.Add(gridPosition, new());
-        }
-        return _mapObjects[gridPosition];
-    }
-
     public Vector2Int GetRandomEmptyGridPos() {
         Vector2Int pos;
         do { pos = new Vector2Int(Random.Range(minX, maxX), Random.Range(minY, maxY)); }
-        while (EnforceKey(pos).Count > 0);
+        while (!Evaluate(pos));
         return pos;
+
+        bool Evaluate(Vector2Int pos) {
+            if (!TryGetTile(pos, out var tile)) return true;
+            return tile.Count == 0;
+        }
     }
 }

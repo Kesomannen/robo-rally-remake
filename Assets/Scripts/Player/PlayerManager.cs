@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerManager : Singleton<PlayerManager> {
     [SerializeField] PlayerModel _playerModelPrefab;
     [SerializeField] int _playerCount;
+    [SerializeField] Transform[] _spawnPoints;
 
     public PlayerModel PlayerModelPrefab => _playerModelPrefab;
 
@@ -12,7 +13,8 @@ public class PlayerManager : Singleton<PlayerManager> {
     void Start() {
         Players = new Player[_playerCount];
         for (int i = 0; i < _playerCount; i++) {
-            Players[i] = new Player();
+            var pos = MapSystem.instance.GetGridPos(_spawnPoints[i].position);
+            Players[i] = new Player(pos);
         }
     }
 }

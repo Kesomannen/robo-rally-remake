@@ -11,31 +11,30 @@ public class Conveyor : MapObject {
     public override bool IsStatic => true;
     public override bool CanEnter(Vector2Int direction) => true;
 
-    static Dictionary<MapObject, float> _progress;
+    static Dictionary<MapObject, float> _progress = new();
     static bool _hasListened;
 
     void Awake() {
         var rotSteps = Mathf.RoundToInt((transform.eulerAngles.z / 90) % 4);
-        _direction = _direction.RotateClockwise(rotSteps);
+        _direction = _direction.RotateCW(rotSteps);
+    }
 
+    void Start() {
         if (!_hasListened) {
             _hasListened = true;
-            TurnSystem.OnInstanceCreated += x => {
-                x.OnStepStart.AddListener(() => {
-                    _progress = new();
-                });
-            };
+            TurnSystem.instance.OnStepStart.AddListener(() => {
+                _progress = new();
+            });
         }
     }
 
     public override void OnEnter(MapObject dynamic) {
-        Scheduler.AddRoutine(ConveyorRoutine(dynamic));
+        Scheduler.AddItem(ConveyorRoutine(dynamic));
     }
 
     IEnumerator ConveyorRoutine(MapObject dynamic) {
-        if (!_progress.ContainsKey(dynamic)) {
-            _progress[dynamic] = startProgress;
-        } else if (_progress[dynamic] - _cost < 0) {
+        var progress = _progress.EnforceKey(dynamic, startProgress);
+        if (progress - _cost < 0) {
             yield break;
         }
 

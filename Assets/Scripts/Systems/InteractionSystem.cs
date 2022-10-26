@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -29,6 +30,8 @@ public static class InteractionSystem {
     }
 
     public static bool Push(MapObject source, Vector2Int dir) {
+        Debug.Log($"Pushing {source} in direction {dir}");
+    
         var sourcePos = source.GetGridPos();
         var targetPos = sourcePos + dir;
 
@@ -47,6 +50,7 @@ public static class InteractionSystem {
 
         Move:
 
+        Debug.Log($"Pushing succesful, moving {source} to {targetPos}");
         MapSystem.instance.MoveMapObject(source, targetPos);
         return true;
     }
