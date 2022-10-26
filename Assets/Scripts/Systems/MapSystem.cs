@@ -64,7 +64,6 @@ public class MapSystem : Singleton<MapSystem> {
 
     public IEnumerator MoveMapObject(MapObject obj, Vector2Int newPosition) {
         RelocateTile(obj, newPosition);
-        Debug.Log($"Moving {obj.name} to {newPosition}");
         LeanTween.move(obj.gameObject, GetWorldPos(newPosition), 1 / _moveSpeed);
         yield return new WaitForSeconds(1 / _moveSpeed);
     }

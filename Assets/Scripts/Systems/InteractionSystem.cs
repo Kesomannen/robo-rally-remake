@@ -29,29 +29,23 @@ public static class InteractionSystem {
         }
     }
 
-    public static bool Push(MapObject source, Vector2Int dir) {
+    public static bool Push(MapObject source, Vector2Int dir, out ScheduleRoutineGroup scheduleItem) {
         Debug.Log($"Pushing {source} in direction {dir}");
-    
+
         var sourcePos = source.GetGridPos();
         var targetPos = sourcePos + dir;
 
-        var isFilled = MapSystem.instance.TryGetTile(targetPos, out var targetTile);
-        if (!isFilled) goto Move;
-
-        var canEnter = CanEnter(targetTile, -dir);
-        if (canEnter) goto Move;
-
-        if (TryGetDynamic(targetTile, out var dynamic)) {
-            var canPush = Push(dynamic, dir);
-            if (canPush) goto Move;
+        if (CanEnter(targetPos, -dir)) {
+            scheduleItem = new(new[] { MapSystem.instance.MoveMapObject(source, targetPos) });
+            return true;
+        } else if (TryGetDynamic(targetPos, out var dynamic)) {
+            if (Push(dynamic, dir, out scheduleItem)) {
+                scheduleItem.AddRoutine(MapSystem.instance.MoveMapObject(source, targetPos));
+                return true;
+            }
         }
-        
+
+        scheduleItem = null;
         return false;
-
-        Move:
-
-        Debug.Log($"Pushing succesful, moving {source} to {targetPos}");
-        MapSystem.instance.MoveMapObject(source, targetPos);
-        return true;
     }
 }

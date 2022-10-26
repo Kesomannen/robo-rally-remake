@@ -20,23 +20,29 @@ public static class Extensions {
     }
 
     public static Vector2Int RotateCW(this Vector2Int vector2, int steps) {
-        var v = vector2;
         for (int i = 0; i < steps; i++) {
-            v = vector2.RotateCW();
+            vector2 = vector2.RotateCW();
         }
-        return v;
+        return vector2;
     }
 
     public static Vector2Int RotateCCW(this Vector2Int vector2) {
-        return -vector2.RotateCW();
+        return new Vector2Int(-vector2.y, vector2.x);
     }
 
     public static Vector2Int RotateCCW(this Vector2Int vector2, int steps) {
-        var v = vector2;
         for (int i = 0; i < steps; i++) {
-            v = vector2.RotateCCW();
+            vector2 = vector2.RotateCCW();
         }
-        return v;
+        return vector2;
+    }
+
+    public static Vector2Int RotateAsTransform(this Vector2Int vector2, Transform transform) {
+        return vector2.RotateCCW(GetRotationSteps(transform));
+    }
+
+    public static int GetRotationSteps(this Transform transform) {
+        return Mathf.RoundToInt((transform.eulerAngles.z / 90) % 4);
     }
 
     public static TValue EnforceKey<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, TValue defaultValue)

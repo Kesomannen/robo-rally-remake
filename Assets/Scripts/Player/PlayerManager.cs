@@ -1,9 +1,25 @@
 using UnityEngine;
 
 public class PlayerManager : Singleton<PlayerManager> {
+    [Header("References")]
     [SerializeField] PlayerModel _playerModelPrefab;
-    [SerializeField] int _playerCount;
     [SerializeField] Transform[] _spawnPoints;
+
+    [Header("Metadata")]
+    [SerializeField] int _playerCount;
+
+    [Header("Stats")]
+    [SerializeField] int _maxEnergy;
+    [SerializeField] int _startingEnergy;
+    [SerializeField] int _handSize;
+    [SerializeField] int _cardsToDraw;
+    [SerializeField] ProgramCardData[] _startingDeck;
+
+    public int MaxEnergy => _maxEnergy;
+    public int StartingEnergy => _startingEnergy;
+    public int HandSize => _handSize;
+    public int CardsToDraw => _cardsToDraw;
+    public ProgramCardData[] StartingDeck => _startingDeck;
 
     public PlayerModel PlayerModelPrefab => _playerModelPrefab;
 

@@ -810,10 +810,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d0cf2ea77a4eea4da1e08929291706c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnTurnStart: {fileID: 11400000, guid: 85571abd52579c74d83bde5762b665b5, type: 2}
-  OnTurnEnd: {fileID: 11400000, guid: ee43af575bb46df47915ceb2e84fa5c0, type: 2}
-  OnStepStart: {fileID: 11400000, guid: aba24a1189901014283bfd5971564963, type: 2}
-  OnStepEnd: {fileID: 11400000, guid: ce20a6c27833ecf4ca2cd6f481d7dab4, type: 2}
 --- !u!114 &761913673
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -827,10 +823,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerModelPrefab: {fileID: -6501299028702349905, guid: 02d10ae4ba26c8642b70a581389a5dcd, type: 3}
-  _playerCount: 1
   _spawnPoints:
   - {fileID: 240160459}
   - {fileID: 1929816833}
+  _playerCount: 2
+  _maxEnergy: 5
+  _startingEnergy: 3
+  _handSize: 9
+  _cardsToDraw: 6
+  _startingDeck: 0
 --- !u!1 &939857013
 GameObject:
   m_ObjectHideFlags: 0
