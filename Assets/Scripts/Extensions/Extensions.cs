@@ -1,63 +1,25 @@
-using System;
 using System.Collections.Generic;
-using UnityEngine;
+using Random = UnityEngine.Random;
 
 public static class Extensions {
-    public static Vector3Int ToVec3Int(this Vector2Int vector2) {
-        return new Vector3Int(vector2.x, vector2.y);
-    }
-
-    public static Vector3 ToVec3(this Vector2Int vector2) {
-        return new Vector3(vector2.x, vector2.y);
-    }
-
-    public static Vector2Int ToVec2Int(this Vector3Int vector3) {
-        return new Vector2Int(vector3.x, vector3.y);
-    }
-
-    public static Vector2Int RotateCW(this Vector2Int vector2) {
-        return new Vector2Int(vector2.y, -vector2.x);
-    }
-
-    public static Vector2Int RotateCW(this Vector2Int vector2, int steps) {
-        for (int i = 0; i < steps; i++) {
-            vector2 = vector2.RotateCW();
+    public static void Shuffle<T>(this IList<T> list) {
+        for (int i = list.Count - 1; i > 0; i--) {
+            int j = Random.Range(0, i + 1);
+            var temp = list[i];
+            list[i] = list[j];
+            list[j] = temp;
         }
-        return vector2;
     }
 
-    public static Vector2Int RotateCCW(this Vector2Int vector2) {
-        return new Vector2Int(-vector2.y, vector2.x);
+    public static int IndexOf<T>(this IReadOnlyList<T> list, T item) { 
+        for (int i = 0; i < list.Count; i++) if (list[i].Equals(item)) return i;
+        return -1;
     }
 
-    public static Vector2Int RotateCCW(this Vector2Int vector2, int steps) {
-        for (int i = 0; i < steps; i++) {
-            vector2 = vector2.RotateCCW();
+    public static TValue EnforceKey<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue) {
+        if (!dictionary.ContainsKey(key)) {
+            dictionary.Add(key, defaultValue);
         }
-        return vector2;
-    }
-
-    public static Vector2Int RotateAsTransform(this Vector2Int vector2, Transform transform) {
-        return vector2.RotateCCW(GetRotationSteps(transform));
-    }
-
-    public static int GetRotationSteps(this Transform transform) {
-        return Mathf.RoundToInt((transform.eulerAngles.z / 90) % 4);
-    }
-
-    public static TValue EnforceKey<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, TValue defaultValue)
-    where TValue : struct {
-        if (!dict.ContainsKey(key)) {
-            dict.Add(key, defaultValue);
-        }
-        return dict[key];
-    }
-
-    public static TValue EnforceKey<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, Func<TValue> getDefault)
-    where TValue : class {
-        if (!dict.ContainsKey(key)) {
-            dict.Add(key, getDefault());
-        }
-        return dict[key];
+        return dictionary[key];
     }
 }

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -12,16 +11,16 @@ public static class InteractionSystem {
     }
 
     public static bool CanEnter(Vector2Int gridPos, Vector2Int dir) {
-        return MapSystem.instance.TryGetTile(gridPos, out var tile) && CanEnter(tile, dir);
+        return !MapSystem.Instance.TryGetTile(gridPos, out var tile) || CanEnter(tile, dir);
     }
 
-    public static bool TryGetDynamic(List<MapObject> tile, out MapObject dynamic) {
-        dynamic = tile.FirstOrDefault(obj => !obj.IsStatic);
+    public static bool TryGetDynamic(List<MapObject> tile, out DynamicObject dynamic) {
+        dynamic = tile.FirstOrDefault(obj => !obj.IsStatic) as DynamicObject;
         return dynamic != null;
     }
 
-    public static bool TryGetDynamic(Vector2Int gridPosition, out MapObject dynamic) {
-        if (MapSystem.instance.TryGetTile(gridPosition, out var tile)) {
+    public static bool TryGetDynamic(Vector2Int gridPosition, out DynamicObject dynamic) {
+        if (MapSystem.Instance.TryGetTile(gridPosition, out var tile)) {
             return TryGetDynamic(tile, out dynamic);
         } else {
             dynamic = null;
@@ -29,23 +28,29 @@ public static class InteractionSystem {
         }
     }
 
-    public static bool Push(MapObject source, Vector2Int dir, out ScheduleRoutineGroup scheduleItem) {
+    public static bool Push(DynamicObject source, Vector2Int dir, out ScheduleGroup scheduleGroup) {
         Debug.Log($"Pushing {source} in direction {dir}");
 
-        var sourcePos = source.GetGridPos();
+        var sourcePos = source.GridPos;
         var targetPos = sourcePos + dir;
 
         if (CanEnter(targetPos, -dir)) {
-            scheduleItem = new(new[] { MapSystem.instance.MoveMapObject(source, targetPos) });
+            scheduleGroup = new ScheduleGroup(
+                new ScheduleRoutine(
+                    MapSystem.Instance.MoveMapObject(source, targetPos)
+                )
+            );
             return true;
         } else if (TryGetDynamic(targetPos, out var dynamic)) {
-            if (Push(dynamic, dir, out scheduleItem)) {
-                scheduleItem.AddRoutine(MapSystem.instance.MoveMapObject(source, targetPos));
+            if (Push(dynamic, dir, out scheduleGroup)) {
+                scheduleGroup.AddItem(
+                    new ScheduleRoutine(MapSystem.Instance.MoveMapObject(source, targetPos)
+                ));
                 return true;
             }
         }
 
-        scheduleItem = null;
+        scheduleGroup = null;
         return false;
     }
 }

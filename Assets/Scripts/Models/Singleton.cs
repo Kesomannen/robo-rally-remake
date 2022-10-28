@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T> {
-    public static T instance {
+    public static T Instance {
         get {
             if (_instanceExists) return _instance;
             else {

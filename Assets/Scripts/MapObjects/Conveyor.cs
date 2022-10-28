@@ -1,62 +1,59 @@
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
+using System;
 
-public class Conveyor : MapObject {
+public class Conveyor : StaticObject {
     [SerializeField] Vector2Int _direction;
     [SerializeField] float _cost;
 
     const float _startProgress = 1f;
 
-    public override bool IsStatic => true;
     public override bool CanEnter(Vector2Int direction) => true;
 
     static Dictionary<MapObject, float> _progress = new();
 
     MapObject _currentObject;
-    bool _isActive;
 
-    void Awake() {
-        _direction = _direction.RotateAsTransform(transform);
-        TurnSystem.OnInstanceCreated += _ => {
-            _.OnStepStart += OnStepStart;
-            _.OnStepEnd += OnStepEnd;
-        };
+    static bool _isActive;
+    static event Action _onActivate;
+
+    protected override void Awake() {
+        base.Awake();
+        _direction = RotateVector(_direction);
     }
 
-    void OnStepStart(int step) {
+    public static IEnumerator Activate() {
+        _isActive = true;
+        _onActivate?.Invoke();
+        yield return Scheduler.WaitUntilQueueEmpty();
         _isActive = false;
     }
 
-    void OnStepEnd(int step) {
-        _progress.Clear();
-        _isActive = true;
-        if (_currentObject != null) {
-            Convey();
-        }
-    }
-
-    public override void OnEnter(MapObject dynamic) {
-        _currentObject = dynamic;
+    public override void OnEnter(DynamicObject dynamic) {
+        base.OnEnter(dynamic);
         if (_isActive) Convey();
+        _onActivate += Convey;
     }
 
-    public override void OnExit(MapObject dynamic) {
-        _currentObject = null;
+    public override void OnExit(DynamicObject dynamic) {
+        base.OnExit(dynamic);
+        _onActivate -= Convey;
     }
 
     void Convey() {
+        if (_currentObject == null) return;
+
         var progress = _progress.EnforceKey(_currentObject, _startProgress);
         if (progress - _cost >= 0) {
-            Scheduler.AddItem(new ScheduleRoutine(ConveyorRoutine(_currentObject)));
+            Scheduler.AddItem(new ScheduleRoutine(ConveyorRoutine(DynamicObject)));
         }
         
-        IEnumerator ConveyorRoutine(MapObject dynamic) {
-            var targetPos = GetGridPos() + _direction;
+        IEnumerator ConveyorRoutine(DynamicObject dynamic) {
+            var targetPos = GridPos + _direction;
             if (InteractionSystem.CanEnter(targetPos, -_direction)) {
                 _progress[dynamic] -= _cost;
-                yield return MapSystem.instance.MoveMapObject(dynamic, targetPos);
-                yield return new WaitForSeconds(1f);
+                yield return MapSystem.Instance.MoveMapObject(dynamic, targetPos);
             }
         }
     }
