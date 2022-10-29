@@ -13,7 +13,7 @@ public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T> {
     }
 
     static T _instance;
-    static bool _instanceExists;
+    protected static bool _instanceExists { get; private set; }
 
     public static event Action<T> OnInstanceCreated;
 

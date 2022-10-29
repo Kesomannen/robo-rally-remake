@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -28,29 +29,28 @@ public static class InteractionSystem {
         }
     }
 
-    public static bool Push(DynamicObject source, Vector2Int dir, out ScheduleGroup scheduleGroup) {
+    public static bool Push(DynamicObject source, Vector2Int dir, out List<IEnumerator> routineList) {
         Debug.Log($"Pushing {source} in direction {dir}");
 
         var sourcePos = source.GridPos;
         var targetPos = sourcePos + dir;
 
         if (CanEnter(targetPos, -dir)) {
-            scheduleGroup = new ScheduleGroup(
-                new ScheduleRoutine(
-                    MapSystem.Instance.MoveMapObject(source, targetPos)
-                )
-            );
+            routineList = new() { MapSystem.Instance.MoveObject(source, targetPos) };
             return true;
         } else if (TryGetDynamic(targetPos, out var dynamic)) {
-            if (Push(dynamic, dir, out scheduleGroup)) {
-                scheduleGroup.AddItem(
-                    new ScheduleRoutine(MapSystem.Instance.MoveMapObject(source, targetPos)
-                ));
+            if (dynamic == source) {
+                Debug.LogError($"Trying to push {source} into itself");
+                routineList = null;
+                return false;
+            }
+            if (Push(dynamic, dir, out routineList)) {
+                routineList.Add(MapSystem.Instance.MoveObject(source, targetPos));
                 return true;
             }
         }
 
-        scheduleGroup = null;
+        routineList = null;
         return false;
     }
 }

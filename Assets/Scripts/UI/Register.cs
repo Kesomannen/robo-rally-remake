@@ -3,30 +3,53 @@ using UnityEngine.EventSystems;
 
 public class Register : MonoBehaviour, IPointerClickHandler {
     [SerializeField] int _index;
+    [SerializeField] ProgramCard _card;
 
-    ProgramCard _card;
-    Player _owner = NetworkSystem.LocalPlayer;
     bool _isEmpty = true;
+    Player _owner => NetworkSystem.LocalPlayer;
 
-    public void OnPointerClick(PointerEventData eventData) {
-        if (_isEmpty) return;
-        if (eventData.button == PointerEventData.InputButton.Left) {
-            _isEmpty = true;
-            var data = _card.Data;
+    public ProgramCard Card => _card;
+    public bool IsEmpty => _isEmpty;
 
-            // give card back to hand
-            _card.gameObject.SetActive(false);
-            _owner.Registers[_index] = null;
-            _owner.Hand.AddCard(data, CardPlacement.Top);
-        }
+    void Awake() {
+        _card.gameObject.SetActive(false);
     }
 
-    public bool SetCard(ProgramCardData card) {
-        if (!_isEmpty) return false;
+    void Start() {
+        _owner.Registers[_index] = this;    
+    }
+
+    public bool Place(ProgramCard item) {
+        if (!_isEmpty) Remove();
+        if (!item.Data.CanPlace(_owner, _index)) return false;
+
         _isEmpty = false;
+
+        _card.SetData(item.Data);
         _card.gameObject.SetActive(true);
-        _card.SetData(card);
-        _owner.Registers[_index] = card;
+
+        ProgrammingPhase.RefreshRegisterState();
+
         return true;
+    }
+
+    public void Remove() {
+        if (_isEmpty) return;
+        _isEmpty = true;
+
+        _owner.Hand.AddCard(_card.Data, CardPlacement.Top);
+        _card.gameObject.SetActive(false);
+    }
+
+    public void Discard() {
+        if (_isEmpty) return;
+        _isEmpty = true;
+
+        _owner.DiscardPile.AddCard(_card.Data, CardPlacement.Top);
+        _card.gameObject.SetActive(false);
+    }
+
+    public void OnPointerClick(PointerEventData e) {
+        Remove();
     }
 }

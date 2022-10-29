@@ -11,7 +11,7 @@ public class Conveyor : StaticObject {
 
     public override bool CanEnter(Vector2Int direction) => true;
 
-    static Dictionary<MapObject, float> _progress = new();
+    static Dictionary<MapObject, float> _progress;
 
     MapObject _currentObject;
 
@@ -24,9 +24,13 @@ public class Conveyor : StaticObject {
     }
 
     public static IEnumerator Activate() {
+        _progress = new();
+
         _isActive = true;
         _onActivate?.Invoke();
-        yield return Scheduler.WaitUntilQueueEmpty();
+
+        yield return Scheduler.WaitUntilStackEmpty();
+
         _isActive = false;
     }
 
@@ -53,7 +57,7 @@ public class Conveyor : StaticObject {
             var targetPos = GridPos + _direction;
             if (InteractionSystem.CanEnter(targetPos, -_direction)) {
                 _progress[dynamic] -= _cost;
-                yield return MapSystem.Instance.MoveMapObject(dynamic, targetPos);
+                yield return MapSystem.Instance.MoveObject(dynamic, targetPos);
             }
         }
     }

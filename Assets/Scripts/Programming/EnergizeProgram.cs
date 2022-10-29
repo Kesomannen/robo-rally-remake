@@ -7,12 +7,8 @@ public class EnergizeProgram : ProgramCardData {
 
     public override bool CanPlace(Player player, int positionInRegister) => true;
 
-    public override IScheduleItem Execute(Player player, int positionInRegister)  {
-        return new ScheduleRoutine(Energize());
-
-        IEnumerator Energize() {
-            yield return null;
-            player.Energy.Value += energy;
-        }
+    public override IEnumerator Execute(Player player, int positionInRegister)  {
+        player.Energy.Value += energy;
+        yield break;
     }
 }

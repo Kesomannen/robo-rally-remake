@@ -16,12 +16,31 @@ public class Scheduler : Singleton<Scheduler> {
         }
     }
 
+    public static IEnumerator AddItemAndWait(IScheduleItem item) {
+        AddItem(item);
+        yield return WaitUntilStackEmpty();
+    }
+
     public static Coroutine StartRoutine(IEnumerator routine) {
         return Instance.StartCoroutine(routine);
     }
 
-    public static IEnumerator WaitUntilQueueEmpty() {
-        yield return new WaitUntil(() => _itemStack.Count == 0);
+    public static IEnumerator RoutineGroup(IEnumerable<IEnumerator> routines) {
+        var routinesInProgress = 0;
+        foreach (var routine in routines) {
+            routinesInProgress++;
+            StartRoutine(RunRoutine(routine));
+        }
+        yield return new WaitUntil(() => routinesInProgress == 0);
+
+        IEnumerator RunRoutine(IEnumerator routine) {
+            yield return routine;
+            routinesInProgress--;
+        }
+    }
+
+    public static IEnumerator WaitUntilStackEmpty() {
+        yield return new WaitUntil(() => !_isPlaying);
     }
 
     IEnumerator PlayItems() {

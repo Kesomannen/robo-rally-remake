@@ -11,14 +11,11 @@ public class CardCollection {
 
     int _maxCards;
 
-    public int MaxCards
-    {
+    public int MaxCards {
         get => _maxCards;
-        set
-        {
+        set {
             _maxCards = value;
-            if (_cards.Count > _maxCards)
-            {
+            if (_cards.Count > _maxCards) {
                 _cards.RemoveRange(_maxCards, _cards.Count - _maxCards);
             }
         }
@@ -35,8 +32,7 @@ public class CardCollection {
         _maxCards = maxCards;
     }
 
-    public void Shuffle()
-    {
+    public void Shuffle() {
         _cards.Shuffle();
         OnShuffle?.Invoke();
     }

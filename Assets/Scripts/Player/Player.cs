@@ -4,29 +4,29 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Player {
-    public readonly PlayerModel Model;
     public readonly ClampedField<int> Energy;
 
-    public ProgramCardData[] Registers { get; private set; } = new ProgramCardData[5];
+    public Register[] Registers { get; private set; } = new Register[5];
+    public PlayerModel Model { get; private set; }
 
     public readonly CardCollection Hand, DrawPile, DiscardPile;
 
     public event Action OnShuffleDeck;
     public event Action<ProgramCardData> OnDraw, OnDiscard;
 
-    public Player(Vector2Int spawnPos) {
-        Model = MapSystem.Instance.CreateMapObject(
-            PlayerManager.Instance.PlayerModelPrefab,
-            spawnPos
-        ) as PlayerModel;
+    public Player(Vector3 spawnPos, IPlayerManager manager) {
+        MapSystem.OnInstanceCreated += map => {
+            Model = map.CreateObject(manager.PlayerModelPrefab, spawnPos) as PlayerModel;
+        };
 
-        Hand = new(maxCards: PlayerManager.Instance.HandSize);
-        DrawPile = new(startingCards: PlayerManager.Instance.StartingDeck);
+        Hand = new(maxCards: manager.HandSize);
+        DrawPile = new(startingCards: manager.StartingDeck);
+        DrawPile.Shuffle();
         DiscardPile = new();
 
         Energy = new (
-            PlayerManager.Instance.StartingEnergy,
-            PlayerManager.Instance.MaxEnergy,
+            manager.StartingEnergy,
+            manager.MaxEnergy,
             0
         );
     }
