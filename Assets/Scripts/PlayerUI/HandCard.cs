@@ -6,18 +6,15 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
-    [SerializeField] Image _backgroundImage;
-    [SerializeField] Sprite _standardSprite, _highlightedSprite;
+    [Header("Animation")]
     [SerializeField] float _highlightJumpHeight;
-    [SerializeField] LeanTweenType _easingType;
     [SerializeField] float _highlightedSize;
+    [SerializeField] LeanTweenType _easingType;
     
     static Canvas _canvas;
     static GraphicRaycaster _graphicRaycaster;
 
     Player _owner => NetworkSystem.LocalPlayer;
-
-    bool _canDrag = true;
     bool _isDragging;
     int _index;
     Vector3 _origin;
@@ -30,14 +27,12 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
             _isHighlighted = value;
 
             if (_isHighlighted) {
-                _backgroundImage.sprite = _highlightedSprite;
                 transform.SetParent(_canvas.transform);
                 transform.SetAsLastSibling();
 
                 LerpTo(transform.position + Vector3.up * _highlightJumpHeight);
                 LeanTween.scale(gameObject, Vector3.one * _highlightedSize, 0.2f).setEase(_easingType);
             } else {
-                _backgroundImage.sprite = _standardSprite;
                 transform.SetParent(_originalParent);
                 transform.SetSiblingIndex(_index);
 
@@ -64,8 +59,15 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
         transform.SetSiblingIndex(_index);
     }
 
-    public void OnPointerEnter(PointerEventData e) => IsHighlited = true;
-    public void OnPointerExit(PointerEventData e) => IsHighlited = false;
+    public override void OnPointerEnter(PointerEventData e) {
+        base.OnPointerEnter(e);
+        IsHighlited = true;
+    }
+
+    public override void OnPointerExit(PointerEventData e) {
+        base.OnPointerExit(e);
+        IsHighlited = false;
+    }
 
     public void OnPointerClick(PointerEventData e) {
         if (_isDragging) return;
@@ -77,7 +79,7 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
     }
 
     public void OnBeginDrag(PointerEventData e) {
-        if (!_canDrag || e.button != PointerEventData.InputButton.Left) return;
+        if (e.button != PointerEventData.InputButton.Left) return;
 
         _isDragging = true;
         Drag(e);
@@ -119,16 +121,16 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
         transform.position += (Vector3)e.delta;
     }
 
-    LTDescr _currentTween;
+    int _currentMoveTweenId;
 
     void LerpTo(Vector2 target, Action callback = null) {
-        if (_currentTween != null) LeanTween.cancel(_currentTween.id);
-        _currentTween = LeanTween
+        LeanTween.cancel(_currentMoveTweenId);
+        _currentMoveTweenId = LeanTween
             .move(gameObject, target, 0.2f)
             .setEase(_easingType)
             .setOnComplete(() => {
-                _currentTween = null;
                 callback?.Invoke();
-            });
+            })
+            .id;
     }
 }

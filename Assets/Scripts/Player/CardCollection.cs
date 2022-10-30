@@ -25,8 +25,7 @@ public class CardCollection {
     public delegate void CardUpdateHandler(ProgramCardData card, int index);
     public event CardUpdateHandler OnAdd, OnRemove;
 
-    public CardCollection(IEnumerable<ProgramCardData> startingCards = null, int maxCards = int.MaxValue)
-    {
+    public CardCollection(IEnumerable<ProgramCardData> startingCards = null, int maxCards = int.MaxValue) {
         if (startingCards != null) _cards = startingCards.ToList();
         else _cards = new List<ProgramCardData>();
         _maxCards = maxCards;
@@ -37,8 +36,7 @@ public class CardCollection {
         OnShuffle?.Invoke();
     }
 
-    public bool AddCard(ProgramCardData card, CardPlacement placement)
-    {
+    public bool AddCard(ProgramCardData card, CardPlacement placement) {
         if (_cards.Count >= _maxCards) return false;
         var index = GetIndex(placement);
         _cards.Insert(index, card);
@@ -46,23 +44,19 @@ public class CardCollection {
         return true;
     }
 
-    public int AddRange(IReadOnlyList<ProgramCardData> cards, CardPlacement placement)
-    {
-        for (int i = 0; i < cards.Count; i++)
-        {
+    public int AddRange(IReadOnlyList<ProgramCardData> cards, CardPlacement placement) {
+        for (int i = 0; i < cards.Count; i++) {
             if (!AddCard(cards[i], placement)) return i;
         }
         return cards.Count;
     }
 
-    public bool RemoveCard(ProgramCardData card)
-    {
+    public bool RemoveCard(ProgramCardData card) {
         var successful = _cards.Remove(card);
         return successful;
     }
 
-    public bool RemoveCard(int index)
-    {
+    public bool RemoveCard(int index) {
         if (index < 0 || index >= _cards.Count) return false;
         var card = _cards[index];
         _cards.RemoveAt(index);
@@ -70,18 +64,14 @@ public class CardCollection {
         return true;
     }
 
-    public void Clear()
-    {
-        for (int i = 0; i < _cards.Count; i++)
-        {
+    public void Clear() {
+        for (int i = 0; i < _cards.Count; i++) {
             RemoveCard(i);
         }
     }
 
-    public int GetIndex(CardPlacement placement)
-    {
-        return placement switch
-        {
+    public int GetIndex(CardPlacement placement) {
+        return placement switch {
             CardPlacement.Top => 0,
             CardPlacement.Bottom => _cards.Count - 1,
             CardPlacement.Random => Random.Range(0, _cards.Count),
@@ -89,8 +79,7 @@ public class CardCollection {
         };
     }
 
-    public ProgramCardData GetCard(CardPlacement placement)
-    {
+    public ProgramCardData GetCard(CardPlacement placement) {
         return _cards[GetIndex(placement)];
     }
 }

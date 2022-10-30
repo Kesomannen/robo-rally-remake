@@ -12,6 +12,7 @@ public class ExecutionPhase : Phase<ExecutionPhase> {
 
     public override IEnumerator DoPhase() {
         OnPhaseStart?.Invoke();
+        UIManager.Instance.CurrentState = UIState.GameMap;
         for (CurrentRegister = 0; CurrentRegister < RegisterCount; CurrentRegister++) {
             foreach (var player in PlayerManager.OrderPlayers()) {
                 CurrentPlayer = player;

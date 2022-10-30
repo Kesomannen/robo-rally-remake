@@ -171,11 +171,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _artwork: {fileID: 8197752022162799141}
   _typeIcon: {fileID: 8367423726389701560}
+  _background: {fileID: 8197752021562342096}
   _actionIcon: {fileID: 21300000, guid: cc195a0ff2dc89a48baa5ff8d6f5b7e7, type: 3}
   _damageIcon: {fileID: 21300000, guid: ee29bd190c4d68c4da497981816a9b1e, type: 3}
   _utilityIcon: {fileID: 21300000, guid: 45ddf7b3e01935d4a820f7a39ac3be94, type: 3}
   _name: {fileID: 8197752021984657513}
   _description: {fileID: 8197752021629759058}
+  _standardSprite: {fileID: -1554786478, guid: 60d1e2e9971fb2644ad3b1caf855dbee, type: 3}
+  _highlightedSprite: {fileID: -1558691515, guid: 60d1e2e9971fb2644ad3b1caf855dbee, type: 3}
 --- !u!1 &8197752021629759056
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,6 +12,8 @@ public class ProgrammingPhase : Phase<ProgrammingPhase> {
     public override IEnumerator DoPhase() {
         OnPhaseStart?.Invoke();
 
+        UIManager.Instance.CurrentState = UIState.GameHand;
+
         _canProceed = false;
         var orderedPlayers = PlayerManager.OrderPlayers();
         foreach (var player in orderedPlayers) {
