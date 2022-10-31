@@ -16,8 +16,14 @@ public class ProgrammingPhase : Phase<ProgrammingPhase> {
 
         _canProceed = false;
         var orderedPlayers = PlayerManager.OrderPlayers();
+
+        // Draw cards
         foreach (var player in orderedPlayers) {
-            player.DrawCardsUpTo(_cardsPerTurn);
+            if (player == NetworkSystem.LocalPlayer) {
+                player.DrawCardsUpTo(_cardsPerTurn);
+            } else {
+                player.DrawCardsUpTo(_cardsPerTurn);
+            }
         }
 
         yield return new WaitUntil(() => _canProceed);

@@ -59,13 +59,11 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
         transform.SetSiblingIndex(_index);
     }
 
-    public override void OnPointerEnter(PointerEventData e) {
-        base.OnPointerEnter(e);
+    public void OnPointerEnter(PointerEventData e) {
         IsHighlited = true;
     }
 
-    public override void OnPointerExit(PointerEventData e) {
-        base.OnPointerExit(e);
+    public void OnPointerExit(PointerEventData e) {
         IsHighlited = false;
     }
 
@@ -130,7 +128,6 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
             .setEase(_easingType)
             .setOnComplete(() => {
                 callback?.Invoke();
-            })
-            .id;
+            }).id;
     }
 }

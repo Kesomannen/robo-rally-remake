@@ -3,13 +3,12 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
-using Object = UnityEngine.Object;
 
 public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
     [SerializeField] RectTransform _overlayParent;
-    [SerializeField] TMP_Text _headerText, _subTitleText;
+    [SerializeField] TMP_Text _headerText, _subtitleText;
     [SerializeField] Image _overlayColorImage;
-    [SerializeField] float _overlayFadeTime = 0.5f;
+    [SerializeField] float _overlayFadeTime;
     [SerializeField] Gradient _overlayColorGradient;
 
     RectTransform _activeOverlayObject;
@@ -18,21 +17,26 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
 
     public static event Action<PointerEventData> OnClick;
 
-    public T ShowOverlay<T>(T prefab, string header = null, string subTitle = null) where T : Component {
-        if (_activeOverlayObject != null) {
+    protected override void Awake() {
+        base.Awake();
+        gameObject.SetActive(false);
+    }
+
+    public T ShowOverlay<T>(OverlayData<T> data) where T : Component {
+        if (IsOverlayActive) {
             Debug.LogWarning("Overlay already active");
             return null;
         }
 
         gameObject.SetActive(true);
-        var obj = Instantiate(prefab, _overlayParent);
+        var obj = Instantiate(data.Prefab, _overlayParent);
         _activeOverlayObject = obj.GetComponent<RectTransform>();
 
         Fade(_overlayParent, true);
         Fade(_activeOverlayObject, true);
 
-        SetText(header, _headerText);
-        SetText(subTitle, _subTitleText);
+        SetText(data.Header, _headerText);
+        SetText(data.Subtitle, _subtitleText);
 
         return obj;
 
@@ -48,7 +52,7 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
     }
 
     public void HideOverlay() {
-        if (_activeOverlayObject == null) {
+        if (!IsOverlayActive) {
             Debug.LogWarning("No overlay active");
             return;
         }
@@ -66,8 +70,8 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
             Fade(_headerText.GetComponent<RectTransform>(), false);
         }
 
-        if (_subTitleText.gameObject.activeSelf) {
-            Fade(_subTitleText.GetComponent<RectTransform>(), false);
+        if (_subtitleText.gameObject.activeSelf) {
+            Fade(_subtitleText.GetComponent<RectTransform>(), false);
         }
     }
 
@@ -80,4 +84,11 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
     public void OnPointerClick(PointerEventData e) {
         OnClick?.Invoke(e);
     }
+}
+
+[Serializable]
+public struct OverlayData<T> where T : Component {
+    public string Header;
+    public string Subtitle;
+    public T Prefab;
 }

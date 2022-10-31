@@ -2,10 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
-using UnityEngine.EventSystems;
 
-public class ProgramCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
-    [Header("References")]
+public class ProgramCard : Container<ProgramCardData> {
     [SerializeField] Image _artwork;
     [SerializeField] Image _typeIcon;
     [SerializeField] Image _background;
@@ -16,28 +14,10 @@ public class ProgramCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     [Space]
     [SerializeField] TMP_Text _name;
     [SerializeField] TMP_Text _description;
-    [Space]
-    [SerializeField] Sprite _standardSprite;
-    [SerializeField] Sprite _highlightedSprite;
 
-    public ProgramCardData Data { get; private set; }
-
-    public virtual void OnPointerEnter(PointerEventData e)
-    {
-        _background.sprite = _highlightedSprite;
-    }
-
-    public virtual void OnPointerExit(PointerEventData e)
-    {
-        _background.sprite = _standardSprite;
-    }
-
-    public virtual void SetData(ProgramCardData data)
-    {
-        Data = data;
+    protected override void Serialize(ProgramCardData data) {
         _artwork.sprite = data.Artwork;
-        _typeIcon.sprite = data.Type switch
-        {
+        _typeIcon.sprite = data.Type switch {
             ProgramCardData.CardType.Action => _actionIcon,
             ProgramCardData.CardType.Damage => _damageIcon,
             ProgramCardData.CardType.Utility => _utilityIcon,

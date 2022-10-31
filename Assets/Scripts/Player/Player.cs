@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -10,6 +11,8 @@ public class Player {
     public PlayerModel Model { get; private set; }
 
     public readonly CardCollection Hand, DrawPile, DiscardPile;
+
+    const float _drawDelay = 0.5f;
 
     public event Action OnShuffleDeck;
     public event Action<ProgramCardData> OnDraw, OnDiscard;
@@ -61,7 +64,9 @@ public class Player {
     }
 
     public void DrawCards(int count) {
-        for (int i = 0; i < count; i++) DrawCard();
+        for (int i = 0; i < count; i++) {
+            DrawCard();
+        };
     }
 
     public void DrawCardsUpTo(int count) {

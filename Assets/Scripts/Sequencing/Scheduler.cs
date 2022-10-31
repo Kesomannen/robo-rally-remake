@@ -16,6 +16,10 @@ public class Scheduler : Singleton<Scheduler> {
         }
     }
 
+    public static void AddItem(IEnumerator item) {
+        AddItem(new ScheduleRoutine(item));
+    }
+
     public static IEnumerator AddItemAndWait(IScheduleItem item) {
         AddItem(item);
         yield return WaitUntilStackEmpty();

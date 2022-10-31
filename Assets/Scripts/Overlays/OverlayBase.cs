@@ -7,6 +7,10 @@ public abstract class OverlayBase : MonoBehaviour {
         OverlaySystem.OnClick += OnOverlayClick;
     }
 
+    protected virtual void OnDestroy() {
+        OverlaySystem.OnClick -= OnOverlayClick;
+    }
+
     protected virtual void OnOverlayClick(PointerEventData e) {
         OverlaySystem.Instance.HideOverlay();
     }

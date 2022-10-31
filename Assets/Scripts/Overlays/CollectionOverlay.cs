@@ -6,9 +6,9 @@ public class CollectionOverlay : OverlayBase {
     [SerializeField] ProgramCard _cardPrefab;
     [SerializeField] Transform _cardContainer;
 
-    public void Init(IEnumerable<ProgramCardData> cards, bool shuffle = false) {
+    public void Init(IEnumerable<ProgramCardData> cards, bool shuffled = false) {
         var cardList = cards.ToList();
-        if (shuffle) cardList.Shuffle();
+        if (shuffled) cardList.Shuffle();
         foreach (var card in cardList) {
             var cardInstance = Instantiate(_cardPrefab, _cardContainer);
             cardInstance.SetData(card);

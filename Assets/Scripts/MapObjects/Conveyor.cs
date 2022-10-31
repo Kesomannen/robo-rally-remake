@@ -50,7 +50,7 @@ public class Conveyor : StaticObject {
 
         var progress = _progress.EnforceKey(_currentObject, _startProgress);
         if (progress - _cost >= 0) {
-            Scheduler.AddItem(new ScheduleRoutine(ConveyorRoutine(DynamicObject)));
+            Scheduler.AddItem(ConveyorRoutine(DynamicObject));
         }
         
         IEnumerator ConveyorRoutine(DynamicObject dynamic) {

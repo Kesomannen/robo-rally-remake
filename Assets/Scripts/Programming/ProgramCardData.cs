@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public abstract class ProgramCardData : ScriptableObject {
+public abstract class ProgramCardData : ScriptableObject, IContainable<ProgramCardData> {
     [SerializeField] string _name;
     [SerializeField] [TextArea] string _description;
     [SerializeField] Sprite _artwork;
@@ -11,6 +11,8 @@ public abstract class ProgramCardData : ScriptableObject {
     public string Description => _description;
     public Sprite Artwork => _artwork;
     public CardType Type => _type;
+
+    public Container<ProgramCardData> ContainerPrefab => ProgramCardSettings.Instance.ProgramCardPrefab;
 
     public abstract IEnumerator Execute(Player player, int positionInRegister);
     public abstract bool CanPlace(Player player, int positionInRegister);
