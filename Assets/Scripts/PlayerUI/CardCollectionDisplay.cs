@@ -12,7 +12,7 @@ public class CardCollectionDisplay : MonoBehaviour, IPointerClickHandler {
     [SerializeField] Image _image;
 
     CardCollection _collection;
-    Player _owner => NetworkSystem.LocalPlayer;
+    GamePlayer _owner => PlayerManager.LocalPlayer;
 
     public void OnPointerClick(PointerEventData e) {
         var obj = OverlaySystem.Instance.ShowOverlay(_collectionOverlayData);

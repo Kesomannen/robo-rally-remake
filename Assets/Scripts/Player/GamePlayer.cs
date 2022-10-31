@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class Player {
+public class GamePlayer {
     public readonly ClampedField<int> Energy;
 
     public Register[] Registers { get; private set; } = new Register[5];
@@ -17,7 +17,7 @@ public class Player {
     public event Action OnShuffleDeck;
     public event Action<ProgramCardData> OnDraw, OnDiscard;
 
-    public Player(Vector3 spawnPos, IPlayerManager manager) {
+    public GamePlayer(Vector3 spawnPos, IPlayerManager manager) {
         MapSystem.OnInstanceCreated += map => {
             Model = map.CreateObject(manager.PlayerModelPrefab, spawnPos) as PlayerModel;
         };

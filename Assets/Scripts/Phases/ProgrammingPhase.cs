@@ -19,7 +19,7 @@ public class ProgrammingPhase : Phase<ProgrammingPhase> {
 
         // Draw cards
         foreach (var player in orderedPlayers) {
-            if (player == NetworkSystem.LocalPlayer) {
+            if (player == PlayerManager.LocalPlayer) {
                 player.DrawCardsUpTo(_cardsPerTurn);
             } else {
                 player.DrawCardsUpTo(_cardsPerTurn);

@@ -3,7 +3,7 @@ using System;
 
 public class ExecutionPhase : Phase<ExecutionPhase> {
     public static int CurrentRegister { get; private set; }
-    public static Player CurrentPlayer { get; private set; }
+    public static GamePlayer CurrentPlayer { get; private set; }
 
     public const int RegisterCount = 5;
 

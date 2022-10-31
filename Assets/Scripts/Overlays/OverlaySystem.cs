@@ -29,11 +29,9 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
         }
 
         gameObject.SetActive(true);
+        
         var obj = Instantiate(data.Prefab, _overlayParent);
         _activeOverlayObject = obj.GetComponent<RectTransform>();
-
-        Fade(_overlayParent, true);
-        Fade(_activeOverlayObject, true);
 
         SetText(data.Header, _headerText);
         SetText(data.Subtitle, _subtitleText);
@@ -46,7 +44,6 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
             } else {
                 text.gameObject.SetActive(true);
                 text.text = str;
-                Fade(text.GetComponent<RectTransform>(), true);
             }
         }
     }
@@ -56,29 +53,14 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
             Debug.LogWarning("No overlay active");
             return;
         }
-        
-        Fade(_activeOverlayObject, false).setOnComplete(() => {
-            Destroy(_activeOverlayObject.gameObject);
-            _activeOverlayObject = null;
-        });
 
-        Fade(_overlayParent, false).setOnComplete(() => {
-            gameObject.SetActive(false);
-        });
+        gameObject.SetActive(false);
 
-        if (_headerText.gameObject.activeSelf) {
-            Fade(_headerText.GetComponent<RectTransform>(), false);
-        }
+        Destroy(_activeOverlayObject.gameObject);
+        _activeOverlayObject = null;
 
-        if (_subtitleText.gameObject.activeSelf) {
-            Fade(_subtitleText.GetComponent<RectTransform>(), false);
-        }
-    }
-
-    LTDescr Fade(RectTransform target, bool fadeIn) {
-        var startAlpha = fadeIn ? 0 : 1;
-        var targetAlpha = fadeIn ? 1 : 0;
-        return LeanTween.alpha(_activeOverlayObject, targetAlpha, _overlayFadeTime).setFrom(startAlpha);
+        _headerText.gameObject.SetActive(false);
+        _subtitleText.gameObject.SetActive(false);
     }
 
     public void OnPointerClick(PointerEventData e) {

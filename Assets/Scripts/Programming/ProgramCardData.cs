@@ -14,8 +14,8 @@ public abstract class ProgramCardData : ScriptableObject, IContainable<ProgramCa
 
     public Container<ProgramCardData> ContainerPrefab => ProgramCardSettings.Instance.ProgramCardPrefab;
 
-    public abstract IEnumerator Execute(Player player, int positionInRegister);
-    public abstract bool CanPlace(Player player, int positionInRegister);
+    public abstract IEnumerator Execute(GamePlayer player, int positionInRegister);
+    public abstract bool CanPlace(GamePlayer player, int positionInRegister);
 
     public override string ToString() => _name;
     

@@ -7,9 +7,9 @@ public class MoveProgram : ProgramCardData {
     [SerializeField] Vector2Int direction;
     [SerializeField] bool relative;
 
-    public override bool CanPlace(Player player, int positionInRegister) => true;
+    public override bool CanPlace(GamePlayer player, int positionInRegister) => true;
 
-    public override IEnumerator Execute(Player player, int positionInRegister)  {
+    public override IEnumerator Execute(GamePlayer player, int positionInRegister)  {
         var moveVector = relative ? player.Model.RotateVector(direction) : direction;
         for (int i = 0; i < steps; i++) {
             if (InteractionSystem.Push(player.Model, moveVector, out var routineList)) {

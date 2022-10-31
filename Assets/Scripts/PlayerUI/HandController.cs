@@ -6,12 +6,18 @@ public class HandController : Singleton<HandController> {
     [SerializeField] float _cardSpacing;
 
     readonly List<HandCard> _cardObjects = new();
-    Player _owner => NetworkSystem.LocalPlayer;
+    GamePlayer _owner => PlayerManager.LocalPlayer;
 
     void Start() {
         _owner.Hand.OnAdd += OnCardAdded;
         _owner.Hand.OnRemove += OnCardRemoved;
-        CreateHand();    
+        CreateHand();
+    }
+
+    protected override void OnDestroy() {
+        base.OnDestroy();
+        _owner.Hand.OnAdd -= OnCardAdded;
+        _owner.Hand.OnRemove -= OnCardRemoved;
     }
 
     void OnCardAdded(ProgramCardData card, int index) {
@@ -28,12 +34,6 @@ public class HandController : Singleton<HandController> {
         Destroy(card.gameObject);
 
         UpdateCards();
-    }
-
-    void DestroyHand() {
-        for (int i = 0; i < _cardObjects.Count; i++) {
-            DestroyCard(i);
-        }
     }
 
     ProgramCard CreateCard(ProgramCardData card, int index) {

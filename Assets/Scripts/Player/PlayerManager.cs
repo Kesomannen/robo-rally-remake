@@ -33,10 +33,12 @@ public class PlayerManager : Singleton<PlayerManager>, IPlayerManager {
     public PlayerModel PlayerModelPrefab => _playerModelPrefab;
 
     public static int PlayerCount => Instance._playerCount;
-    static Player[] _players;
-    public static IReadOnlyList<Player> Players => _players;
 
-    public static event Action<Player[]> OnPlayersCreated;
+    static GamePlayer[] _players;
+    public static IReadOnlyList<GamePlayer> Players => _players;
+    public static GamePlayer LocalPlayer => _players[0];
+
+    public static event Action<GamePlayer[]> OnPlayersCreated;
 
     protected override void Awake() {
         base.Awake();
@@ -44,16 +46,16 @@ public class PlayerManager : Singleton<PlayerManager>, IPlayerManager {
     }
 
     void CreatePlayers() {
-        _players = new Player[_playerCount];
+        _players = new GamePlayer[_playerCount];
         for (int i = 0; i < _playerCount; i++) {
-            _players[i] = new Player(_spawnPoints[i].position, this);
+            _players[i] = new GamePlayer(_spawnPoints[i].position, this);
         }
         OnPlayersCreated?.Invoke(_players);
     }
 
-    public static Player[] OrderPlayers()
+    public static GamePlayer[] OrderPlayers()
     {
-        var orderedPlayers = new Dictionary<Player, int>();
+        var orderedPlayers = new Dictionary<GamePlayer, int>();
         foreach (var player in _players)
         {
             var priority = player.GetBonusPriority();

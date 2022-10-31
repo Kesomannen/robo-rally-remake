@@ -6,7 +6,7 @@ public class Register : MonoBehaviour, IPointerClickHandler {
     [SerializeField] ProgramCard _card;
 
     bool _isEmpty = true;
-    Player _owner => NetworkSystem.LocalPlayer;
+    GamePlayer _owner => PlayerManager.LocalPlayer;
 
     public ProgramCard Card => _card;
     public bool IsEmpty => _isEmpty;
