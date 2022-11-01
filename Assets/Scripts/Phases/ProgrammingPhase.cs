@@ -12,7 +12,7 @@ public class ProgrammingPhase : Phase<ProgrammingPhase> {
     public override IEnumerator DoPhase() {
         OnPhaseStart?.Invoke();
 
-        UIManager.Instance.CurrentState = UIState.GameHand;
+        UIManager.Instance.CurrentState = UIState.Hand;
 
         _canProceed = false;
         var orderedPlayers = PlayerManager.OrderPlayers();

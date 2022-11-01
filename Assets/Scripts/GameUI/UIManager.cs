@@ -21,18 +21,16 @@ public class UIManager : Singleton<UIManager> {
 
     void Enter(UIState state) {
         Action action = state switch {
-            UIState.MainMenu => throw new NotImplementedException(),
-            UIState.Lobby => throw new NotImplementedException(),
-            UIState.GameHand => GameHand,
-            UIState.GameMap => GameMap,
-            UIState.GameShop => throw new NotImplementedException(),
+            UIState.Hand => Hand,
+            UIState.Map => Map,
+            UIState.Shop => Shop,
             UIState.None => () => { },
             _ => throw new NotImplementedException()
         };
 
         action();
 
-        void GameHand() {
+        void Hand() {
             _playerUIParent.SetActive(true);
             UIMap.Instance.gameObject.SetActive(true);
 
@@ -40,43 +38,47 @@ public class UIManager : Singleton<UIManager> {
             UIMap.Instance.ZoomToDefault();
         }
 
-        void GameMap() {
+        void Map() {
             UIMap.Instance.gameObject.SetActive(true);
 
             UIMap.Instance.CanFocus = false;
             UIMap.Instance.ZoomToFullscreen();
         }
+
+        void Shop() {
+
+        }
     }
 
     void Exit(UIState state) {
-        Action action = state switch {
-            UIState.MainMenu => throw new NotImplementedException(),
-            UIState.Lobby => throw new NotImplementedException(),
-            UIState.GameHand => GameHand,
-            UIState.GameMap => GameMap,
-            UIState.GameShop => throw new NotImplementedException(),
+        Action exitAction = state switch {
+            UIState.Hand => Hand,
+            UIState.Map => Map,
+            UIState.Shop => Shop,
             UIState.None => () => { },
             _ => throw new NotImplementedException()
         };
 
-        action();
+        exitAction();
 
-        void GameHand() {
+        void Hand() {
             _playerUIParent.SetActive(false);
             UIMap.Instance.gameObject.SetActive(false);
         }
 
-        void GameMap() {
+        void Map() {
             UIMap.Instance.gameObject.SetActive(false);
+        }
+
+        void Shop() {
+            throw new NotImplementedException();
         }
     }
 }
 
 public enum UIState {
-    MainMenu,
-    Lobby,
-    GameHand,
-    GameMap,
-    GameShop,
+    Hand,
+    Map,
+    Shop,
     None,
 }

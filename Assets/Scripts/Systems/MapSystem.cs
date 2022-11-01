@@ -7,7 +7,6 @@ public class MapSystem : Singleton<MapSystem> {
     [SerializeField] float _moveSpeed = 1f;
 
     readonly static Dictionary<Vector2Int, List<MapObject>> _mapObjects = new();
-    readonly static Queue<MapObject> _registrationQueue;
 
     const int maxX = 5;
     const int maxY = 5;
@@ -21,26 +20,11 @@ public class MapSystem : Singleton<MapSystem> {
 
     void LoadTiles() {
         foreach (var obj in _grid.GetComponentsInChildren<MapObject>(true)) {
-            RegisterObjectInternal(obj);
+            RegisterObject(obj);
         };
     }
 
-    public static void RegisterObject(MapObject mapObject) {
-        if (_instanceExists) {
-            Instance.RegisterObjectInternal(mapObject);
-        } else {
-            _registrationQueue.Enqueue(mapObject);
-        }
-    }
-
-    void ClearRegistrationQueue() {
-        while (_registrationQueue.Count > 0) {
-            var mapObject = _registrationQueue.Dequeue();
-            RegisterObjectInternal(mapObject);
-        }
-    }
-
-    void RegisterObjectInternal(MapObject mapObject) {
+    void RegisterObject(MapObject mapObject) {
         EnforceTile(mapObject.GridPos).Add(mapObject);
     }
 

@@ -8,10 +8,14 @@ public class MenuSystem : Singleton<MenuSystem> {
     [SerializeField] JoinGameMenu _joinGameMenu;
     [SerializeField] RoomMenu _roomMenu;
 
-    public MenuState CurrentState { get; private set; } = MenuState.Main;
+    public MenuState CurrentState { get; private set; }
     public Menu CurrentMenu { get; private set; }
 
     public event Action<MenuState, MenuState> OnMenuStateChanged;
+
+    void Start() {
+        ChangeMenu(MenuState.Main);
+    }
 
     public void ChangeMenu(MenuState newState) {
         var oldState = CurrentState;
@@ -42,5 +46,5 @@ public enum MenuState {
     CreateGame,
     JoinGame,
     Room,
-    None,
+    None = default,
 }

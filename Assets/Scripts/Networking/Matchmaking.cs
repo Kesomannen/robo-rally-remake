@@ -15,8 +15,6 @@ using ParrelSync;
 #endif
 
 public static class Matchmaking {
-    public static Player LocalPlayer { get; private set; }
-
     public static UnityTransport Transport {
         get => _transport != null ? _transport : _transport = Object.FindObjectOfType<UnityTransport>();
         set => _transport = value;
@@ -24,6 +22,7 @@ public static class Matchmaking {
 
     static UnityTransport _transport;
     static Lobby _currentLobby;
+    static string _localPlayerId;
     static Coroutine _heartbeatCoroutine;
     static Coroutine _refreshLobbyCoroutine;
 
@@ -34,7 +33,7 @@ public static class Matchmaking {
 
     public static async Task InitializeAsync() {
         await InitializeUnityServicesAsync();
-        LocalPlayer = await SignInAndGetPlayerAsync();
+        await SignInAsync();
         Debug.Log("Matchmaking initialized");
     }
 
@@ -49,7 +48,7 @@ public static class Matchmaking {
         }
     }
 
-    public static async Task<Player> SignInAndGetPlayerAsync() {
+    public static async Task SignInAsync() {
         if (!AuthenticationService.Instance.IsSignedIn) {
             Debug.Log("Signing in...");
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
@@ -58,13 +57,8 @@ public static class Matchmaking {
             }
         }
 
+        _localPlayerId = AuthenticationService.Instance.PlayerId;
         Debug.Log($"Signed in as {AuthenticationService.Instance.PlayerId}");
-
-        return new Player(
-            id: AuthenticationService.Instance.PlayerId,
-            connectionInfo: null,
-            data: new()
-        );
     }
 
     public static async Task CreateLobbyAndAllocationAsync(LobbyData lobbyData) {
@@ -98,7 +92,7 @@ public static class Matchmaking {
             options
         );
 
-        Debug.Log($"Created lobby {_currentLobby.Id} with relay code: {relayJoinCode}");
+        Debug.Log($"Created lobby {_currentLobby.Id}, code: {_currentLobby.LobbyCode}");
 
         Transport.SetHostRelayData(
             alloc.RelayServer.IpV4,
@@ -113,6 +107,7 @@ public static class Matchmaking {
 
     static IEnumerator HeartbeatCoroutine() {
         while (_currentLobby != null) {
+            Debug.Log($"Sending heartbeat to lobby {_currentLobby.Id}");
             Lobbies.Instance.SendHeartbeatPingAsync(_currentLobby.Id);
             yield return new WaitForSecondsRealtime(_heartbeatInterval);
         }
@@ -120,6 +115,7 @@ public static class Matchmaking {
 
     static IEnumerator RefreshLobbyCoroutine() {
         while (_currentLobby != null) {
+            Debug.Log($"Refreshing lobby {_currentLobby.Id}");
             var task = Lobbies.Instance.GetLobbyAsync(_currentLobby.Id);
             yield return new WaitUntil(() => task.IsCompleted);
             _currentLobby = task.Result;
@@ -127,33 +123,24 @@ public static class Matchmaking {
         }
     }
 
-    public static async Task<bool> JoinLobbyWithCodeAsync(string lobbyCode) {
+    public static async Task JoinLobbyWithCodeAsync(string lobbyCode) {
         if (_currentLobby != null) {
-            Debug.LogError("Cannot join a lobby while already in a lobby");
-            return false;
+            throw new InvalidOperationException("Cannot join a lobby while already in a lobby");
         }
 
-        try {
-            _currentLobby = await Lobbies.Instance.JoinLobbyByCodeAsync(lobbyCode);
-            var relayJoinCode = _currentLobby.Data[_relayJoinCodeKey].Value;
-            Debug.Log($"Joined lobby {_currentLobby.Id} using lobby code {_currentLobby.LobbyCode}");
+        _currentLobby = await Lobbies.Instance.JoinLobbyByCodeAsync(lobbyCode);
+        var relayJoinCode = _currentLobby.Data[_relayJoinCodeKey].Value;
+        Debug.Log($"Joined lobby {_currentLobby.Id} using lobby code {_currentLobby.LobbyCode}");
 
-            var alloc = await RelayService.Instance.JoinAllocationAsync(relayJoinCode);
-
-            Transport.SetClientRelayData (
-                alloc.RelayServer.IpV4,
-                (ushort) alloc.RelayServer.Port,
-                alloc.AllocationIdBytes,
-                alloc.Key,
-                alloc.ConnectionData,
-                alloc.HostConnectionData
-            );
-
-            return true;
-        } catch (LobbyServiceException e) {
-            Debug.LogError($"Failed to join lobby with code {lobbyCode}: {e.Message}");
-            return false;
-        }
+        var alloc = await RelayService.Instance.JoinAllocationAsync(relayJoinCode);
+        Transport.SetClientRelayData (
+            alloc.RelayServer.IpV4,
+            (ushort) alloc.RelayServer.Port,
+            alloc.AllocationIdBytes,
+            alloc.Key,
+            alloc.ConnectionData,
+            alloc.HostConnectionData
+        );
     }
 
     public static async Task LockLobbyAsync() {
@@ -195,10 +182,10 @@ public static class Matchmaking {
         }
 
         try {
-            if (_currentLobby.HostId == LocalPlayer.Id) {
+            if (_currentLobby.HostId == _localPlayerId) {
                 await Lobbies.Instance.DeleteLobbyAsync(_currentLobby.Id);
             } else {
-                await Lobbies.Instance.RemovePlayerAsync(_currentLobby.Id, LocalPlayer.Id);
+                await Lobbies.Instance.RemovePlayerAsync(_currentLobby.Id, _localPlayerId);
             } 
             _currentLobby = null;
         } catch (LobbyServiceException e) {
