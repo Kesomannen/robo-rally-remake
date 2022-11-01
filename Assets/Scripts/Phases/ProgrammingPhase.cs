@@ -2,7 +2,7 @@ using System.Collections;
 using System;
 using UnityEngine;
 
-public class ProgrammingPhase : Phase<ProgrammingPhase> {
+public class ProgrammingPhase : Phase {
     [SerializeField] int _cardsPerTurn;
 
     static bool _canProceed;
@@ -20,8 +20,6 @@ public class ProgrammingPhase : Phase<ProgrammingPhase> {
         // Draw cards
         foreach (var player in orderedPlayers) {
             if (player == PlayerManager.LocalPlayer) {
-                player.DrawCardsUpTo(_cardsPerTurn);
-            } else {
                 player.DrawCardsUpTo(_cardsPerTurn);
             }
         }

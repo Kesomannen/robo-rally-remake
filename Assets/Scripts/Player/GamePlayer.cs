@@ -4,11 +4,12 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class GamePlayer {
-    public readonly ClampedField<int> Energy;
 
     public Register[] Registers { get; private set; } = new Register[5];
     public PlayerModel Model { get; private set; }
 
+    public readonly ulong ClientId;
+    public readonly ClampedField<int> Energy;
     public readonly CardCollection Hand, DrawPile, DiscardPile;
 
     const float _drawDelay = 0.5f;
@@ -16,7 +17,7 @@ public class GamePlayer {
     public event Action OnShuffleDeck;
     public event Action<ProgramCardData> OnDraw, OnDiscard;
 
-    public GamePlayer(Vector3 spawnPos, IPlayerManager manager) {
+    public GamePlayer(Vector3 spawnPos, ulong ownerId, IPlayerManager manager) {
         MapSystem.OnInstanceCreated += map => {
             Model = map.CreateObject(manager.PlayerModelPrefab, spawnPos) as PlayerModel;
         };
@@ -25,6 +26,8 @@ public class GamePlayer {
         DrawPile = new(startingCards: manager.StartingDeck);
         DrawPile.Shuffle();
         DiscardPile = new();
+
+        ClientId = ownerId;
 
         Energy = new (
             manager.StartingEnergy,

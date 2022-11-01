@@ -1,7 +1,7 @@
 using System.Collections;
 using System;
 
-public class ExecutionPhase : Phase<ExecutionPhase> {
+public class ExecutionPhase : Phase {
     public static int CurrentRegister { get; private set; }
     public static GamePlayer CurrentPlayer { get; private set; }
 
