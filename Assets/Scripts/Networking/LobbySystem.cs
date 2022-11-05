@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 public class LobbySystem : NetworkBehaviour {
     public static LobbySystem Instance { get; private set; }
 
-    Dictionary<ulong, PlayerData> _playersInLobby = new();
-    public IReadOnlyDictionary<ulong, PlayerData> PlayersInLobby => _playersInLobby;
-
+    static Dictionary<ulong, PlayerData> _playersInLobby = new();
+    public static IReadOnlyDictionary<ulong, PlayerData> PlayersInLobby => _playersInLobby;
+    
     public static event Action<ulong, PlayerData> OnPlayerUpdatedOrAdded;
     public static event Action<ulong> OnPlayerRemoved;
 

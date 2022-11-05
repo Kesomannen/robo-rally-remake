@@ -102,10 +102,10 @@ public static class Matchmaking {
             alloc.ConnectionData
         );
 
-        Transport.StartCoroutine(HeartbeatCoroutine());
+        Transport.StartCoroutine(HeartbeatRoutine());
     }
 
-    static IEnumerator HeartbeatCoroutine() {
+    static IEnumerator HeartbeatRoutine() {
         while (_currentLobby != null) {
             Debug.Log($"Sending heartbeat to lobby {_currentLobby.Id}");
             Lobbies.Instance.SendHeartbeatPingAsync(_currentLobby.Id);
@@ -113,7 +113,7 @@ public static class Matchmaking {
         }
     }
 
-    static IEnumerator RefreshLobbyCoroutine() {
+    static IEnumerator RefreshLobbyRoutine() {
         while (_currentLobby != null) {
             Debug.Log($"Refreshing lobby {_currentLobby.Id}");
             var task = Lobbies.Instance.GetLobbyAsync(_currentLobby.Id);

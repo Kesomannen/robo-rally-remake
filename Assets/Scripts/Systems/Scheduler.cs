@@ -3,33 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Scheduler : Singleton<Scheduler> {
-    static Stack<IScheduleItem> _itemStack = new();
+    static Stack<RoutineItem> _routineStack = new();
     static bool _isPlaying;
 
     public const float DefaultDelay = 0.5f;
-    public const float DefaultInterval = 0.25f;
 
-    public static void AddItem(IScheduleItem item) {
-        _itemStack.Push(item);
+    public static void AddRoutine(IEnumerator routine, float delay = DefaultDelay) {
+        _routineStack.Push(new RoutineItem(routine, delay));
         if (!_isPlaying) {
-            Instance.StartCoroutine(Instance.PlayItems());
+            Instance.StartCoroutine(Instance.PlayStackRoutine());
         }
-    }
-
-    public static void AddItem(IEnumerator item) {
-        AddItem(new ScheduleRoutine(item));
-    }
-
-    public static IEnumerator AddItemAndWait(IScheduleItem item) {
-        AddItem(item);
-        yield return WaitUntilStackEmpty();
     }
 
     public static Coroutine StartRoutine(IEnumerator routine) {
         return Instance.StartCoroutine(routine);
     }
 
-    public static IEnumerator RoutineGroup(IEnumerable<IEnumerator> routines) {
+    public static IEnumerator PlayListRoutine(IEnumerable<IEnumerator> routines) {
         var routinesInProgress = 0;
         foreach (var routine in routines) {
             routinesInProgress++;
@@ -43,15 +33,27 @@ public class Scheduler : Singleton<Scheduler> {
         }
     }
 
-    public static IEnumerator WaitUntilStackEmpty() {
+    public static IEnumerator WaitUntilClearRoutine() {
         yield return new WaitUntil(() => !_isPlaying);
     }
 
-    IEnumerator PlayItems() {
+    IEnumerator PlayStackRoutine() {
         _isPlaying = true;
-        while (_itemStack.Count > 0) {
-            yield return _itemStack.Pop().Play();
+        while (_routineStack.Count > 0) {
+            var routineItem = _routineStack.Pop();
+            yield return routineItem.Routine;
+            yield return Helpers.Wait(routineItem.Delay);
         }
         _isPlaying = false;
+    }
+
+    struct RoutineItem {
+        public IEnumerator Routine;
+        public float Delay;
+
+        public RoutineItem(IEnumerator routine, float delay) {
+            Routine = routine;
+            Delay = delay;
+        }
     }
 }

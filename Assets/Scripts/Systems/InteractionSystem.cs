@@ -36,7 +36,7 @@ public static class InteractionSystem {
         var targetPos = sourcePos + dir;
 
         if (CanEnter(targetPos, -dir)) {
-            routineList = new() { MapSystem.Instance.MoveObject(source, targetPos) };
+            routineList = new() { MapSystem.Instance.MoveObjectRoutine(source, targetPos) };
             return true;
         } else if (TryGetDynamic(targetPos, out var dynamic)) {
             if (dynamic == source) {
@@ -45,7 +45,7 @@ public static class InteractionSystem {
                 return false;
             }
             if (Push(dynamic, dir, out routineList)) {
-                routineList.Add(MapSystem.Instance.MoveObject(source, targetPos));
+                routineList.Add(MapSystem.Instance.MoveObjectRoutine(source, targetPos));
                 return true;
             }
         }

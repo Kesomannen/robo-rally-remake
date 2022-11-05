@@ -22,7 +22,7 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
         gameObject.SetActive(false);
     }
 
-    public T ShowOverlay<T>(OverlayData<T> data) where T : Component {
+    public T ShowOverlay<T>(OverlayData<T> data) where T : OverlayBase {
         if (IsOverlayActive) {
             Debug.LogWarning("Overlay already active");
             return null;

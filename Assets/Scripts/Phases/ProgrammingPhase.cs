@@ -1,20 +1,18 @@
+using System.Collections.Generic;
 using System.Collections;
-using System;
 using UnityEngine;
+using Unity.Netcode;
+using System.Linq;
 
-public class ProgrammingPhase : Phase {
-    [SerializeField] int _cardsPerTurn;
+public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
+    const int _cardsPerTurn = 7;
 
-    static bool _canProceed;
+    static int _playersReady;
 
-    public override event Action OnPhaseStart, OnPhaseEnd;
-
-    public override IEnumerator DoPhase() {
-        OnPhaseStart?.Invoke();
-
+    public static IEnumerator DoPhaseRoutine() {
         UIManager.Instance.CurrentState = UIState.Hand;
 
-        _canProceed = false;
+        _playersReady = 0;
         var orderedPlayers = PlayerManager.OrderPlayers();
 
         // Draw cards
@@ -24,23 +22,37 @@ public class ProgrammingPhase : Phase {
             }
         }
 
-        yield return new WaitUntil(() => _canProceed);
+        yield return new WaitUntil(() => _playersReady == PlayerManager.Players.Count);
 
         foreach (var player in orderedPlayers) {
-            foreach (var register in player.Registers) {
-                register.Discard();
+            for (int i = 0; i < player.Registers.Length; i++) {
+                player.DiscardPile.AddCard(player.Registers[i], CardPlacement.Top);
+                player.Registers[i] = null;
             }
         }
-
-        OnPhaseEnd?.Invoke();
     }
 
-    public static void RefreshRegisterState() {
-        foreach (var player in PlayerManager.Players) {
-            foreach (var register in player.Registers) {
-                if (register.IsEmpty) return;
-            }
+    [ServerRpc(RequireOwnership = false)]
+    public void LockRegisterServerRpc(byte playerIndex, byte[] registerCardIds) {
+        LockPlayerRegister(playerIndex, registerCardIds);
+        LockRegisterClientRpc(playerIndex, registerCardIds);
+        _playersReady++;
+    }
+
+    [ClientRpc]
+    void LockRegisterClientRpc(byte playerIndex, byte[] registerCardIds) {
+        if (IsServer) return;
+        LockPlayerRegister(playerIndex, registerCardIds);
+        _playersReady++;
+    }
+
+    static void LockPlayerRegister(byte playerIndex, byte[] registerCardIds) {
+        Debug.Log($"Locking register for player {playerIndex}");
+        var player = PlayerManager.Players[playerIndex];
+        var cards = registerCardIds.Select(id => ProgramCardData.GetById(id)).ToArray();
+        for (int i = 0; i < cards.Length; i++) {
+            player.Registers[i] = cards[i];
+            Debug.Log($"Register {i} of player {playerIndex} is now {cards[i].Name}");
         }
-        _canProceed = true;
     }
 }

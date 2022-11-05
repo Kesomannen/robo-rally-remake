@@ -1,24 +1,21 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using System.Linq;
 
 #pragma warning disable 4014
 
-public class NetworkSystem : NetworkBehaviour {
+public class NetworkSystem : NetworkSingleton<NetworkSystem> {
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
 
         if (IsServer) {
-            var playerIds = NetworkManager.ConnectedClientsIds.ToArray();
-            PlayerManager.Instance.CreatePlayers(playerIds);
-            CreatePlayersClientRpc(playerIds);
+            var networkPlayers = LobbySystem.PlayersInLobby;
+            foreach (var plr in networkPlayers) {
+                PlayerManager.Instance.CreatePlayer(plr.Key, plr.Value);
+                CreatePlayerClientRpc(plr.Key, plr.Value);
+            }
         }
-    }
-
-    [ClientRpc]
-    void CreatePlayersClientRpc(ulong[] playerIds) {
-        if (IsServer) return;
-        PlayerManager.Instance.CreatePlayers(playerIds);
     }
 
     public override void OnDestroy() {
@@ -28,5 +25,11 @@ public class NetworkSystem : NetworkBehaviour {
         if (NetworkManager.Singleton != null) {
             NetworkManager.Shutdown();
         }
+    }
+
+    [ClientRpc]
+    void CreatePlayerClientRpc(ulong id, PlayerData data) {
+        if (IsServer) return;
+        PlayerManager.Instance.CreatePlayer(id, data);
     }
 }

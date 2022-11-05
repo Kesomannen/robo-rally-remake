@@ -15,13 +15,10 @@ public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T> {
     static T _instance;
     protected static bool _instanceExists { get; private set; }
 
-    public static event Action<T> OnInstanceCreated;
-
     protected virtual void Awake() {
         if (!_instanceExists) {
             _instanceExists = true;
             _instance = (T) this;
-            OnInstanceCreated?.Invoke(_instance);
         } else {
             Debug.LogWarning($"An singleton instance of {typeof(T)} was already found, destroying this instance!", gameObject);
             Destroy(this);

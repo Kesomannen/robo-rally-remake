@@ -23,13 +23,13 @@ public class Conveyor : StaticObject {
         _direction = RotateVector(_direction);
     }
 
-    public static IEnumerator Activate() {
+    public static IEnumerator ActivateRoutine() {
         _progress = new();
 
         _isActive = true;
         _onActivate?.Invoke();
 
-        yield return Scheduler.WaitUntilStackEmpty();
+        yield return Scheduler.WaitUntilClearRoutine();
 
         _isActive = false;
     }
@@ -50,14 +50,14 @@ public class Conveyor : StaticObject {
 
         var progress = _progress.EnforceKey(_currentObject, _startProgress);
         if (progress - _cost >= 0) {
-            Scheduler.AddItem(ConveyorRoutine(DynamicObject));
+            Scheduler.AddRoutine(ConveyorRoutine(DynamicObject));
         }
         
         IEnumerator ConveyorRoutine(DynamicObject dynamic) {
             var targetPos = GridPos + _direction;
             if (InteractionSystem.CanEnter(targetPos, -_direction)) {
                 _progress[dynamic] -= _cost;
-                yield return MapSystem.Instance.MoveObject(dynamic, targetPos);
+                yield return MapSystem.Instance.MoveObjectRoutine(dynamic, targetPos);
             }
         }
     }

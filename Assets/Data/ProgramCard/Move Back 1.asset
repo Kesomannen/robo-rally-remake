@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63049e0a4931204469eec5981a097efa, type: 3}
   m_Name: Move Back 1
   m_EditorClassIdentifier: 
-  _name: Move Back
+  _name: Back up
   _description: Move your robot one tile backwards.
   _artwork: {fileID: 21300000, guid: bd2e835d31c43ef49a55c78c99587cc0, type: 3}
-  _isDamage: 0
+  _type: 0
   steps: 1
   direction: {x: -1, y: 0}
   relative: 1

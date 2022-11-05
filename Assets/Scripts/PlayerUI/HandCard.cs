@@ -14,7 +14,7 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
     static Canvas _canvas;
     static GraphicRaycaster _graphicRaycaster;
 
-    GamePlayer _owner => PlayerManager.LocalPlayer;
+    Player _owner => PlayerManager.LocalPlayer;
     bool _isDragging;
     int _index;
     Vector3 _origin;
@@ -70,9 +70,13 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
     public void OnPointerClick(PointerEventData e) {
         if (_isDragging) return;
 
-        var firstOpenRegister = _owner.Registers.FirstOrDefault(r => r.IsEmpty);
-        if (firstOpenRegister != null) {
-            TryPlace(firstOpenRegister);
+        for (int i = 0; i < ExecutionPhase.RegisterCount; i++) {
+            var registerCard = _owner.Registers[i];
+            if (registerCard == null) {
+                if (TryPlace(RegisterUI.GetRegister(i))) {
+                    return;
+                }
+            }
         }
     }
 
@@ -99,7 +103,7 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
         _graphicRaycaster.Raycast(e, results);
 
         foreach (var hit in results) {
-            if (hit.gameObject.TryGetComponent(out Register register)) {
+            if (hit.gameObject.TryGetComponent(out RegisterUI register)) {
                 TryPlace(register);
                 return;
             }
@@ -109,10 +113,12 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
         LerpTo(_origin);
     }
 
-    void TryPlace(Register register) {
+    bool TryPlace(RegisterUI register) {
         if (register.Place(this)) {
             _owner.Hand.RemoveCard(_index);
+            return true;
         }
+        return false;
     }
 
     void Drag(PointerEventData e) {

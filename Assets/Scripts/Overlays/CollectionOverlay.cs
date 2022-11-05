@@ -24,15 +24,15 @@ public class CollectionOverlay : OverlayBase {
             _cardObjects.Add(cardInstance);
             cardInstance.gameObject.SetActive(false);
         }
-        StartCoroutine(ShowCards());
+        StartCoroutine(ShowCardsRoutine());
 
-        IEnumerator ShowCards() {
+        IEnumerator ShowCardsRoutine() {
             foreach (var card in _cardObjects) {
                 var obj = card.gameObject;
                 obj.transform.localScale = Vector3.one * _cardStartScale;
                 LeanTween.scale(obj, Vector3.one, _cardPopupDuration).setEase(_easeType);
                 obj.SetActive(true);
-                yield return new WaitForSeconds(_cardPopupDelay);
+                yield return Helpers.Wait(_cardPopupDelay);
             }
         }
     }

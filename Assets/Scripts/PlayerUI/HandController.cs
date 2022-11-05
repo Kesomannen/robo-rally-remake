@@ -1,12 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HandController : Singleton<HandController> {
     [SerializeField] HandCard _cardPrefab;
     [SerializeField] float _cardSpacing;
+    [SerializeField] CanvasScaler _canvasScaler;
 
     readonly List<HandCard> _cardObjects = new();
-    GamePlayer _owner => PlayerManager.LocalPlayer;
+    Player _owner => PlayerManager.LocalPlayer;
 
     void Start() {
         _owner.Hand.OnAdd += OnCardAdded;
@@ -56,7 +58,7 @@ public class HandController : Singleton<HandController> {
     void UpdateCards() {
         for (int i = 0; i < _cardObjects.Count; i++) {
             var cardObject = _cardObjects[i];
-            var xPos = _cardSpacing * ((float)i - _cardObjects.Count / 2f + 0.5f);
+            var xPos = _cardSpacing * ((float)i - (float)_cardObjects.Count / 2f + 0.5f) * _canvasScaler.transform.localScale.x;
             var pos = transform.position + Vector3.right * xPos;
             cardObject.SetOrigin(pos, i);
         }

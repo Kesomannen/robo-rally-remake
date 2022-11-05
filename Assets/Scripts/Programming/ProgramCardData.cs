@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public abstract class ProgramCardData : ScriptableObject, IContainable<ProgramCardData> {
+public abstract class ProgramCardData : Lookup<ProgramCardData>, IContainable<ProgramCardData> {
     [SerializeField] string _name;
     [SerializeField] [TextArea] string _description;
     [SerializeField] Sprite _artwork;
@@ -12,10 +12,13 @@ public abstract class ProgramCardData : ScriptableObject, IContainable<ProgramCa
     public Sprite Artwork => _artwork;
     public CardType Type => _type;
 
-    public Container<ProgramCardData> ContainerPrefab => ProgramCardSettings.Instance.ProgramCardPrefab;
+    public Container<ProgramCardData> DefaultContainerPrefab => ProgramCardSettings.Instance.ProgramCardPrefab;
 
-    public abstract IEnumerator Execute(GamePlayer player, int positionInRegister);
-    public abstract bool CanPlace(GamePlayer player, int positionInRegister);
+    public abstract IEnumerator ExecuteRoutine(Player player, int positionInRegister);
+    public abstract bool CanPlace(Player player, int positionInRegister);
+
+    public virtual void OnDraw(Player player) { }
+    public virtual void OnDiscard(Player player) { }
 
     public override string ToString() => _name;
     

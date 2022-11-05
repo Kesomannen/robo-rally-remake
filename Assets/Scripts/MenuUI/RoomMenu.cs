@@ -28,7 +28,7 @@ public class RoomMenu : Menu {
         LobbySystem.OnPlayerRemoved += RemovePanel;
 
         // Do initial population of player panels
-        foreach (var player in LobbySystem.Instance.PlayersInLobby) {
+        foreach (var player in LobbySystem.PlayersInLobby) {
             UpdatePanel(player.Key, player.Value);
         }
     }
@@ -43,7 +43,7 @@ public class RoomMenu : Menu {
 
         _startGameButton.SetActive(
             NetworkManager.Singleton.IsHost &&
-            LobbySystem.Instance.PlayersInLobby.All(p => p.Value.IsReady)
+            LobbySystem.PlayersInLobby.All(p => p.Value.IsReady)
         );
     }
 

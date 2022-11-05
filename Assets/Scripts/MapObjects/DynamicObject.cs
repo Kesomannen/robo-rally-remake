@@ -12,7 +12,7 @@ public abstract class DynamicObject : MapObject {
         transform.rotation = Quaternion.Euler(0, 0, Rotation * 90);
     }
 
-    public IEnumerator Rotate(int rotation) {
+    public IEnumerator RotateRoutine(int rotation) {
         if (rotation == 0) yield break;
 
         var delta = rotation < 0 ? -1 : 1;
@@ -21,7 +21,7 @@ public abstract class DynamicObject : MapObject {
         for (int i = 0; i < absRotation; i++) {
             Rotation = Mathb.Mod(Rotation + delta, 4);
             LeanTween.rotateZ(gameObject, Rotation * 90, 1 / _rotationSpeed);
-            yield return new WaitForSeconds(1 / _rotationSpeed);
+            yield return Helpers.Wait(1 / _rotationSpeed);
         }
     }
 }

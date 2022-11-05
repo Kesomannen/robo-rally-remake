@@ -1,45 +1,50 @@
-using UnityEngine;
+using System;
 using UnityEngine.EventSystems;
 
 public abstract class Choice<T> : OverlayBase {
-    protected ChoiceCallbackReciever _callbackReciever;
-    protected T[] _options;
+    protected Action<ChoiceResult> Callback;
+    protected T[] Options;
 
     public abstract int MaxOptions { get; }
     public abstract int MinOptions { get; }
 
-    public delegate void ChoiceCallbackReciever(ChoiceData choiceData);
+    bool _isOptional;
 
-    public virtual void Init(T[] options, ChoiceCallbackReciever callback) {
+    protected void Init(T[] options, Action<ChoiceResult> callback, bool isOptional = false) {
         if (options.Length > MaxOptions || options.Length < MinOptions) {
-            Debug.LogError($"Number of options ({options.Length}) is out of range ({MinOptions} - {MaxOptions})");
-            return;
+            throw new ArgumentOutOfRangeException($"Options must be between {MinOptions} and {MaxOptions}.");
         }
 
-        _options = options;
-        _callbackReciever = callback;
+        Options = options;
+        Callback = callback;
+        _isOptional = isOptional;
     }
 
     protected override void OnOverlayClick(PointerEventData e) {
-        base.OnOverlayClick(e);
-        Cancel();
+        if (_isOptional) {
+            base.OnOverlayClick(e);
+            Cancel();
+        }
     }
 
     public void OnOptionChoose(T choice) {
-        _callbackReciever?.Invoke(new() {
+        Callback?.Invoke(new() {
             Choice = choice,
             WasCanceled = false
         });
+        OverlaySystem.Instance.HideOverlay();
     }
 
     public void Cancel() {
-        _callbackReciever?.Invoke(new() {
+        if (!_isOptional) return;
+        Callback?.Invoke(new() {
             Choice = default,
             WasCanceled = true
         });
+        OverlaySystem.Instance.HideOverlay();
     }
 
-    public struct ChoiceData {
+    public struct ChoiceResult {
         public T Choice;
         public bool WasCanceled;
     }

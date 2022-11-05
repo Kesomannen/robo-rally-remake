@@ -5,9 +5,9 @@ using UnityEngine;
 public class RotateProgram : ProgramCardData {
     [SerializeField] int rotation;
 
-    public override bool CanPlace(GamePlayer player, int positionInRegister) => true;
+    public override bool CanPlace(Player player, int positionInRegister) => true;
 
-    public override IEnumerator Execute(GamePlayer player, int positionInRegister)  {
-        yield return player.Model.Rotate(rotation);
+    public override IEnumerator ExecuteRoutine(Player player, int positionInRegister)  {
+        yield return player.Model.RotateRoutine(rotation);
     }
 }

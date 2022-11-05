@@ -1,22 +1,22 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Register : MonoBehaviour, IPointerClickHandler {
+public class RegisterUI : MonoBehaviour, IPointerClickHandler {
     [SerializeField] int _index;
     [SerializeField] ProgramCard _card;
 
     bool _isEmpty = true;
-    GamePlayer _owner => PlayerManager.LocalPlayer;
+    Player _owner => PlayerManager.LocalPlayer;
 
-    public ProgramCard Card => _card;
-    public bool IsEmpty => _isEmpty;
+    static RegisterUI[] _registers { get; } = new RegisterUI[ExecutionPhase.RegisterCount];
+    public static RegisterUI GetRegister(int index) => _registers[index];
 
     void Awake() {
-        _card.gameObject.SetActive(false);
+        _registers[_index] = this;
     }
 
-    void Start() {
-        _owner.Registers[_index] = this;    
+    void OnEnable() {
+        _card.gameObject.SetActive(false);
     }
 
     public bool Place(ProgramCard item) {
@@ -27,8 +27,7 @@ public class Register : MonoBehaviour, IPointerClickHandler {
 
         _card.SetData(item.Data);
         _card.gameObject.SetActive(true);
-
-        ProgrammingPhase.RefreshRegisterState();
+        _owner.Registers[_index] = item.Data;
 
         return true;
     }
@@ -39,14 +38,7 @@ public class Register : MonoBehaviour, IPointerClickHandler {
 
         _owner.Hand.AddCard(_card.Data, CardPlacement.Top);
         _card.gameObject.SetActive(false);
-    }
-
-    public void Discard() {
-        if (_isEmpty) return;
-        _isEmpty = true;
-
-        _owner.DiscardPile.AddCard(_card.Data, CardPlacement.Top);
-        _card.gameObject.SetActive(false);
+        _owner.Registers[_index] = null;
     }
 
     public void OnPointerClick(PointerEventData e) {

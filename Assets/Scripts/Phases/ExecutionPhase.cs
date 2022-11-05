@@ -1,27 +1,27 @@
 using System.Collections;
-using System;
+using Unity.Netcode;
+using UnityEngine;
 
-public class ExecutionPhase : Phase {
+#pragma warning disable 0067
+
+public class ExecutionPhase : NetworkSingleton<ProgrammingPhase> {
     public static int CurrentRegister { get; private set; }
-    public static GamePlayer CurrentPlayer { get; private set; }
+    public static Player CurrentPlayer { get; private set; }
 
     public const int RegisterCount = 5;
 
-    public event Action<int> OnRegisterStart, OnRegisterEnd;
-    public override event Action OnPhaseStart, OnPhaseEnd;
-
-    public override IEnumerator DoPhase() {
-        OnPhaseStart?.Invoke();
+    public static IEnumerator DoPhaseRoutine() {
         UIManager.Instance.CurrentState = UIState.Map;
         for (CurrentRegister = 0; CurrentRegister < RegisterCount; CurrentRegister++) {
             foreach (var player in PlayerManager.OrderPlayers()) {
                 CurrentPlayer = player;
-                var routine = player.Registers[CurrentRegister].Card.Data.Execute(player, CurrentRegister);
-                yield return Scheduler.AddItemAndWait(new ScheduleRoutine(routine));
+                var card = player.Registers[CurrentRegister];
+                var routine = card.ExecuteRoutine(player, CurrentRegister);
+
+                Scheduler.AddRoutine(routine);
+                yield return Scheduler.WaitUntilClearRoutine();
             }
-            yield return Conveyor.Activate();
-            OnRegisterEnd?.Invoke(CurrentRegister);
+            yield return Conveyor.ActivateRoutine();
         }
-        OnPhaseEnd?.Invoke();
     }
 }

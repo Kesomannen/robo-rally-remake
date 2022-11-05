@@ -5,9 +5,9 @@ using UnityEngine;
 public class EnergizeProgram : ProgramCardData {
     [SerializeField] int energy;
 
-    public override bool CanPlace(GamePlayer player, int positionInRegister) => true;
+    public override bool CanPlace(Player player, int positionInRegister) => true;
 
-    public override IEnumerator Execute(GamePlayer player, int positionInRegister)  {
+    public override IEnumerator ExecuteRoutine(Player player, int positionInRegister)  {
         player.Energy.Value += energy;
         yield break;
     }

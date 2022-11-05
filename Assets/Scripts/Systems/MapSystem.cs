@@ -53,15 +53,15 @@ public class MapSystem : Singleton<MapSystem> {
         return _mapObjects[gridPosition];
     }
 
-    # region Public API
-    public DynamicObject CreateObject(DynamicObject prefab, Vector2Int gridPosition) {
+    # region Public Methods
+    public T CreateObject<T>(T prefab, Vector2Int gridPosition) where T : DynamicObject {
         var mapObject = Instantiate(prefab, _grid.transform);
         mapObject.transform.position = GetWorldPos(gridPosition);
         AddObject(mapObject, gridPosition);
         return mapObject;
     }
 
-    public DynamicObject CreateObject(DynamicObject prefab, Vector3 worldPosition) {
+    public T CreateObject<T>(T prefab, Vector3 worldPosition) where T : DynamicObject {
         return CreateObject(prefab, GetGridPos(worldPosition));
     }
 
@@ -75,10 +75,10 @@ public class MapSystem : Singleton<MapSystem> {
         obj.transform.position = GetWorldPos(newPosition);
     }
 
-    public IEnumerator MoveObject(DynamicObject obj, Vector2Int newPosition) {
+    public IEnumerator MoveObjectRoutine(DynamicObject obj, Vector2Int newPosition) {
         RelocateObject(obj, newPosition);
         LeanTween.move(obj.gameObject, GetWorldPos(newPosition), 1 / _moveSpeed);
-        yield return new WaitForSeconds(1 / _moveSpeed);
+        yield return Helpers.Wait(1 / _moveSpeed);
     }
 
     public Vector2 GetWorldPos(Vector2Int gridPosition) {
