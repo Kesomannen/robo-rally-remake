@@ -4,20 +4,13 @@ using UnityEngine.UI;
 
 public class CreateGameMenu : Menu {
     [SerializeField] Toggle _privateCheckbox;
-    [SerializeField] TMP_InputField _nameInputField;
 
     protected override MenuState PreviousMenuState => MenuState.Main;
 
     public async void Submit() {
-        if (string.IsNullOrWhiteSpace(_nameInputField.text)) {
-            Debug.LogWarning("No name entered");
-            return;
-        }
-
         var lobbyData = new LobbyData {
-            Name = _nameInputField.text,
             MapID = 0,
-            MaxPlayers = 4,
+            MaxPlayers = Constants.MaxPlayers,
             IsPrivate = _privateCheckbox.isOn,
         };
 

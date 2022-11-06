@@ -9,6 +9,8 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
 
+        MapSystem.Instance.LoadMap(MapData.GetById(LobbySystem.LobbyMapId));
+
         if (IsServer) {
             var networkPlayers = LobbySystem.PlayersInLobby;
             foreach (var plr in networkPlayers) {

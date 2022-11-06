@@ -1,31 +1,30 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class MapSystem : Singleton<MapSystem> {
-    [SerializeField] Grid _grid;
     [SerializeField] float _moveSpeed = 1f;
 
-    readonly static Dictionary<Vector2Int, List<MapObject>> _mapObjects = new();
+    static Dictionary<Vector2Int, List<MapObject>> _mapObjects;
 
-    const int maxX = 5;
-    const int maxY = 5;
-    const int minX = -5;
-    const int minY = -5;
+    MapData _currentMapData;
+    Grid _grid;
 
-    protected override void Awake() {
-        base.Awake();
-        LoadTiles();
-    }
+    public static Action OnMapLoaded;
 
-    void LoadTiles() {
+    public void LoadMap(MapData mapData) {
+        _currentMapData = mapData;
+        _grid = Instantiate(mapData.Prefab, transform);
+
+        // Load map objects
+        _mapObjects = new();
         foreach (var obj in _grid.GetComponentsInChildren<MapObject>(true)) {
-            RegisterObject(obj);
+            EnforceTile(obj.GridPos).Add(obj);
         };
-    }
 
-    void RegisterObject(MapObject mapObject) {
-        EnforceTile(mapObject.GridPos).Add(mapObject);
+        mapData.OnLoad();
+        OnMapLoaded?.Invoke();
     }
 
     void AddObject(DynamicObject obj, Vector2Int gridPosition) {
@@ -103,15 +102,13 @@ public class MapSystem : Singleton<MapSystem> {
         }
     }
 
-    public Vector2Int GetRandomEmptyGridPos() {
-        Vector2Int pos;
-        do { pos = new Vector2Int(Random.Range(minX, maxX), Random.Range(minY, maxY)); }
-        while (!Evaluate(pos));
-        return pos;
-
-        bool Evaluate(Vector2Int pos) {
-            if (!TryGetTile(pos, out var tile)) return true;
-            return tile.Count == 0;
+    public void GetByType<T>(List<T> outputList) where T : MapObject {
+        foreach (var tile in _mapObjects.Values) {
+            foreach (var obj in tile) {
+                if (obj is T t) {
+                    outputList.Add(t);
+                }
+            }
         }
     }
     # endregion

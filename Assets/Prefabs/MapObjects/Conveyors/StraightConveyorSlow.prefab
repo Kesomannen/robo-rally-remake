@@ -17,7 +17,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 944412202424250007, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
       propertyPath: m_Name
-      value: StraightConveyor
+      value: StraightConveyorSlow
       objectReference: {fileID: 0}
     - target: {fileID: 8303127269129446033, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
       propertyPath: m_RootOrder
@@ -66,10 +66,35 @@ PrefabInstance:
     - target: {fileID: 8887188639176184730, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 692893524, guid: 4bb65e4efa38da2498597aca8028be9b, type: 3}
+      objectReference: {fileID: 11775357, guid: 72db028502b56514f9cfdb6dc63f0c1b, type: 3}
     - target: {fileID: 8887188639176184730, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+--- !u!1 &5401002086467324514 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 944412202424250007, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+  m_PrefabInstance: {fileID: 5183378381471606005}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &2875677038294225225
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5401002086467324514}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 22100000, guid: 731f88e2c3d03384d861c1688a4e1165, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

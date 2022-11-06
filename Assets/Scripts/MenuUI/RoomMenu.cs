@@ -33,6 +33,15 @@ public class RoomMenu : Menu {
         }
     }
 
+    public async override void Hide() {
+        base.Hide();
+
+        LobbySystem.OnPlayerUpdatedOrAdded -= UpdatePanel;
+        LobbySystem.OnPlayerRemoved -= RemovePanel;
+    
+        await LobbySystem.Instance.LeaveLobby();
+    }
+
     void UpdatePanel(ulong playerId, PlayerData playerData) {
         var playerPanel = _playerPanels.FirstOrDefault(x => x.PlayerId == playerId);
         if (playerPanel == null) {
@@ -43,6 +52,7 @@ public class RoomMenu : Menu {
 
         _startGameButton.SetActive(
             NetworkManager.Singleton.IsHost &&
+            LobbySystem.PlayersInLobby.Count >= Constants.MinPlayers &&
             LobbySystem.PlayersInLobby.All(p => p.Value.IsReady)
         );
     }
@@ -53,14 +63,6 @@ public class RoomMenu : Menu {
             _playerPanels.Remove(playerPanel);
             Destroy(playerPanel.gameObject);
         }
-    }
-
-    public async override void Hide() {
-        LobbySystem.OnPlayerUpdatedOrAdded -= UpdatePanel;
-        LobbySystem.OnPlayerRemoved -= RemovePanel;
-    
-        await LobbySystem.Instance.LeaveLobby();
-        base.Hide();
     }
 
     public void StartGame() {

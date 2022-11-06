@@ -13,7 +13,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
         UIManager.Instance.CurrentState = UIState.Hand;
 
         _playersReady = 0;
-        var orderedPlayers = PlayerManager.OrderPlayers();
+        var orderedPlayers = PlayerManager.GetOrderedPlayers();
 
         // Draw cards
         foreach (var player in orderedPlayers) {

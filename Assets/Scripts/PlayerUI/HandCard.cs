@@ -11,7 +11,7 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
     [SerializeField] float _highlightedSize;
     [SerializeField] LeanTweenType _easingType;
     
-    static Canvas _canvas;
+    static CanvasScaler _canvasScaler;
     static GraphicRaycaster _graphicRaycaster;
 
     Player _owner => PlayerManager.LocalPlayer;
@@ -27,10 +27,11 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
             _isHighlighted = value;
 
             if (_isHighlighted) {
-                transform.SetParent(_canvas.transform);
+                transform.SetParent(_canvasScaler.transform);
                 transform.SetAsLastSibling();
 
-                LerpTo(transform.position + Vector3.up * _highlightJumpHeight);
+                var targetHeight = _canvasScaler.scaleFactor * _highlightJumpHeight;
+                LerpTo(transform.position + Vector3.up * targetHeight);
                 LeanTween.scale(gameObject, Vector3.one * _highlightedSize, 0.2f).setEase(_easingType);
             } else {
                 transform.SetParent(_originalParent);
@@ -46,9 +47,9 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
 
     void Awake() {
         _originalParent = transform.parent;
-        if (_canvas == null) {
-            _canvas = FindObjectOfType<Canvas>();
-            _graphicRaycaster = _canvas.GetComponent<GraphicRaycaster>();
+        if (_canvasScaler == null) {
+            _canvasScaler = FindObjectOfType<CanvasScaler>();
+            _graphicRaycaster = _canvasScaler.GetComponent<GraphicRaycaster>();
         }
     }
 

@@ -12,6 +12,8 @@ public class LobbySystem : NetworkBehaviour {
 
     static Dictionary<ulong, PlayerData> _playersInLobby = new();
     public static IReadOnlyDictionary<ulong, PlayerData> PlayersInLobby => _playersInLobby;
+
+    public static byte LobbyMapId { get; private set; }
     
     public static event Action<ulong, PlayerData> OnPlayerUpdatedOrAdded;
     public static event Action<ulong> OnPlayerRemoved;

@@ -13,15 +13,15 @@ public class ExecutionPhase : NetworkSingleton<ProgrammingPhase> {
     public static IEnumerator DoPhaseRoutine() {
         UIManager.Instance.CurrentState = UIState.Map;
         for (CurrentRegister = 0; CurrentRegister < RegisterCount; CurrentRegister++) {
-            foreach (var player in PlayerManager.OrderPlayers()) {
+            foreach (var player in PlayerManager.GetOrderedPlayers()) {
                 CurrentPlayer = player;
                 var card = player.Registers[CurrentRegister];
+                Debug.Log($"Executing {card.Name} for {player}");
                 var routine = card.ExecuteRoutine(player, CurrentRegister);
 
                 Scheduler.AddRoutine(routine);
                 yield return Scheduler.WaitUntilClearRoutine();
             }
-            yield return Conveyor.ActivateRoutine();
         }
     }
 }

@@ -20,8 +20,8 @@ public class RegisterUI : MonoBehaviour, IPointerClickHandler {
     }
 
     public bool Place(ProgramCard item) {
-        if (!_isEmpty) Remove();
         if (!item.Data.CanPlace(_owner, _index)) return false;
+        if (!_isEmpty) Remove();
 
         _isEmpty = false;
 

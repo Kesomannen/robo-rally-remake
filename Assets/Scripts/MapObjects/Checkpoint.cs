@@ -5,6 +5,7 @@ public class Checkpoint : StaticObject {
     [SerializeField] bool _isSpawnPoint;
 
     public int Index => _index;
+    public bool IsSpawnPoint => _isSpawnPoint;
 
     public override bool CanEnter(Vector2Int dir) => true;
 

@@ -25,4 +25,6 @@ public static class VectorHelper {
     public static Vector2Int RotateAsTransform(Vector2Int v2, Transform transform) {
         return RotateCCW(v2, GetRotationSteps(transform));
     }
+
+    public static int Range(this Vector2Int v2) => Random.Range(v2.x, v2.y);
 }

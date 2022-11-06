@@ -117,6 +117,10 @@ public class Player {
     public void DiscardRandomCards(int count) {
         for (int i = 0; i < count; i++) DiscardRandomCard();
     }
+
+    public override string ToString() {
+        return $"Player {ClientId}";
+    }
 }
 
 public enum Pile {
