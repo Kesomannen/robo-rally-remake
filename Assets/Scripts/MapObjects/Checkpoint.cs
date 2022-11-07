@@ -8,6 +8,7 @@ public class Checkpoint : StaticObject {
     public bool IsSpawnPoint => _isSpawnPoint;
 
     public override bool CanEnter(Vector2Int dir) => true;
+    public override bool CanExit(Vector2Int dir) => true;
 
     public override void OnEnter(DynamicObject dynamic) {
         base.OnEnter(dynamic);

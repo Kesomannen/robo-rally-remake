@@ -14,10 +14,11 @@ public class MapSystem : Singleton<MapSystem> {
     public static Action OnMapLoaded;
 
     public void LoadMap(MapData mapData) {
+        Debug.Log($"Loading map {mapData.name}...");
+
         _currentMapData = mapData;
         _grid = Instantiate(mapData.Prefab, transform);
 
-        // Load map objects
         _mapObjects = new();
         foreach (var obj in _grid.GetComponentsInChildren<MapObject>(true)) {
             EnforceTile(obj.GridPos).Add(obj);
@@ -92,7 +93,7 @@ public class MapSystem : Singleton<MapSystem> {
         return _grid.WorldToCell(worldPosition).ToVec2Int();
     }
 
-    public bool TryGetTile(Vector2Int gridPosition, out List<MapObject> tile) {
+    public bool TryGetTile(Vector2Int gridPosition, out IReadOnlyList<MapObject> tile) {
         if (_mapObjects.ContainsKey(gridPosition)) {
             tile = _mapObjects[gridPosition];
             return true;

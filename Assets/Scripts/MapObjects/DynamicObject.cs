@@ -5,6 +5,7 @@ public abstract class DynamicObject : MapObject {
     const float _rotationSpeed = 2f;
 
     public override bool IsStatic => false;
+    public override bool CanExit(Vector2Int dir) => false;
     public override bool CanEnter(Vector2Int dir) => false;
 
     public void RotateInstant(int rotation) {

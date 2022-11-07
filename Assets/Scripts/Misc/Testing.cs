@@ -4,10 +4,11 @@ public class Testing : MonoBehaviour {
     [SerializeField] MapData _mapToLoad;
 
     void Awake() {
+        MapSystem.Instance.LoadMap(_mapToLoad);
         PlayerManager.Instance.CreatePlayer(0, new PlayerData() { RobotId = 0 });    
     }
 
-    void Start() {
-        MapSystem.Instance.LoadMap(_mapToLoad);
+    public void Continue() {
+        ProgrammingPhase.Continue();
     }
 }

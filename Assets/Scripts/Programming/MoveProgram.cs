@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 
@@ -12,10 +13,9 @@ public class MoveProgram : ProgramCardData {
     public override IEnumerator ExecuteRoutine(Player player, int positionInRegister)  {
         var moveVector = relative ? player.Model.RotateVector(direction) : direction;
         for (int i = 0; i < steps; i++) {
-            if (InteractionSystem.Push(player.Model, moveVector, out var routineList)) {
-                foreach (var routine in routineList) {
-                    yield return Scheduler.PlayListRoutine(routineList);
-                }
+            List<IEnumerator> routineList = new();
+            if (Interaction.Push(player.Model, moveVector, routineList)) {
+                yield return Scheduler.PlayListRoutine(routineList);
             } else {
                 break;
             }

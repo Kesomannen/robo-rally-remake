@@ -12,8 +12,8 @@ public class MapDataEditor : Editor {
     public override void OnInspectorGUI() {
         base.OnInspectorGUI();
         if (data.Prefab != null) {
-            var texture = AssetPreview.GetAssetPreview(data.Prefab);
-            GUILayout.Label("", GUILayout.Height(80), GUILayout.Width(80));
+            var texture = AssetPreview.GetAssetPreview(data.Prefab.gameObject);
+            GUILayout.Label("", GUILayout.Height(100), GUILayout.Width(100));
             GUI.DrawTexture(GUILayoutUtility.GetLastRect(), texture);
         }
     }

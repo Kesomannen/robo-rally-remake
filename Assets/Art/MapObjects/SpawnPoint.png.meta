@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 72db028502b56514f9cfdb6dc63f0c1b
+guid: 5d925723b0d12a74e9196342256d672d
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -116,7 +116,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ConveyorStraight_0
+      name: SpawnPoint_0
       rect:
         serializedVersion: 2
         x: 0
@@ -130,14 +130,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1eca92ddb7358384bb80e06ac1146337
-      internalID: 11775357
+      spriteID: 02dbef70dbe8d91438cd2894c05de136
+      internalID: 595418174
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ConveyorStraight_1
+      name: SpawnPoint_1
       rect:
         serializedVersion: 2
         x: 16
@@ -151,14 +151,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ec06ef01cd2ec8c4d9a8cdfc4c948c60
-      internalID: 1287916151
+      spriteID: fd4001f364201814db2f7bc96d8f11c8
+      internalID: 1342798442
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ConveyorStraight_2
+      name: SpawnPoint_2
       rect:
         serializedVersion: 2
         x: 32
@@ -172,14 +172,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b53728726b652fb41b52712569f1c3be
-      internalID: 624111810
+      spriteID: 735be6c7d85a5b5468e9546f2e5ee5c5
+      internalID: -851246326
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ConveyorStraight_3
+      name: SpawnPoint_3
       rect:
         serializedVersion: 2
         x: 48
@@ -193,14 +193,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3194a1dfefa2ca04892bac261c2f90b7
-      internalID: -130562232
+      spriteID: 98cb2cee24ddf4e46937194dfe3c323a
+      internalID: -1268347818
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ConveyorStraight_4
+      name: SpawnPoint_4
       rect:
         serializedVersion: 2
         x: 64
@@ -214,14 +214,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3e0e718945a38ae4eb9d0e7dab255e23
-      internalID: -1365103025
+      spriteID: 4fbea1900ae8bf347b4eecc0a43831ba
+      internalID: 507223725
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ConveyorStraight_5
+      name: SpawnPoint_5
       rect:
         serializedVersion: 2
         x: 80
@@ -235,14 +235,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 00032a8a88938a44db5dbe4b86a344eb
-      internalID: -452782151
+      spriteID: 2d78ff533f37479459a8377e5c7c0f8b
+      internalID: 187754901
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ConveyorStraight_6
+      name: SpawnPoint_6
       rect:
         serializedVersion: 2
         x: 96
@@ -256,197 +256,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 891d2c47ebeb6734892a6b9e99f8d6ef
-      internalID: 1577378631
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ConveyorStraight_7
-      rect:
-        serializedVersion: 2
-        x: 112
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8e9f2d12446667a4bbfb6ec4d83a922f
-      internalID: -844458634
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ConveyorStraight_8
-      rect:
-        serializedVersion: 2
-        x: 128
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c39ad04f00a3ff44f8d771387e2bd45b
-      internalID: 1437665936
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ConveyorStraight_9
-      rect:
-        serializedVersion: 2
-        x: 144
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a92c32fef8c09b64291afd0f2f8cf6ff
-      internalID: 757572317
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ConveyorStraight_10
-      rect:
-        serializedVersion: 2
-        x: 160
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 939748c39c1bfaf45b582d05e281388b
-      internalID: -1565618981
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ConveyorStraight_11
-      rect:
-        serializedVersion: 2
-        x: 176
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b46e080c3542dd94fb6ab98913afec69
-      internalID: -1807491066
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ConveyorStraight_12
-      rect:
-        serializedVersion: 2
-        x: 192
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: deec6e8931618074dbd4d2ec5845019d
-      internalID: 390447270
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ConveyorStraight_13
-      rect:
-        serializedVersion: 2
-        x: 208
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 181fc8df52945234f811b1c1dd33e9e0
-      internalID: 1205490566
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ConveyorStraight_14
-      rect:
-        serializedVersion: 2
-        x: 224
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: cfd1318a6be99f3498967f772ad5a60f
-      internalID: 813684061
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ConveyorStraight_15
-      rect:
-        serializedVersion: 2
-        x: 240
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: cfba226524e8aea41bc7e8ab6de0d99a
-      internalID: -220970355
+      spriteID: 3702e11e2ac56cb41b09c617ed2600e8
+      internalID: -615026018
       vertices: []
       indices: 
       edges: []
@@ -462,22 +273,13 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      ConveyorStraight_6: 1577378631
-      ConveyorStraight_15: -220970355
-      ConveyorStraight_13: 1205490566
-      ConveyorStraight_0: 11775357
-      ConveyorStraight_1: 1287916151
-      ConveyorStraight_12: 390447270
-      ConveyorStraight_7: -844458634
-      ConveyorStraight_3: -130562232
-      ConveyorStraight_10: -1565618981
-      ConveyorStraight_14: 813684061
-      ConveyorStraight_2: 624111810
-      ConveyorStraight_11: -1807491066
-      ConveyorStraight_4: -1365103025
-      ConveyorStraight_8: 1437665936
-      ConveyorStraight_5: -452782151
-      ConveyorStraight_9: 757572317
+      SpawnPoint_3: -1268347818
+      SpawnPoint_1: 1342798442
+      SpawnPoint_2: -851246326
+      SpawnPoint_6: -615026018
+      SpawnPoint_5: 187754901
+      SpawnPoint_4: 507223725
+      SpawnPoint_0: 595418174
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

@@ -29,9 +29,9 @@ public class PlayerManager : Singleton<PlayerManager> {
     }
 
     void OnMapLoaded() {
-        List<Checkpoint> spawnPoints = new();
-        MapSystem.Instance.GetByType(spawnPoints);
-        _spawnPoints = spawnPoints.Where(x => x.IsSpawnPoint).ToArray();
+        List<Checkpoint> checkPoints = new();
+        MapSystem.Instance.GetByType(checkPoints);
+        _spawnPoints = checkPoints.Where(x => x.IsSpawnPoint).ToArray();
     }
 
     public void CreatePlayer(ulong id, PlayerData data) {

@@ -4,7 +4,7 @@ using UnityEngine;
 
 #pragma warning disable 0067
 
-public class ExecutionPhase : NetworkSingleton<ProgrammingPhase> {
+public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
     public static int CurrentRegister { get; private set; }
     public static Player CurrentPlayer { get; private set; }
 
@@ -13,7 +13,8 @@ public class ExecutionPhase : NetworkSingleton<ProgrammingPhase> {
     public static IEnumerator DoPhaseRoutine() {
         UIManager.Instance.CurrentState = UIState.Map;
         for (CurrentRegister = 0; CurrentRegister < RegisterCount; CurrentRegister++) {
-            foreach (var player in PlayerManager.GetOrderedPlayers()) {
+            var orderedPlayers = PlayerManager.GetOrderedPlayers();
+            foreach (var player in orderedPlayers) {
                 CurrentPlayer = player;
                 var card = player.Registers[CurrentRegister];
                 Debug.Log($"Executing {card.Name} for {player}");
@@ -21,6 +22,13 @@ public class ExecutionPhase : NetworkSingleton<ProgrammingPhase> {
 
                 Scheduler.AddRoutine(routine);
                 yield return Scheduler.WaitUntilClearRoutine();
+            }
+        }
+
+        foreach (var player in PlayerManager.Players) {
+            for (int i = 0; i < player.Registers.Length; i++) {
+                player.DiscardPile.AddCard(player.Registers[i], CardPlacement.Top);
+                player.Registers[i] = null;
             }
         }
     }

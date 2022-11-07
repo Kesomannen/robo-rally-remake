@@ -3,6 +3,7 @@ using UnityEngine;
 public abstract class MapObject : MonoBehaviour {
     public abstract bool IsStatic { get; }
     public abstract bool CanEnter(Vector2Int dir);
+    public abstract bool CanExit(Vector2Int dir);
 
     public virtual void OnEnter(DynamicObject dynamic) { }
     public virtual void OnExit(DynamicObject dynamic) { }

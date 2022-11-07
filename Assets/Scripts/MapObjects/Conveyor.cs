@@ -10,6 +10,7 @@ public class Conveyor : StaticObject {
     const float _startProgress = 1f;
 
     public override bool CanEnter(Vector2Int direction) => true;
+    public override bool CanExit(Vector2Int direction) => true;
 
     static Dictionary<MapObject, float> _progress;
 
@@ -55,7 +56,7 @@ public class Conveyor : StaticObject {
         
         IEnumerator ConveyorRoutine(DynamicObject dynamic) {
             var targetPos = GridPos + _direction;
-            if (InteractionSystem.CanEnter(targetPos, -_direction)) {
+            if (Interaction.CanEnter(targetPos, -_direction)) {
                 _progress[dynamic] -= _cost;
                 yield return MapSystem.Instance.MoveObjectRoutine(dynamic, targetPos);
             }

@@ -22,14 +22,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
             }
         }
 
-        yield return new WaitUntil(() => _playersReady == PlayerManager.Players.Count);
-
-        foreach (var player in orderedPlayers) {
-            for (int i = 0; i < player.Registers.Length; i++) {
-                player.DiscardPile.AddCard(player.Registers[i], CardPlacement.Top);
-                player.Registers[i] = null;
-            }
-        }
+        yield return new WaitUntil(() => _playersReady >= PlayerManager.Players.Count);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -47,12 +40,21 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
     }
 
     static void LockPlayerRegister(byte playerIndex, byte[] registerCardIds) {
+        if (PlayerManager.Players[playerIndex] == PlayerManager.LocalPlayer) {
+            return;
+        }
+
         Debug.Log($"Locking register for player {playerIndex}");
+
         var player = PlayerManager.Players[playerIndex];
         var cards = registerCardIds.Select(id => ProgramCardData.GetById(id)).ToArray();
         for (int i = 0; i < cards.Length; i++) {
             player.Registers[i] = cards[i];
             Debug.Log($"Register {i} of player {playerIndex} is now {cards[i].Name}");
         }
+    }
+
+    public static void Continue() {
+        _playersReady = PlayerManager.Players.Count;
     }
 }

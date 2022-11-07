@@ -21,7 +21,6 @@ public abstract class Lookup<T> : ScriptableObject where T : Lookup<T> {
     static string _tablePath => $"Assets/Lookups/{typeof(T)}Lookup.asset";
 
     public static T GetById(int id) {
-        Debug.Log(Table[id]);
         return (T) Table[id];
     }
 
