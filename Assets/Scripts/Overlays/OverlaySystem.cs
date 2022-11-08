@@ -16,6 +16,8 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
     public bool IsOverlayActive => _activeOverlayObject != null;
 
     public static event Action<PointerEventData> OnClick;
+    public static event Action<IOverlayData> OnOverlayActivated;
+    public static event Action OnOverlayDeactivated;
 
     protected override void Awake() {
         base.Awake();
@@ -35,6 +37,8 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
 
         SetText(data.Header, _headerText);
         SetText(data.Subtitle, _subtitleText);
+
+        OnOverlayActivated?.Invoke(data);
 
         return obj;
 
@@ -61,6 +65,8 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
 
         _headerText.gameObject.SetActive(false);
         _subtitleText.gameObject.SetActive(false);
+
+        OnOverlayDeactivated?.Invoke();        
     }
 
     public void OnPointerClick(PointerEventData e) {
@@ -68,9 +74,16 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
     }
 }
 
+public interface IOverlayData {
+    string Header { get; }
+    string Subtitle { get; }
+    bool CanPreview { get; }
+}
+
 [Serializable]
-public struct OverlayData<T> where T : Component {
-    public string Header;
-    public string Subtitle;
-    public T Prefab;
+public struct OverlayData<T> : IOverlayData where T : Component {
+    public string Header { get; set; }
+    public string Subtitle { get; set; }
+    public T Prefab { get; set; }
+    public bool CanPreview { get; set; }
 }

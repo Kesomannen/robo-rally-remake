@@ -34,7 +34,7 @@ public class PlayerManager : Singleton<PlayerManager> {
         _spawnPoints = checkPoints.Where(x => x.IsSpawnPoint).ToArray();
     }
 
-    public void CreatePlayer(ulong id, PlayerData data) {
+    public void CreatePlayer(ulong id, LobbyPlayerData data) {
         var index = _players.Count;
 
         var playerArgs = new PlayerArgs() {

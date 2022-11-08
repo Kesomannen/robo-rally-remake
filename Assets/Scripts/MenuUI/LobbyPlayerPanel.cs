@@ -9,9 +9,9 @@ public class LobbyPlayerPanel : MonoBehaviour {
     [SerializeField] Image _hostIcon;
 
     public ulong PlayerId { get; private set; }
-    public PlayerData PlayerData { get; private set; }
+    public LobbyPlayerData PlayerData { get; private set; }
 
-    public void SetData(ulong playerID, PlayerData playerData) {
+    public void SetData(ulong playerID, LobbyPlayerData playerData) {
         PlayerId = playerID;
         PlayerData = playerData;
 

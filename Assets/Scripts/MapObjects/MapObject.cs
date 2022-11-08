@@ -5,8 +5,8 @@ public abstract class MapObject : MonoBehaviour {
     public abstract bool CanEnter(Vector2Int dir);
     public abstract bool CanExit(Vector2Int dir);
 
-    public virtual void OnEnter(DynamicObject dynamic) { }
-    public virtual void OnExit(DynamicObject dynamic) { }
+    public abstract void OnEnter(DynamicObject dynamic);
+    public abstract void OnExit(DynamicObject dynamic);
 
     public int Rotation { get; protected set; }
 

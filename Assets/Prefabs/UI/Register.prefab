@@ -91,7 +91,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _index: 0
-  _card: {fileID: 4040616585236498420}
+  _cardContainer: {fileID: 4040616585236498420}
 --- !u!1001 &346633927967886232
 PrefabInstance:
   m_ObjectHideFlags: 0

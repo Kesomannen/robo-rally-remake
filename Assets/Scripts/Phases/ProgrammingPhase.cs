@@ -12,16 +12,15 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
     public static IEnumerator DoPhaseRoutine() {
         UIManager.Instance.CurrentState = UIState.Hand;
 
-        _playersReady = 0;
         var orderedPlayers = PlayerManager.GetOrderedPlayers();
 
-        // Draw cards
         foreach (var player in orderedPlayers) {
             if (player == PlayerManager.LocalPlayer) {
                 player.DrawCardsUpTo(_cardsPerTurn);
             }
         }
 
+        _playersReady = 0;
         yield return new WaitUntil(() => _playersReady >= PlayerManager.Players.Count);
     }
 
@@ -50,7 +49,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
         var cards = registerCardIds.Select(id => ProgramCardData.GetById(id)).ToArray();
         for (int i = 0; i < cards.Length; i++) {
             player.Registers[i] = cards[i];
-            Debug.Log($"Register {i} of player {playerIndex} is now {cards[i].Name}");
+            Debug.Log($"Register {i} of player {playerIndex} is now {cards[i]}");
         }
     }
 

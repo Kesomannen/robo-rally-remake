@@ -3,42 +3,41 @@ using UnityEngine.EventSystems;
 
 public class RegisterUI : MonoBehaviour, IPointerClickHandler {
     [SerializeField] int _index;
-    [SerializeField] ProgramCard _card;
+    [SerializeField] Container<ProgramCardData> _cardContainer;
 
-    bool _isEmpty = true;
     Player _owner => PlayerManager.LocalPlayer;
 
     static RegisterUI[] _registers { get; } = new RegisterUI[ExecutionPhase.RegisterCount];
-    public static RegisterUI GetRegister(int index) => _registers[index];
+    public static RegisterUI GetRegisterUI(int index) => _registers[index];
+
+    public bool IsEmpty => _owner.Registers[_index] == null;
 
     void Awake() {
         _registers[_index] = this;
     }
 
     void OnEnable() {
-        _card.gameObject.SetActive(false);
+        _cardContainer.gameObject.SetActive(false);
     }
 
-    public bool Place(ProgramCard item) {
+    public bool Place(Container<ProgramCardData> item) {
         if (!item.Data.CanPlace(_owner, _index)) return false;
-        if (!_isEmpty) Remove();
+        if (!IsEmpty) Remove();
 
-        _isEmpty = false;
-
-        _card.SetData(item.Data);
-        _card.gameObject.SetActive(true);
+        _cardContainer.SetData(item.Data);
+        _cardContainer.gameObject.SetActive(true);
         _owner.Registers[_index] = item.Data;
 
         return true;
     }
 
     public void Remove() {
-        if (_isEmpty) return;
-        _isEmpty = true;
+        if (IsEmpty) return;
 
-        _owner.Hand.AddCard(_card.Data, CardPlacement.Top);
-        _card.gameObject.SetActive(false);
-        _owner.Registers[_index] = null;
+        if (_owner.Hand.AddCard(_cardContainer.Data, CardPlacement.Top)) {
+            _cardContainer.gameObject.SetActive(false);
+            _owner.Registers[_index] = null;
+        }
     }
 
     public void OnPointerClick(PointerEventData e) {

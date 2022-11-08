@@ -1,13 +1,13 @@
 public abstract class StaticObject : MapObject {
     public override bool IsStatic => true;
 
-    protected DynamicObject DynamicObject { get; private set; }
+    protected DynamicObject CurrentDynamic { get; private set; }
 
     public override void OnEnter(DynamicObject dynamic) {
-        DynamicObject = dynamic;
+        CurrentDynamic = dynamic;
     }
 
     public override void OnExit(DynamicObject dynamic) {
-        DynamicObject = null;
+        CurrentDynamic = null;
     }
 }

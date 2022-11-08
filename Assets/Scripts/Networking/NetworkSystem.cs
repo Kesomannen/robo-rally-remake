@@ -30,7 +30,7 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
     }
 
     [ClientRpc]
-    void CreatePlayerClientRpc(ulong id, PlayerData data) {
+    void CreatePlayerClientRpc(ulong id, LobbyPlayerData data) {
         if (IsServer) return;
         PlayerManager.Instance.CreatePlayer(id, data);
     }

@@ -8,6 +8,9 @@ public abstract class DynamicObject : MapObject {
     public override bool CanExit(Vector2Int dir) => false;
     public override bool CanEnter(Vector2Int dir) => false;
 
+    public override void OnEnter(DynamicObject dynamic) { }
+    public override void OnExit(DynamicObject dynamic) { }
+
     public void RotateInstant(int rotation) {
         Rotation = Mathb.Mod(Rotation + rotation, 4);
         transform.rotation = Quaternion.Euler(0, 0, Rotation * 90);

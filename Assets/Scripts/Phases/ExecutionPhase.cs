@@ -12,6 +12,16 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
 
     public static IEnumerator DoPhaseRoutine() {
         UIManager.Instance.CurrentState = UIState.Map;
+
+        yield return ExecuteRegisters();
+
+        // Board elements
+        yield return Conveyor.ActivateRoutine();
+
+        DiscardRegisters();
+    }
+
+    static IEnumerator ExecuteRegisters() {
         for (CurrentRegister = 0; CurrentRegister < RegisterCount; CurrentRegister++) {
             var orderedPlayers = PlayerManager.GetOrderedPlayers();
             foreach (var player in orderedPlayers) {
@@ -24,7 +34,9 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
                 yield return Scheduler.WaitUntilClearRoutine();
             }
         }
+    }
 
+    static void DiscardRegisters() {
         foreach (var player in PlayerManager.Players) {
             for (int i = 0; i < player.Registers.Length; i++) {
                 player.DiscardPile.AddCard(player.Registers[i], CardPlacement.Top);

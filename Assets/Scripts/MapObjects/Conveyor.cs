@@ -14,8 +14,6 @@ public class Conveyor : StaticObject {
 
     static Dictionary<MapObject, float> _progress;
 
-    MapObject _currentObject;
-
     static bool _isActive;
     static event Action _onActivate;
 
@@ -47,19 +45,12 @@ public class Conveyor : StaticObject {
     }
 
     void Convey() {
-        if (_currentObject == null) return;
+        if (CurrentDynamic == null) return;
 
-        var progress = _progress.EnforceKey(_currentObject, _startProgress);
-        if (progress - _cost >= 0) {
-            Scheduler.AddRoutine(ConveyorRoutine(DynamicObject));
-        }
-        
-        IEnumerator ConveyorRoutine(DynamicObject dynamic) {
-            var targetPos = GridPos + _direction;
-            if (Interaction.CanEnter(targetPos, -_direction)) {
-                _progress[dynamic] -= _cost;
-                yield return MapSystem.Instance.MoveObjectRoutine(dynamic, targetPos);
-            }
+        var progress = _progress.EnforceKey(CurrentDynamic, _startProgress);
+        if (progress - _cost >= 0 && Interaction.SoftMove(CurrentDynamic, _direction, out var routine)) {
+            _progress[CurrentDynamic] -= _cost;
+            Scheduler.AddRoutine(routine);
         }
     }
 }

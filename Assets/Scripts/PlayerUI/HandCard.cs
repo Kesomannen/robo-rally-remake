@@ -72,11 +72,9 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
         if (_isDragging) return;
 
         for (int i = 0; i < ExecutionPhase.RegisterCount; i++) {
-            var registerCard = _owner.Registers[i];
-            if (registerCard == null) {
-                if (TryPlace(RegisterUI.GetRegister(i))) {
-                    return;
-                }
+            var register = RegisterUI.GetRegisterUI(i);
+            if (register.IsEmpty && TryPlace(register)) {
+                break;
             }
         }
     }
@@ -110,7 +108,6 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
             }
         }
 
-        // failed to place, return to original position
         LerpTo(_origin);
     }
 

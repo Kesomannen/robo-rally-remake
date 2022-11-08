@@ -1,11 +1,34 @@
 using System.Collections;
 using UnityEngine;
 
-public class PhaseSystem : MonoBehaviour {
-    IEnumerator Start() {
-        yield return Helpers.Wait(1);
-        yield return ProgrammingPhase.DoPhaseRoutine();
-        yield return Helpers.Wait(1);
-        yield return ExecutionPhase.DoPhaseRoutine();
+public class PhaseSystem : Singleton<PhaseSystem> {
+    public bool IsRunning {
+        get => _isRunning;
+        set {
+            if (_isRunning == value) return;
+
+            _isRunning = value;
+            if (value) {
+                StartPhaseSystem();
+            }
+        }
+    }
+
+    bool _isRunning;
+
+    public void StartPhaseSystem() {
+        IsRunning = true;
+        StartCoroutine(PhaseSystemRoutine());
+    }
+
+    IEnumerator PhaseSystemRoutine() {
+        while (_isRunning) {
+            yield return ProgrammingPhase.DoPhaseRoutine();
+            yield return ExecutionPhase.DoPhaseRoutine();
+        }
+    }
+
+    void Start() {
+        IsRunning = true;
     }
 }

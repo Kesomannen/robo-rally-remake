@@ -14,7 +14,7 @@ public class Wall : StaticObject {
     }
 
     public override bool CanExit(Vector2Int dir) {
-        return GetSide(-dir);
+        return GetSide(dir);
     }
 
     bool GetSide(Vector2Int dir) {

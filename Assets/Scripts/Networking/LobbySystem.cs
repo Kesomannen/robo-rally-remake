@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 public class LobbySystem : NetworkBehaviour {
     public static LobbySystem Instance { get; private set; }
 
-    static Dictionary<ulong, PlayerData> _playersInLobby = new();
-    public static IReadOnlyDictionary<ulong, PlayerData> PlayersInLobby => _playersInLobby;
+    static Dictionary<ulong, LobbyPlayerData> _playersInLobby = new();
+    public static IReadOnlyDictionary<ulong, LobbyPlayerData> PlayersInLobby => _playersInLobby;
 
     public static byte LobbyMapId { get; private set; }
     
-    public static event Action<ulong, PlayerData> OnPlayerUpdatedOrAdded;
+    public static event Action<ulong, LobbyPlayerData> OnPlayerUpdatedOrAdded;
     public static event Action<ulong> OnPlayerRemoved;
 
     void Awake() {
@@ -98,7 +98,7 @@ public class LobbySystem : NetworkBehaviour {
     # endregion
 
     [ServerRpc(RequireOwnership = false)]
-    void UpdatePlayerServerRpc(ulong playerId, PlayerData newPlayerData) {
+    void UpdatePlayerServerRpc(ulong playerId, LobbyPlayerData newPlayerData) {
         _playersInLobby[playerId] = newPlayerData;
         UpdatePlayerClientRpc(playerId, newPlayerData);
         OnPlayerUpdatedOrAdded?.Invoke(playerId, newPlayerData);
@@ -110,7 +110,7 @@ public class LobbySystem : NetworkBehaviour {
             NetworkManager.OnClientConnectedCallback += OnClientConnected;
 
             var id = NetworkManager.LocalClientId;
-            _playersInLobby.Add(id, new PlayerData() { IsHost = true });
+            _playersInLobby.Add(id, new LobbyPlayerData() { IsHost = true });
             OnPlayerUpdatedOrAdded?.Invoke(id, _playersInLobby[id]);
         }
 
@@ -132,7 +132,7 @@ public class LobbySystem : NetworkBehaviour {
     }
 
     [ClientRpc]
-    void UpdatePlayerClientRpc(ulong player, PlayerData data) {
+    void UpdatePlayerClientRpc(ulong player, LobbyPlayerData data) {
         if (IsServer) return;
         _playersInLobby[player] = data;
         OnPlayerUpdatedOrAdded?.Invoke(player, data);
@@ -156,7 +156,7 @@ public class LobbySystem : NetworkBehaviour {
     }
 }
 
-public struct PlayerData : INetworkSerializable {
+public struct LobbyPlayerData : INetworkSerializable {
     public bool IsReady;
     public bool IsHost;
     public byte RobotId;

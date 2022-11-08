@@ -42,7 +42,7 @@ public class RoomMenu : Menu {
         await LobbySystem.Instance.LeaveLobby();
     }
 
-    void UpdatePanel(ulong playerId, PlayerData playerData) {
+    void UpdatePanel(ulong playerId, LobbyPlayerData playerData) {
         var playerPanel = _playerPanels.FirstOrDefault(x => x.PlayerId == playerId);
         if (playerPanel == null) {
             playerPanel = Instantiate(_playerPanelPrefab, _playerPanelParent);
