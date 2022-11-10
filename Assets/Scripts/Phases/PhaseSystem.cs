@@ -2,6 +2,8 @@ using System.Collections;
 using UnityEngine;
 
 public class PhaseSystem : Singleton<PhaseSystem> {
+    bool _isRunning;
+
     public bool IsRunning {
         get => _isRunning;
         set {
@@ -13,8 +15,6 @@ public class PhaseSystem : Singleton<PhaseSystem> {
             }
         }
     }
-
-    bool _isRunning;
 
     public void StartPhaseSystem() {
         IsRunning = true;

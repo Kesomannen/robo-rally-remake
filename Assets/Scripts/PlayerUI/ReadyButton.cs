@@ -6,10 +6,9 @@ public class ReadyButton : MonoBehaviour, IPointerClickHandler {
     Player _owner => PlayerManager.LocalPlayer;
 
     public void OnPointerClick(PointerEventData e) {
-        if (_owner.Registers.All(r => r != null)) {
-            var playerIndex = (byte) PlayerManager.Players.IndexOf(_owner);
-            var registers = _owner.Registers.Select(c => (byte) c.GetLookupId()).ToArray();
-            ProgrammingPhase.Instance.LockRegisterServerRpc(playerIndex, registers);
+        if (_owner.Program.Cards.All(r => r != null)) {
+            _owner.SerializeRegisters(out var playerIndex, out var registerCardIds);
+            ProgrammingPhase.Instance.LockRegisterServerRpc(playerIndex, registerCardIds);
         } else {
             Debug.Log("You must fill all registers before you can ready up.");
         }

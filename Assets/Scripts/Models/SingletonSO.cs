@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public abstract class SingletonSO<T> : ScriptableObject where T : SingletonSO<T> {
@@ -8,8 +7,7 @@ public abstract class SingletonSO<T> : ScriptableObject where T : SingletonSO<T>
         if (Instance == null) {
             Instance = (T) this;
         } else {
-            Debug.LogWarning($"An singleton SO of {typeof(T)} was already found, destroying this instance!", this);
-            Destroy(this);
+            Debug.LogWarning($"An singleton SO of {typeof(T)} was already found!", this);
         }
     }
 

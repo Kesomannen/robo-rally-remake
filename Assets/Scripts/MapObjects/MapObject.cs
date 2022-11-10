@@ -12,7 +12,7 @@ public abstract class MapObject : MonoBehaviour {
 
     public Vector2Int GridPos => MapSystem.Instance.GetGridPos(this);
 
-    public Vector2Int RotateVector(Vector2Int v2) {
+    public Vector2Int RotateAsObject(Vector2Int v2) {
         return VectorHelper.RotateCCW(v2, Rotation);
     }
 

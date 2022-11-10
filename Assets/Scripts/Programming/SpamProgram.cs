@@ -5,24 +5,17 @@ using UnityEngine;
 public class SpamProgram : ProgramCardData {
     public override bool CanPlace(Player player, int positionInRegister) => true;
 
-    public override IEnumerator ExecuteRoutine(Player player, int positionInRegister)  {
-        while (true) {
+    public override IEnumerator ExecuteRoutine(Player player, int positionInRegister) {
+        player.DiscardPile.AddCard(this, CardPlacement.Top);
+        player.Program.SetCard(positionInRegister, null);
+
+        ProgramCardData card;
+        do {
             yield return Helpers.Wait(1);
+            card = player.GetTopCard();
+            player.DiscardPile.AddCard(card, CardPlacement.Top);
+        } while (!card.CanPlace(player, positionInRegister));
 
-            if (player.DrawPile.Cards.Count == 0) {
-                player.ShuffleDeck();
-            }
-
-            var card = player.DrawPile[0];
-            player.DrawPile.RemoveCard(0);
-
-            if (card.CanPlace(player, positionInRegister)) {
-                yield return card.ExecuteRoutine(player, positionInRegister);
-                player.DiscardPile.AddCard(card, CardPlacement.Top);
-                yield break;
-            } else {
-                player.DiscardPile.AddCard(card, CardPlacement.Top);
-            }
-        }
+        yield return card.ExecuteRoutine(player, positionInRegister);
     }
 }

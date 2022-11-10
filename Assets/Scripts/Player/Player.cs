@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Player {
-    public ProgramCardData[] Registers { get; private set; } = new ProgramCardData[5];
-
     public readonly PlayerModel Model;
     public readonly RobotData RobotData;
 
@@ -14,8 +13,10 @@ public class Player {
     public readonly ObservableField<Checkpoint> CurrentCheckpoint;
 
     public readonly CardCollection Hand, DrawPile, DiscardPile;
+    public readonly Program Program;
 
-    const float _drawDelay = 0.5f;
+    public Damage RebootDamage { get; set; }
+    public Damage LaserDamage { get; set; }
 
     public event Action OnShuffleDeck;
     public event Action<ProgramCardData> OnDraw, OnDiscard;
@@ -28,6 +29,10 @@ public class Player {
         DrawPile = new(startingCards: args.RobotData.StartingDeck);
         DrawPile.Shuffle();
         DiscardPile = new();
+        Program = new(args.RegisterCount);
+
+        RebootDamage = args.RebootDamage;
+        LaserDamage = RobotData.LaserDamage;
 
         CurrentCheckpoint = new (
             initialValue: args.SpawnPoint
@@ -68,11 +73,15 @@ public class Player {
         OnShuffleDeck?.Invoke();
     }
 
-    public void DrawCard() {
+    public ProgramCardData GetTopCard() {
         if (DrawPile.Cards.Count == 0) ShuffleDeck();
-
-        var card = DrawPile[0];
+        var card = DrawPile.Cards[0];
         DrawPile.RemoveCard(0);
+        return card;
+    }
+
+    public void DrawCard() {
+        var card = GetTopCard();
 
         Hand.AddCard(card, CardPlacement.Top);
         card.OnDraw(this);
@@ -118,8 +127,28 @@ public class Player {
         for (int i = 0; i < count; i++) DiscardRandomCard();
     }
 
+    public void SerializeRegisters(out byte playerIndex, out byte[] registers) {
+        playerIndex = (byte) PlayerManager.Players.IndexOf(this);
+        registers = Program.Cards.Select(c => (byte) c.GetLookupId()).ToArray();
+    }
+
     public override string ToString() {
         return $"Player {ClientId}";
+    }
+
+    public void Reboot() {
+        RebootToken.Respawn(Model);
+
+        RebootDamage.Apply(this);
+
+        for (int i = 0; i < Hand.Cards.Count; i++) {
+            DiscardCard(i);
+        }
+
+        for (int i = 0; i < Program.Cards.Count; i++) {
+            DiscardPile.AddCard(Program[i], CardPlacement.Top);
+            Program.SetCard(i, null);
+        }
     }
 }
 
@@ -137,4 +166,6 @@ public struct PlayerArgs {
     public int MaxEnergy;
     public int StartingEnergy;
     public int HandSize;
+    public int RegisterCount;
+    public Damage RebootDamage;
 }

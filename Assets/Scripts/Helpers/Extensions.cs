@@ -24,6 +24,13 @@ public static class Extensions {
         return dictionary[key];
     }
 
+    public static TValue EnforceKey<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, Func<TValue> defaultValue) {
+        if (!dictionary.ContainsKey(key)) {
+            dictionary.Add(key, defaultValue());
+        }
+        return dictionary[key];
+    }
+
     public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<TKey> list, Func<TKey, TValue> valueSelector) {
         Dictionary<TKey, TValue> dict = new();
         foreach (var key in list) {

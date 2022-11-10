@@ -53,26 +53,37 @@ public static class Interaction {
         }
     }
 
-    public static bool Push(DynamicObject source, Vector2Int dir, List<IEnumerator> outputList) {
+    public static IEnumerator PushRoutine(DynamicObject source, Vector2Int dir) {
         Debug.Log($"Pushing {source} in direction {dir}");
 
+        var canPush = PushRecursive(source, dir, out var pushed);
+        
+        if (canPush) {
+            var routines = pushed.Select(obj => MapSystem.Instance.MoveObjectRoutine(obj, obj.GridPos + dir));
+            yield return Scheduler.PlayListRoutine(routines);
+        }
+    }
+
+    static bool PushRecursive(DynamicObject source, Vector2Int dir, out IList<DynamicObject> pushed) {
         var sourcePos = source.GridPos;
         var targetPos = sourcePos + dir;
 
         if (CanEnter(targetPos, -dir) && CanExit(source, dir)) {
-            outputList.Add(MapSystem.Instance.MoveObjectRoutine(source, targetPos));
+            pushed = new List<DynamicObject>() { source };
             return true;
         } else if (TryGetDynamic(targetPos, out var dynamic)) {
             if (dynamic == source) {
                 Debug.LogWarning($"Trying to push {source} into itself!");
+                pushed = null;
                 return false;
             }
-            if (Push(dynamic, dir, outputList)) {
-                outputList.Add(MapSystem.Instance.MoveObjectRoutine(source, targetPos));
+            if (PushRecursive(dynamic, dir, out pushed)) {
+                pushed.Add(source);
                 return true;
             }
         }
 
+        pushed = null;
         return false;
     }
 }

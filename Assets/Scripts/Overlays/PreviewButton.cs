@@ -1,21 +1,26 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class PreviewButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler {
-    bool _isPreviewing;
-
+public class PreviewButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler {
     void Awake() {
         OverlaySystem.OnOverlayActivated += OnOverlayActivated;
+        OverlaySystem.OnOverlayDeactivated += OnOverlayDeactivated;
+        gameObject.SetActive(false);
     }
 
     void OnDestroy() {
         OverlaySystem.OnOverlayActivated -= OnOverlayActivated;
+        OverlaySystem.OnOverlayDeactivated -= OnOverlayDeactivated;
     }
 
-    void OnOverlayActivated(IOverlayData obj) {
-        if (obj.CanPreview) {
+    void OnOverlayActivated(OverlayData data) {
+        if (data.CanPreview) {
             gameObject.SetActive(true);
         }
+    }
+
+    void OnOverlayDeactivated() {
+        gameObject.SetActive(false);
     }
 
     public void OnPointerDown(PointerEventData e) {
@@ -26,19 +31,11 @@ public class PreviewButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
         HidePreview();
     }
 
-    public void OnPointerExit(PointerEventData e) {
-        if (_isPreviewing) {
-            ShowPreview();
-        }
-    }
-
     void HidePreview() {
-        _isPreviewing = false;
         OverlaySystem.Instance.gameObject.SetActive(true);
     }
 
     void ShowPreview() {
-        _isPreviewing = true;
         OverlaySystem.Instance.gameObject.SetActive(false);
     }
 }

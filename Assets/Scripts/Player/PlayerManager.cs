@@ -7,11 +7,6 @@ public class PlayerManager : Singleton<PlayerManager> {
     [Header("References")]
     [SerializeField] PlayerModel _playerModelPrefab;
 
-    [Header("Stats")]
-    [SerializeField] int _maxEnergy;
-    [SerializeField] int _startingEnergy;
-    [SerializeField] int _handSize;
-
     static readonly List<Player> _players = new();
     public static IReadOnlyList<Player> Players => _players;
     public static Player LocalPlayer { get; private set; }
@@ -36,15 +31,18 @@ public class PlayerManager : Singleton<PlayerManager> {
 
     public void CreatePlayer(ulong id, LobbyPlayerData data) {
         var index = _players.Count;
+        var settings = GameSettings.Instance;
 
         var playerArgs = new PlayerArgs() {
             OwnerId = id,
             RobotData = RobotData.GetById(data.RobotId),
             ModelPrefab = _playerModelPrefab,
             SpawnPoint = _spawnPoints[index],
-            MaxEnergy = _maxEnergy,
-            StartingEnergy = _startingEnergy,
-            HandSize = _handSize
+            MaxEnergy = settings.MaxEnergy,
+            StartingEnergy = settings.StartingEnergy,
+            HandSize = settings.MaxCardsInHand,
+            RegisterCount = ExecutionPhase.RegisterCount,
+            RebootDamage = settings.StandardRebootDamage,
         };
 
         _players.Add(new(playerArgs));

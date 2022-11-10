@@ -6,41 +6,43 @@ using UnityEngine;
 
 public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
     public static int CurrentRegister { get; private set; }
-    public static Player CurrentPlayer { get; private set; }
 
     public const int RegisterCount = 5;
 
     public static IEnumerator DoPhaseRoutine() {
         UIManager.Instance.CurrentState = UIState.Map;
 
-        yield return ExecuteRegisters();
+        // Execute registers
+        for (CurrentRegister = 0; CurrentRegister < RegisterCount; CurrentRegister++) {
+            yield return ExecuteRegister();
 
-        // Board elements
-        yield return Conveyor.ActivateRoutine();
+            // Board elements
+            yield return Conveyor.ActivateRoutine();
+            yield return PushPanel.ActivateRoutine();
+            yield return Gear.ActivateRoutine();
+            yield return EnergySpace.ActivateRoutine();
+            yield return Checkpoint.ActivateRoutine();
+        }
 
         DiscardRegisters();
     }
 
-    static IEnumerator ExecuteRegisters() {
-        for (CurrentRegister = 0; CurrentRegister < RegisterCount; CurrentRegister++) {
-            var orderedPlayers = PlayerManager.GetOrderedPlayers();
-            foreach (var player in orderedPlayers) {
-                CurrentPlayer = player;
-                var card = player.Registers[CurrentRegister];
-                Debug.Log($"Executing {card.Name} for {player}");
-                var routine = card.ExecuteRoutine(player, CurrentRegister);
+    static IEnumerator ExecuteRegister() {
+        var orderedPlayers = PlayerManager.GetOrderedPlayers();
+        foreach (var player in orderedPlayers) {
+            var card = player.Program[CurrentRegister];
+            if (card == null) continue;
 
-                Scheduler.AddRoutine(routine);
-                yield return Scheduler.WaitUntilClearRoutine();
-            }
+            Scheduler.Enqueue(card.ExecuteRoutine(player, CurrentRegister));
         }
+        yield return Scheduler.WaitUntilClearRoutine();
     }
 
     static void DiscardRegisters() {
         foreach (var player in PlayerManager.Players) {
-            for (int i = 0; i < player.Registers.Length; i++) {
-                player.DiscardPile.AddCard(player.Registers[i], CardPlacement.Top);
-                player.Registers[i] = null;
+            for (int i = 0; i < player.Program.Cards.Count; i++) {
+                player.DiscardPile.AddCard(player.Program[i], CardPlacement.Top);
+                player.Program.SetCard(i, null);
             }
         }
     }

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f67af4c74aeeb0c45b09c5d4f4c109d7, type: 3}
+  m_Name: GameSettings
+  m_EditorClassIdentifier: 
+  _maxPlayers: 6
+  _minPlayers: 2
+  _startingEnergy: 3
+  _maxEnergy: 5
+  _cardsPerTurn: 7
+  _maxCardsInHand: 10
+  _stressTime: 20

@@ -11,14 +11,9 @@ public class MoveProgram : ProgramCardData {
     public override bool CanPlace(Player player, int positionInRegister) => true;
 
     public override IEnumerator ExecuteRoutine(Player player, int positionInRegister)  {
-        var moveVector = relative ? player.Model.RotateVector(direction) : direction;
+        var moveVector = relative ? player.Model.RotateAsObject(direction) : direction;
         for (int i = 0; i < steps; i++) {
-            List<IEnumerator> routineList = new();
-            if (Interaction.Push(player.Model, moveVector, routineList)) {
-                yield return Scheduler.PlayListRoutine(routineList);
-            } else {
-                break;
-            }
+            yield return Interaction.PushRoutine(player.Model, moveVector);
         }
     }
 }

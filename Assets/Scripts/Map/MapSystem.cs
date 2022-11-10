@@ -2,36 +2,48 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class MapSystem : Singleton<MapSystem> {
-    [SerializeField] float _moveSpeed = 1f;
+    [SerializeField] Grid _grid;
+
+    const float _mapObjectMoveSpeed = 1f;
 
     static Dictionary<Vector2Int, List<MapObject>> _mapObjects;
 
     MapData _currentMapData;
-    Grid _grid;
+    Tilemap _currentMap;
 
     public static Action OnMapLoaded;
 
     public void LoadMap(MapData mapData) {
-        Debug.Log($"Loading map {mapData.name}...");
+        Debug.Log($"Loading map {mapData}...");
+
+        if (_currentMap != null) {
+            Destroy(_currentMap);
+        }
 
         _currentMapData = mapData;
-        _grid = Instantiate(mapData.Prefab, transform);
+        _currentMap = Instantiate(mapData.Prefab, _grid.transform);
 
         _mapObjects = new();
         foreach (var obj in _grid.GetComponentsInChildren<MapObject>(true)) {
-            EnforceTile(obj.GridPos).Add(obj);
-        };
+            _mapObjects.EnforceKey(obj.GridPos, () => new()).Add(obj);
+        }
 
         mapData.OnLoad();
         OnMapLoaded?.Invoke();
     }
 
     void AddObject(DynamicObject obj, Vector2Int gridPosition) {
-        var tile = EnforceTile(gridPosition);
+        var tile = _mapObjects.EnforceKey(obj.GridPos, () => new());
         tile.ForEach(t => t.OnEnter(obj));
         tile.Add(obj);
+
+        if (!_currentMap.HasTile(gridPosition.ToVec3Int())) {
+            Debug.Log($"Object {obj} is outside of map");
+            obj.Fall();
+        }
     }
 
     void RemoveObject(DynamicObject obj, Vector2Int gridPosition) {
@@ -44,13 +56,6 @@ public class MapSystem : Singleton<MapSystem> {
     void RelocateObject(DynamicObject obj, Vector2Int newPosition) {
         RemoveObject(obj, GetGridPos(obj));
         AddObject(obj, newPosition);
-    }
-
-    List<MapObject> EnforceTile(Vector2Int gridPosition) {
-        if (!_mapObjects.ContainsKey(gridPosition)) {
-            _mapObjects.Add(gridPosition, new());
-        }
-        return _mapObjects[gridPosition];
     }
 
     # region Public Methods
@@ -77,8 +82,8 @@ public class MapSystem : Singleton<MapSystem> {
 
     public IEnumerator MoveObjectRoutine(DynamicObject obj, Vector2Int newPosition) {
         RelocateObject(obj, newPosition);
-        LeanTween.move(obj.gameObject, GetWorldPos(newPosition), 1 / _moveSpeed);
-        yield return Helpers.Wait(1 / _moveSpeed);
+        LeanTween.move(obj.gameObject, GetWorldPos(newPosition), 1 / _mapObjectMoveSpeed);
+        yield return Helpers.Wait(1 / _mapObjectMoveSpeed);
     }
 
     public Vector2 GetWorldPos(Vector2Int gridPosition) {
@@ -112,5 +117,13 @@ public class MapSystem : Singleton<MapSystem> {
             }
         }
     }
-    # endregion
+
+    public Board GetBoard(StaticObject obj) {
+        return obj.GetComponentInParent<Board>();
+    }
+
+    public Board GetBoard(DynamicObject obj) {
+        throw new NotImplementedException();
+    }
+    #endregion
 }

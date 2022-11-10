@@ -1,7 +1,9 @@
 using UnityEngine;
 
-public class Antenna : DynamicObject {
+public class Antenna : StaticObject {
     static Antenna _instance;
+
+    public override bool CanEnter(Vector2Int dir) => false;
 
     protected override void Awake() {
         base.Awake();

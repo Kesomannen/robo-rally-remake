@@ -11,6 +11,10 @@ public abstract class DynamicObject : MapObject {
     public override void OnEnter(DynamicObject dynamic) { }
     public override void OnExit(DynamicObject dynamic) { }
 
+    public bool CanMove { get; protected set; } = true;
+    
+    public abstract void Fall();
+
     public void RotateInstant(int rotation) {
         Rotation = Mathb.Mod(Rotation + rotation, 4);
         transform.rotation = Quaternion.Euler(0, 0, Rotation * 90);

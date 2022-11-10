@@ -14,7 +14,7 @@ public class RepeatProgram : ProgramCardData {
     public override IEnumerator ExecuteRoutine(Player player, int positionInRegister)  {
         var posToRepeat = positionInRegister + relativeRepeatIndex;
         for (int i = 0; i < repeatCount; i++) {
-            var card = player.Registers[posToRepeat];
+            var card = player.Program[posToRepeat];
             yield return card.ExecuteRoutine(player, posToRepeat);
         }
     }

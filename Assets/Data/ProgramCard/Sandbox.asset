@@ -28,3 +28,4 @@ MonoBehaviour:
     Header: Sandbox routine
     Subtitle: Choose a card to execute
     Prefab: {fileID: 487802381806119471, guid: d6ba4746ecbe0da4cb2d657a607d96e8, type: 3}
+    CanPreview: 1

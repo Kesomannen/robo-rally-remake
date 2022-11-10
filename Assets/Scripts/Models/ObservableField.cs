@@ -15,8 +15,7 @@ public class ObservableField<T> : IObservableField<T> {
 
     T _value;
 
-    public ObservableField(T initialValue)
-    {
+    public ObservableField(T initialValue) {
         _value = initialValue;
     }
 }

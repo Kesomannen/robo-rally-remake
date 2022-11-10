@@ -6,7 +6,7 @@ public class Wall : StaticObject {
 
     protected override void Awake() {
         base.Awake();
-        _openDirections = _openDirections.Select(v => RotateVector(v)).ToArray();
+        _openDirections = _openDirections.Select(v => RotateAsObject(v)).ToArray();
     }
 
     public override bool CanEnter(Vector2Int dir) {
