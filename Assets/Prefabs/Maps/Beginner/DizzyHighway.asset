@@ -10,11 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 930e4c1e5e6d7cc4f8ab4403c30d3261, type: 3}
-  m_Name: TestingMap
+  m_Name: DizzyHighway
   m_EditorClassIdentifier: 
-  _name: Testing Map
+  _name: Dizzy Highway
   _difficulty: 0
   _length: 0
-  _prefab: {fileID: 4508248826725133577, guid: ebaa1c8a53779a54692d34d93b3f78a4, type: 3}
-  _start: {x: -4, y: 0}
-  _end: {x: 5, y: 2}
+  _prefab: {fileID: 5809676851198683415, guid: 4a17df80e35a77141afb8eb135012ac2, type: 3}

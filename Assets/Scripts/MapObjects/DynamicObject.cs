@@ -8,12 +8,9 @@ public abstract class DynamicObject : MapObject {
     public override bool CanExit(Vector2Int dir) => false;
     public override bool CanEnter(Vector2Int dir) => false;
 
-    public override void OnEnter(DynamicObject dynamic) { }
-    public override void OnExit(DynamicObject dynamic) { }
-
     public bool CanMove { get; protected set; } = true;
     
-    public abstract void Fall();
+    public abstract void Fall(BaseBoard board);
 
     public void RotateInstant(int rotation) {
         Rotation = Mathb.Mod(Rotation + rotation, 4);

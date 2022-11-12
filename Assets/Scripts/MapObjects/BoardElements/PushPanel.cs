@@ -16,9 +16,9 @@ public class PushPanel : BoardElement<PushPanel> {
         }
     }
 
-    protected override void OnActivate() {
+    protected override void Activate(DynamicObject dynamic) {
         if (_activeRegisters.Contains(ExecutionPhase.CurrentRegister)) {
-            Scheduler.Push(Interaction.PushRoutine(CurrentDynamic, _direction));
+            Scheduler.Push(Interaction.PushRoutine(dynamic, _direction));
         }
     }
 }

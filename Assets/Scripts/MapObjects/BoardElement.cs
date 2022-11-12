@@ -2,6 +2,8 @@ using System.Collections;
 using System;
 
 public abstract class BoardElement<T> : StaticObject where T : BoardElement<T> {
+    protected DynamicObject CurrentDynamic { get; private set; }
+
     protected static Action _onActivate;
 
     public static IEnumerator ActivateRoutine() {
@@ -10,14 +12,16 @@ public abstract class BoardElement<T> : StaticObject where T : BoardElement<T> {
     }
 
     public override void OnEnter(DynamicObject dynamic) {
-        base.OnEnter(dynamic);
+        CurrentDynamic = dynamic;
         _onActivate += OnActivate;
     }
 
     public override void OnExit(DynamicObject dynamic) {
-        base.OnExit(dynamic);
+        CurrentDynamic = null;
         _onActivate -= OnActivate;
     }
 
-    protected abstract void OnActivate();
+    void OnActivate() => Activate(CurrentDynamic);
+
+    protected abstract void Activate(DynamicObject dynamic);
 }

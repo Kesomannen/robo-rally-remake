@@ -1,7 +1,8 @@
+using UnityEditor;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "GameSettings", menuName = "ScriptableObjects/Settings/Game", order = 0)]
-public class GameSettings : SingletonSO<GameSettings> {
+[FilePath("Assets/Data/GameSettings.asset", FilePathAttribute.Location.ProjectFolder)]
+public class GameSettings : ScriptableSingleton<GameSettings> {
     [Header("General")]
     [SerializeField] int _maxPlayers;
     [SerializeField] int _minPlayers;
@@ -14,6 +15,7 @@ public class GameSettings : SingletonSO<GameSettings> {
     [SerializeField] int _cardsPerTurn;
     [SerializeField] int _maxCardsInHand;
     [SerializeField] int _stressTime;
+    [SerializeField] Container<ProgramCardData> _programCardContainerPrefab;
 
     [Header("Damaging")]
     [SerializeField] Damage _standardRebootDamage;
@@ -27,6 +29,7 @@ public class GameSettings : SingletonSO<GameSettings> {
     public int CardsPerTurn => _cardsPerTurn;
     public int MaxCardsInHand => _maxCardsInHand;
     public int StressTime => _stressTime;
+    public Container<ProgramCardData> ProgramCardContainerPrefab => _programCardContainerPrefab;
 
     public Damage StandardRebootDamage => _standardRebootDamage;
 }

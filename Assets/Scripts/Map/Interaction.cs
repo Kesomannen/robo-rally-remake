@@ -4,19 +4,15 @@ using System.Linq;
 using UnityEngine;
 
 public static class Interaction {
-    public static bool CanEnter(IReadOnlyList<MapObject> tile, Vector2Int dir) {
+    public static bool CanEnter(IReadOnlyCollection<MapObject> tile, Vector2Int dir) {
+        if (tile == null) return true;
         foreach (var obj in tile) {
             if (!obj.CanEnter(dir)) return false;
         }
         return true;
     }
 
-    public static bool CanEnter(Vector2Int gridPos, Vector2Int dir) {
-        return !MapSystem.Instance.TryGetTile(gridPos, out var tile) || CanEnter(tile, dir);
-    }
-
-    public static bool CanExit(DynamicObject dynamic, Vector2Int dir) {
-        MapSystem.Instance.TryGetTile(dynamic.GridPos, out var tile);
+    public static bool CanExit(IReadOnlyCollection<MapObject> tile, DynamicObject dynamic, Vector2Int dir) {
         foreach (var obj in tile) {
             if (obj == dynamic) continue;
             if (!obj.CanExit(dir)) return false;
@@ -24,28 +20,24 @@ public static class Interaction {
         return true;
     }
 
-    public static bool TryGetDynamic(IReadOnlyList<MapObject> tile, out DynamicObject dynamic) {
+    public static bool TryGetDynamic(IReadOnlyCollection<MapObject> tile, out DynamicObject dynamic) {
         dynamic = tile.FirstOrDefault(obj => !obj.IsStatic) as DynamicObject;
         return dynamic != null;
     }
 
-    public static bool TryGetDynamic(Vector2Int gridPosition, out DynamicObject dynamic) {
-        if (MapSystem.Instance.TryGetTile(gridPosition, out var tile)) {
-            return TryGetDynamic(tile, out dynamic);
-        } else {
-            dynamic = null;
-            return false;
-        }
-    }
+    public static bool SoftMove(DynamicObject dynamic, Vector2Int dir, out IEnumerator routine) {
+        Debug.Log($"Moving {dynamic} in direction {dir}");
 
-    public static bool SoftMove(DynamicObject source, Vector2Int dir, out IEnumerator routine) {
-        Debug.Log($"Moving {source} in direction {dir}");
+        var mapSystem = MapSystem.Instance;
 
-        var sourcePos = source.GridPos;
+        var sourcePos = dynamic.GridPos;
         var targetPos = sourcePos + dir;
 
-        if (CanEnter(targetPos, -dir) && CanExit(source, dir)) {
-            routine = MapSystem.Instance.MoveObjectRoutine(source, targetPos);
+        mapSystem.TryGetTile(sourcePos, out var sourceTile);
+        mapSystem.TryGetTile(targetPos, out var targetTile);
+
+        if (CanEnter(targetTile, -dir) && CanExit(sourceTile, dynamic, dir)) {
+            routine = MapSystem.Instance.MoveObjectRoutine(dynamic, targetPos);
             return true;
         } else {
             routine = null;
@@ -59,26 +51,31 @@ public static class Interaction {
         var canPush = PushRecursive(source, dir, out var pushed);
         
         if (canPush) {
-            var routines = pushed.Select(obj => MapSystem.Instance.MoveObjectRoutine(obj, obj.GridPos + dir));
+            var routines = pushed.Select(obj => MapSystem.Instance.MoveObjectRoutine(obj, obj.GridPos + dir)).ToArray();
             yield return Scheduler.PlayListRoutine(routines);
         }
     }
 
-    static bool PushRecursive(DynamicObject source, Vector2Int dir, out IList<DynamicObject> pushed) {
-        var sourcePos = source.GridPos;
+    static bool PushRecursive(DynamicObject dynamic, Vector2Int dir, out IList<DynamicObject> pushed) {
+        var mapSystem = MapSystem.Instance;
+
+        var sourcePos = dynamic.GridPos;
         var targetPos = sourcePos + dir;
 
-        if (CanEnter(targetPos, -dir) && CanExit(source, dir)) {
-            pushed = new List<DynamicObject>() { source };
+        mapSystem.TryGetTile(sourcePos, out var sourceTile);
+        mapSystem.TryGetTile(targetPos, out var targetTile);
+
+        if (CanEnter(targetTile, -dir) && CanExit(sourceTile, dynamic, dir)) {
+            pushed = new List<DynamicObject>() { dynamic };
             return true;
-        } else if (TryGetDynamic(targetPos, out var dynamic)) {
-            if (dynamic == source) {
-                Debug.LogWarning($"Trying to push {source} into itself!");
+        } else if (TryGetDynamic(targetTile, out var other)) {
+            if (other == dynamic) {
+                Debug.LogWarning($"Trying to push {dynamic} into itself!");
                 pushed = null;
                 return false;
             }
             if (PushRecursive(dynamic, dir, out pushed)) {
-                pushed.Add(source);
+                pushed.Add(dynamic);
                 return true;
             }
         }

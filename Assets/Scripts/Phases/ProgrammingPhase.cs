@@ -15,13 +15,13 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
 
         IsStressed = false;
         LocalPlayerSubmitted = false;
-        StressTimer.Value = GameSettings.Instance.StressTime;
+        StressTimer.Value = GameSettings.instance.StressTime;
 
         var orderedPlayers = PlayerManager.GetOrderedPlayers();
 
         foreach (var player in orderedPlayers) {
             if (player == PlayerManager.LocalPlayer) {
-                player.DrawCardsUpTo(GameSettings.Instance.CardsPerTurn);
+                player.DrawCardsUpTo(GameSettings.instance.CardsPerTurn);
             }
         }
 

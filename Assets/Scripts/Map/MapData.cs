@@ -6,15 +6,12 @@ public class MapData : Lookup<MapData> {
     [SerializeField] string _name;
     [SerializeField] MapDifficulty _difficulty;
     [SerializeField] MapLength _length;
-    [SerializeField] Tilemap _prefab;
-    [SerializeField] Vector2Int _start, _end;
+    [SerializeField] GameObject _prefab;
 
     public string Name => _name;
     public MapDifficulty Difficulty => _difficulty;
     public MapLength Length => _length;
-    public Tilemap Prefab => _prefab;
-    public Vector2Int Start => _start;
-    public Vector2Int End => _end;
+    public GameObject Prefab => _prefab;
 
     public virtual void OnLoad() { }
 

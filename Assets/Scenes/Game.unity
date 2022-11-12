@@ -1479,7 +1479,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ad5597ae79c4fa47973471e5c5d4293, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mapToLoad: {fileID: 11400000, guid: 30afcee7c5cda6340a35b14d2733282f, type: 2}
+  _mapToLoad: {fileID: 11400000, guid: b0f5e608bc8120e45863f455a917919f, type: 2}
   _cardToLoad: {fileID: 11400000, guid: d6cfbe0c9c70e1b4f887c04790dd204a, type: 2}
 --- !u!1 &876612589
 GameObject:
@@ -2932,6 +2932,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1866782231}
   - component: {fileID: 1866782230}
+  - component: {fileID: 1866782232}
   m_Layer: 0
   m_Name: MapSystem
   m_TagString: Untagged
@@ -2951,7 +2952,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdca40509d980194695b88f4723e0c52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveSpeed: 4
+  _grid: {fileID: 1866782232}
 --- !u!4 &1866782231
 Transform:
   m_ObjectHideFlags: 0
@@ -2967,6 +2968,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!156049354 &1866782232
+Grid:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1866782229}
+  m_Enabled: 1
+  m_CellSize: {x: 1, y: 1, z: 1}
+  m_CellGap: {x: 0, y: 0, z: 0}
+  m_CellLayout: 0
+  m_CellSwizzle: 0
 --- !u!1001 &984570600069919754
 PrefabInstance:
   m_ObjectHideFlags: 0

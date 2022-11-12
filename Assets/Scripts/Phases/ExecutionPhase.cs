@@ -1,6 +1,6 @@
+using System;
 using System.Collections;
-using Unity.Netcode;
-using UnityEngine;
+using UnityEngine.Rendering.UI;
 
 #pragma warning disable 0067
 
@@ -8,6 +8,8 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
     public static int CurrentRegister { get; private set; }
 
     public const int RegisterCount = 5;
+
+    public static event Action OnPhaseEnd;
 
     public static IEnumerator DoPhaseRoutine() {
         UIManager.Instance.CurrentState = UIState.Map;
@@ -25,6 +27,8 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
         }
 
         DiscardRegisters();
+
+        OnPhaseEnd?.Invoke();
     }
 
     static IEnumerator ExecuteRegister() {
@@ -41,7 +45,10 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
     static void DiscardRegisters() {
         foreach (var player in PlayerManager.Players) {
             for (int i = 0; i < player.Program.Cards.Count; i++) {
-                player.DiscardPile.AddCard(player.Program[i], CardPlacement.Top);
+                var card = player.Program[i];
+                if (card == null) continue;
+
+                player.DiscardPile.AddCard(card, CardPlacement.Top);
                 player.Program.SetCard(i, null);
             }
         }

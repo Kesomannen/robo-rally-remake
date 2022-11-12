@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class CardCollection {
@@ -38,6 +39,7 @@ public class CardCollection {
 
     public bool AddCard(ProgramCardData card, CardPlacement placement) {
         if (_cards.Count >= _maxCards) return false;
+
         var index = GetIndex(placement);
         _cards.Insert(index, card);
         OnAdd?.Invoke(card, index);

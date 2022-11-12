@@ -10,13 +10,15 @@ public class Player {
 
     public readonly ulong ClientId;
     public readonly ClampedField<int> Energy;
-    public readonly ObservableField<Checkpoint> CurrentCheckpoint;
+    public readonly ObservableField<int> CurrentCheckpoint;
 
     public readonly CardCollection Hand, DrawPile, DiscardPile;
     public readonly Program Program;
 
     public Damage RebootDamage { get; set; }
     public Damage LaserDamage { get; set; }
+
+    public bool IsRebooted { get; private set; }
 
     public event Action OnShuffleDeck;
     public event Action<ProgramCardData> OnDraw, OnDiscard;
@@ -35,7 +37,7 @@ public class Player {
         LaserDamage = RobotData.LaserDamage;
 
         CurrentCheckpoint = new (
-            initialValue: args.SpawnPoint
+            initialValue: 0
         );
 
         Energy = new (
@@ -51,6 +53,10 @@ public class Player {
 
         Model.Init(this);
         Model.GetComponent<SpriteRenderer>().sprite = args.RobotData.Sprite;
+
+        ExecutionPhase.OnPhaseEnd += () => {
+            IsRebooted = false;
+        };
     }
 
     public int GetBonusPriority () {
@@ -136,8 +142,8 @@ public class Player {
         return $"Player {ClientId}";
     }
 
-    public void Reboot() {
-        RebootToken.Respawn(Model);
+    public void OnReboot() {
+        IsRebooted = true;
 
         RebootDamage.Apply(this);
 
@@ -159,7 +165,7 @@ public enum Pile {
 }
 
 public struct PlayerArgs {
-    public Checkpoint SpawnPoint;
+    public RebootToken SpawnPoint;
     public ulong OwnerId;
     public RobotData RobotData;
     public PlayerModel ModelPrefab;

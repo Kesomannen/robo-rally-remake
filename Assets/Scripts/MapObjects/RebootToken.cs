@@ -3,23 +3,15 @@ using UnityEngine;
 
 public class RebootToken : StaticObject {
     [SerializeField] Vector2Int _direction;
+    [SerializeField] bool _isSpawnPoint;
 
-    void DoRespawning(PlayerModel player) {
-        Scheduler.Push(Routine());
+    public bool IsSpawnPoint => _isSpawnPoint;
 
-        IEnumerator Routine() {
-            Debug.Log($"Respawning {player.Owner}", this);
-
-            if (CurrentDynamic != null) {
-                yield return Interaction.PushRoutine(CurrentDynamic, RotateAsObject(_direction));
-            }
-
-            MapSystem.Instance.MoveObjectInstant(player, GridPos);
+    public IEnumerator RespawnRoutine(PlayerModel player) {
+        MapSystem.Instance.TryGetTile(GridPos, out var tile);
+        if (Interaction.TryGetDynamic(tile, out var dynamic)) {
+            yield return Interaction.PushRoutine(dynamic, RotateAsObject(_direction));
         }
-    }
-    
-    public static void Respawn(PlayerModel player) {
-        var token = MapSystem.Instance.GetBoard(player).RebootToken;
-        token.DoRespawning(player);
+        MapSystem.Instance.MoveObjectInstant(player, GridPos);
     }
 }

@@ -52,7 +52,7 @@ public class RoomMenu : Menu {
 
         _startGameButton.SetActive(
             NetworkManager.Singleton.IsHost &&
-            LobbySystem.PlayersInLobby.Count >= GameSettings.Instance.MinPlayers &&
+            LobbySystem.PlayersInLobby.Count >= GameSettings.instance.MinPlayers &&
             LobbySystem.PlayersInLobby.All(p => p.Value.IsReady)
         );
     }

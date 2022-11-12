@@ -1,18 +1,20 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class MapSystem : Singleton<MapSystem> {
     [SerializeField] Grid _grid;
 
-    const float _mapObjectMoveSpeed = 1f;
+    const float _mapObjectMoveSpeed = 2f;
 
     static Dictionary<Vector2Int, List<MapObject>> _mapObjects;
+    static Dictionary<Tilemap, BaseBoard> _boards;
 
     MapData _currentMapData;
-    Tilemap _currentMap;
+    GameObject _currentMap;
 
     public static Action OnMapLoaded;
 
@@ -26,23 +28,31 @@ public class MapSystem : Singleton<MapSystem> {
         _currentMapData = mapData;
         _currentMap = Instantiate(mapData.Prefab, _grid.transform);
 
+        var tilemaps = _currentMap.GetComponentsInChildren<Tilemap>();
+        _boards = tilemaps.ToDictionary(x => x, x => x.GetComponentInParent<BaseBoard>());
+        Debug.Log($"Registered {_boards.Count} boards.");
+
         _mapObjects = new();
         foreach (var obj in _grid.GetComponentsInChildren<MapObject>(true)) {
             _mapObjects.EnforceKey(obj.GridPos, () => new()).Add(obj);
         }
+        Debug.Log($"Registered {_mapObjects.Count} map objects.");
 
         mapData.OnLoad();
         OnMapLoaded?.Invoke();
+        Debug.Log($"Map {mapData} loaded.");
     }
 
     void AddObject(DynamicObject obj, Vector2Int gridPosition) {
-        var tile = _mapObjects.EnforceKey(obj.GridPos, () => new());
+        var tile = _mapObjects.EnforceKey(gridPosition, () => new());
         tile.ForEach(t => t.OnEnter(obj));
         tile.Add(obj);
 
-        if (!_currentMap.HasTile(gridPosition.ToVec3Int())) {
+        if (TryGetBoard(gridPosition, out var board)) {
+            obj.transform.SetParent(board.transform);
+        } else {
             Debug.Log($"Object {obj} is outside of map");
-            obj.Fall();
+            obj.Fall(obj.GetComponentInParent<BaseBoard>());
         }
     }
 
@@ -56,6 +66,22 @@ public class MapSystem : Singleton<MapSystem> {
     void RelocateObject(DynamicObject obj, Vector2Int newPosition) {
         RemoveObject(obj, GetGridPos(obj));
         AddObject(obj, newPosition);
+    }
+
+    bool TryGetBoard(Vector2Int gridPosition, out BaseBoard board) {
+        foreach (var b in _boards) {
+            var tilemap = b.Key;
+            var gridPos = tilemap.WorldToCell(GetWorldPos(gridPosition));
+            var hasTile = tilemap.HasTile(gridPos);
+            Debug.Log($"Tilemap {tilemap} has tile at {gridPos}: {hasTile}", tilemap);
+
+            if (hasTile) {
+                board = b.Value;
+                return true;
+            }
+        }
+        board = null;
+        return false;
     }
 
     # region Public Methods
@@ -118,12 +144,8 @@ public class MapSystem : Singleton<MapSystem> {
         }
     }
 
-    public Board GetBoard(StaticObject obj) {
-        return obj.GetComponentInParent<Board>();
-    }
-
-    public Board GetBoard(DynamicObject obj) {
-        throw new NotImplementedException();
+    public BaseBoard GetBoard(StaticObject obj) {
+        return _boards.FirstOrDefault(x => x.Key.HasTile(obj.GridPos.ToVec3Int())).Value;
     }
     #endregion
 }

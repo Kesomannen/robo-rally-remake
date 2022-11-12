@@ -8,8 +8,6 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
     [SerializeField] RectTransform _overlayParent;
     [SerializeField] TMP_Text _headerText, _subtitleText;
     [SerializeField] Image _overlayColorImage;
-    [SerializeField] float _overlayFadeTime;
-    [SerializeField] Gradient _overlayColorGradient;
 
     RectTransform _activeOverlayObject;
 
