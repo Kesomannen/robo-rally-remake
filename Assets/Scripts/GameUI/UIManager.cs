@@ -46,7 +46,7 @@ public class UIManager : Singleton<UIManager> {
         }
 
         void Shop() {
-
+            throw new NotImplementedException();
         }
     }
 

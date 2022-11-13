@@ -1,6 +1,8 @@
-public class Pit : StaticObject {
-    public override void OnEnter(DynamicObject dynamic) {
-        base.OnEnter(dynamic);
-        dynamic.Fall(MapSystem.Instance.GetBoard(this));
+public class Pit : MapObject, IOnEnterHandler {
+    public void OnEnter(MapObject mapObject) {
+        if (mapObject is PlayerModel player) {
+            MapSystem.Instance.TryGetBoard(GridPos, out var board);
+            player.Owner.Reboot(board);
+        }
     }
 }

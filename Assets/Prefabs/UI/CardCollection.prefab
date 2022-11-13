@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 984570601044314469}
   - component: {fileID: 6352403080485276647}
   - component: {fileID: 4228034244385261969}
+  - component: {fileID: 6514157954668894407}
+  - component: {fileID: 5637482859104097891}
   m_Layer: 5
   m_Name: CardCollection
   m_TagString: Untagged
@@ -97,6 +99,7 @@ MonoBehaviour:
     Header: Draw Pile
     Subtitle: Cards are not shown in order.
     Prefab: {fileID: 9105691054769382345, guid: 6a7835c3c7e13c24aa7b259bbf92fc4c, type: 3}
+    CanPreview: 0
   _cardCountText: {fileID: 3399899694282681233}
   _image: {fileID: 984570601044314469}
 --- !u!114 &4228034244385261969
@@ -140,6 +143,33 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 984570601044314469}
+--- !u!114 &6514157954668894407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 984570601044314471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95ce0d1ea88a2eb4e966499bd39c164b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tooltipableLocation: 0
+--- !u!114 &5637482859104097891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 984570601044314471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ce0e5c048b4e184d9ba6a651bf5316e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _header: 
+  _description: 
 --- !u!1 &2257095531117947860
 GameObject:
   m_ObjectHideFlags: 0

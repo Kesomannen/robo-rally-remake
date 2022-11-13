@@ -6,9 +6,7 @@ public static class Extensions {
     public static void Shuffle<T>(this IList<T> list) {
         for (int i = list.Count - 1; i > 0; i--) {
             int j = Random.Range(0, i + 1);
-            var temp = list[i];
-            list[i] = list[j];
-            list[j] = temp;
+            (list[j], list[i]) = (list[i], list[j]);
         }
     }
 
@@ -18,16 +16,12 @@ public static class Extensions {
     }
 
     public static TValue EnforceKey<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue) {
-        if (!dictionary.ContainsKey(key)) {
-            dictionary.Add(key, defaultValue);
-        }
+        if (!dictionary.ContainsKey(key)) dictionary.Add(key, defaultValue);
         return dictionary[key];
     }
 
     public static TValue EnforceKey<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, Func<TValue> defaultValue) {
-        if (!dictionary.ContainsKey(key)) {
-            dictionary.Add(key, defaultValue());
-        }
+        if (!dictionary.ContainsKey(key)) dictionary.Add(key, defaultValue());
         return dictionary[key];
     }
 

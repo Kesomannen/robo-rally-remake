@@ -9,7 +9,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
 
     public const int RegisterCount = 5;
 
-    public static event Action OnPhaseEnd;
+    public static event Action OnPhaseEnd, OnExecutionComplete;
 
     public static IEnumerator DoPhaseRoutine() {
         UIManager.Instance.CurrentState = UIState.Map;
@@ -26,7 +26,11 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
             yield return Checkpoint.ActivateRoutine();
         }
 
-        DiscardRegisters();
+        OnExecutionComplete?.Invoke();
+
+        foreach (var player in PlayerManager.Players) {
+            player.DiscardProgram();
+        }
 
         OnPhaseEnd?.Invoke();
     }
@@ -37,20 +41,8 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
             var card = player.Program[CurrentRegister];
             if (card == null) continue;
 
-            Scheduler.Enqueue(card.ExecuteRoutine(player, CurrentRegister));
+            Scheduler.Enqueue(card.ExecuteRoutine(player, CurrentRegister), $"ProgramCard ({card})");
         }
         yield return Scheduler.WaitUntilClearRoutine();
-    }
-
-    static void DiscardRegisters() {
-        foreach (var player in PlayerManager.Players) {
-            for (int i = 0; i < player.Program.Cards.Count; i++) {
-                var card = player.Program[i];
-                if (card == null) continue;
-
-                player.DiscardPile.AddCard(card, CardPlacement.Top);
-                player.Program.SetCard(i, null);
-            }
-        }
     }
 }

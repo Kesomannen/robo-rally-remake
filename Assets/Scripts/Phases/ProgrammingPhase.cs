@@ -20,9 +20,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
         var orderedPlayers = PlayerManager.GetOrderedPlayers();
 
         foreach (var player in orderedPlayers) {
-            if (player == PlayerManager.LocalPlayer) {
-                player.DrawCardsUpTo(GameSettings.instance.CardsPerTurn);
-            }
+            player.DrawCardsUpTo(GameSettings.instance.CardsPerTurn);
         }
 
         _playersReady = 0;

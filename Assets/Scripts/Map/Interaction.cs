@@ -12,32 +12,32 @@ public static class Interaction {
         return true;
     }
 
-    public static bool CanExit(IReadOnlyCollection<MapObject> tile, DynamicObject dynamic, Vector2Int dir) {
+    public static bool CanExit(IReadOnlyCollection<MapObject> tile, PlayerModel playerModel, Vector2Int dir) {
         foreach (var obj in tile) {
-            if (obj == dynamic) continue;
+            if (obj == playerModel) continue;
             if (!obj.CanExit(dir)) return false;
         }
         return true;
     }
 
-    public static bool TryGetDynamic(IReadOnlyCollection<MapObject> tile, out DynamicObject dynamic) {
-        dynamic = tile.FirstOrDefault(obj => !obj.IsStatic) as DynamicObject;
-        return dynamic != null;
+    public static bool TryGetPlayerModel(IReadOnlyCollection<MapObject> tile, out PlayerModel playerModel) {
+        playerModel = tile.FirstOrDefault(obj => !obj.IsStatic) as PlayerModel;
+        return playerModel != null;
     }
 
-    public static bool SoftMove(DynamicObject dynamic, Vector2Int dir, out IEnumerator routine) {
-        Debug.Log($"Moving {dynamic} in direction {dir}");
+    public static bool SoftMove(PlayerModel playerModel, Vector2Int dir, out IEnumerator routine) {
+        Debug.Log($"Moving {playerModel} in direction {dir}");
 
         var mapSystem = MapSystem.Instance;
 
-        var sourcePos = dynamic.GridPos;
-        var targetPos = sourcePos + dir;
+        var playerPos = playerModel.GridPos;
+        var targetPos = playerPos + dir;
 
-        mapSystem.TryGetTile(sourcePos, out var sourceTile);
+        mapSystem.TryGetTile(playerPos, out var sourceTile);
         mapSystem.TryGetTile(targetPos, out var targetTile);
 
-        if (CanEnter(targetTile, -dir) && CanExit(sourceTile, dynamic, dir)) {
-            routine = MapSystem.Instance.MoveObjectRoutine(dynamic, targetPos);
+        if (CanEnter(targetTile, -dir) && CanExit(sourceTile, playerModel, dir)) {
+            routine = MapSystem.Instance.MoveObjectRoutine(playerModel, targetPos);
             return true;
         } else {
             routine = null;
@@ -45,10 +45,10 @@ public static class Interaction {
         }
     }
 
-    public static IEnumerator PushRoutine(DynamicObject source, Vector2Int dir) {
-        Debug.Log($"Pushing {source} in direction {dir}");
+    public static IEnumerator PushRoutine(PlayerModel playerModel, Vector2Int dir) {
+        Debug.Log($"Pushing {playerModel} in direction {dir}");
 
-        var canPush = PushRecursive(source, dir, out var pushed);
+        var canPush = PushRecursive(playerModel, dir, out var pushed);
         
         if (canPush) {
             var routines = pushed.Select(obj => MapSystem.Instance.MoveObjectRoutine(obj, obj.GridPos + dir)).ToArray();
@@ -56,26 +56,25 @@ public static class Interaction {
         }
     }
 
-    static bool PushRecursive(DynamicObject dynamic, Vector2Int dir, out IList<DynamicObject> pushed) {
+    static bool PushRecursive(PlayerModel playerModel, Vector2Int dir, out IList<PlayerModel> pushed) {
         var mapSystem = MapSystem.Instance;
 
-        var sourcePos = dynamic.GridPos;
-        var targetPos = sourcePos + dir;
+        var playerPos = playerModel.GridPos;
+        var targetPos = playerPos + dir;
 
-        mapSystem.TryGetTile(sourcePos, out var sourceTile);
+        mapSystem.TryGetTile(playerPos, out var sourceTile);
         mapSystem.TryGetTile(targetPos, out var targetTile);
 
-        if (CanEnter(targetTile, -dir) && CanExit(sourceTile, dynamic, dir)) {
-            pushed = new List<DynamicObject>() { dynamic };
+        if (CanEnter(targetTile, -dir) && CanExit(sourceTile, playerModel, dir)) {
+            pushed = new List<PlayerModel>() { playerModel };
             return true;
-        } else if (TryGetDynamic(targetTile, out var other)) {
-            if (other == dynamic) {
-                Debug.LogWarning($"Trying to push {dynamic} into itself!");
+        } else if (TryGetPlayerModel(targetTile, out var other)) {
+            if (other == playerModel) {
+                Debug.LogWarning($"Trying to push {playerModel} into itself!");
                 pushed = null;
                 return false;
-            }
-            if (PushRecursive(dynamic, dir, out pushed)) {
-                pushed.Add(dynamic);
+            } else if (PushRecursive(playerModel, dir, out pushed)) {
+                pushed.Add(playerModel);
                 return true;
             }
         }

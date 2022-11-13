@@ -1,12 +1,13 @@
-public class PlayerModel : DynamicObject {
+using UnityEngine;
+
+public class PlayerModel : MapObject, IPlayer, ICanEnterHandler, IPushable {
     public Player Owner { get; private set; }
 
-    public override void Fall(BaseBoard board) {
-        board.Respawn(this);
-        Owner.OnReboot();
-    }
+    public bool CanEnter(Vector2Int enterDir) => false;
 
     public void Init(Player owner) {
         Owner = owner;
     }
+
+    public void OnPush(Vector2Int dir, MapObject source) { }
 }

@@ -15,6 +15,18 @@ PrefabInstance:
       propertyPath: _direction.x
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -3548210113330695675, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _rotation.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -3548210113330695675, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _rotation.Array.data[0].Rotation
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -3548210113330695675, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _rotation.Array.data[0].RelativeDirection.y
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 944412202424250007, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
       propertyPath: m_Name
       value: CurvedConveyorFast

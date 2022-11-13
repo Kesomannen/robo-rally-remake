@@ -127,9 +127,7 @@ MonoBehaviour:
   _utilityIcon: {fileID: 21300000, guid: 45ddf7b3e01935d4a820f7a39ac3be94, type: 3}
   _name: {fileID: 1174991577562021719}
   _description: {fileID: 1174991577189273964}
-  _standardSprite: {fileID: -1554786478, guid: 60d1e2e9971fb2644ad3b1caf855dbee, type: 3}
-  _highlightedSprite: {fileID: -1558691515, guid: 60d1e2e9971fb2644ad3b1caf855dbee, type: 3}
-  _highlightJumpHeight: 60
+  _highlightJumpHeight: 40
   _highlightedSize: 1.15
   _easingType: 27
 --- !u!114 &1174991577122899438 stripped

@@ -38,6 +38,10 @@ public class CardCollection {
     }
 
     public bool AddCard(ProgramCardData card, CardPlacement placement) {
+        if (card == null) {
+            Debug.LogError("Cannot add null card to collection");
+            return false;
+        }
         if (_cards.Count >= _maxCards) return false;
 
         var index = GetIndex(placement);
@@ -53,22 +57,20 @@ public class CardCollection {
         return cards.Count;
     }
 
-    public bool RemoveCard(ProgramCardData card) {
-        var successful = _cards.Remove(card);
-        return successful;
+    public void RemoveCard(ProgramCardData card) {
+        _cards.Remove(card);
     }
 
-    public bool RemoveCard(int index) {
-        if (index < 0 || index >= _cards.Count) return false;
+    public void RemoveCard(int index) {
         var card = _cards[index];
         _cards.RemoveAt(index);
         OnRemove?.Invoke(card, index);
-        return true;
     }
 
     public void Clear() {
-        for (int i = 0; i < _cards.Count; i++) {
-            RemoveCard(i);
+        var cards = _cards.Count;
+        for (int i = 0; i < cards; i++) {
+            RemoveCard(0);
         }
     }
 

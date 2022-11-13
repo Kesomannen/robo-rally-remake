@@ -97,7 +97,7 @@ public static class Matchmaking {
 
         Transport.SetHostRelayData(
             alloc.RelayServer.IpV4,
-            (ushort) alloc.RelayServer.Port,
+            (ushort)alloc.RelayServer.Port,
             alloc.AllocationIdBytes,
             alloc.Key,
             alloc.ConnectionData
@@ -134,9 +134,9 @@ public static class Matchmaking {
         Debug.Log($"Joined lobby {_currentLobby.Id} using lobby code {_currentLobby.LobbyCode}");
 
         var alloc = await RelayService.Instance.JoinAllocationAsync(relayJoinCode);
-        Transport.SetClientRelayData (
+        Transport.SetClientRelayData(
             alloc.RelayServer.IpV4,
-            (ushort) alloc.RelayServer.Port,
+            (ushort)alloc.RelayServer.Port,
             alloc.AllocationIdBytes,
             alloc.Key,
             alloc.ConnectionData,
@@ -147,26 +147,25 @@ public static class Matchmaking {
     public static async Task LockLobbyAsync() {
         try {
             await Lobbies.Instance.UpdateLobbyAsync(_currentLobby.Id, new UpdateLobbyOptions { IsLocked = true });
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Debug.Log($"Failed closing lobby: {e}");
         }
     }
 
     public static async Task UpdateLobbyAsync(UpdateLobbyDataOptions options) {
         try {
-            var updateOpts = new UpdateLobbyOptions();
-            if (options.MaxPlayers != null) updateOpts.MaxPlayers = options.MaxPlayers;
-            if (options.IsPrivate != null) updateOpts.IsPrivate = options.IsPrivate;
-            if (options.MapID != null) updateOpts.Data[_mapIDKey] = new(
+            var updateOpts = new UpdateLobbyOptions {
+                IsPrivate = options.IsPrivate
+            };
+
+            updateOpts.Data[_mapIDKey] = new(
                 visibility: DataObject.VisibilityOptions.Public,
                 index: DataObject.IndexOptions.N1,
                 value: options.MapID.ToString()
             );
 
             await Lobbies.Instance.UpdateLobbyAsync(_currentLobby.Id, updateOpts);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Debug.Log($"Failed updating lobby: {e}");
         }
     }
@@ -187,7 +186,7 @@ public static class Matchmaking {
                 await Lobbies.Instance.DeleteLobbyAsync(_currentLobby.Id);
             } else {
                 await Lobbies.Instance.RemovePlayerAsync(_currentLobby.Id, _localPlayerId);
-            } 
+            }
             _currentLobby = null;
         } catch (LobbyServiceException e) {
             Debug.LogError($"Failed to leave lobby {_currentLobby.Id}: {e.Message}");
@@ -202,7 +201,6 @@ public struct LobbyData {
 }
 
 public struct UpdateLobbyDataOptions {
-    public byte? MaxPlayers;
     public byte? MapID;
     public bool? IsPrivate;
 }

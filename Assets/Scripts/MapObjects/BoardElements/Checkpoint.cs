@@ -1,13 +1,13 @@
 using UnityEngine;
 
-public class Checkpoint : BoardElement<Checkpoint> {
+public class Checkpoint : BoardElement<Checkpoint, IPlayer> {
     [SerializeField] int _index;
 
     public int Index => _index;
 
-    protected override void Activate(DynamicObject dynamic) {
-        if (dynamic is PlayerModel plrModel) {
-            var player = plrModel.Owner;
+    protected override void Activate(IPlayer[] targets) {
+        foreach (var playerModel in targets) {
+            var player = playerModel.Owner;
             var current = player.CurrentCheckpoint;
 
             if (current.Value == _index - 1) {

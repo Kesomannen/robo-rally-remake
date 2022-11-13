@@ -13,7 +13,8 @@ public class MoveProgram : ProgramCardData {
     public override IEnumerator ExecuteRoutine(Player player, int positionInRegister)  {
         var moveVector = relative ? player.Model.RotateAsObject(direction) : direction;
         for (int i = 0; i < steps; i++) {
-            yield return Interaction.PushRoutine(player.Model, moveVector);
+            Scheduler.Push(Interaction.PushRoutine(player.Model, moveVector), $"MoveProgram {player} in {moveVector}");
         }
+        yield break;
     }
 }

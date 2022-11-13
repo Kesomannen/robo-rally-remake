@@ -46,7 +46,7 @@ public class Player {
             max: args.MaxEnergy
         );
 
-        Model = MapSystem.Instance.CreateObject (
+        Model = MapSystem.Instance.CreatePlayerModel (
             args.ModelPrefab,
             args.SpawnPoint.GridPos
         );
@@ -125,6 +125,11 @@ public class Player {
         for (int i = 0; i < cards.Count; i++) DiscardCard(cards[i]);
     }
 
+    public void DiscardHand() {
+        var cards = Hand.Cards.Count;
+        for (int i = 0; i < cards; i++) DiscardCard(0);
+    }
+
     public void DiscardRandomCard() {
         DiscardCard(Random.Range(0, Hand.Cards.Count));
     }
@@ -138,24 +143,27 @@ public class Player {
         registers = Program.Cards.Select(c => (byte) c.GetLookupId()).ToArray();
     }
 
-    public override string ToString() {
-        return $"Player {ClientId}";
-    }
-
-    public void OnReboot() {
+    public void Reboot(IBoard board) {
         IsRebooted = true;
 
+        board.Respawn(Model);
         RebootDamage.Apply(this);
+        
+        DiscardHand();
+        DiscardProgram();
+    }
 
-        for (int i = 0; i < Hand.Cards.Count; i++) {
-            DiscardCard(i);
-        }
-
+    public void DiscardProgram() {
         for (int i = 0; i < Program.Cards.Count; i++) {
-            DiscardPile.AddCard(Program[i], CardPlacement.Top);
+            var card = Program[i];
+            if (card == null) continue;
+
+            DiscardPile.AddCard(card, CardPlacement.Top);
             Program.SetCard(i, null);
         }
     }
+
+    public override string ToString() => $"Player {ClientId}";
 }
 
 public enum Pile {

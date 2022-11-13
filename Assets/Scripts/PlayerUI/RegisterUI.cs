@@ -38,8 +38,8 @@ public class RegisterUI : MonoBehaviour, IPointerClickHandler {
 
 
     public bool Place(Container<ProgramCardData> item) {
+        if (!IsEmpty) return false;
         if (!item.Data.CanPlace(_owner, _index)) return false;
-        if (!IsEmpty) Remove();
 
         _cardContainer.SetData(item.Data);
         _cardContainer.gameObject.SetActive(true);

@@ -10,8 +10,7 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
     [SerializeField] float _highlightJumpHeight;
     [SerializeField] float _highlightedSize;
     [SerializeField] LeanTweenType _easingType;
-    
-    static CanvasScaler _canvasScaler;
+
     static GraphicRaycaster _graphicRaycaster;
 
     Player _owner => PlayerManager.LocalPlayer;
@@ -27,10 +26,10 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
             _isHighlighted = value;
 
             if (_isHighlighted) {
-                transform.SetParent(_canvasScaler.transform);
+                transform.SetParent(_graphicRaycaster.transform);
                 transform.SetAsLastSibling();
 
-                var targetHeight = _canvasScaler.scaleFactor * _highlightJumpHeight;
+                var targetHeight = CanvasUtils.Scale.y * _highlightJumpHeight;
                 LerpTo(transform.position + Vector3.up * targetHeight);
                 LeanTween.scale(gameObject, Vector3.one * _highlightedSize, 0.2f).setEase(_easingType);
             } else {
@@ -47,17 +46,21 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
 
     void Awake() {
         _originalParent = transform.parent;
-        if (_canvasScaler == null) {
-            _canvasScaler = FindObjectOfType<CanvasScaler>();
-            _graphicRaycaster = _canvasScaler.GetComponent<GraphicRaycaster>();
+        if (_graphicRaycaster == null) {
+            _graphicRaycaster = FindObjectOfType<GraphicRaycaster>();
         }
+    }
+
+    void OnEnable() {
+        transform.position = _origin;    
     }
 
     public void SetOrigin(Vector2 origin, int index) {
         _origin = origin;
-        LerpTo(origin);
         _index = index;
         transform.SetSiblingIndex(_index);
+
+        if (enabled) LerpTo(origin);
     }
 
     public void OnPointerEnter(PointerEventData e) {

@@ -114,6 +114,7 @@ public class LobbySystem : NetworkBehaviour {
             OnPlayerUpdatedOrAdded?.Invoke(id, _playersInLobby[id]);
         }
 
+        // Client uses this in case the host disconnects
         NetworkManager.OnClientDisconnectCallback += OnClientDisconnected;
     }
 

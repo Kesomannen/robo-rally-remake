@@ -1,27 +1,33 @@
+﻿using System;
 using System.Collections;
-using System;
+using System.Collections.Generic;
 
-public abstract class BoardElement<T> : StaticObject where T : BoardElement<T> {
-    protected DynamicObject CurrentDynamic { get; private set; }
+public abstract class BoardElement<T, THandler> : MapObject, IOnEnterExitHandler where THandler : IMapObject where T : BoardElement<T, THandler> {
+    protected List<THandler> Handlers;
 
-    protected static Action _onActivate;
+    protected static Action OnActivateEvent;
 
-    public static IEnumerator ActivateRoutine() {
-        _onActivate?.Invoke();
+    protected abstract void Activate(THandler[] targets);
+
+    public static IEnumerator ActivateElement() {
+        OnActivateEvent?.Invoke();
         yield return Scheduler.WaitUntilClearRoutine();
     }
-
-    public override void OnEnter(DynamicObject dynamic) {
-        CurrentDynamic = dynamic;
-        _onActivate += OnActivate;
+    
+    public virtual void OnEnter(MapObject mapObject) {
+        if (mapObject is THandler handler) {
+            Handlers ??= new();
+            Handlers.Add(handler);
+            if (Handlers.Count == 1) OnActivateEvent += OnActivate;
+        }
     }
 
-    public override void OnExit(DynamicObject dynamic) {
-        CurrentDynamic = null;
-        _onActivate -= OnActivate;
+    public virtual void OnExit(MapObject mapObject) {
+        if (mapObject is THandler handler) {
+            Handlers.Remove(handler);
+            if (Handlers.Count == 0) OnActivateEvent -= OnActivate;
+        }
     }
 
-    void OnActivate() => Activate(CurrentDynamic);
-
-    protected abstract void Activate(DynamicObject dynamic);
+    void OnActivate() => Activate(Handlers.ToArray());
 }
