@@ -43,7 +43,7 @@ public class Conveyor : BoardElement<Conveyor, IMapObject> {
             var dir = move.Key - mapObject.GridPos;
             var rot = move.Value.rot;
 
-            if (Interaction.SoftMove(mapObject, dir, out var moveRoutine)) {
+            if (MapHelper.SoftMove(mapObject, dir, out var moveRoutine)) {
                 if (rot == 0) {
                     Scheduler.Enqueue(moveRoutine, $"Conveyor {mapObject} in {dir}");
                 } else {

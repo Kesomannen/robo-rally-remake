@@ -61,15 +61,12 @@ public class MapSystem : Singleton<MapSystem> {
         CallHandlers<IOnEnterHandler>(tile, obj => obj.OnEnter(mapObject), mapObject);
     }
 
-    bool RemoveObject(MapObject mapObject) {
-        if (!_tiles.ContainsKey(mapObject.GridPos)) return false;
+    void RemoveObject(MapObject mapObject) {
+        if (!_tiles.ContainsKey(mapObject.GridPos)) return;
         
         var tile = _tiles[mapObject.GridPos];
-        if (tile.Remove(mapObject)) {
-            CallHandlers<IOnExitHandler>(tile, obj => obj.OnExit(mapObject));
-            return true;
-        }
-        return false;
+        tile.Remove(mapObject);
+        CallHandlers<IOnExitHandler>(tile, obj => obj.OnExit(mapObject));
     }
     
     void CallHandlers<T>(List<MapObject> tile, Action<T> action, MapObject except = null) where T : IMapObject {
@@ -77,18 +74,19 @@ public class MapSystem : Singleton<MapSystem> {
         foreach (var handler in handlers) action(handler);
     }
 
-    public bool MoveObject(MapObject movable, Vector2Int gridPos) {
-        var mapObject = movable.Object;
-        if (RemoveObject(mapObject)) {
-            AddObject(mapObject, gridPos);
-            return true;
-        } else {
-            return false;
-        }
+    public void MoveObjectInstant(MapObject mapObject, Vector2Int gridPos) {
+        RelocateObject(mapObject, gridPos);
+        mapObject.transform.position = GridToWorld(gridPos);
+    }
+
+    public void RelocateObject(MapObject mapObject, Vector2Int gridPos) {
+        RemoveObject(mapObject);
+        AddObject(mapObject, gridPos);
     }
 
     public T CreateObject<T>(T prefab, Vector2Int gridPos, bool callOnEnter = true) where T : MapObject {
         var obj = Instantiate(prefab, _grid.transform);
+        obj.transform.position = GridToWorld(gridPos);
 
         if (callOnEnter) {
             AddObject(obj, gridPos);
@@ -99,12 +97,9 @@ public class MapSystem : Singleton<MapSystem> {
         return obj;
     }
 
-    public bool DestroyObject(MapObject obj) {
-        if (RemoveObject(obj)) {
-            Destroy(obj.gameObject);
-            return true;
-        }
-        return false;
+    public void DestroyObject(MapObject obj) {
+        RemoveObject(obj);
+        Destroy(obj.gameObject);
     }
 
     public bool TryGetTile(Vector2Int gridPos, out IReadOnlyList<MapObject> result) {
@@ -115,6 +110,11 @@ public class MapSystem : Singleton<MapSystem> {
             result = null;
             return false;
         }
+    }
+
+    public IReadOnlyList<MapObject> GetTile(Vector2Int gridPos) {
+        if (TryGetTile(gridPos, out var result)) return result;
+        else return null;
     }
     
     public Vector2Int WorldToGrid(Vector3 worldPos) {

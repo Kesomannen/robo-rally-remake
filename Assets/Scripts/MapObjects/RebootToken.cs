@@ -7,11 +7,11 @@ public class RebootToken : MapObject {
 
     public bool IsSpawnPoint => _isSpawnPoint;
 
-    public IEnumerator RespawnRoutine(PlayerModel player) {
+    public IEnumerator RespawnRoutine(PlayerModel playerModel) {
         MapSystem.Instance.TryGetTile(GridPos, out var tile);
-        if (Interaction.TryGetPlayerModel(tile, out var dynamic)) {
-            yield return Interaction.PushRoutine(dynamic, Rotator.Rotate(_direction));
+        if (MapHelper.TryGetPlayerModel(tile, out var dynamic)) {
+            yield return MapHelper.PushRoutine(dynamic, Rotator.Rotate(_direction));
         }
-        MapSystem.Instance.MoveObject(player, GridPos);
+        MapSystem.Instance.MoveObject(obj, GridPos);
     }
 }

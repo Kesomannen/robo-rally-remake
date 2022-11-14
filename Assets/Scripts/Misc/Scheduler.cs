@@ -35,7 +35,7 @@ public class Scheduler : Singleton<Scheduler> {
         Instance.StopCoroutine(coroutine);
     }
 
-    public static IEnumerator GroupRoutines(IEnumerator[] routines) {
+    public static IEnumerator GroupRoutines(params IEnumerator[] routines) {
         var routinesInProgress = 0;
         foreach (var routine in routines) {
             routinesInProgress++;

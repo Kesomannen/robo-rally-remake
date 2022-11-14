@@ -24,8 +24,8 @@ public interface ICanExitHandler : IMapObject {
 
 public interface ICanEnterExitHandler : ICanEnterHandler, ICanExitHandler { }
 
-public interface IPushable : IMapObject {
-    void OnPush(Vector2Int dir, MapObject source);
+public interface IObstacle : ICanEnterExitHandler {
+    bool Pushable { get; }
 }
 
 public interface IPlayer : IMapObject {

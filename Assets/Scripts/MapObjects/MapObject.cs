@@ -8,28 +8,18 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
 
     TransformRotator _rotator;
 
-    public Vector2Int GridPos {
-        get => _gridPos;
-        set {
-            if (_gridPos == value) return;
-            var prev = _gridPos;
-            _gridPos = value;
-            
-            transform.position = MapSystem.Instance.GridToWorld(_gridPos);
-            OnPositionChanged?.Invoke(prev, _gridPos);
-        }
-    }
-    
-    Vector2Int _gridPos;
+    public Vector2Int GridPos { get; set; }
 
     public event Action<int> OnRotationChanged;
     public event Action<Vector2Int, Vector2Int> OnPositionChanged;
 
     protected virtual void Awake() {
-        _rotator = VectorHelper.GetRotator(transform.eulerAngles);
+        _rotator = TransformRotator.GetRotator(transform.eulerAngles);
     }
 
     public void RotateInstant(int steps) {
+        if (steps == 0) return;
+
         _rotator.RotZ += steps;
         var target = _rotator.RotZ * 90f;
         transform.eulerAngles = new(0, 0, target);
@@ -40,6 +30,8 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
     const LeanTweenType _rotEaseType = LeanTweenType.easeInOutSine;
 
     public IEnumerator RotateRoutine(int steps) {
+        if (steps == 0) yield break;
+
         var iterations = Mathf.Abs(steps);
         var delta = steps / iterations;
 

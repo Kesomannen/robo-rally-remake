@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
 public interface IBoard {
-    void Respawn(PlayerModel playerModel);
-    Transform transform { get; }
+    void Respawn(MapObject obj);
+    void Parent(Transform child);
 }
