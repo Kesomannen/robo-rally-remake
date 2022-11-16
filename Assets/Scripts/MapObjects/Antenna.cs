@@ -3,6 +3,8 @@ using UnityEngine;
 public class Antenna : MapObject, ICanEnterHandler {
     static Antenna _instance;
 
+    public bool Pushable => false;
+
     public bool CanEnter(Vector2Int enterDir) => false;
 
     protected override void Awake() {

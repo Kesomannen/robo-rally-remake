@@ -19,11 +19,11 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
             yield return ExecuteRegister();
 
             // Board elements
-            yield return Conveyor.ActivateRoutine();
-            yield return PushPanel.ActivateRoutine();
-            yield return Gear.ActivateRoutine();
-            yield return EnergySpace.ActivateRoutine();
-            yield return Checkpoint.ActivateRoutine();
+            yield return Conveyor.ActivateElement();
+            yield return PushPanel.ActivateElement();
+            yield return Gear.ActivateElement();
+            yield return EnergySpace.ActivateElement();
+            yield return Checkpoint.ActivateElement();
         }
 
         OnExecutionComplete?.Invoke();

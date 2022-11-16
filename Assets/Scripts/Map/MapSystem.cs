@@ -40,7 +40,7 @@ public class MapSystem : Singleton<MapSystem> {
         foreach (var obj in _grid.GetComponentsInChildren<MapObject>(true)) {
             RegisterMapObject(obj);
         }
-        Debug.Log($"Registered {_tiles.Count} map objects.");
+        Debug.Log($"Registered {_tiles.Count} tiles.");
 
         mapData.OnLoad();
         OnMapLoaded?.Invoke();
@@ -53,10 +53,15 @@ public class MapSystem : Singleton<MapSystem> {
     }
 
     void AddObject(MapObject mapObject, Vector2Int gridPos) {
-        var tile = _tiles.EnforceKey(gridPos, () => new());
-        
-        tile.Add(mapObject);
         mapObject.GridPos = gridPos;
+        if (TryGetBoard(gridPos, out var board)) {
+            board.Parent(mapObject.transform);
+        } else {
+            mapObject.Fall(GetParentBoard(mapObject));
+        }
+
+        var tile = _tiles.EnforceKey(gridPos, () => new());
+        tile.Add(mapObject);
 
         CallHandlers<IOnEnterHandler>(tile, obj => obj.OnEnter(mapObject), mapObject);
     }
@@ -125,6 +130,10 @@ public class MapSystem : Singleton<MapSystem> {
         return _grid.CellToWorld(gridPos.ToVec3Int());
     }
 
+    public IBoard GetParentBoard(MapObject mapObject) {
+        return mapObject.GetComponentInParent<IBoard>();
+    }
+
     public bool TryGetBoard(Vector2Int gridPos, out IBoard board) {
         foreach (var (tilemap, b) in _boards) {
             var pos = tilemap.WorldToCell(GridToWorld(gridPos));
@@ -135,5 +144,13 @@ public class MapSystem : Singleton<MapSystem> {
         }
         board = null;
         return false;
+    }
+
+    public void GetByType<T>(List<T> outputList) where T : MapObject {
+        foreach (var tile in _tiles.Values) {
+            foreach (var obj in tile) {
+                if (obj is T t) outputList.Add(t);
+            }
+        }
     }
 }

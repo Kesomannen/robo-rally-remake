@@ -16,6 +16,6 @@ MonoBehaviour:
   _description: Move your robot one tile backwards.
   _artwork: {fileID: 21300000, guid: bd2e835d31c43ef49a55c78c99587cc0, type: 3}
   _type: 0
-  steps: 1
-  direction: {x: -1, y: 0}
-  relative: 1
+  _steps: 1
+  _direction: {x: -1, y: 0}
+  _relative: 1

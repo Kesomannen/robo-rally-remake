@@ -3,12 +3,17 @@ using UnityEngine;
 public struct TransformRotator : IRotator {
     public bool FlipX { get; set; }
     public bool FlipY { get; set; }
-    public int RotZ { get; set; }
+    public int RotZ {
+        get => _rotZ;
+        set => _rotZ = Mathb.Mod(value, 4);
+    }
+
+    int _rotZ;
 
     public TransformRotator(bool flipX, bool flipY, int rot) {
         FlipX = flipX;
         FlipY = flipY;
-        RotZ = rot;
+        _rotZ = rot;
     }
 
     public Vector2Int Rotate(Vector2Int v2) {

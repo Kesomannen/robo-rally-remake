@@ -4,7 +4,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 
-public class PushPanel : BoardElement<PushPanel, IObstacle>, ITooltipable {
+public class PushPanel : BoardElement<PushPanel, ICanEnterHandler>, ITooltipable {
     [SerializeField] int[] _activeRegisters; 
     [SerializeField] Vector2Int _direction;
     [SerializeField] TMP_Text[] _registerTexts;
@@ -12,9 +12,10 @@ public class PushPanel : BoardElement<PushPanel, IObstacle>, ITooltipable {
     public string Header => "Push Panel";
     public string Description {
         get {
-            var str = new StringBuilder("Pushes objects one space in the direction of the panel.\nActivates on register {_activeRegisters[0]}");
-            for (int i = 1; i < _activeRegisters.Length; i++) {
-                str.Append($", {_activeRegisters[i]}");
+            var registers = _activeRegisters.Select(r => (r + 1).ToString()).ToArray();
+            var str = new StringBuilder($"Pushes objects one space in the direction of the panel.\nActivates on register {registers[0]}");
+            for (int i = 1; i < registers.Length; i++) {
+                str.Append($", {registers[i]}");
             }
             str.Append(".");
             return str.ToString();
@@ -34,14 +35,12 @@ public class PushPanel : BoardElement<PushPanel, IObstacle>, ITooltipable {
         }
     }
 
-    protected override void Activate(IObstacle[] targets) {
+    protected override void Activate(ICanEnterHandler[] targets) {
         if (_activeRegisters.Contains(ExecutionPhase.CurrentRegister)) {
-            var pushRoutines = new IEnumerator[targets.Length];
-            for (int i = 0; i < targets.Length; i++) {
-                var target = targets[i];
-                pushRoutines[i] = MapHelper.PushRoutine(target, _direction);
+            if (MapHelper.Push(targets[0].Object, _direction, out var action)) {
+                action.MapObjects.AddRange(targets.Skip(1).Select(o => o.Object));
             }
-            Scheduler.Push(Scheduler.GroupRoutines(pushRoutines), "PushPanel");
+            Scheduler.Push(MapHelper.EaseAction(action), "PushPanel");
         }
     }
 }

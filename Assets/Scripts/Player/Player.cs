@@ -46,7 +46,7 @@ public class Player {
             max: args.MaxEnergy
         );
 
-        Model = MapSystem.Instance.CreatePlayerModel (
+        Model = MapSystem.Instance.CreateObject (
             args.ModelPrefab,
             args.SpawnPoint.GridPos
         );

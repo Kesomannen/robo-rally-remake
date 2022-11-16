@@ -6,17 +6,21 @@ using UnityEngine;
 
 public static class MapHelper {
     static MapSystem MapSystem {
-        get => _mapSystem ?? (_mapSystem = MapSystem.Instance);
+        get => _mapSystem != null ? _mapSystem : (_mapSystem = MapSystem.Instance);
     }
 
     static MapSystem _mapSystem;
-
+    const float DefaultMoveSpeed = 1f;
+    const LeanTweenType DefaultEaseType = LeanTweenType.easeInOutSine;
+        
     public static IEnumerator EaseMove(MapObject mapObject, Vector2Int gridPosition, LeanTweenType easeType, float speed) {
         MapSystem.RelocateObject(mapObject, gridPosition);
         var prev = mapObject.transform.position;
         var target = MapSystem.GridToWorld(gridPosition);
         var duration = Vector2.Distance(prev, target) / speed;
-        yield return LeanTween.move(mapObject.gameObject, target, duration).setEase(easeType);
+        
+        LeanTween.move(mapObject.gameObject, target, duration).setEase(easeType);
+        yield return Helpers.Wait(duration);
     }
 
     public static IEnumerator EaseAction(MapAction action, LeanTweenType easeType, float speed, bool staggered = false) {
@@ -26,7 +30,7 @@ public static class MapHelper {
         var rotateActions = mapObjects.Select(obj => obj.RotateRoutine(action.Rotation)).ToArray();
 
         if (staggered) {
-            for (int i = 0; i < mapObjects.Length; i++) {
+            for (int i = 0; i < mapObjects.Count; i++) {
                 yield return Scheduler.GroupRoutines(moveActions[i], rotateActions[i]);
             }
         } else {
@@ -36,6 +40,9 @@ public static class MapHelper {
             );
         }
     }
+
+    public static IEnumerator EaseAction(MapAction action, bool staggered = false)
+        => EaseAction(action, DefaultEaseType, DefaultMoveSpeed, staggered);
 
     public static void ExecuteAction(MapAction action) {
         foreach (var obj in action.MapObjects) {
@@ -69,34 +76,29 @@ public static class MapHelper {
     }
 
     public static bool Push(MapObject mapObject, Vector2Int dir, out MapAction action) {
-        var sourcePos = mapObject.GridPos;
-        var targetPos = sourcePos + dir;
-        
         action = new(mapObject, dir);
 
-        // Quick check
-        if (SoftMove(mapObject, dir, out action)) {
+        // Check exit
+        var sourceTile = MapSystem.GetTile(mapObject.GridPos);
+        var canExit = CheckTile(sourceTile, (ICanExitHandler o) => o.CanExit(dir), mapObject);
+        if (!canExit) return false;
+        
+        var targetTileFilled = MapSystem.TryGetTile(mapObject.GridPos + dir, out var targetTile);
+        if (!targetTileFilled) return true;
+
+        // Check enter
+        var enterHandlers = targetTile.OfType<ICanEnterHandler>().ToArray();
+        if (enterHandlers.Length == 0) return true;
+        if (enterHandlers.Any(o => !o.Pushable && !o.CanEnter(dir))) return false;
+
+        // Push next
+        if (Push(enterHandlers[0].Object, dir, out var _)) {
+            // If we can push one, push all
+            action.MapObjects.AddRange(enterHandlers.Select(o => o.Object));
             return true;
         } else {
-            var sourceTile = MapSystem.GetTile(sourcePos).Where(o => o != mapObject).ToArray();
-            var targetFilled = MapSystem.TryGetTile(targetPos, out var targetTile);
-
-            // If target is not filled, onexit from the quick check is enough
-            if (targetFilled) {
-                var obstacles = targetTile.OfType<IObstacle>().ToArray();
-                if (obstacles.Any(o => !o.Pushable)) return false;
-
-                foreach (var obstacle in obstacles) {
-                    if (Push(obstacle.Object, dir, out var obstacleAction)) {
-                        action += obstacleAction;
-                    } else {
-                        return false;
-                    }
-                }
-                return true;
-            }
+            return false;
         }
-        return false;
     }
 
     public struct MapAction {
@@ -118,18 +120,6 @@ public static class MapHelper {
             MapObjects = new() { mapObject };
             Direction = direction;
             Rotation = rotation;
-        }
-
-        public static MapAction operator +(MapAction a, MapAction b) {
-            if (a.Direction != b.Direction) {
-                throw new ArgumentException("Cannot combine actions with different directions");
-            }
-            if (a.Rotation != b.Rotation) {
-                throw new ArgumentException("Cannot combine actions with different rotations");
-            }
-
-            var list = a.MapObjects.Concat(b.MapObjects).ToList();
-            return new(list, a.Direction, a.Rotation);
         }
     }
 }

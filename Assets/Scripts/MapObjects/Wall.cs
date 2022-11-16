@@ -4,6 +4,8 @@ using UnityEngine;
 public class Wall : MapObject, ICanEnterExitHandler {
     [SerializeField] Vector2Int[] _openDirections;
 
+    public bool Pushable => false;
+
     protected override void Awake() {
         // Do initial rotation and subscribe to further changes
         _openDirections = _openDirections.Select(v => Rotator.Rotate(v)).ToArray();

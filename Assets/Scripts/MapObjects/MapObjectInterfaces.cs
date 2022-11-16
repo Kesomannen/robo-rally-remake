@@ -16,6 +16,7 @@ public interface IOnEnterExitHandler : IOnEnterHandler, IOnExitHandler { }
 
 public interface ICanEnterHandler : IMapObject {
     bool CanEnter(Vector2Int enterDir);
+    bool Pushable { get; }
 }
 
 public interface ICanExitHandler : IMapObject {
@@ -23,10 +24,6 @@ public interface ICanExitHandler : IMapObject {
 }
 
 public interface ICanEnterExitHandler : ICanEnterHandler, ICanExitHandler { }
-
-public interface IObstacle : ICanEnterExitHandler {
-    bool Pushable { get; }
-}
 
 public interface IPlayer : IMapObject {
     Player Owner { get; }

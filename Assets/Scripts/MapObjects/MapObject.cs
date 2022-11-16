@@ -8,10 +8,13 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
 
     TransformRotator _rotator;
 
-    public Vector2Int GridPos { get; set; }
+    public Vector2Int GridPos;
 
     public event Action<int> OnRotationChanged;
-    public event Action<Vector2Int, Vector2Int> OnPositionChanged;
+
+    public virtual void Fall(IBoard board) {
+        MapSystem.Instance.DestroyObject(this);
+    }
 
     protected virtual void Awake() {
         _rotator = TransformRotator.GetRotator(transform.eulerAngles);
@@ -26,7 +29,7 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
         OnRotationChanged?.Invoke(steps);
     }
 
-    const float _rotDuration = 0.5f;
+    const float _rotDuration = 1f;
     const LeanTweenType _rotEaseType = LeanTweenType.easeInOutSine;
 
     public IEnumerator RotateRoutine(int steps) {
@@ -41,7 +44,8 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
 
             OnRotationChanged?.Invoke(delta);
 
-            yield return LeanTween.rotateZ(gameObject, target, _rotDuration).setEase(_rotEaseType);
+            LeanTween.rotateZ(gameObject, target, _rotDuration).setEase(_rotEaseType);
+            yield return Helpers.Wait(_rotDuration);
         }
     }
 }

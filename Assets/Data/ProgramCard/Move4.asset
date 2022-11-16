@@ -15,7 +15,7 @@ MonoBehaviour:
   _name: Move 4
   _description: Move your robot four tiles forward.
   _artwork: {fileID: 21300000, guid: a60e1dfecd8fc2a47a8deb215f735586, type: 3}
-  _isDamage: 0
-  steps: 4
-  direction: {x: 1, y: 0}
-  relative: 1
+  _type: 0
+  _steps: 4
+  _direction: {x: 1, y: 0}
+  _relative: 1
