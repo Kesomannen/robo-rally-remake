@@ -12,10 +12,10 @@ public class CardCollectionDisplay : MonoBehaviour, IPointerClickHandler {
     [SerializeField] Image _image;
 
     CardCollection _collection;
-    Player _owner => PlayerManager.LocalPlayer;
+    Player Owner => PlayerManager.LocalPlayer;
 
     void Start() {
-        _collection = _owner.GetCollection(_targetPile);
+        _collection = Owner.GetCollection(_targetPile);
 
         Refresh();
         _collection.OnAdd += Refresh;

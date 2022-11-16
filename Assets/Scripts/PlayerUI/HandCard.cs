@@ -13,32 +13,29 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
 
     static GraphicRaycaster _graphicRaycaster;
 
-    Player _owner => PlayerManager.LocalPlayer;
+    Player Owner => PlayerManager.LocalPlayer;
     bool _isDragging;
     int _index;
     Vector3 _origin;
     Transform _originalParent;
 
-    bool IsHighlited {
-        get => _isHighlighted;
-        set {
-            if (_isHighlighted == value) return;
-            _isHighlighted = value;
+    private void SetHighlighted(bool value) {
+        if (_isHighlighted == value) return;
+        _isHighlighted = value;
 
-            if (_isHighlighted) {
-                transform.SetParent(_graphicRaycaster.transform);
-                transform.SetAsLastSibling();
+        if (_isHighlighted) {
+            transform.SetParent(_graphicRaycaster.transform);
+            transform.SetAsLastSibling();
 
-                var targetHeight = CanvasUtils.Scale.y * _highlightJumpHeight;
-                LerpTo(transform.position + Vector3.up * targetHeight);
-                LeanTween.scale(gameObject, Vector3.one * _highlightedSize, 0.2f).setEase(_easingType);
-            } else {
-                transform.SetParent(_originalParent);
-                transform.SetSiblingIndex(_index);
+            var targetHeight = CanvasUtils.Scale.y * _highlightJumpHeight;
+            LerpTo(transform.position + Vector3.up * targetHeight);
+            LeanTween.scale(gameObject, Vector3.one * _highlightedSize, 0.2f).setEase(_easingType);
+        } else {
+            transform.SetParent(_originalParent);
+            transform.SetSiblingIndex(_index);
 
-                LerpTo(_origin);
-                LeanTween.scale(gameObject, Vector3.one, 0.2f).setEase(_easingType);
-            }
+            LerpTo(_origin);
+            LeanTween.scale(gameObject, Vector3.one, 0.2f).setEase(_easingType);
         }
     }
 
@@ -64,11 +61,11 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
     }
 
     public void OnPointerEnter(PointerEventData e) {
-        IsHighlited = true;
+        SetHighlighted(true);
     }
 
     public void OnPointerExit(PointerEventData e) {
-        IsHighlited = false;
+        SetHighlighted(false);
     }
 
     public void OnPointerClick(PointerEventData e) {
@@ -99,7 +96,7 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
         if (!_isDragging) return;
 
         _isDragging = false;
-        IsHighlited = false;
+        SetHighlighted(false);
 
         var results = new List<RaycastResult>();
         _graphicRaycaster.Raycast(e, results);
@@ -116,7 +113,7 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
 
     bool TryPlace(RegisterUI register) {
         if (register.Place(this)) {
-            _owner.Hand.RemoveCard(_index);
+            Owner.Hand.RemoveCard(_index);
             return true;
         }
         return false;

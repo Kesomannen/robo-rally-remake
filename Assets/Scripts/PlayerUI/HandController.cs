@@ -18,13 +18,13 @@ public class HandController : Singleton<HandController> {
     readonly List<HandCard> _cardObjects = new();
     readonly List<CardAction> _actionQueue = new();
 
-    Player _owner => PlayerManager.LocalPlayer;
+    Player Owner => PlayerManager.LocalPlayer;
 
     void Start() {
-        _owner.Hand.OnAdd += OnCardAdded;
-        _owner.Hand.OnRemove += OnCardRemoved;
-        _owner.OnDraw += OnDraw;
-        _owner.OnDiscard += OnDiscard;
+        Owner.Hand.OnAdd += OnCardAdded;
+        Owner.Hand.OnRemove += OnCardRemoved;
+        Owner.OnDraw += OnDraw;
+        Owner.OnDiscard += OnDiscard;
         CreateHand();
     }
 
@@ -84,10 +84,10 @@ public class HandController : Singleton<HandController> {
 
     protected override void OnDestroy() {
         base.OnDestroy();
-        _owner.Hand.OnAdd -= OnCardAdded;
-        _owner.Hand.OnRemove -= OnCardRemoved;
-        _owner.OnDraw -= OnDraw;
-        _owner.OnDiscard -= OnDiscard;
+        Owner.Hand.OnAdd -= OnCardAdded;
+        Owner.Hand.OnRemove -= OnCardRemoved;
+        Owner.OnDraw -= OnDraw;
+        Owner.OnDiscard -= OnDiscard;
     }
 
     void OnCardAdded(ProgramCardData card, int index) {
@@ -144,8 +144,8 @@ public class HandController : Singleton<HandController> {
     }
 
     void CreateHand() {
-        for (int i = 0; i < _owner.Hand.Cards.Count; i++) {
-            var card = _owner.Hand.Cards[i];
+        for (int i = 0; i < Owner.Hand.Cards.Count; i++) {
+            var card = Owner.Hand.Cards[i];
             _actionQueue.Add(new CardAction {
                 Type = CardActionType.Draw,
                 Card = card,
