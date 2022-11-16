@@ -48,8 +48,8 @@ public class MapSystem : Singleton<MapSystem> {
     }
 
     void RegisterMapObject(MapObject mapObject) {
-        _tiles.EnforceKey(mapObject.GridPos, () => new()).Add(mapObject);
         mapObject.GridPos = WorldToGrid(mapObject.transform.position);
+        _tiles.EnforceKey(mapObject.GridPos, () => new()).Add(mapObject);
     }
 
     void AddObject(MapObject mapObject, Vector2Int gridPos) {

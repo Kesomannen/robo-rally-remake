@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public abstract class MapObject : MonoBehaviour, IMapObject {
     public MapObject Object => this;
@@ -8,7 +9,7 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
 
     TransformRotator _rotator;
 
-    public Vector2Int GridPos;
+    [ReadOnly] public Vector2Int GridPos;
 
     public event Action<int> OnRotationChanged;
 

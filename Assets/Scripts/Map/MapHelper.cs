@@ -87,14 +87,14 @@ public static class MapHelper {
         if (!targetTileFilled) return true;
 
         // Check enter
-        var enterHandlers = targetTile.OfType<ICanEnterHandler>().ToArray();
-        if (enterHandlers.Length == 0) return true;
-        if (enterHandlers.Any(o => !o.Pushable && !o.CanEnter(dir))) return false;
+        var blockages = targetTile.OfType<ICanEnterHandler>().Where(o => !o.CanEnter(-dir)).ToArray();
+        if (blockages.Length == 0) return true;
+        if (blockages.Any(o => !o.Pushable)) return false;
 
         // Push next
-        if (Push(enterHandlers[0].Object, dir, out var _)) {
+        if (Push(blockages[0].Object, dir, out var _)) {
             // If we can push one, push all
-            action.MapObjects.AddRange(enterHandlers.Select(o => o.Object));
+            action.MapObjects.AddRange(blockages.Select(o => o.Object));
             return true;
         } else {
             return false;

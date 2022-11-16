@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b47727896a02e6d4d99d63219ec03372, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GridPos: {x: 0, y: 0}
   _openDirections:
   - {x: 0, y: -1}
 --- !u!212 &4613979876801270713

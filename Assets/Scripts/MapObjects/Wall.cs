@@ -7,6 +7,7 @@ public class Wall : MapObject, ICanEnterExitHandler {
     public bool Pushable => false;
 
     protected override void Awake() {
+        base.Awake();
         // Do initial rotation and subscribe to further changes
         _openDirections = _openDirections.Select(v => Rotator.Rotate(v)).ToArray();
         OnRotationChanged += s => {
