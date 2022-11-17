@@ -19,11 +19,11 @@ public class RebootToken : MapObject {
     }
 
     public IEnumerator RespawnRoutine(PlayerModel playerModel) {
-        var tile = MapSystem.Instance.GetTile(GridPos);
+        var tile = MapSystem.GetTile(GridPos);
         var obstructions = tile.OfType<ICanEnterHandler>();
         foreach (var obj in obstructions) {
-            if (MapHelper.Push(obj.Object, _direction, out var moveAction)) {
-                yield return MapHelper.EaseAction(moveAction);
+            if (Interaction.Push(obj.Object, _direction, out var moveAction)) {
+                yield return Interaction.EaseAction(moveAction);
             } else {
                 Debug.LogWarning($"RebootToken is obstructed!", this);
             }

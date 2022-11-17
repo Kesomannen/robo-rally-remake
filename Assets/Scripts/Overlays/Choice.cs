@@ -2,11 +2,11 @@ using System;
 using UnityEngine.EventSystems;
 
 public abstract class Choice<T> : OverlayBase {
-    protected Action<ChoiceResult> Callback;
+    Action<ChoiceResult> _callback;
     protected T[] Options;
 
-    public abstract int MaxOptions { get; }
-    public abstract int MinOptions { get; }
+    protected abstract int MaxOptions { get; }
+    protected abstract int MinOptions { get; }
 
     bool _isOptional;
 
@@ -16,28 +16,27 @@ public abstract class Choice<T> : OverlayBase {
         }
 
         Options = options;
-        Callback = callback;
+        _callback = callback;
         _isOptional = isOptional;
     }
 
-    protected override void OnOverlayClick(PointerEventData e) {
-        if (_isOptional) {
-            base.OnOverlayClick(e);
-            Cancel();
-        }
+    protected override void OnOverlayClick(PointerEventData e){
+        if (!_isOptional) return;
+        base.OnOverlayClick(e);
+        Cancel();
     }
 
-    public void OnOptionChoose(T choice) {
-        Callback?.Invoke(new() {
+    protected void OnOptionChoose(T choice) {
+        _callback?.Invoke(new ChoiceResult {
             Choice = choice,
             WasCanceled = false
         });
         OverlaySystem.Instance.HideOverlay();
     }
 
-    public void Cancel() {
+    protected void Cancel() {
         if (!_isOptional) return;
-        Callback?.Invoke(new() {
+        _callback?.Invoke(new ChoiceResult {
             Choice = default,
             WasCanceled = true
         });

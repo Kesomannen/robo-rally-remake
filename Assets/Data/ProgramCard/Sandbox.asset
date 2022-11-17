@@ -16,16 +16,18 @@ MonoBehaviour:
   _description: 'Choose One: Move 1, 2 or 3. Back Up. Turn Left or Right. U Turn'
   _artwork: {fileID: 21300000, guid: 5297fc4f99b9f8e45970495f961b0649, type: 3}
   _type: 0
-  options:
+  _options:
   - {fileID: 11400000, guid: 7d66565cef5302d4c98375131e02105f, type: 2}
   - {fileID: 11400000, guid: 7284b567fda938c48ba9df3c7528a65a, type: 2}
   - {fileID: 11400000, guid: bce61d717821cc64d8b4cff5e98ee1d3, type: 2}
-  - {fileID: 11400000, guid: 2cb459cf240aad04daea347bb26fee55, type: 2}
+  - {fileID: 11400000, guid: aedd473c9c0634943b059f369c13976e, type: 2}
+  - {fileID: 11400000, guid: 77ee3c9c9ce971d45895324e00412f43, type: 2}
+  - {fileID: 11400000, guid: 4361588b7edebfc4ea2d154b8d75dea8, type: 2}
   - {fileID: 11400000, guid: 789c848c7ae69f4479f9670eb7ec46ac, type: 2}
   - {fileID: 11400000, guid: a0c176612c85f9c45aa2ceba06c64869, type: 2}
   - {fileID: 11400000, guid: 18607977aaffdee4e93c7b63daed4cf9, type: 2}
-  choiceOverlay:
-    Header: Sandbox routine
+  _choiceOverlay:
+    Header: Sandox Routine
     Subtitle: Choose a card to execute
     Prefab: {fileID: 487802381806119471, guid: d6ba4746ecbe0da4cb2d657a607d96e8, type: 3}
     CanPreview: 1

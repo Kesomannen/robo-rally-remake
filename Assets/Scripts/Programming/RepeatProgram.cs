@@ -3,17 +3,17 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "RepeatProgram", menuName = "ScriptableObjects/Programs/Program")]
 public class RepeatProgram : ProgramCardData {
-    [SerializeField] int repeatCount;
-    [SerializeField] int relativeRepeatIndex;
+    [SerializeField] int _repeatCount;
+    [SerializeField] int _relativeRepeatIndex;
 
     public override bool CanPlace(Player player, int positionInRegister) {
-        var posToRepeat = positionInRegister + relativeRepeatIndex;
+        var posToRepeat = positionInRegister + _relativeRepeatIndex;
         return posToRepeat >= 0 && posToRepeat < ExecutionPhase.RegisterCount;
     }
 
     public override IEnumerator ExecuteRoutine(Player player, int positionInRegister)  {
-        var posToRepeat = positionInRegister + relativeRepeatIndex;
-        for (int i = 0; i < repeatCount; i++) {
+        var posToRepeat = positionInRegister + _relativeRepeatIndex;
+        for (var i = 0; i < _repeatCount; i++) {
             var card = player.Program[posToRepeat];
             yield return card.ExecuteRoutine(player, posToRepeat);
         }

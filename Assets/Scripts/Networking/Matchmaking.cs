@@ -1,5 +1,6 @@
 using System.Collections;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Netcode.Transports.UTP;
 using Unity.Services.Authentication;
@@ -73,7 +74,7 @@ public static class Matchmaking {
 
         var options = new CreateLobbyOptions {
             IsPrivate = lobbyData.IsPrivate,
-            Data = new() {
+            Data = new Dictionary<string, DataObject> {
                 [_relayJoinCodeKey] = new(
                     visibility: DataObject.VisibilityOptions.Member,
                     index: DataObject.IndexOptions.S1,
@@ -158,7 +159,7 @@ public static class Matchmaking {
                 IsPrivate = options.IsPrivate
             };
 
-            updateOpts.Data[_mapIDKey] = new(
+            updateOpts.Data[_mapIDKey] = new DataObject(
                 visibility: DataObject.VisibilityOptions.Public,
                 index: DataObject.IndexOptions.N1,
                 value: options.MapID.ToString()

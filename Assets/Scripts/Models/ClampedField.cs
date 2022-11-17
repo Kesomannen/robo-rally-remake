@@ -1,9 +1,10 @@
 using System;
 
 public class ClampedField<T> : IObservableField<T> where T : IComparable<T> {
-    T _max, _min;
+    readonly T _max;
+    readonly T _min;
 
-    public event Action<T, T> OnValueChange;
+    public event Action<T, T> OnValueChanged;
 
     public T Value {
         get => _value;
@@ -15,7 +16,7 @@ public class ClampedField<T> : IObservableField<T> where T : IComparable<T> {
             if (clampedValue.Equals(_value)) return;
             var prev = _value;
             _value = clampedValue;
-            OnValueChange?.Invoke(prev, _value);
+            OnValueChanged?.Invoke(prev, _value);
         }
     }
 
@@ -25,5 +26,9 @@ public class ClampedField<T> : IObservableField<T> where T : IComparable<T> {
         _value = initialValue;
         _max = max;
         _min = min;
+    }
+
+    public override string ToString(){
+        return _value.ToString();
     }
 }

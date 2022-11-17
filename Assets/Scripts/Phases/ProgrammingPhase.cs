@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using System.Linq;
@@ -6,16 +8,20 @@ using System.Linq;
 public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
     public static readonly ObservableField<int> StressTimer = new(0);
     public static bool IsStressed { get; private set; }
-    public static bool LocalPlayerSubmitted { get; private set; }
 
+    static bool _localPlayerSubmitted;
     static int _playersReady;
 
+    public static event Action OnPhaseStarted;
+
     public static IEnumerator DoPhaseRoutine() {
-        UIManager.Instance.CurrentState = UIState.Hand;
+        UIManager.Instance.ChangeState(UIState.Hand);
 
         IsStressed = false;
-        LocalPlayerSubmitted = false;
+        _localPlayerSubmitted = false;
         StressTimer.Value = GameSettings.instance.StressTime;
+        
+        OnPhaseStarted?.Invoke();
 
         var orderedPlayers = PlayerManager.GetOrderedPlayers();
 
@@ -41,10 +47,10 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
         _playersReady++;
     }
 
-    static void LockPlayerRegister(byte playerIndex, byte[] registerCardIds) {
+    static void LockPlayerRegister(byte playerIndex, IEnumerable<byte> registerCardIds) {
         var isLocal = PlayerManager.Players[playerIndex] == PlayerManager.LocalPlayer;
         if (isLocal) {
-            LocalPlayerSubmitted = true;
+            _localPlayerSubmitted = true;
             return;
         }
 
@@ -52,19 +58,19 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
 
         var player = PlayerManager.Players[playerIndex];
         var cards = registerCardIds.Select(id => ProgramCardData.GetById(id)).ToArray();
-        for (int i = 0; i < cards.Length; i++) {
+        for (var i = 0; i < cards.Length; i++) {
             player.Program.SetCard(i, cards[i]);
             Debug.Log($"Register {i} of player {playerIndex} is now {cards[i]}");
         }
 
-        if (!LocalPlayerSubmitted && !IsStressed) {
-            IsStressed = true;
-            Scheduler.StartRoutine(StressRoutine());
-        }
+        if (_localPlayerSubmitted || IsStressed) return;
+        
+        Scheduler.StartRoutine(StressRoutine());
     }
 
-    static IEnumerator StressRoutine() {
-        while (!LocalPlayerSubmitted) {
+    public static IEnumerator StressRoutine(){
+        IsStressed = true;
+        while (!_localPlayerSubmitted) {
             StressTimer.Value--;
             if (StressTimer.Value <= 0) {
                 FillRegisters(PlayerManager.LocalPlayer);
@@ -77,7 +83,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
 
     static void FillRegisters(Player player) {
         // Discard hand
-        for (int i = 0; i < player.Hand.Cards.Count; i++) {
+        for (var i = 0; i < player.Hand.Cards.Count; i++) {
             player.DiscardCard(i);
         }
 

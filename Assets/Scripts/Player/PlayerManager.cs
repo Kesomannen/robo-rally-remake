@@ -25,7 +25,7 @@ public class PlayerManager : Singleton<PlayerManager> {
 
     void OnMapLoaded() {
         List<RebootToken> checkPoints = new();
-        MapSystem.Instance.GetByType(checkPoints);
+        MapSystem.GetByType(checkPoints);
         _spawnPoints = checkPoints.Where(x => x.IsSpawnPoint).ToArray();
     }
 
@@ -60,19 +60,19 @@ public class PlayerManager : Singleton<PlayerManager> {
         Debug.Log($"Created player for client {id}");
     }
 
-    public static Player[] GetOrderedPlayers() {
+    public static IEnumerable<Player> GetOrderedPlayers() {
         var players = _players.ToDictionary(x => x.GetBonusPriority())
                               .OrderBy(x => Antenna.GetDistance(x.Key.Model.GridPos))
                               .ToDictionary(x => x.Key, x => x.Value);
 
-        for (int i = 0; i < players.Count; i++) {
+        for (var i = 0; i < players.Count; i++) {
             var player = players.ElementAt(i).Key;
             players[player] += _players.Count - i;
         }
 
         return players
-               .OrderBy(x => x.Value)
-               .Select(x => x.Key).ToArray();
+            .OrderBy(x => x.Value)
+            .Select(x => x.Key);
     }
 
     public static RebootToken GetSpawnPoint(Player owner) {

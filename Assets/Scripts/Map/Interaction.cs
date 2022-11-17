@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public static class MapHelper {
+public static class Interaction {
     static MapSystem MapSystem {
         get => _mapSystem != null ? _mapSystem : (_mapSystem = MapSystem.Instance);
     }
 
     static MapSystem _mapSystem;
-    const float DefaultMoveSpeed = 1f;
-    const LeanTweenType DefaultEaseType = LeanTweenType.easeInOutSine;
+    const float DefaultMoveSpeed = 3f;
+    const LeanTweenType DefaultEaseType = LeanTweenType.easeInOutQuad;
         
     public static IEnumerator EaseMove(MapObject mapObject, Vector2Int gridPosition, LeanTweenType easeType, float speed) {
         MapSystem.RelocateObject(mapObject, gridPosition);
@@ -30,7 +30,7 @@ public static class MapHelper {
         var rotateActions = mapObjects.Select(obj => obj.RotateRoutine(action.Rotation)).ToArray();
 
         if (staggered) {
-            for (int i = 0; i < mapObjects.Count; i++) {
+            for (var i = 0; i < mapObjects.Count; i++) {
                 yield return Scheduler.GroupRoutines(moveActions[i], rotateActions[i]);
             }
         } else {
@@ -51,7 +51,7 @@ public static class MapHelper {
         }
     }
 
-    public static bool CheckTile<T>(IReadOnlyCollection<MapObject> tile, Func<T, bool> predicate, MapObject exclude) where T : IMapObject {
+    public static bool CheckTile<T>(IEnumerable<MapObject> tile, Func<T, bool> predicate, MapObject exclude) where T : IMapObject {
         return tile.Where(o => o != exclude).OfType<T>().All(predicate);
     }
 
@@ -71,12 +71,12 @@ public static class MapHelper {
                 return false;
             }
         }
-        action = new(mapObject, dir);
+        action = new MapAction(mapObject, dir);
         return true;
     }
 
     public static bool Push(MapObject mapObject, Vector2Int dir, out MapAction action) {
-        action = new(mapObject, dir);
+        action = new MapAction(mapObject, dir);
 
         // Check exit
         var sourceTile = MapSystem.GetTile(mapObject.GridPos);
@@ -117,7 +117,7 @@ public static class MapHelper {
         }
 
         public MapAction(MapObject mapObject, Vector2Int direction, int rotation = 0) {
-            MapObjects = new() { mapObject };
+            MapObjects = new List<MapObject> { mapObject };
             Direction = direction;
             Rotation = rotation;
         }

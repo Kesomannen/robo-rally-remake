@@ -12,14 +12,14 @@ public class MoveProgram : ProgramCardData {
 
     public override IEnumerator ExecuteRoutine(Player player, int positionInRegister)  {
         var moveVector = _relative ? player.Model.Rotator.Rotate(_direction) : _direction;
-        for (int i = 0; i < _steps; i++) {
+        for (var i = 0; i < _steps; i++) {
             Scheduler.Push(Move(), $"Move Program for {player} in direction {moveVector}");
         }
         yield break;
 
         IEnumerator Move() {
-            if (MapHelper.Push(player.Model, moveVector, out var action)) {
-                yield return MapHelper.EaseAction(action);
+            if (Interaction.Push(player.Model, moveVector, out var action)) {
+                yield return Interaction.EaseAction(action);
             }
         }
     }

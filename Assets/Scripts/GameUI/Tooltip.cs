@@ -96,7 +96,7 @@ public class Tooltip : Singleton<Tooltip> {
     void UpdatePosition() {
         var screenPos = Mouse.current.position.ReadValue();
 
-        var pivotX = screenPos.x >= Screen.width / 2 ? 1 : 0;
+        var pivotX = screenPos.x >= Screen.width / 2f ? 1 : 0;
         var pivotY = screenPos.y - _rect.sizeDelta.y < 0 ? 0 : 1;
 
         _rect.pivot = new Vector2(pivotX, pivotY);

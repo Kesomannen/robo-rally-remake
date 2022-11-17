@@ -26,9 +26,8 @@ public class CardCollection {
     public delegate void CardUpdateHandler(ProgramCardData card, int index);
     public event CardUpdateHandler OnAdd, OnRemove;
 
-    public CardCollection(IEnumerable<ProgramCardData> startingCards = null, int maxCards = int.MaxValue) {
-        if (startingCards != null) _cards = startingCards.ToList();
-        else _cards = new List<ProgramCardData>();
+    public CardCollection(IEnumerable<ProgramCardData> startingCards = null, int maxCards = int.MaxValue){
+        _cards = startingCards != null ? startingCards.ToList() : new List<ProgramCardData>();
         _maxCards = maxCards;
     }
 
@@ -69,8 +68,8 @@ public class CardCollection {
 
     public void Clear() {
         var cards = _cards.Count;
-        for (int i = 0; i < cards; i++) {
-            RemoveCard(0);
+        for (var i = 0; i < cards; i++) {
+            RemoveCard(Cards.Count - 1);
         }
     }
 

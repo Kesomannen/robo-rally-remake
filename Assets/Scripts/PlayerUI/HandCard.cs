@@ -13,7 +13,7 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
 
     static GraphicRaycaster _graphicRaycaster;
 
-    Player Owner => PlayerManager.LocalPlayer;
+    static Player Owner => PlayerManager.LocalPlayer;
     bool _isDragging;
     int _index;
     Vector3 _origin;

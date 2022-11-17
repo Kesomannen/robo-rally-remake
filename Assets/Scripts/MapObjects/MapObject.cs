@@ -25,28 +25,21 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
         if (steps == 0) return;
 
         _rotator.RotZ += steps;
-        var target = _rotator.RotZ * 90f;
-        transform.eulerAngles = new(0, 0, target);
+        transform.eulerAngles = new Vector3(0, 0, _rotator.RotZ * 90f);
         OnRotationChanged?.Invoke(steps);
     }
 
-    const float _rotDuration = 1f;
-    const LeanTweenType _rotEaseType = LeanTweenType.easeInOutSine;
+    const float RotDuration = 0.5f;
+    const LeanTweenType RotEaseType = LeanTweenType.easeInOutSine;
 
     public IEnumerator RotateRoutine(int steps) {
         if (steps == 0) yield break;
-
-        var iterations = Mathf.Abs(steps);
-        var delta = steps / iterations;
-
-        for (int i = 0; i < iterations; i++) {
-            _rotator.RotZ += delta;
-            var target = _rotator.RotZ * 90f;
-
-            OnRotationChanged?.Invoke(delta);
-
-            LeanTween.rotateZ(gameObject, target, _rotDuration).setEase(_rotEaseType);
-            yield return Helpers.Wait(_rotDuration);
-        }
+        
+        _rotator.RotZ += steps;
+        OnRotationChanged?.Invoke(steps);
+        
+        var duration = Math.Abs(steps) * RotDuration;
+        LeanTween.rotateZ(gameObject, _rotator.RotZ * 90f, duration).setEase(RotEaseType);
+        yield return Helpers.Wait(duration);
     }
 }

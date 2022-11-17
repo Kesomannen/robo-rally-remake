@@ -7,8 +7,13 @@ public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     ITooltipable _item;
 
-    void Awake() {
-        _item = GetTooltipable();
+    void Awake(){
+        var item = GetTooltipable();
+        if (item == null){
+            Debug.LogError($"No tooltipable found on {gameObject.name}");
+            return;
+        }
+        _item = item;
     }
 
     ITooltipable GetTooltipable() {

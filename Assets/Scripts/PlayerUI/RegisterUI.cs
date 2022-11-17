@@ -6,7 +6,7 @@ public class RegisterUI : MonoBehaviour, IPointerClickHandler {
     [SerializeField] int _index;
     [SerializeField] Container<ProgramCardData> _cardContainer;
 
-    Player Owner => PlayerManager.LocalPlayer;
+    static Player Owner => PlayerManager.LocalPlayer;
 
     static readonly RegisterUI[] _registers = new RegisterUI[ExecutionPhase.RegisterCount];
     public static RegisterUI GetRegisterUI(int index) => _registers[index];
@@ -51,10 +51,10 @@ public class RegisterUI : MonoBehaviour, IPointerClickHandler {
     public void Remove() {
         if (IsEmpty) return;
 
-        if (Owner.Hand.AddCard(_cardContainer.Data, CardPlacement.Top)) {
-            _cardContainer.gameObject.SetActive(false);
-            Owner.Program.SetCard(_index, null);
-        }
+        if (!Owner.Hand.AddCard(_cardContainer.Data, CardPlacement.Top)) return;
+        
+        _cardContainer.gameObject.SetActive(false);
+        Owner.Program.SetCard(_index, null);
     }
 
     public void OnPointerClick(PointerEventData e) {

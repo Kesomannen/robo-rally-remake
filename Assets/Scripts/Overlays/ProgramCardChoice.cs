@@ -5,8 +5,8 @@ public class ProgramCardChoice : Choice<ProgramCardData> {
     [SerializeField] Transform _choiceContainer;
     [SerializeField] ProgramCardChoiceItem _choicePrefab;
 
-    public override int MaxOptions => 8;
-    public override int MinOptions => 2;
+    protected override int MaxOptions => 8;
+    protected override int MinOptions => 2;
 
     public void Init(ProgramCardData[] options, bool[] availableArray, Action<ChoiceResult> callback, bool isOptional = false) {
         Init(options, callback, isOptional);

@@ -10,7 +10,7 @@ using UnityEngine.Tilemaps;
 public class MapSystem : Singleton<MapSystem> {
     [SerializeField] Grid _grid;
 
-    const float _mapObjectMoveSpeed = 2f;
+    const float MapObjectMoveSpeed = 2f;
 
     static Dictionary<Vector2Int, List<MapObject>> _tiles;
     static Dictionary<Tilemap, IBoard> _boards;
@@ -36,7 +36,7 @@ public class MapSystem : Singleton<MapSystem> {
         Debug.Log($"Registered {_boards.Count} boards.");
 
         // Register MapObjects
-        _tiles = new();
+        _tiles = new Dictionary<Vector2Int, List<MapObject>>();
         foreach (var obj in _grid.GetComponentsInChildren<MapObject>(true)) {
             RegisterMapObject(obj);
         }
@@ -49,7 +49,7 @@ public class MapSystem : Singleton<MapSystem> {
 
     void RegisterMapObject(MapObject mapObject) {
         mapObject.GridPos = WorldToGrid(mapObject.transform.position);
-        _tiles.EnforceKey(mapObject.GridPos, () => new()).Add(mapObject);
+        _tiles.EnforceKey(mapObject.GridPos, () => new List<MapObject>()).Add(mapObject);
     }
 
     void AddObject(MapObject mapObject, Vector2Int gridPos) {
@@ -60,7 +60,7 @@ public class MapSystem : Singleton<MapSystem> {
             mapObject.Fall(GetParentBoard(mapObject));
         }
 
-        var tile = _tiles.EnforceKey(gridPos, () => new());
+        var tile = _tiles.EnforceKey(gridPos, () => new List<MapObject>());
         tile.Add(mapObject);
 
         CallHandlers<IOnEnterHandler>(tile, obj => obj.OnEnter(mapObject), mapObject);
@@ -73,8 +73,8 @@ public class MapSystem : Singleton<MapSystem> {
         tile.Remove(mapObject);
         CallHandlers<IOnExitHandler>(tile, obj => obj.OnExit(mapObject));
     }
-    
-    void CallHandlers<T>(List<MapObject> tile, Action<T> action, MapObject except = null) where T : IMapObject {
+
+    static void CallHandlers<T>(IEnumerable<MapObject> tile, Action<T> action, MapObject except = null) where T : IMapObject {
         var handlers = except == null ? tile.OfType<T>() : tile.Where(x => x != except).OfType<T>();
         foreach (var handler in handlers) action(handler);
     }
@@ -107,7 +107,7 @@ public class MapSystem : Singleton<MapSystem> {
         Destroy(obj.gameObject);
     }
 
-    public bool TryGetTile(Vector2Int gridPos, out IReadOnlyList<MapObject> result) {
+    public static bool TryGetTile(Vector2Int gridPos, out IReadOnlyList<MapObject> result) {
         if (_tiles.ContainsKey(gridPos)) {
             result = _tiles[gridPos];
             return true;
@@ -117,9 +117,8 @@ public class MapSystem : Singleton<MapSystem> {
         }
     }
 
-    public IReadOnlyList<MapObject> GetTile(Vector2Int gridPos) {
-        if (TryGetTile(gridPos, out var result)) return result;
-        else return null;
+    public static IReadOnlyList<MapObject> GetTile(Vector2Int gridPos){
+        return TryGetTile(gridPos, out var result) ? result : null;
     }
     
     public Vector2Int WorldToGrid(Vector3 worldPos) {
@@ -130,27 +129,25 @@ public class MapSystem : Singleton<MapSystem> {
         return _grid.CellToWorld(gridPos.ToVec3Int());
     }
 
-    public IBoard GetParentBoard(MapObject mapObject) {
+    public static IBoard GetParentBoard(MapObject mapObject) {
         return mapObject.GetComponentInParent<IBoard>();
     }
 
     public bool TryGetBoard(Vector2Int gridPos, out IBoard board) {
         foreach (var (tilemap, b) in _boards) {
             var pos = tilemap.WorldToCell(GridToWorld(gridPos));
-            if (tilemap.HasTile(pos)) {
-                board = b;
-                return true;
-            }
+            if (!tilemap.HasTile(pos)) continue;
+            
+            board = b;
+            return true;
         }
         board = null;
         return false;
     }
 
-    public void GetByType<T>(List<T> outputList) where T : MapObject {
-        foreach (var tile in _tiles.Values) {
-            foreach (var obj in tile) {
-                if (obj is T t) outputList.Add(t);
-            }
+    public static void GetByType<T>(List<T> outputList) where T : MapObject{
+        foreach (var obj in _tiles.Values.SelectMany(tile => tile)){
+            if (obj is T t) outputList.Add(t);
         }
     }
 }

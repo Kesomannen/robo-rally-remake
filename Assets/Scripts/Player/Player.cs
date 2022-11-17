@@ -27,20 +27,21 @@ public class Player {
         ClientId = args.OwnerId;
         RobotData = args.RobotData;
 
-        Hand = new(maxCards: args.HandSize);
-        DrawPile = new(startingCards: args.RobotData.StartingDeck);
+        Hand = new CardCollection(maxCards: args.HandSize);
+        DrawPile = new CardCollection(startingCards: args.RobotData.StartingDeck);
+        DiscardPile = new CardCollection();
+        Program = new Program(args.RegisterCount);
+        
         DrawPile.Shuffle();
-        DiscardPile = new();
-        Program = new(args.RegisterCount);
 
         RebootDamage = args.RebootDamage;
         LaserDamage = RobotData.LaserDamage;
 
-        CurrentCheckpoint = new (
+        CurrentCheckpoint = new ObservableField<int>(
             initialValue: 0
         );
 
-        Energy = new (
+        Energy = new ClampedField<int>(
             initialValue: args.StartingEnergy,
             min: 0,
             max: args.MaxEnergy
@@ -96,7 +97,7 @@ public class Player {
     }
 
     public void DrawCards(int count) {
-        for (int i = 0; i < count; i++) {
+        for (var i = 0; i < count; i++) {
             DrawCard();
         };
     }
@@ -122,12 +123,12 @@ public class Player {
     }
 
     public void DiscardCards(IReadOnlyList<ProgramCardData> cards) {
-        for (int i = 0; i < cards.Count; i++) DiscardCard(cards[i]);
+        for (var i = 0; i < cards.Count; i++) DiscardCard(cards[i]);
     }
 
     public void DiscardHand() {
         var cards = Hand.Cards.Count;
-        for (int i = 0; i < cards; i++) DiscardCard(0);
+        for (var i = 0; i < cards; i++) DiscardCard(0);
     }
 
     public void DiscardRandomCard() {
@@ -135,7 +136,7 @@ public class Player {
     }
 
     public void DiscardRandomCards(int count) {
-        for (int i = 0; i < count; i++) DiscardRandomCard();
+        for (var i = 0; i < count; i++) DiscardRandomCard();
     }
 
     public void SerializeRegisters(out byte playerIndex, out byte[] registers) {
@@ -154,7 +155,7 @@ public class Player {
     }
 
     public void DiscardProgram() {
-        for (int i = 0; i < Program.Cards.Count; i++) {
+        for (var i = 0; i < Program.Cards.Count; i++) {
             var card = Program[i];
             if (card == null) continue;
 

@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class ReadyButton : MonoBehaviour, IPointerClickHandler {
-    Player Owner => PlayerManager.LocalPlayer;
+    static Player Owner => PlayerManager.LocalPlayer;
 
     public void OnPointerClick(PointerEventData e) {
         if (Owner.Program.Cards.All(r => r != null)) {

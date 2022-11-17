@@ -15,6 +15,6 @@ MonoBehaviour:
   _name: Repeat 2
   _description: Execute the previous register twice.
   _artwork: {fileID: 21300000, guid: ebd55582c092a8041aa319e715e64e61, type: 3}
-  _isDamage: 0
-  repeatCount: 2
-  relativeRepeatIndex: -1
+  _type: 0
+  _repeatCount: 2
+  _relativeRepeatIndex: -1

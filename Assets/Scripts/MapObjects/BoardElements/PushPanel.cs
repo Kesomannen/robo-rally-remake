@@ -37,10 +37,10 @@ public class PushPanel : BoardElement<PushPanel, ICanEnterHandler>, ITooltipable
 
     protected override void Activate(ICanEnterHandler[] targets) {
         if (_activeRegisters.Contains(ExecutionPhase.CurrentRegister)) {
-            if (MapHelper.Push(targets[0].Object, _direction, out var action)) {
+            if (Interaction.Push(targets[0].Object, _direction, out var action)) {
                 action.MapObjects.AddRange(targets.Skip(1).Select(o => o.Object));
             }
-            Scheduler.Push(MapHelper.EaseAction(action), "PushPanel");
+            Scheduler.Push(Interaction.EaseAction(action), "PushPanel");
         }
     }
 }

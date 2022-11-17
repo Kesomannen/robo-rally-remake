@@ -2,12 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class HandController : Singleton<HandController> {
     [Header("References")]
     [SerializeField] HandCard _cardPrefab;
-    [SerializeField] RectTransform _drawPile, discardPile;
+    [SerializeField] RectTransform _drawPile;
+    [FormerlySerializedAs("discardPile")] [SerializeField] RectTransform _discardPile;
 
     [Header("Animation")]
     [SerializeField] float _cardSpacing;
@@ -18,7 +20,7 @@ public class HandController : Singleton<HandController> {
     readonly List<HandCard> _cardObjects = new();
     readonly List<CardAction> _actionQueue = new();
 
-    Player Owner => PlayerManager.LocalPlayer;
+    static Player Owner => PlayerManager.LocalPlayer;
 
     void Start() {
         Owner.Hand.OnAdd += OnCardAdded;
@@ -35,17 +37,18 @@ public class HandController : Singleton<HandController> {
     IEnumerator UpdateHandRoutine() {
         while (true) {
             yield return Helpers.WaitEndOfFrame();
-            if (_actionQueue.Count > 0) {
-                var action = _actionQueue[0];
-                _actionQueue.RemoveAt(0);
-                switch (action.Type) {
-                    case CardActionType.Draw: yield return DrawCardRoutine(action); break;
-                    case CardActionType.Discard: yield return DiscardCardRoutine(action); break;
-                    case CardActionType.Add: yield return AddCardRoutine(action); break;
-                    case CardActionType.Remove: yield return RemoveCardRoutine(action); break;
-                }
-                yield return Helpers.Wait(action.Delay);
-            }
+            if (_actionQueue.Count <= 0) continue;
+            
+            var action = _actionQueue[0];
+            _actionQueue.RemoveAt(0);
+            yield return action.Type switch {
+                CardActionType.Draw => DrawCardRoutine(action),
+                CardActionType.Discard => DiscardCardRoutine(action),
+                CardActionType.Add => AddCardRoutine(action),
+                CardActionType.Remove => RemoveCardRoutine(action),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+            yield return Helpers.Wait(action.Delay);
         }
     }
 

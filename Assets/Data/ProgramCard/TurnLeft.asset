@@ -16,4 +16,4 @@ MonoBehaviour:
   _description: Turn your robot to the left.
   _artwork: {fileID: 21300000, guid: 250471b19165e4a4783d33efedf49936, type: 3}
   _type: 0
-  rotation: 1
+  _rotation: 1

@@ -16,4 +16,4 @@ MonoBehaviour:
   _description: Turn your robot in the opposite direction.
   _artwork: {fileID: 21300000, guid: 7f20cb86e85c3a04c86535820f7b6d2d, type: 3}
   _type: 0
-  rotation: -2
+  _rotation: -2

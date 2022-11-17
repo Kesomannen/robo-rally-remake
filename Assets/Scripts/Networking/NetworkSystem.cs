@@ -11,12 +11,12 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
 
         MapSystem.Instance.LoadMap(MapData.GetById(LobbySystem.LobbyMapId));
 
-        if (IsServer) {
-            var networkPlayers = LobbySystem.PlayersInLobby;
-            foreach (var plr in networkPlayers) {
-                PlayerManager.Instance.CreatePlayer(plr.Key, plr.Value);
-                CreatePlayerClientRpc(plr.Key, plr.Value);
-            }
+        if (!IsServer) return;
+        
+        var networkPlayers = LobbySystem.PlayersInLobby;
+        foreach (var plr in networkPlayers) {
+            PlayerManager.Instance.CreatePlayer(plr.Key, plr.Value);
+            CreatePlayerClientRpc(plr.Key, plr.Value);
         }
     }
 

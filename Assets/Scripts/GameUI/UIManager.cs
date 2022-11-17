@@ -4,15 +4,14 @@ using UnityEngine;
 public class UIManager : Singleton<UIManager> {
     [SerializeField] GameObject _playerUIParent;
 
-    public UIState CurrentState {
-        get => _currentState;
-        set {
-            if (_currentState == value) return;
-            Exit(_currentState);
-            _currentState = value;
-            Enter(_currentState);
-            OnStateChange?.Invoke(_currentState);
-        }
+    public void ChangeState(UIState newState) {
+        if (_currentState == newState) return;
+        
+        Exit(_currentState);
+        _currentState = newState;
+        Enter(_currentState);
+        
+        OnStateChange?.Invoke(_currentState);
     }
 
     UIState _currentState = UIState.None;

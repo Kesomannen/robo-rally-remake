@@ -121,7 +121,7 @@ public class LobbySystem : NetworkBehaviour {
     void OnClientConnected(ulong player) {
         if (!IsServer) return;
 
-        _playersInLobby[player] = new();
+        _playersInLobby[player] = new LobbyPlayerData();
         SendLobbyUpdates();
         OnPlayerUpdatedOrAdded?.Invoke(player, _playersInLobby[player]);
     }

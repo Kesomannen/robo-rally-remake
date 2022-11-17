@@ -12,7 +12,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
     public static event Action OnPhaseEnd, OnExecutionComplete;
 
     public static IEnumerator DoPhaseRoutine() {
-        UIManager.Instance.CurrentState = UIState.Map;
+        UIManager.Instance.ChangeState(UIState.Map);
 
         // Execute registers
         for (CurrentRegister = 0; CurrentRegister < RegisterCount; CurrentRegister++) {

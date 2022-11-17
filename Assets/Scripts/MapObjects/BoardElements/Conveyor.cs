@@ -12,7 +12,7 @@ public class Conveyor : BoardElement<Conveyor, IMapObject> {
     const float _startProgress = 1f;
 
     static readonly Dictionary<MapObject, float> _progress = new();
-    static readonly Dictionary<Vector2Int, MapHelper.MapAction> _moves = new();
+    static readonly Dictionary<Vector2Int, Interaction.MapAction> _moves = new();
 
     protected override void Awake() {
         base.Awake();
@@ -39,7 +39,7 @@ public class Conveyor : BoardElement<Conveyor, IMapObject> {
 
         // Execute moves
         foreach (var (pos, move) in _moves) {
-            Scheduler.Enqueue(MapHelper.EaseAction(move), $"Conveyor moving to {pos}");
+            Scheduler.Enqueue(Interaction.EaseAction(move), $"Conveyor moving to {pos}");
         }
 
         yield return Scheduler.WaitUntilClearRoutine();

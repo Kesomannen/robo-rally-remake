@@ -5,8 +5,8 @@ public class Program {
     readonly ProgramCardData[] _registers;
     public IReadOnlyCollection<ProgramCardData> Cards => _registers;
 
-    public Program(int _registerCount) {
-        _registers = new ProgramCardData[_registerCount];
+    public Program(int registerCount) {
+        _registers = new ProgramCardData[registerCount];
     }
 
     public ProgramCardData this[int index] {
