@@ -40,7 +40,7 @@ public class PushPanel : BoardElement<PushPanel, ICanEnterHandler>, ITooltipable
             if (Interaction.Push(targets[0].Object, _direction, out var action)) {
                 action.MapObjects.AddRange(targets.Skip(1).Select(o => o.Object));
             }
-            Scheduler.Push(Interaction.EaseAction(action), "PushPanel");
+            Scheduler.Push(Interaction.EaseEvent(action), "PushPanel");
         }
     }
 }

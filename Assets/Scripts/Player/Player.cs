@@ -87,6 +87,14 @@ public class Player {
         return card;
     }
 
+    public ProgramCardData GetTopCardsUntil(Func<ProgramCardData, bool> predicate){
+        while (true){
+            var card = GetTopCard();
+            if (predicate(card)) return card;
+            DiscardPile.AddCard(card, CardPlacement.Top);
+        }
+    }
+
     public void DrawCard() {
         var card = GetTopCard();
 
@@ -128,7 +136,7 @@ public class Player {
 
     public void DiscardHand() {
         var cards = Hand.Cards.Count;
-        for (var i = 0; i < cards; i++) DiscardCard(0);
+        for (var i = 0; i < cards; i++) DiscardCard(Hand.Cards.Count - 1);
     }
 
     public void DiscardRandomCard() {

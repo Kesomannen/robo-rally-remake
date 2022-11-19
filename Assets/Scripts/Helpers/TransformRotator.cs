@@ -3,6 +3,7 @@ using UnityEngine;
 public struct TransformRotator : IRotator {
     public bool FlipX { get; set; }
     public bool FlipY { get; set; }
+    
     public int RotZ {
         get => _rotZ;
         set => _rotZ = Mathb.Mod(value, 4);
@@ -25,8 +26,8 @@ public struct TransformRotator : IRotator {
     }
 
     public static TransformRotator GetRotator(Vector3 angles) {
-        var flipX = Mathf.RoundToInt((angles.x / 180f) % 2f) != 0;
-        var flipY = Mathf.RoundToInt((angles.y / 180f) % 2f) != 0;
+        var flipX = Mathf.RoundToInt((angles.y / 180f) % 2f) != 0;
+        var flipY = Mathf.RoundToInt((angles.x / 180f) % 2f) != 0;
         var zRot = VectorHelper.GetRotationSteps(angles.z);
 
         return new TransformRotator(flipX, flipY, zRot);

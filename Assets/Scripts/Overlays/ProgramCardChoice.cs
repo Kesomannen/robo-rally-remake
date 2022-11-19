@@ -16,7 +16,7 @@ public class ProgramCardChoice : Choice<ProgramCardData> {
     void CreateCards(bool[] availableArray) {
         for (int i = 0; i < Options.Length; i++) {
             var card = Instantiate(_choicePrefab, _choiceContainer);
-            card.SetData(Options[i]);
+            card.SetContent(Options[i]);
             card.SetAvailable(availableArray[i]);
         }
     }

@@ -19,7 +19,7 @@ public class MoveProgram : ProgramCardData {
 
         IEnumerator Move() {
             if (Interaction.Push(player.Model, moveVector, out var action)) {
-                yield return Interaction.EaseAction(action);
+                yield return Interaction.EaseEvent(action);
             }
         }
     }

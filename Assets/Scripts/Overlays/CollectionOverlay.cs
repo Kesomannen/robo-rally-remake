@@ -20,15 +20,14 @@ public class CollectionOverlay : OverlayBase {
         if (shuffledView) cardList.Shuffle();
         foreach (var card in cardList) {
             var cardInstance = Instantiate(_cardPrefab, _cardContainer);
-            cardInstance.SetData(card);
+            cardInstance.SetContent(card);
             _cardObjects.Add(cardInstance);
             cardInstance.gameObject.SetActive(false);
         }
         StartCoroutine(ShowCardsRoutine());
 
-        IEnumerator ShowCardsRoutine() {
-            foreach (var card in _cardObjects) {
-                var obj = card.gameObject;
+        IEnumerator ShowCardsRoutine(){
+            foreach (var obj in _cardObjects.Select(card => card.gameObject)){
                 obj.transform.localScale = Vector3.one * _cardStartScale;
                 LeanTween.scale(obj, Vector3.one, _cardPopupDuration).setEase(_easeType);
                 obj.SetActive(true);

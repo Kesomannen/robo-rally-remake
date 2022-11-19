@@ -9,7 +9,6 @@ public class CardCollectionDisplay : MonoBehaviour, IPointerClickHandler {
     [SerializeField] OverlayData<CollectionOverlay> _collectionOverlayData;
     [Space]
     [SerializeField] TMP_Text _cardCountText;
-    [SerializeField] Image _image;
 
     CardCollection _collection;
     static Player Owner => PlayerManager.LocalPlayer;

@@ -139,7 +139,7 @@ public class HandController : Singleton<HandController> {
         var cardObject = Instantiate(_cardPrefab, transform);
         cardObject.enabled = false;
 
-        cardObject.SetData(card);
+        cardObject.SetContent(card);
         _cardObjects.Insert(index, cardObject);
 
         UpdateCards();

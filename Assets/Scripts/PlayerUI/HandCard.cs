@@ -19,7 +19,7 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
     Vector3 _origin;
     Transform _originalParent;
 
-    private void SetHighlighted(bool value) {
+     void SetHighlighted(bool value) {
         if (_isHighlighted == value) return;
         _isHighlighted = value;
 
@@ -111,16 +111,19 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
         LerpTo(_origin);
     }
 
-    bool TryPlace(RegisterUI register) {
-        if (register.Place(this)) {
-            Owner.Hand.RemoveCard(_index);
-            return true;
-        }
-        return false;
+    bool TryPlace(RegisterUI register){
+        if (!register.Place(this)) return false;
+        Owner.Hand.RemoveCard(_index);
+        return true;
     }
 
-    void Drag(PointerEventData e) {
-        transform.position += (Vector3)e.delta;
+    void Drag(PointerEventData e){
+        var t = transform;
+        
+        var pos = (Vector2) t.position;
+        pos += e.delta * CanvasUtils.Scale;
+        
+        t.position = pos;
     }
 
     int _currentMoveTweenId;
@@ -128,7 +131,7 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
     void LerpTo(Vector2 target, Action callback = null) {
         LeanTween.cancel(_currentMoveTweenId);
         _currentMoveTweenId = LeanTween
-            .move(gameObject, target, 0.2f)
+            .move(gameObject, new Vector3(target.x, target.y), 0.2f)
             .setEase(_easingType)
             .setOnComplete(() => {
                 callback?.Invoke();

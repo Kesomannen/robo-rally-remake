@@ -10,6 +10,8 @@ public class RegisterUI : MonoBehaviour, IPointerClickHandler {
 
     static readonly RegisterUI[] _registers = new RegisterUI[ExecutionPhase.RegisterCount];
     public static RegisterUI GetRegisterUI(int index) => _registers[index];
+    
+    public static bool Locked { get; set; }
 
     public bool IsEmpty => Owner.Program[_index] == null;
 
@@ -31,17 +33,17 @@ public class RegisterUI : MonoBehaviour, IPointerClickHandler {
         if (next == null) {
             _cardContainer.gameObject.SetActive(false);
         } else {
-            _cardContainer.SetData(next);
+            _cardContainer.SetContent(next);
             _cardContainer.gameObject.SetActive(true);
         }
     }
 
 
     public bool Place(Container<ProgramCardData> item) {
-        if (!IsEmpty) return false;
+        if (Locked || !IsEmpty) return false;
         if (!item.Data.CanPlace(Owner, _index)) return false;
 
-        _cardContainer.SetData(item.Data);
+        _cardContainer.SetContent(item.Data);
         _cardContainer.gameObject.SetActive(true);
         Owner.Program.SetCard(_index, item.Data);
 
@@ -49,8 +51,7 @@ public class RegisterUI : MonoBehaviour, IPointerClickHandler {
     }
 
     public void Remove() {
-        if (IsEmpty) return;
-
+        if (Locked || IsEmpty) return;
         if (!Owner.Hand.AddCard(_cardContainer.Data, CardPlacement.Top)) return;
         
         _cardContainer.gameObject.SetActive(false);

@@ -50,7 +50,7 @@ public class CardCollection {
     }
 
     public int AddRange(IReadOnlyList<ProgramCardData> cards, CardPlacement placement) {
-        for (int i = 0; i < cards.Count; i++) {
+        for (var i = 0; i < cards.Count; i++) {
             if (!AddCard(cards[i], placement)) return i;
         }
         return cards.Count;
@@ -68,7 +68,7 @@ public class CardCollection {
 
     public void Clear() {
         var cards = _cards.Count;
-        for (var i = 0; i < cards; i++) {
+        for (var i = 0; i < cards; i++) {;
             RemoveCard(Cards.Count - 1);
         }
     }

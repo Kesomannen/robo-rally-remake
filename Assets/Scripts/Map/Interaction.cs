@@ -23,11 +23,11 @@ public static class Interaction {
         yield return Helpers.Wait(duration);
     }
 
-    public static IEnumerator EaseAction(MapAction action, LeanTweenType easeType, float speed, bool staggered = false) {
-        var mapObjects = action.MapObjects;
+    public static IEnumerator EaseEvent(MapEvent mapEvent, LeanTweenType easeType, float speed, bool staggered = false) {
+        var mapObjects = mapEvent.MapObjects;
 
-        var moveActions = mapObjects.Select(obj => EaseMove(obj, obj.GridPos + action.Direction, easeType, speed)).ToArray();
-        var rotateActions = mapObjects.Select(obj => obj.RotateRoutine(action.Rotation)).ToArray();
+        var moveActions = mapObjects.Select(obj => EaseMove(obj, obj.GridPos + mapEvent.Direction, easeType, speed)).ToArray();
+        var rotateActions = mapObjects.Select(obj => obj.RotateRoutine(mapEvent.Rotation)).ToArray();
 
         if (staggered) {
             for (var i = 0; i < mapObjects.Count; i++) {
@@ -41,13 +41,13 @@ public static class Interaction {
         }
     }
 
-    public static IEnumerator EaseAction(MapAction action, bool staggered = false)
-        => EaseAction(action, DefaultEaseType, DefaultMoveSpeed, staggered);
+    public static IEnumerator EaseEvent(MapEvent mapEvent, bool staggered = false)
+        => EaseEvent(mapEvent, DefaultEaseType, DefaultMoveSpeed, staggered);
 
-    public static void ExecuteAction(MapAction action) {
-        foreach (var obj in action.MapObjects) {
-            MapSystem.MoveObjectInstant(obj, obj.GridPos + action.Direction);
-            obj.RotateInstant(action.Rotation);
+    public static void ExecuteEvent(MapEvent mapEvent) {
+        foreach (var obj in mapEvent.MapObjects) {
+            MapSystem.MoveObjectInstant(obj, obj.GridPos + mapEvent.Direction);
+            obj.RotateInstant(mapEvent.Rotation);
         }
     }
 
@@ -59,7 +59,7 @@ public static class Interaction {
         return tile.OfType<T>().All(predicate);
     }
 
-    public static bool SoftMove(MapObject mapObject, Vector2Int dir, out MapAction action) {
+    public static bool SoftMove(MapObject mapObject, Vector2Int dir, out MapEvent mapEvent) {
         var targetPos = mapObject.GridPos + dir;
 
         if (MapSystem.TryGetTile(targetPos, out var tile)) {
@@ -67,16 +67,16 @@ public static class Interaction {
 
             if (!CheckTile(sourceTile, (ICanExitHandler o) => o.CanExit(dir), mapObject)
                 || !CheckTile(tile, (ICanEnterHandler o) => o.CanEnter(dir))) {
-                action = default;
+                mapEvent = default;
                 return false;
             }
         }
-        action = new MapAction(mapObject, dir);
+        mapEvent = new MapEvent(mapObject, dir);
         return true;
     }
 
-    public static bool Push(MapObject mapObject, Vector2Int dir, out MapAction action) {
-        action = new MapAction(mapObject, dir);
+    public static bool Push(MapObject mapObject, Vector2Int dir, out MapEvent mapEvent){
+        mapEvent = new MapEvent(mapObject, dir);
 
         // Check exit
         var sourceTile = MapSystem.GetTile(mapObject.GridPos);
@@ -94,32 +94,32 @@ public static class Interaction {
         // Push next
         if (Push(blockages[0].Object, dir, out var _)) {
             // If we can push one, push all
-            action.MapObjects.AddRange(blockages.Select(o => o.Object));
+            mapEvent.MapObjects.AddRange(blockages.Select(o => o.Object));
             return true;
         } else {
             return false;
         }
     }
+}
 
-    public struct MapAction {
-        public readonly List<MapObject> MapObjects;
-        public readonly Vector2Int Direction;
-        public readonly int Rotation;
-
-        public MapAction(IEnumerable<MapObject> mapObjects, Vector2Int direction, int rotation = 0) {
-            var list = mapObjects.ToList();
-            if (mapObjects == null || list.Count == 0) {
-                throw new ArgumentException("MapObjects cannot be null or empty", nameof(mapObjects));
-            }
-            MapObjects = list;
-            Direction = direction;
-            Rotation = rotation;
+public class MapEvent {
+    public readonly List<MapObject> MapObjects;
+    public readonly Vector2Int Direction;
+    public readonly int Rotation;
+    
+    public MapEvent(IEnumerable<IMapObject> mapObjects, Vector2Int direction, int rotation = 0) {
+        var list = mapObjects.Select(o => o.Object).ToList();
+        if (mapObjects == null || list.Count == 0) {
+            throw new ArgumentException("MapObjects cannot be null or empty", nameof(mapObjects));
         }
-
-        public MapAction(MapObject mapObject, Vector2Int direction, int rotation = 0) {
-            MapObjects = new List<MapObject> { mapObject };
-            Direction = direction;
-            Rotation = rotation;
-        }
+        MapObjects = list;
+        Direction = direction;
+        Rotation = rotation;
+    }
+    
+    public MapEvent(IMapObject mapObject, Vector2Int direction, int rotation = 0) {
+        MapObjects = new List<MapObject> { mapObject.Object };
+        Direction = direction;
+        Rotation = rotation;
     }
 }

@@ -107,14 +107,10 @@ public class MapSystem : Singleton<MapSystem> {
         Destroy(obj.gameObject);
     }
 
-    public static bool TryGetTile(Vector2Int gridPos, out IReadOnlyList<MapObject> result) {
-        if (_tiles.ContainsKey(gridPos)) {
-            result = _tiles[gridPos];
-            return true;
-        } else {
-            result = null;
-            return false;
-        }
+    public static bool TryGetTile(Vector2Int gridPos, out IReadOnlyList<MapObject> result){
+        var success = _tiles.TryGetValue(gridPos, out var tile);
+        result = tile;
+        return success;
     }
 
     public static IReadOnlyList<MapObject> GetTile(Vector2Int gridPos){

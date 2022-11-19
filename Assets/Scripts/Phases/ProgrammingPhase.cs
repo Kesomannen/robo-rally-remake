@@ -82,16 +82,16 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
     }
 
     static void FillRegisters(Player player) {
-        // Discard hand
-        for (var i = 0; i < player.Hand.Cards.Count; i++) {
-            player.DiscardCard(i);
-        }
+        // Discard hand & register
+        player.DiscardHand();
+        player.DiscardProgram();
 
         // Fill empty registers
-        for (int i = 0; i < player.Program.Cards.Count; i++) {
-            if (player.Program[i] == null) {
-                player.Program.SetCard(i, player.GetTopCard());
-            }
+        for (var i = 0; i < player.Program.Cards.Count; i++){
+            if (player.Program[i] != null) continue;
+            
+            var index = i;
+            player.Program.SetCard(index, player.GetTopCardsUntil(c => c.CanPlace(player, index)));
         }
 
         // Lock registers

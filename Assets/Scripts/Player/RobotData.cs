@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "RobotData", menuName = "ScriptableObjects/Robots/Generic Robot", order = 0)]
@@ -11,6 +12,6 @@ public class RobotData : Lookup<RobotData> {
     public string Name => _name;
     public Sprite Icon => _icon;
     public Sprite Sprite => _sprite;
-    public ProgramCardData[] StartingDeck => _startingDeck;
+    public IEnumerable<ProgramCardData> StartingDeck => _startingDeck;
     public Damage LaserDamage => _laserDamage;
 }

@@ -23,7 +23,7 @@ public class RebootToken : MapObject {
         var obstructions = tile.OfType<ICanEnterHandler>();
         foreach (var obj in obstructions) {
             if (Interaction.Push(obj.Object, _direction, out var moveAction)) {
-                yield return Interaction.EaseAction(moveAction);
+                yield return Interaction.EaseEvent(moveAction);
             } else {
                 Debug.LogWarning($"RebootToken is obstructed!", this);
             }

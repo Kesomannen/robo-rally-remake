@@ -18,7 +18,7 @@ MonoBehaviour:
   _maxEnergy: 5
   _cardsPerTurn: 7
   _maxCardsInHand: 10
-  _stressTime: 20
+  _stressTime: 3
   _programCardContainerPrefab: {fileID: -4837892012670907284, guid: 852a4f1b39d0eff43b4ad4b129005922, type: 3}
   _standardRebootDamage:
     NumberOfCards: 2

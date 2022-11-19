@@ -9,10 +9,10 @@ public class Conveyor : BoardElement<Conveyor, IMapObject> {
     [SerializeField] float _cost;
     [SerializeField] ConveyorRotation[] _rotation;
     
-    const float _startProgress = 1f;
+    const float StartProgress = 1f;
 
-    static readonly Dictionary<MapObject, float> _progress = new();
-    static readonly Dictionary<Vector2Int, Interaction.MapAction> _moves = new();
+    static readonly Dictionary<IMapObject, float> _progress = new();
+    static readonly Dictionary<Vector2Int, MapEvent> _moves = new();
 
     protected override void Awake() {
         base.Awake();
@@ -39,14 +39,71 @@ public class Conveyor : BoardElement<Conveyor, IMapObject> {
 
         // Execute moves
         foreach (var (pos, move) in _moves) {
-            Scheduler.Enqueue(Interaction.EaseAction(move), $"Conveyor moving to {pos}");
+            Scheduler.Enqueue(Interaction.EaseEvent(move), $"Conveyor moving to {pos}");
         }
 
         yield return Scheduler.WaitUntilClearRoutine();
     }
 
-    protected override void Activate(IMapObject[] targets) {
+    protected override void Activate(IMapObject[] targets){
+        var movable = targets
+            .Where(t => _progress.EnforceKey(t.Object, StartProgress) >= _cost)
+            .ToList();
+        
+        if (movable.Count == 0) return;
+        foreach (var obj in movable){
+            _progress[obj] -= _cost;
+        }
 
+        var targetPos = GridPos + _direction;
+        
+        // If another non-pushable object is moving to the same spot, neither object moves
+        var obstructingMoves = _moves
+            .Where(m => m.Key == targetPos
+                        && m.Value.MapObjects.Any(o => o is ICanEnterHandler))
+            .Select(m => m.Value)
+            .ToArray();
+
+        if (obstructingMoves.Length > 0){
+            var movableObstacles = movable
+                .Select(o => o.Object)
+                .OfType<ICanEnterHandler>()
+                .ToArray();
+
+            if (movableObstacles.Length > 0){
+                foreach (var move in obstructingMoves){
+                    foreach (var obj in move.MapObjects.OfType<ICanEnterHandler>()){
+                        move.MapObjects.Remove(obj.Object);
+                    }
+                }
+                foreach (var obstacle in movableObstacles){
+                    movable.Remove(obstacle);
+                }
+            }
+        }
+
+        // Check if there is a conveyor at the target position
+        var emptyTarget = !MapSystem.TryGetTile(targetPos, out var targetTile);
+        if (emptyTarget){
+            _moves.Add(targetPos, new MapEvent(movable, _direction));
+        } else {
+            var obj = targetTile.FirstOrDefault(t => t is Conveyor);
+            if (obj == null){
+                if (Interaction.SoftMove(movable[0].Object, _direction, out var mapEvent)){
+                    // Add remaining objects to the map event
+                    mapEvent.MapObjects.AddRange(movable.Skip(1).Select(o => o.Object));
+                }
+            } else {
+                var next = (Conveyor)obj;
+                var rot = next.GetRotation(-_direction);
+                _moves.Add(targetPos, new MapEvent(movable, _direction, rot));
+                next.Activate(movable.ToArray());
+            }
+        }
+    }
+
+    int GetRotation(Vector2Int dir){
+        return _rotation.FirstOrDefault(r => r.RelativeDirection == dir).Rotation;
     }
 
     [Serializable]
