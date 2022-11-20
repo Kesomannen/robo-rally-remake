@@ -14,13 +14,13 @@ public static class Interaction {
     const LeanTweenType DefaultEaseType = LeanTweenType.easeInOutQuad;
         
     public static IEnumerator EaseMove(MapObject mapObject, Vector2Int gridPosition, LeanTweenType easeType, float speed) {
-        MapSystem.RelocateObject(mapObject, gridPosition);
         var prev = mapObject.transform.position;
         var target = MapSystem.GridToWorld(gridPosition);
         var duration = Vector2.Distance(prev, target) / speed;
         
         LeanTween.move(mapObject.gameObject, target, duration).setEase(easeType);
         yield return Helpers.Wait(duration);
+        MapSystem.RelocateObject(mapObject, gridPosition);
     }
 
     public static IEnumerator EaseEvent(MapEvent mapEvent, LeanTweenType easeType, float speed, bool staggered = false) {
@@ -51,28 +51,32 @@ public static class Interaction {
         }
     }
 
-    public static bool CheckTile<T>(IEnumerable<MapObject> tile, Func<T, bool> predicate, MapObject exclude) where T : IMapObject {
-        return tile.Where(o => o != exclude).OfType<T>().All(predicate);
+    public static bool CheckTile<T>(IEnumerable<MapObject> tile, Func<T, bool> predicate, MapObject exclude) where T : IMapObject{
+        return exclude == null ? CheckTile(tile, predicate) : tile.Where(o => o != exclude).OfType<T>().All(predicate);
     }
 
-    public static bool CheckTile<T>(IReadOnlyCollection<MapObject> tile, Func<T, bool> predicate) where T : IMapObject {
+    public static bool CheckTile<T>(IEnumerable<MapObject> tile, Func<T, bool> predicate) where T : IMapObject {
         return tile.OfType<T>().All(predicate);
     }
 
-    public static bool SoftMove(MapObject mapObject, Vector2Int dir, out MapEvent mapEvent) {
-        var targetPos = mapObject.GridPos + dir;
+    public static bool CanMove(Vector2Int source, Vector2Int dir, MapObject except = null){
+        var targetPos = source + dir;
+        var canEnter = !MapSystem.TryGetTile(targetPos, out var tile) 
+                       || CheckTile(tile, (ICanEnterHandler o) => o.CanEnter(-dir));
 
-        if (MapSystem.TryGetTile(targetPos, out var tile)) {
-            var sourceTile = MapSystem.GetTile(mapObject.GridPos);
+        var canExit = !MapSystem.TryGetTile(source, out var sourceTile) 
+                      || CheckTile(sourceTile, (ICanExitHandler o) => o.CanExit(dir), except);
 
-            if (!CheckTile(sourceTile, (ICanExitHandler o) => o.CanExit(dir), mapObject)
-                || !CheckTile(tile, (ICanEnterHandler o) => o.CanEnter(dir))) {
-                mapEvent = default;
-                return false;
-            }
+        return canEnter && canExit;
+    }
+    
+    public static bool SoftMove(MapObject mapObject, Vector2Int dir, out MapEvent mapEvent){
+        if (CanMove(mapObject.GridPos, dir, mapObject)){
+            mapEvent = new MapEvent(mapObject, dir);
+            return true;
         }
-        mapEvent = new MapEvent(mapObject, dir);
-        return true;
+        mapEvent = null;
+        return false;
     }
 
     public static bool Push(MapObject mapObject, Vector2Int dir, out MapEvent mapEvent){

@@ -18,4 +18,8 @@ public class ObservableField<T> : IObservableField<T> {
     public ObservableField(T initialValue) {
         _value = initialValue;
     }
+
+    public override string ToString() {
+        return _value.ToString();
+    }
 }

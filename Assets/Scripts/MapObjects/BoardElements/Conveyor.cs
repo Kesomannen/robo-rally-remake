@@ -10,7 +10,9 @@ public class Conveyor : BoardElement<Conveyor, IMapObject> {
     [SerializeField] ConveyorRotation[] _rotation;
     
     const float StartProgress = 1f;
-
+    const float MoveSpeed = 3f;
+    const LeanTweenType EaseType = LeanTweenType.linear;
+    
     static readonly Dictionary<IMapObject, float> _progress = new();
     static readonly Dictionary<Vector2Int, MapEvent> _moves = new();
 
@@ -38,8 +40,9 @@ public class Conveyor : BoardElement<Conveyor, IMapObject> {
         OnActivateEvent?.Invoke();
 
         // Execute moves
-        foreach (var (pos, move) in _moves) {
-            Scheduler.Enqueue(Interaction.EaseEvent(move), $"Conveyor moving to {pos}");
+        foreach (var (pos, move) in _moves){
+            var routine = Interaction.EaseEvent(move, EaseType, MoveSpeed);
+            Scheduler.Enqueue(routine, $"Conveyor moving to {pos}", 0);
         }
 
         yield return Scheduler.WaitUntilClearRoutine();

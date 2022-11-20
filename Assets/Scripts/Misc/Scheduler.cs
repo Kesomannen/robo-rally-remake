@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Scheduler : Singleton<Scheduler> {
-    static List<RoutineItem> _routineList = new();
-    public static IReadOnlyList<RoutineItem> RoutineList => _routineList;
+    static readonly List<RoutineItem> _routineList = new();
+    public static IEnumerable<RoutineItem> RoutineList => _routineList;
     public static RoutineItem? CurrentRoutine { get; private set; } = null;
 
     static bool _isPlaying;
 
-    public const float DefaultDelay = 0.5f;
+    const float DefaultDelay = 0.5f;
 
     public static void Push(IEnumerator routine, string label, float delay = DefaultDelay) {
         AddItem(new RoutineItem(routine, label, delay), 0);
@@ -23,7 +23,7 @@ public class Scheduler : Singleton<Scheduler> {
     static void AddItem(RoutineItem item, int index) {
         _routineList.Insert(index, item);
         if (!_isPlaying) {
-            Instance.StartCoroutine(Instance.PlayStackRoutine());
+            Instance.StartCoroutine(PlayListRoutine());
         }
     }
 
@@ -53,7 +53,7 @@ public class Scheduler : Singleton<Scheduler> {
         yield return new WaitUntil(() => !_isPlaying);
     }
 
-    IEnumerator PlayStackRoutine() {
+    static IEnumerator PlayListRoutine() {
         _isPlaying = true;
         while (_routineList.Count > 0) {
             var routineItem = _routineList[0];

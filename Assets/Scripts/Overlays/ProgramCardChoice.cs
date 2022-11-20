@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ProgramCardChoice : Choice<ProgramCardData> {
@@ -13,8 +14,8 @@ public class ProgramCardChoice : Choice<ProgramCardData> {
         CreateCards(availableArray);
     }
 
-    void CreateCards(bool[] availableArray) {
-        for (int i = 0; i < Options.Length; i++) {
+    void CreateCards(IReadOnlyList<bool> availableArray) {
+        for (var i = 0; i < Options.Length; i++) {
             var card = Instantiate(_choicePrefab, _choiceContainer);
             card.SetContent(Options[i]);
             card.SetAvailable(availableArray[i]);

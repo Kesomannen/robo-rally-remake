@@ -23,12 +23,13 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
         if (_isHighlighted == value) return;
         _isHighlighted = value;
 
-        if (_isHighlighted) {
-            transform.SetParent(_graphicRaycaster.transform);
-            transform.SetAsLastSibling();
+        if (_isHighlighted){
+            var t = transform;
+            t.SetParent(_graphicRaycaster.transform);
+            t.SetAsLastSibling();
 
             var targetHeight = CanvasUtils.Scale.y * _highlightJumpHeight;
-            LerpTo(transform.position + Vector3.up * targetHeight);
+            LerpTo(t.position + Vector3.up * targetHeight);
             LeanTween.scale(gameObject, Vector3.one * _highlightedSize, 0.2f).setEase(_easingType);
         } else {
             transform.SetParent(_originalParent);
@@ -121,8 +122,8 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
         var t = transform;
         
         var pos = (Vector2) t.position;
-        pos += e.delta * CanvasUtils.Scale;
-        
+        pos += e.delta * CanvasUtils.Scale / 1.5f;
+
         t.position = pos;
     }
 

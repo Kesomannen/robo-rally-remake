@@ -15,11 +15,10 @@ public abstract class BoardElement<T, THandler> : MapObject, IOnEnterExitHandler
     }
     
     public virtual void OnEnter(MapObject mapObject) {
-        if (mapObject is THandler handler) {
-            Handlers ??= new List<THandler>();
-            Handlers.Add(handler);
-            if (Handlers.Count == 1) OnActivateEvent += OnActivate;
-        }
+        if (mapObject is not THandler handler) return;
+        Handlers ??= new List<THandler>();
+        Handlers.Add(handler);
+        if (Handlers.Count == 1) OnActivateEvent += OnActivate;
     }
 
     public virtual void OnExit(MapObject mapObject) {

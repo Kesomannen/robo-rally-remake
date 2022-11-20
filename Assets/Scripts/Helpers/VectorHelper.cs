@@ -11,12 +11,12 @@ public static class VectorHelper {
     public static Vector2Int RotateCCW(Vector2Int v2) => -RotateCW(v2);
 
     public static Vector2Int RotateCW(Vector2Int v2, int steps) {
-        for (int i = 0; i < steps; i++) { v2 = RotateCW(v2); }
+        for (var i = 0; i < steps; i++) { v2 = RotateCW(v2); }
         return v2;
     }
 
     public static Vector2Int RotateCCW(Vector2Int v2, int steps) {
-        for (int i = 0; i < steps; i++) { v2 = RotateCCW(v2); }
+        for (var i = 0; i < steps; i++) { v2 = RotateCCW(v2); }
         return v2;
     }
 

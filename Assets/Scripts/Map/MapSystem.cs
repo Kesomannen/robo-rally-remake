@@ -52,7 +52,7 @@ public class MapSystem : Singleton<MapSystem> {
         _tiles.EnforceKey(mapObject.GridPos, () => new List<MapObject>()).Add(mapObject);
     }
 
-    void AddObject(MapObject mapObject, Vector2Int gridPos) {
+    void AddObject(MapObject mapObject, Vector2Int gridPos, bool callOnEnter = true) {
         mapObject.GridPos = gridPos;
         if (TryGetBoard(gridPos, out var board)) {
             board.Parent(mapObject.transform);
@@ -63,15 +63,20 @@ public class MapSystem : Singleton<MapSystem> {
         var tile = _tiles.EnforceKey(gridPos, () => new List<MapObject>());
         tile.Add(mapObject);
 
-        CallHandlers<IOnEnterHandler>(tile, obj => obj.OnEnter(mapObject), mapObject);
+        if (callOnEnter){
+            CallHandlers<IOnEnterHandler>(tile, obj => obj.OnEnter(mapObject), mapObject);
+        }
     }
 
-    void RemoveObject(MapObject mapObject) {
+    void RemoveObject(MapObject mapObject, bool callOnExit = true) {
         if (!_tiles.ContainsKey(mapObject.GridPos)) return;
         
         var tile = _tiles[mapObject.GridPos];
         tile.Remove(mapObject);
-        CallHandlers<IOnExitHandler>(tile, obj => obj.OnExit(mapObject));
+        
+        if (callOnExit){
+            CallHandlers<IOnExitHandler>(tile, obj => obj.OnExit(mapObject));
+        }
     }
 
     static void CallHandlers<T>(IEnumerable<MapObject> tile, Action<T> action, MapObject except = null) where T : IMapObject {
@@ -90,20 +95,30 @@ public class MapSystem : Singleton<MapSystem> {
     }
 
     public T CreateObject<T>(T prefab, Vector2Int gridPos, bool callOnEnter = true) where T : MapObject {
-        var obj = Instantiate(prefab, _grid.transform);
-        obj.transform.position = GridToWorld(gridPos);
-
-        if (callOnEnter) {
-            AddObject(obj, gridPos);
-        } else {
-            RegisterMapObject(obj);
-        }
+        var obj = Instantiate(prefab);
         
+        var onMap = TryGetBoard(gridPos, out var board);
+        if (!onMap) Debug.LogWarning($"Object {obj} was created off the map at {gridPos}.");
+        board.Parent(obj.transform);
+        
+        obj.transform.position = GridToWorld(gridPos);
+        AddObject(obj, gridPos, callOnEnter);
+
+        return obj;
+    }
+    
+    public T CreateObject<T>(T prefab, Vector2Int gridPos, IBoard parent, bool callOnEnter = true) where T : MapObject {
+        var obj = Instantiate(prefab);
+        parent.Parent(obj.transform);
+        
+        obj.transform.position = GridToWorld(gridPos);
+        AddObject(obj, gridPos, callOnEnter);
+
         return obj;
     }
 
-    public void DestroyObject(MapObject obj) {
-        RemoveObject(obj);
+    public void DestroyObject(MapObject obj, bool callOnExit = true) {
+        RemoveObject(obj, callOnExit);
         Destroy(obj.gameObject);
     }
 

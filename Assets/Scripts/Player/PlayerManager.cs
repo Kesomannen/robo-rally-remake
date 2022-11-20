@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 public class PlayerManager : Singleton<PlayerManager> {
     [SerializeField] PlayerModel _playerModelPrefab;
@@ -24,9 +25,9 @@ public class PlayerManager : Singleton<PlayerManager> {
     }
 
     void OnMapLoaded() {
-        List<RebootToken> checkPoints = new();
-        MapSystem.GetByType(checkPoints);
-        _spawnPoints = checkPoints.Where(x => x.IsSpawnPoint).ToArray();
+        List<RebootToken> checkpoints = new();
+        MapSystem.GetByType(checkpoints);
+        _spawnPoints = checkpoints.Where(x => x.IsSpawnPoint).ToArray();
     }
 
     public void CreatePlayer(ulong id, LobbyPlayerData data) {
@@ -41,7 +42,6 @@ public class PlayerManager : Singleton<PlayerManager> {
             RobotData = robotData,
             ModelPrefab = _playerModelPrefab,
             SpawnPoint = spawnPoint,
-            MaxEnergy = settings.MaxEnergy,
             StartingEnergy = settings.StartingEnergy,
             HandSize = settings.MaxCardsInHand,
             RegisterCount = ExecutionPhase.RegisterCount,
@@ -51,9 +51,7 @@ public class PlayerManager : Singleton<PlayerManager> {
         var newPlayer = new Player(playerArgs);
         _players.Add(newPlayer);
 
-        if (NetworkManager.Singleton == null) {
-            LocalPlayer = newPlayer;
-        } else if (id == NetworkManager.Singleton.LocalClientId) {
+        if (NetworkManager.Singleton == null || NetworkManager.Singleton.LocalClientId == id) {
             LocalPlayer = newPlayer;
         }
 

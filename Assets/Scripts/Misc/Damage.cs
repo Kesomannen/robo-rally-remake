@@ -9,7 +9,6 @@ public struct Damage {
 
     public void Apply(Player player) {
         var pile = player.GetCollection(Destination);
-
         for (var i = 0; i < NumberOfCards; i++) {
             pile.AddCard(Card, Placement);
         }

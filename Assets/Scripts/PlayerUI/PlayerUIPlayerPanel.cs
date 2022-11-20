@@ -26,6 +26,7 @@ public class PlayerUIPlayerPanel : Container<Player>, IPointerClickHandler {
     void OnEnergyChanged(int prev, int next){
         _energyText.text = next.ToString();
     }
+    
     public void OnPointerClick(PointerEventData e){
         OverlaySystem.Instance.ShowOverlay(_overlayData).Init(_player);
     }

@@ -9,7 +9,7 @@ public class Player {
     public readonly RobotData RobotData;
 
     public readonly ulong ClientId;
-    public readonly ClampedField<int> Energy;
+    public readonly ObservableField<int> Energy;
     public readonly ObservableField<int> CurrentCheckpoint;
 
     public readonly CardCollection Hand, DrawPile, DiscardPile;
@@ -36,16 +36,8 @@ public class Player {
 
         RebootDamage = args.RebootDamage;
         LaserDamage = RobotData.LaserDamage;
-
-        CurrentCheckpoint = new ObservableField<int>(
-            initialValue: 0
-        );
-
-        Energy = new ClampedField<int>(
-            initialValue: args.StartingEnergy,
-            min: 0,
-            max: args.MaxEnergy
-        );
+        Energy = new ObservableField<int>(args.StartingEnergy);
+        CurrentCheckpoint = new ObservableField<int>(0);
 
         Model = MapSystem.Instance.CreateObject (
             args.ModelPrefab,
@@ -152,11 +144,11 @@ public class Player {
         registers = Program.Cards.Select(c => (byte) c.GetLookupId()).ToArray();
     }
 
-    public void Reboot(IBoard board) {
+    public void Reboot(IBoard board, bool takeDamage = true) {
         IsRebooted = true;
 
         board.Respawn(Model);
-        RebootDamage.Apply(this);
+        if (takeDamage) RebootDamage.Apply(this);
         
         DiscardHand();
         DiscardProgram();
@@ -186,7 +178,6 @@ public struct PlayerArgs {
     public ulong OwnerId;
     public RobotData RobotData;
     public PlayerModel ModelPrefab;
-    public int MaxEnergy;
     public int StartingEnergy;
     public int HandSize;
     public int RegisterCount;

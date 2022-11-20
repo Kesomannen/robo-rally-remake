@@ -21,13 +21,18 @@ public class RegisterUI : MonoBehaviour, IPointerClickHandler {
 
     void OnEnable() {
         _cardContainer.gameObject.SetActive(false);
+    }
+
+    void Start() {
         Owner.Program.OnRegisterChanged += OnRegisterChanged;
     }
-    void OnDisable() {
+    
+    void OnDestroy() {
         Owner.Program.OnRegisterChanged -= OnRegisterChanged;
     }
 
     void OnRegisterChanged(int index, ProgramCardData prev, ProgramCardData next) {
+        if (!enabled) return;
         if (index != _index) return;
 
         if (next == null) {

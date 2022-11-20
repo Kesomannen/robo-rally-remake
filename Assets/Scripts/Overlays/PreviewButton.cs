@@ -31,11 +31,11 @@ public class PreviewButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
         HidePreview();
     }
 
-    void HidePreview() {
+    static void HidePreview() {
         OverlaySystem.Instance.gameObject.SetActive(true);
     }
 
-    void ShowPreview() {
+    static void ShowPreview() {
         OverlaySystem.Instance.gameObject.SetActive(false);
     }
 }

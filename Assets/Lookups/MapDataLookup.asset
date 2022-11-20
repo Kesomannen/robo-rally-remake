@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: MapDataLookup
   m_EditorClassIdentifier: 
   _values:
-  - {fileID: 11400000, guid: 30afcee7c5cda6340a35b14d2733282f, type: 2}
+  - {fileID: 11400000, guid: b0f5e608bc8120e45863f455a917919f, type: 2}

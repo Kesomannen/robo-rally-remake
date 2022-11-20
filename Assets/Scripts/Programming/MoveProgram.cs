@@ -18,6 +18,7 @@ public class MoveProgram : ProgramCardData {
         yield break;
 
         IEnumerator Move() {
+            if (player.IsRebooted) yield break;
             if (Interaction.Push(player.Model, moveVector, out var action)) {
                 yield return Interaction.EaseEvent(action);
             }

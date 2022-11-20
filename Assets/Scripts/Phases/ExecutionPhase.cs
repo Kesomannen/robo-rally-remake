@@ -1,5 +1,8 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 using UnityEngine.Rendering.UI;
 
 #pragma warning disable 0067
@@ -13,15 +16,16 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
 
     public static IEnumerator DoPhaseRoutine() {
         UIManager.Instance.ChangeState(UIState.Map);
-
-        // Execute registers
-        for (CurrentRegister = 0; CurrentRegister < RegisterCount; CurrentRegister++) {
-            yield return ExecuteRegister();
-
-            // Board elements
+        
+        for (CurrentRegister = 0; CurrentRegister < RegisterCount; CurrentRegister++){
+            var orderedPlayers = PlayerManager.GetOrderedPlayers().ToArray();
+            yield return ExecuteRegister(orderedPlayers);
+            
             yield return Conveyor.ActivateElement();
             yield return PushPanel.ActivateElement();
             yield return Gear.ActivateElement();
+            yield return BoardLaser.ActivateElement();
+            yield return FireLasers(orderedPlayers);
             yield return EnergySpace.ActivateElement();
             yield return Checkpoint.ActivateElement();
         }
@@ -35,14 +39,19 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
         OnPhaseEnd?.Invoke();
     }
 
-    static IEnumerator ExecuteRegister() {
-        var orderedPlayers = PlayerManager.GetOrderedPlayers();
-        foreach (var player in orderedPlayers) {
+    static IEnumerator ExecuteRegister(IEnumerable<Player> players) {
+        foreach (var player in players) {
             var card = player.Program[CurrentRegister];
             if (card == null) continue;
 
             Scheduler.Enqueue(card.ExecuteRoutine(player, CurrentRegister), $"ProgramCard ({card})");
         }
         yield return Scheduler.WaitUntilClearRoutine();
+    }
+
+    static IEnumerator FireLasers(IEnumerable<Player> players) {
+        foreach (var model in players.Select(p => p.Model)){
+            yield return model.FireLaser(model.Rotator.Identity);
+        }
     }
 }

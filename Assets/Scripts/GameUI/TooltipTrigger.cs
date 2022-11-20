@@ -2,12 +2,12 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
+public abstract class TooltipTrigger : MonoBehaviour {
     [SerializeField] TooltipableLocation _tooltipableLocation;
 
     ITooltipable _item;
 
-    void Awake(){
+    protected virtual void Awake(){
         var item = GetTooltipable();
         if (item == null){
             Debug.LogError($"No tooltipable found on {gameObject.name}");
@@ -25,11 +25,11 @@ public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         };
     }
 
-    public void OnPointerEnter(PointerEventData _) {
+    protected void Show() {
         Tooltip.Instance.Show(_item);
     }
     
-    public void OnPointerExit(PointerEventData _) {
+    protected void Hide() {
         Tooltip.Instance.Hide();
     }
 

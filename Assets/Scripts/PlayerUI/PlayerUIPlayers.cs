@@ -7,6 +7,7 @@ public class PlayerUIPlayers : MonoBehaviour {
 
     void Start(){
         foreach (var player in PlayerManager.Players){
+            if (player == PlayerManager.LocalPlayer) continue;
             Instantiate(_playerPanelPrefab, _playerPanelParent).SetContent(player);
         }
     }

@@ -3,8 +3,6 @@ using UnityEngine;
 public class Checkpoint : BoardElement<Checkpoint, IPlayer> {
     [SerializeField] int _index;
 
-    public int Index => _index;
-
     protected override void Activate(IPlayer[] targets) {
         foreach (var playerModel in targets) {
             var player = playerModel.Owner;

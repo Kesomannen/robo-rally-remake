@@ -28,20 +28,16 @@ public class PlayerOverlay : OverlayBase {
 
     void Refresh(){
         _nameText.text = _player.ToString();
-        _energyText.text = Value(_player.Energy);
+        _energyText.text = _player.Energy.ToString();
         _iconImage.sprite = _player.RobotData.Icon;
         _robotNameText.text = _player.RobotData.Name;
-        _checkpointText.text = Value(_player.CurrentCheckpoint);
+        _checkpointText.text = _player.CurrentCheckpoint.ToString();
         _drawPile.text = Count(_player.DrawPile);
         _hand.text = Count(_player.Hand);
         _discardPile.text = Count(_player.DiscardPile);
         
         string Count(CardCollection collection){
             return collection.Cards.Count.ToString();
-        }
-
-        string Value<T>(IObservableField<T> ob){
-            return ob.Value.ToString();
         }
     }
 }

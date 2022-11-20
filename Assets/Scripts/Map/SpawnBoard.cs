@@ -5,12 +5,8 @@ public class SpawnBoard : MonoBehaviour, IBoard {
         child.SetParent(transform);
     }
 
-    public void Respawn(MapObject obj) {
-        if (obj is PlayerModel player) {
-            var spawnPoint = PlayerManager.GetSpawnPoint(player.Owner);
-            Scheduler.Push(spawnPoint.RespawnRoutine(player), $"SpawnBoard Respawn {player}");
-        } else {
-            Debug.LogWarning($"Respawn not implemented for {obj.name}");
-        }
+    public void Respawn(IPlayer player) {
+        var spawnPoint = PlayerManager.GetSpawnPoint(player.Owner);
+        Scheduler.Push(spawnPoint.RespawnRoutine(player.Object), $"SpawnBoard Respawn {player}");
     }
 }

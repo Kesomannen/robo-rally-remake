@@ -2,17 +2,15 @@ using UnityEngine;
 
 public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T> {
     public static T Instance {
-        get {
+        get{
             if (_instanceExists) return _instance;
-            else {
-                Debug.LogWarning($"A script is trying to access the singleton instance {typeof(T)}, but it doesn't exist yet.");
-                return null;
-            }
+            Debug.LogWarning($"A script is trying to access the singleton instance {typeof(T)}, but it doesn't exist yet.");
+            return null;
         }
     }
 
     static T _instance;
-    protected static bool _instanceExists { get; private set; }
+    static bool _instanceExists;
 
     protected virtual void Awake() {
         if (!_instanceExists) {
@@ -24,10 +22,9 @@ public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T> {
         }
     }
 
-    protected virtual void OnDestroy() {
-        if (_instance == this) {
-            _instance = null;
-            _instanceExists = false;
-        }
+    protected virtual void OnDestroy(){
+        if (_instance != this) return;
+        _instance = null;
+        _instanceExists = false;
     }
 }

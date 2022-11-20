@@ -16,7 +16,7 @@ public class PhaseSystem : Singleton<PhaseSystem> {
         }
     }
 
-    public void StartPhaseSystem() {
+    void StartPhaseSystem() {
         IsRunning = true;
         StartCoroutine(PhaseSystemRoutine());
     }

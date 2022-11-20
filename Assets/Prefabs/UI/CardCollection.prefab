@@ -101,7 +101,6 @@ MonoBehaviour:
     Prefab: {fileID: 9105691054769382345, guid: 6a7835c3c7e13c24aa7b259bbf92fc4c, type: 3}
     CanPreview: 0
   _cardCountText: {fileID: 3399899694282681233}
-  _image: {fileID: 984570601044314469}
 --- !u!114 &4228034244385261969
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,7 +151,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 984570601044314471}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95ce0d1ea88a2eb4e966499bd39c164b, type: 3}
+  m_Script: {fileID: 11500000, guid: 24c4b39c147e4fb4888acd7a908a2e52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _tooltipableLocation: 0

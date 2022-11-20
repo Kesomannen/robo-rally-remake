@@ -18,17 +18,17 @@ public class RebootToken : MapObject {
         MapSystem.Instance.MoveObjectInstant(Object, _startPos);
     }
 
-    public IEnumerator RespawnRoutine(PlayerModel playerModel) {
+    public IEnumerator RespawnRoutine(MapObject obj) {
         var tile = MapSystem.GetTile(GridPos);
         var obstructions = tile.OfType<ICanEnterHandler>();
-        foreach (var obj in obstructions) {
-            if (Interaction.Push(obj.Object, _direction, out var moveAction)) {
+        foreach (var obstruct in obstructions) {
+            if (Interaction.Push(obstruct.Object, _direction, out var moveAction)) {
                 yield return Interaction.EaseEvent(moveAction);
             } else {
                 Debug.LogWarning($"RebootToken is obstructed!", this);
             }
         }
         // TODO: Allow the player to choose direction
-        MapSystem.Instance.MoveObjectInstant(playerModel, GridPos);
+        MapSystem.Instance.MoveObjectInstant(obj, GridPos);
     }
 }

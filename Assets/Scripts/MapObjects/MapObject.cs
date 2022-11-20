@@ -17,8 +17,8 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
         MapSystem.Instance.DestroyObject(this);
     }
 
-    protected virtual void Awake() {
-        _rotator = TransformRotator.GetRotator(transform.eulerAngles);
+    protected virtual void Awake(){
+        _rotator = new TransformRotator(transform.eulerAngles);
     }
 
     public void RotateInstant(int steps) {
@@ -29,17 +29,17 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
         OnRotationChanged?.Invoke(steps);
     }
 
-    const float RotDuration = 0.5f;
-    const LeanTweenType RotEaseType = LeanTweenType.easeInOutSine;
+    const float DefaultRotSpeed = 0.5f;
+    const LeanTweenType DefaultRotEaseType = LeanTweenType.easeInOutSine;
 
-    public IEnumerator RotateRoutine(int steps) {
+    public IEnumerator RotateRoutine(int steps, float speed = DefaultRotSpeed, LeanTweenType easeType = DefaultRotEaseType) {
         if (steps == 0) yield break;
         
         _rotator.RotZ += steps;
         OnRotationChanged?.Invoke(steps);
         
-        var duration = Math.Abs(steps) * RotDuration;
-        LeanTween.rotateZ(gameObject, _rotator.RotZ * 90f, duration).setEase(RotEaseType);
+        var duration = Math.Abs(steps) * speed;
+        LeanTween.rotateZ(gameObject, _rotator.RotZ * 90f, duration).setEase(easeType);
         yield return Helpers.Wait(duration);
     }
 }

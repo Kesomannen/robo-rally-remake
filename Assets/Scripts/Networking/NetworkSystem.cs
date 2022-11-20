@@ -8,7 +8,8 @@ using System.Linq;
 public class NetworkSystem : NetworkSingleton<NetworkSystem> {
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
-
+        
+        Debug.Log($"NetworkSystem spawned, loading map...");
         MapSystem.Instance.LoadMap(MapData.GetById(LobbySystem.LobbyMapId));
 
         if (!IsServer) return;

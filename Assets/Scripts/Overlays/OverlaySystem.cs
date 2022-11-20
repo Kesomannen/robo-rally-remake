@@ -41,7 +41,7 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
         return obj;
 
         void SetText(string str, TMP_Text text) {
-            if (String.IsNullOrEmpty(str)) {
+            if (string.IsNullOrEmpty(str)) {
                 text.gameObject.SetActive(false);
             } else {
                 text.gameObject.SetActive(true);

@@ -18,6 +18,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
         UIManager.Instance.ChangeState(UIState.Hand);
 
         IsStressed = false;
+        RegisterUI.Locked = false;
         _localPlayerSubmitted = false;
         StressTimer.Value = GameSettings.instance.StressTime;
         
@@ -49,7 +50,8 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
 
     static void LockPlayerRegister(byte playerIndex, IEnumerable<byte> registerCardIds) {
         var isLocal = PlayerManager.Players[playerIndex] == PlayerManager.LocalPlayer;
-        if (isLocal) {
+        if (isLocal){
+            RegisterUI.Locked = true;
             _localPlayerSubmitted = true;
             return;
         }
