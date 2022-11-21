@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: -8779450549258411288}
   - component: {fileID: 4613979876801270713}
   - component: {fileID: 378311907217629101}
+  - component: {fileID: -4740117553140767400}
+  - component: {fileID: 6974709325591947711}
   m_Layer: 0
   m_Name: Wall3
   m_TagString: Untagged
@@ -131,4 +133,52 @@ MonoBehaviour:
   - {x: -0.30983242, y: -0.50017786, z: 0}
   m_ShapePathHash: 1316681552
   m_Mesh: {fileID: 0}
-  m_InstanceId: -43030
+  m_InstanceId: 76156
+--- !u!114 &-4740117553140767400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8977294978363438795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2efb1d58b054d4183ddeddc2a4d8ffd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tooltipableLocation: 0
+  _standardMaterial: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  _highlightMaterial: {fileID: 2100000, guid: c385d055d2118d54584af44e2183a368, type: 2}
+--- !u!60 &6974709325591947711
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8977294978363438795}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: -0.5, y: 0.5}
+      - {x: -0.5, y: -0.5}
+      - {x: -0.3115758, y: -0.5}
+      - {x: -0.3033039, y: 0.30237675}
+      - {x: 0.31178534, y: 0.30622327}
+      - {x: 0.3170904, y: -0.5}
+      - {x: 0.5, y: -0.5}
+      - {x: 0.5, y: 0.5}

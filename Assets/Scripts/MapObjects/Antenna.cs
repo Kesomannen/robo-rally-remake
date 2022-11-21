@@ -1,11 +1,15 @@
 using UnityEngine;
 
-public class Antenna : MapObject, ICanEnterHandler {
+public class Antenna : MapObject, ICanEnterHandler, ITooltipable {
     static Antenna _instance;
 
     public bool Pushable => false;
 
     public bool CanEnter(Vector2Int enterDir) => false;
+    
+    public string Header => "Antenna";
+    public string Description => "Robot priority is decided depending on distance to this antenna. " +
+                                 $"Current distance to your robot: {(int) GetDistance(PlayerManager.LocalPlayer.Model.GridPos)} tiles.";
 
     protected override void Awake() {
         if (_instance == null) {

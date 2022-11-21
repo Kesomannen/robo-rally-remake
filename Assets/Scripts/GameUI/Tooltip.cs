@@ -13,13 +13,11 @@ public class Tooltip : Singleton<Tooltip> {
     [SerializeField] float _fadeInSpeed;
     [SerializeField] float _popupDuration;
 
-    bool _currentState;
-    ITooltipable _currentItem;
+    bool _state;
     RectTransform _rect;
     Coroutine _fadeIn;
     int _popupId;
-
-    public static event Action<ITooltipable> OnTooltip, OnTooltipEnd;
+    ITooltipable _current;
 
     protected override void Awake() {
         base.Awake();
@@ -28,22 +26,21 @@ public class Tooltip : Singleton<Tooltip> {
     }
 
     public void Show(ITooltipable item) {
-        if (_currentState) return;
-        _currentState = true;
+        if (_state) return;
+        _state = true;
 
         _popupId = LeanTween.delayedCall(_popupDuration, () => {
-            OnTooltip?.Invoke(item);
-            _currentItem = item;
-
-            gameObject.SetActive(true);
+            _current = item;
+            
             UpdateText(item.Header, _headerText);
             UpdateText(item.Description, _descriptionText);
             UpdatePosition();
 
-            _layoutElement.enabled = _headerText.textInfo.characterCount > _characterWrapLimit ||
-                                     _descriptionText.textInfo.characterCount > _characterWrapLimit;
-
-
+            gameObject.SetActive(true);
+            
+            _layoutElement.enabled = item.Header.Length > _characterWrapLimit ||
+                                     item.Description.Length > _characterWrapLimit;
+            
             _fadeIn = StartCoroutine(FadeIn());
         }).id;
 
@@ -66,8 +63,8 @@ public class Tooltip : Singleton<Tooltip> {
             }
         }
 
-        static void UpdateText(String str, TextMeshProUGUI target) {
-            if (String.IsNullOrEmpty(str)) {
+        static void UpdateText(string str, TMP_Text target) {
+            if (string.IsNullOrEmpty(str)) {
                 target.gameObject.SetActive(false);
             } else {
                 target.gameObject.SetActive(true);
@@ -77,11 +74,8 @@ public class Tooltip : Singleton<Tooltip> {
     }
 
     public void Hide() {
-        if (!_currentState) return;
-        _currentState = false;
-
-        OnTooltipEnd?.Invoke(_currentItem);
-        _currentItem = null;
+        if (!_state) return;
+        _state = false;
 
         gameObject.SetActive(false);
 

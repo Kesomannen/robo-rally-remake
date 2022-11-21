@@ -20,7 +20,7 @@ public class ProgramCard : Container<ProgramCardData> {
             ProgramCardData.CardType.Action => _actionIcon,
             ProgramCardData.CardType.Damage => _damageIcon,
             ProgramCardData.CardType.Utility => _utilityIcon,
-            _ => throw new NotImplementedException()
+            _ => throw new ArgumentOutOfRangeException()
         };
         _name.text = player.Name;
         _description.text = player.Description;

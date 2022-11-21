@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class UIMap : Singleton<UIMap>, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler, IPointerClickHandler {
+public class UIMap : Singleton<UIMap>, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler {
     [Header("Animation")]
     [SerializeField] float _lerpTime;
     [Space]
@@ -21,6 +21,7 @@ public class UIMap : Singleton<UIMap>, IPointerEnterHandler, IPointerExitHandler
 
     RectTransform _rectTransform;
     Physics2DRaycaster _raycaster;
+    Vector2 _lastMousePos;
 
     protected override void Awake() {
         base.Awake();
@@ -29,14 +30,12 @@ public class UIMap : Singleton<UIMap>, IPointerEnterHandler, IPointerExitHandler
     }
 
     public void OnPointerEnter(PointerEventData e) {
-        return;
         if (CanFocus) {
             LerpElementSize(_focusedSize);
         }
     }
 
     public void OnPointerExit(PointerEventData e) {
-        return;
         if (CanFocus) {
             LerpElementSize(1);
         }
@@ -71,26 +70,42 @@ public class UIMap : Singleton<UIMap>, IPointerEnterHandler, IPointerExitHandler
         LeanTween.cancel(_currentPosTweenId);
         _currentPosTweenId = LeanTween.move(_rectTransform, position, _lerpTime).setEase(_lerpType).id;
     }
-    
+
     public void OnPointerMove(PointerEventData e) {
-        Raycast(e, ExecuteEvents.moveHandler);
+        if (_lastMousePos == e.position) return;
+        Raycast(e, ExecuteEvents.pointerMoveHandler);
     }
 
-    public void OnPointerClick(PointerEventData e) {
-        Raycast(e, ExecuteEvents.pointerClickHandler);
-    }
-
+    readonly List<RaycastResult> _raycastResults = new();
+    
     void Raycast<T>(PointerEventData eventData, ExecuteEvents.EventFunction<T> func) where T : IEventSystemHandler {
         var t = transform;
         
         var mousePos = (Vector2) _uiCamera.ScreenToWorldPoint(eventData.position);
-        var relative = mousePos - (Vector2)t.position;
-        var rectSize = _rectTransform.rect.size * CanvasUtils.Scale / 2f;
-        var viewPortPoint = relative / rectSize / 2 + Vector2.one * 0.5f;
+
+        var rectSize = _rectTransform.rect.size * t.localScale * CanvasUtils.Scale / 2f;
+        var pivot = _rectTransform.pivot - new Vector2(0.5f, 0.5f);
+        var rectPos = (Vector2) t.position - pivot * rectSize * 2f;
+
+        var relative = mousePos - rectPos;
+        var viewPortPoint = relative / rectSize / 2f + Vector2.one * 0.5f;
 
         eventData.position = _mapCamera.ViewportToScreenPoint(viewPortPoint);
-        var results = new List<RaycastResult>();
-        _raycaster.Raycast(eventData, results);
-        results.ForEach(r => ExecuteEvents.Execute(r.gameObject, eventData, func));
+        //_debugPos = _mapCamera.ViewportToWorldPoint(viewPortPoint);
+        
+        _raycastResults.Clear();
+        _raycaster.Raycast(eventData, _raycastResults);
+        if (_raycastResults.Count > 0) {
+            ExecuteEvents.Execute(_raycastResults[0].gameObject, eventData, func);
+        }
     }
+    
+    /*
+    Vector2 _debugPos;
+    
+    void OnDrawGizmos() {
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(_debugPos, 0.3f);
+    }
+    */
 }

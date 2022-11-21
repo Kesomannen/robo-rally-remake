@@ -1,10 +1,13 @@
 using System.Linq;
 using UnityEngine;
 
-public class Wall : MapObject, ICanEnterExitHandler {
+public class Wall : MapObject, ICanEnterExitHandler, ITooltipable {
     [SerializeField] Vector2Int[] _openDirections;
 
     public bool Pushable => false;
+    
+    public string Header => "Wall";
+    public string Description => "A wall. You can't go through it.";
 
     protected override void Awake() {
         base.Awake();

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BoardLaser : MapObject {
+public class BoardLaser : MapObject, ITooltipable {
     [SerializeField] Vector2Int _direction;
     [SerializeField] Laser _laserPrefab;
     [SerializeField] Damage _damage;
@@ -12,6 +12,9 @@ public class BoardLaser : MapObject {
     readonly List<MapObject> _targets = new();
 
     static event Action OnActivate;
+
+    public string Header => "Laser";
+    public string Description => $"Ending a register in this laser deals {_damage.NumberOfCards} damage.";
 
     protected override void Awake(){
         base.Awake();

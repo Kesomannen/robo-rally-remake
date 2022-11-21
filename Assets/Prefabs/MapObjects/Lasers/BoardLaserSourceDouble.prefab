@@ -11,6 +11,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: BoardLaserSourceDouble
       objectReference: {fileID: 0}
+    - target: {fileID: 1984020141107778574, guid: 7d89b864ec6bb3544ac812938dfad5aa, type: 3}
+      propertyPath: m_Size.y
+      value: 0.7605042
+      objectReference: {fileID: 0}
+    - target: {fileID: 1984020141107778574, guid: 7d89b864ec6bb3544ac812938dfad5aa, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.004312068
+      objectReference: {fileID: 0}
     - target: {fileID: 3504820698219212847, guid: 7d89b864ec6bb3544ac812938dfad5aa, type: 3}
       propertyPath: ShapeModule.m_Scale.x
       value: 0.38

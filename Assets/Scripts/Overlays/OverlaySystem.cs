@@ -72,6 +72,7 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
     }
 }
 
+[Serializable]
 public struct OverlayData {
     public string Header;
     public string Subtitle;
@@ -86,7 +87,7 @@ public struct OverlayData<T> where T : OverlayBase {
     public T Prefab;
     public bool CanPreview;
 
-    public static implicit operator OverlayData(OverlayData<T> data) => new OverlayData {
+    public static implicit operator OverlayData(OverlayData<T> data) => new() {
         Header = data.Header,
         Subtitle = data.Subtitle,
         Prefab = data.Prefab,

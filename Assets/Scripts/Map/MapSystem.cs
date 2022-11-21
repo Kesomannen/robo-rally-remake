@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,12 +9,9 @@ using UnityEngine.Tilemaps;
 public class MapSystem : Singleton<MapSystem> {
     [SerializeField] Grid _grid;
 
-    const float MapObjectMoveSpeed = 2f;
-
     static Dictionary<Vector2Int, List<MapObject>> _tiles;
     static Dictionary<Tilemap, IBoard> _boards;
-
-    MapData _currentMapData;
+    
     GameObject _currentMap;
 
     public static Action OnMapLoaded;
@@ -26,8 +22,7 @@ public class MapSystem : Singleton<MapSystem> {
         if (_currentMap != null) {
             Destroy(_currentMap);
         }
-
-        _currentMapData = mapData;
+        
         _currentMap = Instantiate(mapData.Prefab, _grid.transform);
 
         // Find tilemaps and boards
@@ -156,9 +151,7 @@ public class MapSystem : Singleton<MapSystem> {
         return false;
     }
 
-    public static void GetByType<T>(List<T> outputList) where T : MapObject{
-        foreach (var obj in _tiles.Values.SelectMany(tile => tile)){
-            if (obj is T t) outputList.Add(t);
-        }
+    public static IEnumerable<T> GetByType<T>() where T : MapObject {
+        return _tiles.Values.SelectMany(tile => tile).OfType<T>();
     }
 }

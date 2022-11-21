@@ -25,9 +25,7 @@ public class PlayerManager : Singleton<PlayerManager> {
     }
 
     void OnMapLoaded() {
-        List<RebootToken> checkpoints = new();
-        MapSystem.GetByType(checkpoints);
-        _spawnPoints = checkpoints.Where(x => x.IsSpawnPoint).ToArray();
+        _spawnPoints = MapSystem.GetByType<RebootToken>().Where(x => x.IsSpawnPoint).ToArray();
     }
 
     public void CreatePlayer(ulong id, LobbyPlayerData data) {

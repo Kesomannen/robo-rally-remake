@@ -1,11 +1,10 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public abstract class TooltipTrigger : MonoBehaviour {
     [SerializeField] TooltipableLocation _tooltipableLocation;
 
-    ITooltipable _item;
+    protected ITooltipable Tooltipable;
 
     protected virtual void Awake(){
         var item = GetTooltipable();
@@ -13,7 +12,7 @@ public abstract class TooltipTrigger : MonoBehaviour {
             Debug.LogError($"No tooltipable found on {gameObject.name}");
             return;
         }
-        _item = item;
+        Tooltipable = item;
     }
 
     ITooltipable GetTooltipable() {
@@ -26,7 +25,7 @@ public abstract class TooltipTrigger : MonoBehaviour {
     }
 
     protected void Show() {
-        Tooltip.Instance.Show(_item);
+        Tooltip.Instance.Show(Tooltipable);
     }
     
     protected void Hide() {

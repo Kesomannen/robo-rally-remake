@@ -13,8 +13,11 @@ public class PushPanel : BoardElement<PushPanel, ICanEnterHandler>, ITooltipable
     public string Description {
         get {
             var registers = _activeRegisters.Select(r => (r + 1).ToString()).ToArray();
-            var str = new StringBuilder($"Pushes objects one space in the direction of the panel.\nActivates on register {registers[0]}");
-            for (int i = 1; i < registers.Length; i++) {
+            var str = new StringBuilder($"Pushes objects one space in the direction of the panel. Activates on ");
+            str.Append(registers.Length == 1 ? $"register" : $"registers");
+            str.Append(registers[0]);
+            
+            for (var i = 1; i < registers.Length; i++) {
                 str.Append($", {registers[i]}");
             }
             str.Append(".");

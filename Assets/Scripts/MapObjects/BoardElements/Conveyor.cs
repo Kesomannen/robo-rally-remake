@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Linq;
 using System;
 
-public class Conveyor : BoardElement<Conveyor, IMapObject> {
+public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
     [SerializeField] Vector2Int _direction;
     [SerializeField] float _cost;
     [SerializeField] ConveyorRotation[] _rotation;
@@ -15,6 +15,9 @@ public class Conveyor : BoardElement<Conveyor, IMapObject> {
     
     static readonly Dictionary<IMapObject, float> _progress = new();
     static readonly Dictionary<Vector2Int, MapEvent> _moves = new();
+    
+    public string Header => "Conveyor";
+    public string Description => $"Moves objects {1f / _cost} tile after each register.";
 
     protected override void Awake() {
         base.Awake();

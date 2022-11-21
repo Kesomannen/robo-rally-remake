@@ -50,7 +50,9 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
     }
 
     static IEnumerator FireLasers(IEnumerable<Player> players) {
-        foreach (var model in players.Select(p => p.Model)){
+        foreach (var player in players){
+            if (player.IsRebooted) continue;
+            var model = player.Model;
             yield return model.FireLaser(model.Rotator.Identity);
         }
     }

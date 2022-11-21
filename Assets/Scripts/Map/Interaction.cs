@@ -6,7 +6,7 @@ using UnityEngine;
 
 public static class Interaction {
     static MapSystem MapSystem {
-        get => _mapSystem != null ? _mapSystem : (_mapSystem = MapSystem.Instance);
+        get => _mapSystem != null ? _mapSystem : _mapSystem = MapSystem.Instance;
     }
 
     static MapSystem _mapSystem;

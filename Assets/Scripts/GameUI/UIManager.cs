@@ -24,7 +24,7 @@ public class UIManager : Singleton<UIManager> {
             UIState.Map => Map,
             UIState.Shop => Shop,
             UIState.None => () => { },
-            _ => throw new NotImplementedException()
+            _ => throw new ArgumentOutOfRangeException()
         };
 
         action();
@@ -55,7 +55,7 @@ public class UIManager : Singleton<UIManager> {
             UIState.Map => Map,
             UIState.Shop => Shop,
             UIState.None => () => { },
-            _ => throw new NotImplementedException()
+            _ => throw new ArgumentOutOfRangeException()
         };
 
         exitAction();
