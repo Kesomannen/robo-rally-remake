@@ -6,18 +6,22 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class Tooltip : Singleton<Tooltip> {
-    [SerializeField] Image _background;
-    [SerializeField] TextMeshProUGUI _headerText, _descriptionText;
-    [SerializeField] LayoutElement _layoutElement;
+    [Header("Tooltip")]
     [SerializeField] int _characterWrapLimit;
     [SerializeField] float _fadeInSpeed;
     [SerializeField] float _popupDuration;
 
+    [Header("References")]
+    [SerializeField] Image _background;
+    [SerializeField] TextMeshProUGUI _headerText, _descriptionText;
+    [SerializeField] LayoutElement _layoutElement;
+
     bool _state;
     RectTransform _rect;
+    ITooltipable _current;
+
     Coroutine _fadeIn;
     int _popupId;
-    ITooltipable _current;
 
     protected override void Awake() {
         base.Awake();
@@ -28,10 +32,9 @@ public class Tooltip : Singleton<Tooltip> {
     public void Show(ITooltipable item) {
         if (_state) return;
         _state = true;
+        _current = item;
 
         _popupId = LeanTween.delayedCall(_popupDuration, () => {
-            _current = item;
-            
             UpdateText(item.Header, _headerText);
             UpdateText(item.Description, _descriptionText);
             UpdatePosition();
@@ -73,8 +76,8 @@ public class Tooltip : Singleton<Tooltip> {
         }
     }
 
-    public void Hide() {
-        if (!_state) return;
+    public void Hide(ITooltipable item) {
+        if (!_state || _current != item) return;
         _state = false;
 
         gameObject.SetActive(false);

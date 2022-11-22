@@ -17,7 +17,7 @@ public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
     static readonly Dictionary<Vector2Int, MapEvent> _moves = new();
     
     public string Header => "Conveyor";
-    public string Description => $"Moves objects {1f / _cost} tile after each register.";
+    public string Description => $"Moves objects {Helpers.Format(1f / _cost, "tile")} after each register.";
 
     protected override void Awake() {
         base.Awake();
@@ -90,7 +90,7 @@ public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
 
         // Check if there is a conveyor at the target position
         var emptyTarget = !MapSystem.TryGetTile(targetPos, out var targetTile);
-        if (emptyTarget){
+        if (emptyTarget) {
             _moves.Add(targetPos, new MapEvent(movable, _direction));
         } else {
             var obj = targetTile.FirstOrDefault(t => t is Conveyor);
@@ -99,7 +99,7 @@ public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
                     // Add remaining objects to the map event
                     mapEvent.MapObjects.AddRange(movable.Skip(1).Select(o => o.Object));
                 }
-            } else {
+            } else{
                 var next = (Conveyor)obj;
                 var rot = next.GetRotation(-_direction);
                 _moves.Add(targetPos, new MapEvent(movable, _direction, rot));

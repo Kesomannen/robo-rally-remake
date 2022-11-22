@@ -11,4 +11,12 @@ public static class Helpers {
     static readonly WaitForEndOfFrame _endOfFrame = new();
 
     public static WaitForEndOfFrame WaitEndOfFrame() => _endOfFrame;
+
+    public static string Format(int count, string word) {
+        return count == 1 ? word : word + "s";
+    }
+
+    public static string Format(float count, string word) {
+        return Format((int) count, word);
+    }
 }

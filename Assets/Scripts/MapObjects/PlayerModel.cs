@@ -9,6 +9,7 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
     public Player Owner { get; private set; }
 
     public bool Pushable => true;
+    public override bool CanRotate => true;
 
     public bool CanEnter(Vector2Int enterDir) => false;
     public bool CanExit(Vector2Int exitDir) => true;

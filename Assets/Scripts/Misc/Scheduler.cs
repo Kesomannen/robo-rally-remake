@@ -13,11 +13,11 @@ public class Scheduler : Singleton<Scheduler> {
     const float DefaultDelay = 0.5f;
 
     public static void Push(IEnumerator routine, string label, float delay = DefaultDelay) {
-        AddItem(new RoutineItem(routine, label, delay), 0);
+        AddItem(new RoutineItem(routine, label, delay), _routineList.Count);
     }
 
     public static void Enqueue(IEnumerator routine, string label, float delay = DefaultDelay) {
-        AddItem(new RoutineItem(routine, label, delay), _routineList.Count);
+        AddItem(new RoutineItem(routine, label, delay), 0);
     }
 
     static void AddItem(RoutineItem item, int index) {
@@ -56,9 +56,10 @@ public class Scheduler : Singleton<Scheduler> {
     static IEnumerator PlayListRoutine() {
         _isPlaying = true;
         while (_routineList.Count > 0) {
-            var routineItem = _routineList[0];
+            var i = _routineList.Count - 1;
+            var routineItem = _routineList[i];
             CurrentRoutine = routineItem;
-            _routineList.RemoveAt(0);
+            _routineList.RemoveAt(i);
 
             yield return routineItem.Routine;
             yield return Helpers.Wait(routineItem.Delay);

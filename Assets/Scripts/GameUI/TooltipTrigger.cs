@@ -29,7 +29,7 @@ public abstract class TooltipTrigger : MonoBehaviour {
     }
     
     protected void Hide() {
-        Tooltip.Instance.Hide();
+        Tooltip.Instance.Hide(Tooltipable);
     }
 
     enum TooltipableLocation {

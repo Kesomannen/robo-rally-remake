@@ -11,6 +11,8 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
 
     [ReadOnly] public Vector2Int GridPos;
 
+    public virtual bool CanRotate => false;
+
     public event Action<int> OnRotationChanged;
 
     public virtual void Fall(IBoard board) {
@@ -22,7 +24,7 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
     }
 
     public void RotateInstant(int steps) {
-        if (steps == 0) return;
+        if (steps == 0 || !CanRotate) return;
 
         _rotator.RotZ += steps;
         transform.eulerAngles = new Vector3(0, 0, _rotator.RotZ * 90f);
@@ -33,7 +35,7 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
     const LeanTweenType DefaultRotEaseType = LeanTweenType.easeInOutSine;
 
     public IEnumerator RotateRoutine(int steps, float speed = DefaultRotSpeed, LeanTweenType easeType = DefaultRotEaseType) {
-        if (steps == 0) yield break;
+        if (steps == 0 || !CanRotate) yield break;
         
         _rotator.RotZ += steps;
         OnRotationChanged?.Invoke(steps);

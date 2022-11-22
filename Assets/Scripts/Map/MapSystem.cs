@@ -32,10 +32,21 @@ public class MapSystem : Singleton<MapSystem> {
 
         // Register MapObjects
         _tiles = new Dictionary<Vector2Int, List<MapObject>>();
+        var callHandlers = new List<IOnEnterHandler>();
         foreach (var obj in _grid.GetComponentsInChildren<MapObject>(true)) {
             RegisterMapObject(obj);
+            if (obj is IOnEnterHandler handler) callHandlers.Add(handler);
         }
         Debug.Log($"Registered {_tiles.Count} tiles.");
+
+        // Call OnEnter handlers
+        foreach (var handler in callHandlers) {
+            foreach (var obj in _tiles[handler.Object.GridPos]) {
+                if (obj == handler.Object) continue;
+                handler.OnEnter(obj);
+            }
+        }
+        Debug.Log($"Called OnEnter for {callHandlers.Count} objects.");
 
         mapData.OnLoad();
         OnMapLoaded?.Invoke();

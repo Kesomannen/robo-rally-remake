@@ -1,11 +1,13 @@
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 [CreateAssetMenu(fileName = "MapData", menuName = "ScriptableObjects/Map/Basic", order = 0)]
 public class MapData : Lookup<MapData> {
+    [Header("Map")]
     [SerializeField] string _name;
     [SerializeField] MapDifficulty _difficulty;
     [SerializeField] MapLength _length;
+
+    [Header("References")]
     [SerializeField] GameObject _prefab;
 
     public string Name => _name;

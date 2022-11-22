@@ -8,8 +8,7 @@ public class Antenna : MapObject, ICanEnterHandler, ITooltipable {
     public bool CanEnter(Vector2Int enterDir) => false;
     
     public string Header => "Antenna";
-    public string Description => "Robot priority is decided depending on distance to this antenna. " +
-                                 $"Current distance to your robot: {(int) GetDistance(PlayerManager.LocalPlayer.Model.GridPos)} tiles.";
+    public string Description => "Priority is decided depending on distance to this antenna.";
 
     protected override void Awake() {
         if (_instance == null) {
