@@ -30,7 +30,7 @@ public class Tooltip : Singleton<Tooltip> {
     }
 
     public void Show(ITooltipable item) {
-        if (_state) return;
+        if (_state || item == null) return;
         _state = true;
         _current = item;
 
@@ -41,6 +41,7 @@ public class Tooltip : Singleton<Tooltip> {
 
             gameObject.SetActive(true);
             
+            Debug.Log(_layoutElement);
             _layoutElement.enabled = item.Header.Length > _characterWrapLimit ||
                                      item.Description.Length > _characterWrapLimit;
             

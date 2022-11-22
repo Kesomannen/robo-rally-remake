@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -95,8 +96,14 @@ public class UIMap : Singleton<UIMap>, IPointerEnterHandler, IPointerExitHandler
         
         _raycastResults.Clear();
         _raycaster.Raycast(eventData, _raycastResults);
-        if (_raycastResults.Count > 0) {
-            ExecuteEvents.Execute(_raycastResults[0].gameObject, eventData, func);
+        switch (_raycastResults.Count){
+            case 0: return;
+            case > 1:
+                ExecuteEvents.Execute(_raycastResults.OrderByDescending(r => r.sortingOrder).First().gameObject, eventData, func);
+                break;
+            default:
+                ExecuteEvents.Execute(_raycastResults[0].gameObject, eventData, func);
+                break;
         }
     }
     

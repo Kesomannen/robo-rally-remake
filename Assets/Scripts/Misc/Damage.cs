@@ -1,16 +1,16 @@
 using System;
+using System.Collections.Generic;
 
 [Serializable]
-public struct Damage {
-    public int NumberOfCards;
-    public ProgramCardData Card;
+public class Damage {
+    public List<ProgramCardData> Cards;
     public Pile Destination;
     public CardPlacement Placement;
 
     public void Apply(Player player) {
         var pile = player.GetCollection(Destination);
-        for (var i = 0; i < NumberOfCards; i++) {
-            pile.AddCard(Card, Placement);
+        foreach (var card in Cards){
+            pile.AddCard(card, Placement);
         }
     }
 }

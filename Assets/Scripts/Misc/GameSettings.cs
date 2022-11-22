@@ -9,8 +9,7 @@ public class GameSettings : ScriptableSingleton<GameSettings> {
 
     [Header("Energy")]
     [SerializeField] int _startingEnergy;
-    [SerializeField] int _maxEnergy;
-
+    
     [Header("Programming")]
     [SerializeField] int _cardsPerTurn;
     [SerializeField] int _maxCardsInHand;
@@ -20,16 +19,22 @@ public class GameSettings : ScriptableSingleton<GameSettings> {
     [Header("Damaging")]
     [SerializeField] Damage _standardRebootDamage;
 
+    [Header("Upgrades")]
+    [SerializeField] int _upgradeSlots;
+    [SerializeField] Container<UpgradeCardData> _upgradeContainerPrefab;
+
     public int MaxPlayers => _maxPlayers;
     public int MinPlayers => _minPlayers;
 
     public int StartingEnergy => _startingEnergy;
-    public int MaxEnergy => _maxEnergy;
-
+    
     public int CardsPerTurn => _cardsPerTurn;
     public int MaxCardsInHand => _maxCardsInHand;
     public int StressTime => _stressTime;
     public Container<ProgramCardData> ProgramCardContainerPrefab => _programCardContainerPrefab;
 
     public Damage StandardRebootDamage => _standardRebootDamage;
+    
+    public int UpgradeSlots => _upgradeSlots;
+    public Container<UpgradeCardData> UpgradeContainerPrefab => _upgradeContainerPrefab;
 }

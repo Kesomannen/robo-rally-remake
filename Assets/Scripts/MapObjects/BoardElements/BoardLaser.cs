@@ -14,7 +14,7 @@ public class BoardLaser : MapObject, ITooltipable {
     static event Action OnActivate;
 
     public string Header => "Laser";
-    public string Description => $"Ending a register in this laser deals {_damage.NumberOfCards} damage.";
+    public string Description => $"Ending a register in this laser deals {_damage.Cards.Count} damage.";
 
     protected override void Awake(){
         base.Awake();

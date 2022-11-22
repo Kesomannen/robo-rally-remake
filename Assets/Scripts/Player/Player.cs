@@ -19,6 +19,9 @@ public class Player {
     public Damage LaserDamage { get; set; }
 
     public bool IsRebooted { get; private set; }
+    
+    readonly UpgradeCardData[] _upgrades;
+    public IReadOnlyList<UpgradeCardData> Upgrades => _upgrades;
 
     public event Action OnShuffleDeck;
     public event Action<ProgramCardData> OnDraw, OnDiscard;
@@ -38,6 +41,8 @@ public class Player {
         LaserDamage = RobotData.LaserDamage;
         Energy = new ObservableField<int>(args.StartingEnergy);
         CurrentCheckpoint = new ObservableField<int>(0);
+
+        _upgrades = new UpgradeCardData[args.UpgradeSlots];
 
         Model = MapSystem.Instance.CreateObject (
             args.ModelPrefab,
@@ -182,4 +187,5 @@ public struct PlayerArgs {
     public int HandSize;
     public int RegisterCount;
     public Damage RebootDamage;
+    public int UpgradeSlots;
 }

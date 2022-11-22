@@ -44,6 +44,7 @@ public class PlayerManager : Singleton<PlayerManager> {
             HandSize = settings.MaxCardsInHand,
             RegisterCount = ExecutionPhase.RegisterCount,
             RebootDamage = settings.StandardRebootDamage,
+            UpgradeSlots = settings.UpgradeSlots,
         };
 
         var newPlayer = new Player(playerArgs);

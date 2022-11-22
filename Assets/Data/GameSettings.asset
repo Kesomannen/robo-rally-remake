@@ -15,7 +15,6 @@ MonoBehaviour:
   _maxPlayers: 6
   _minPlayers: 2
   _startingEnergy: 3
-  _maxEnergy: 5
   _cardsPerTurn: 7
   _maxCardsInHand: 10
   _stressTime: 20
@@ -25,3 +24,5 @@ MonoBehaviour:
     Card: {fileID: 11400000, guid: ecc7d4ad841b0624999bcaff2184a12f, type: 2}
     Destination: 2
     Placement: 0
+  _upgradeSlots: 5
+  _upgradeContainerPrefab: {fileID: 0}

@@ -90,26 +90,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 944412202424250007, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
   m_PrefabInstance: {fileID: 1127134443942752284}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &-2080580488011059964
-Animator:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 197977148439010955}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 22100000, guid: fa33879641e10124a8c9f92a94ebe903, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!60 &8283345256228159917
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -135,11 +115,31 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.49268577, y: 0.3723422}
-      - {x: -0.4936134, y: -0.31296083}
+    - - {x: -0.47614193, y: 0.3723422}
+      - {x: -0.47982687, y: -0.31296083}
       - {x: -0.3065742, y: -0.31798115}
-      - {x: -0.31035048, y: -0.4977919}
-      - {x: 0.3754608, y: -0.5}
-      - {x: 0.37226745, y: 0.50319326}
-      - {x: -0.31119752, y: 0.4993279}
+      - {x: -0.31035048, y: -0.47849074}
+      - {x: 0.3754608, y: -0.47794154}
+      - {x: 0.37226745, y: 0.47837746}
+      - {x: -0.31119752, y: 0.47451213}
       - {x: -0.32117453, y: 0.37546083}
+--- !u!95 &-2080580488011059964
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 197977148439010955}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 22100000, guid: fa33879641e10124a8c9f92a94ebe903, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

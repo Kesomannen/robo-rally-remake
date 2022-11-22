@@ -14,7 +14,7 @@ public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
     const LeanTweenType EaseType = LeanTweenType.linear;
     
     static readonly Dictionary<IMapObject, float> _progress = new();
-    static readonly Dictionary<Vector2Int, MapEvent> _moves = new();
+    static readonly List<(Vector2Int pos, bool final, MapEvent mapEvent)> _moves = new();
     
     public string Header => "Conveyor";
     public string Description => $"Moves objects {Helpers.Format(1f / _cost, "tile")} after each register.";
@@ -43,8 +43,8 @@ public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
         OnActivateEvent?.Invoke();
 
         // Execute moves
-        foreach (var (pos, move) in _moves){
-            var routine = Interaction.EaseEvent(move, EaseType, MoveSpeed);
+        foreach (var (pos, final, mapEvent) in _moves){
+            var routine = Interaction.EaseEvent(mapEvent, EaseType, MoveSpeed);
             Scheduler.Enqueue(routine, $"Conveyor moving to {pos}", 0);
         }
 
@@ -65,9 +65,10 @@ public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
         
         // If another non-pushable object is moving to the same spot, neither object moves
         var obstructingMoves = _moves
-            .Where(m => m.Key == targetPos
-                        && m.Value.MapObjects.Any(o => o is ICanEnterHandler))
-            .Select(m => m.Value)
+            .Where(m => m.final
+                        && m.pos == targetPos
+                        && m.mapEvent.MapObjects.Any(o => o is ICanEnterHandler))
+            .Select(m => m.mapEvent)
             .ToArray();
 
         if (obstructingMoves.Length > 0){
@@ -91,7 +92,7 @@ public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
         // Check if there is a conveyor at the target position
         var emptyTarget = !MapSystem.TryGetTile(targetPos, out var targetTile);
         if (emptyTarget) {
-            _moves.Add(targetPos, new MapEvent(movable, _direction));
+            _moves.Add((targetPos, true, new MapEvent(movable, _direction)));
         } else {
             var obj = targetTile.FirstOrDefault(t => t is Conveyor);
             if (obj == null){
@@ -102,7 +103,7 @@ public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
             } else{
                 var next = (Conveyor)obj;
                 var rot = next.GetRotation(-_direction);
-                _moves.Add(targetPos, new MapEvent(movable, _direction, rot));
+                _moves.Add((targetPos, false, new MapEvent(movable, _direction, rot)));
                 next.Activate(movable.ToArray());
             }
         }
