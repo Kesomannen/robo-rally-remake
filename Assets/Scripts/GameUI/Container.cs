@@ -5,9 +5,10 @@ public abstract class Container<T> : MonoBehaviour {
 
     protected abstract void Serialize(T player);
 
-    public void SetContent(T data) {
-        if (data.Equals(Data)) return;
+    public Container<T> SetContent(T data) {
+        if (data.Equals(Data)) return this;
         Data = data;
         Serialize(Data);
+        return this;
     }
 }

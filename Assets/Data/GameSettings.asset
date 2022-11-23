@@ -20,8 +20,9 @@ MonoBehaviour:
   _stressTime: 20
   _programCardContainerPrefab: {fileID: -4837892012670907284, guid: 852a4f1b39d0eff43b4ad4b129005922, type: 3}
   _standardRebootDamage:
-    NumberOfCards: 2
-    Card: {fileID: 11400000, guid: ecc7d4ad841b0624999bcaff2184a12f, type: 2}
+    Cards:
+    - {fileID: 11400000, guid: ecc7d4ad841b0624999bcaff2184a12f, type: 2}
+    - {fileID: 11400000, guid: ecc7d4ad841b0624999bcaff2184a12f, type: 2}
     Destination: 2
     Placement: 0
   _upgradeSlots: 5

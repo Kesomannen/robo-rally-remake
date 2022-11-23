@@ -35,6 +35,14 @@ PrefabInstance:
       propertyPath: _damage.NumberOfCards
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 8271988004569114498, guid: 7d89b864ec6bb3544ac812938dfad5aa, type: 3}
+      propertyPath: _damage.Cards.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8271988004569114498, guid: 7d89b864ec6bb3544ac812938dfad5aa, type: 3}
+      propertyPath: _damage.Cards.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: ecc7d4ad841b0624999bcaff2184a12f, type: 2}
     - target: {fileID: 9030250466421701259, guid: 7d89b864ec6bb3544ac812938dfad5aa, type: 3}
       propertyPath: m_RootOrder
       value: 0

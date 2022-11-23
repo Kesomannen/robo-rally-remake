@@ -11,7 +11,7 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
 
     [ReadOnly] public Vector2Int GridPos;
 
-    public virtual bool CanRotate => false;
+    protected virtual bool CanRotate => false;
 
     public event Action<int> OnRotationChanged;
 

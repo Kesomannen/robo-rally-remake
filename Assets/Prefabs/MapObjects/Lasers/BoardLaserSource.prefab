@@ -53,8 +53,8 @@ MonoBehaviour:
   _direction: {x: 1, y: 0}
   _laserPrefab: {fileID: 4459503290772829157, guid: 243af469c17ebc749abc669f9e996091, type: 3}
   _damage:
-    NumberOfCards: 1
-    Card: {fileID: 11400000, guid: ecc7d4ad841b0624999bcaff2184a12f, type: 2}
+    Cards:
+    - {fileID: 11400000, guid: ecc7d4ad841b0624999bcaff2184a12f, type: 2}
     Destination: 2
     Placement: 0
 --- !u!212 &3662140187091209615

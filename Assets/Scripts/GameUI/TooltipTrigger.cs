@@ -5,6 +5,8 @@ public abstract class TooltipTrigger : MonoBehaviour {
     [SerializeField] TooltipableLocation _tooltipableLocation;
 
     protected ITooltipable Tooltipable;
+    
+    bool _isTooltipActive;
 
     protected virtual void Awake(){
         var item = GetTooltipable();
@@ -13,6 +15,12 @@ public abstract class TooltipTrigger : MonoBehaviour {
             return;
         }
         Tooltipable = item;
+    }
+
+    protected void OnDisable() {
+        if (!_isTooltipActive) return;
+        Tooltip.Instance.Hide(Tooltipable);
+        _isTooltipActive = false;
     }
 
     ITooltipable GetTooltipable() {
@@ -26,10 +34,12 @@ public abstract class TooltipTrigger : MonoBehaviour {
 
     protected void Show() {
         Tooltip.Instance.Show(Tooltipable);
+        _isTooltipActive = true;
     }
     
     protected void Hide() {
         Tooltip.Instance.Hide(Tooltipable);
+        _isTooltipActive = false;
     }
 
     enum TooltipableLocation {

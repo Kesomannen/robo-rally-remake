@@ -13,7 +13,7 @@ public static class Helpers {
     public static WaitForEndOfFrame WaitEndOfFrame() => _endOfFrame;
 
     public static string Format(int count, string word) {
-        return count == 1 ? word : word + "s";
+        return count == 1 ? $"{count} {word}" : $"{count} {word}s";
     }
 
     public static string Format(float count, string word) {

@@ -41,7 +41,6 @@ public class Tooltip : Singleton<Tooltip> {
 
             gameObject.SetActive(true);
             
-            Debug.Log(_layoutElement);
             _layoutElement.enabled = item.Header.Length > _characterWrapLimit ||
                                      item.Description.Length > _characterWrapLimit;
             

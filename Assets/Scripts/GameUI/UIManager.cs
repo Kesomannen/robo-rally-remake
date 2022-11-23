@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 public class UIManager : Singleton<UIManager> {
-    [SerializeField] GameObject _playerUIParent;
+    [SerializeField] Transform _playerUIParent, _executionUIParent;
 
     public void ChangeState(UIState newState) {
         if (_currentState == newState) return;
@@ -30,7 +30,7 @@ public class UIManager : Singleton<UIManager> {
         action();
 
         void Hand() {
-            _playerUIParent.SetActive(true);
+            _playerUIParent.gameObject.SetActive(true);
             UIMap.Instance.gameObject.SetActive(true);
 
             UIMap.Instance.CanFocus = true;
@@ -38,6 +38,7 @@ public class UIManager : Singleton<UIManager> {
         }
 
         void Map() {
+            _executionUIParent.gameObject.SetActive(true);
             UIMap.Instance.gameObject.SetActive(true);
 
             UIMap.Instance.CanFocus = false;
@@ -61,11 +62,12 @@ public class UIManager : Singleton<UIManager> {
         exitAction();
 
         void Hand() {
-            _playerUIParent.SetActive(false);
+            _playerUIParent.gameObject.SetActive(false);
             UIMap.Instance.gameObject.SetActive(false);
         }
 
         void Map() {
+            _executionUIParent.gameObject.SetActive(false);
             UIMap.Instance.gameObject.SetActive(false);
         }
 
