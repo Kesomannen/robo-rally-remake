@@ -69,9 +69,9 @@ public class Scheduler : Singleton<Scheduler> {
     }
 
     public struct RoutineItem {
-        public IEnumerator Routine;
-        public string Label;
-        public float Delay;
+        public readonly IEnumerator Routine;
+        public readonly string Label;
+        public readonly float Delay;
 
         public RoutineItem(IEnumerator routine, string label, float delay) {
             Routine = routine;

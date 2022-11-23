@@ -73,7 +73,7 @@ public class CardCollection {
         }
     }
 
-    public int GetIndex(CardPlacement placement) {
+    int GetIndex(CardPlacement placement) {
         return placement switch {
             CardPlacement.Top => 0,
             CardPlacement.Bottom => _cards.Count - 1,

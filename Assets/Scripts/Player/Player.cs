@@ -37,8 +37,9 @@ public class Player {
         
         DrawPile.Shuffle();
 
-        RebootDamage = args.RebootDamage;
-        LaserDamage = RobotData.LaserDamage;
+        RebootDamage = args.RebootDamage.Clone();
+        LaserDamage = RobotData.LaserDamage.Clone();
+        
         Energy = new ObservableField<int>(args.StartingEnergy);
         CurrentCheckpoint = new ObservableField<int>(0);
 
@@ -50,7 +51,6 @@ public class Player {
         );
 
         Model.Init(this);
-        Model.GetComponent<SpriteRenderer>().sprite = args.RobotData.Sprite;
 
         ExecutionPhase.OnPhaseEnd += () => {
             IsRebooted = false;

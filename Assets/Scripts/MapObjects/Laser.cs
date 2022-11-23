@@ -23,7 +23,7 @@ public class Laser : MapObject, IOnEnterExitHandler {
             var onMap = MapSystem.Instance.TryGetBoard(pos, out var board);
             if (!onMap) break;
 
-            if (i != 0 || !ignoreSource){
+            if (i > 0 || !ignoreSource){
                 var laser = MapSystem.Instance.CreateObject(prefab, pos, board, false);
                 laser.transform.rotation = source.transform.rotation;
                 lasers.Add(laser);
