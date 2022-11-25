@@ -41,8 +41,8 @@ public class Tooltip : Singleton<Tooltip> {
 
             gameObject.SetActive(true);
             
-            _layoutElement.enabled = item.Header.Length > _characterWrapLimit ||
-                                     item.Description.Length > _characterWrapLimit;
+            _layoutElement.enabled = IsLongerThan(item.Header, _characterWrapLimit) 
+                                     || IsLongerThan(item.Description, _characterWrapLimit);
             
             _fadeIn = StartCoroutine(FadeIn());
         }).id;
@@ -66,6 +66,8 @@ public class Tooltip : Singleton<Tooltip> {
             }
         }
 
+        static bool IsLongerThan(string text, int limit) => !string.IsNullOrEmpty(text) && text.Length > limit;
+        
         static void UpdateText(string str, TMP_Text target) {
             if (string.IsNullOrEmpty(str)) {
                 target.gameObject.SetActive(false);

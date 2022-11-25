@@ -22,16 +22,17 @@ public static class Matchmaking {
         set => _transport = value;
     }
 
+    public static Lobby CurrentLobby { get; private set; }
+    
     static UnityTransport _transport;
-    static Lobby _currentLobby;
     static string _localPlayerId;
     static Coroutine _heartbeatCoroutine;
     static Coroutine _refreshLobbyCoroutine;
 
-    const string _relayJoinCodeKey = "j";
-    const string _mapIDKey = "m";
-    const int _heartbeatInterval = 15;
-    const int _refreshLobbyInterval = 5;
+    const string RelayJoinCodeKey = "j";
+    const string MapIDKey = "m";
+    const int HeartbeatInterval = 15;
+    const int RefreshLobbyInterval = 5;
 
     public static async Task InitializeAsync() {
         await InitializeUnityServicesAsync();
@@ -43,8 +44,7 @@ public static class Matchmaking {
         if (UnityServices.State == ServicesInitializationState.Uninitialized) {
             var options = new InitializationOptions();
 #if UNITY_EDITOR
-            if (ClonesManager.IsClone()) options.SetProfile(ClonesManager.GetArgument());
-            else options.SetProfile("Primary");
+            options.SetProfile(ClonesManager.IsClone() ? ClonesManager.GetArgument() : "Primary");
 #endif
             await UnityServices.InitializeAsync(options);
         }
@@ -64,7 +64,7 @@ public static class Matchmaking {
     }
 
     public static async Task CreateLobbyAndAllocationAsync(LobbyData lobbyData) {
-        if (_currentLobby != null) {
+        if (CurrentLobby != null) {
             Debug.LogError("Cannot join a lobby while already in a lobby");
             return;
         }
@@ -75,12 +75,12 @@ public static class Matchmaking {
         var options = new CreateLobbyOptions {
             IsPrivate = lobbyData.IsPrivate,
             Data = new Dictionary<string, DataObject> {
-                [_relayJoinCodeKey] = new(
+                [RelayJoinCodeKey] = new(
                     visibility: DataObject.VisibilityOptions.Member,
                     index: DataObject.IndexOptions.S1,
                     value: relayJoinCode
                 ),
-                [_mapIDKey] = new(
+                [MapIDKey] = new(
                     visibility: DataObject.VisibilityOptions.Public,
                     index: DataObject.IndexOptions.N1,
                     value: lobbyData.MapID.ToString()
@@ -88,13 +88,13 @@ public static class Matchmaking {
             }
         };
 
-        _currentLobby = await Lobbies.Instance.CreateLobbyAsync(
+        CurrentLobby = await Lobbies.Instance.CreateLobbyAsync(
             $"Lobby {Random.Range(1000, 9999)}",
             lobbyData.MaxPlayers,
             options
         );
 
-        Debug.Log($"Created lobby {_currentLobby.Id}, code: {_currentLobby.LobbyCode}");
+        Debug.Log($"Created lobby {CurrentLobby.Id}, code: {CurrentLobby.LobbyCode}");
 
         Transport.SetHostRelayData(
             alloc.RelayServer.IpV4,
@@ -108,31 +108,31 @@ public static class Matchmaking {
     }
 
     static IEnumerator HeartbeatRoutine() {
-        while (_currentLobby != null) {
-            Debug.Log($"Sending heartbeat to lobby {_currentLobby.Id}");
-            Lobbies.Instance.SendHeartbeatPingAsync(_currentLobby.Id);
-            yield return new WaitForSecondsRealtime(_heartbeatInterval);
+        while (CurrentLobby != null) {
+            Debug.Log($"Sending heartbeat to lobby {CurrentLobby.Id}");
+            Lobbies.Instance.SendHeartbeatPingAsync(CurrentLobby.Id);
+            yield return new WaitForSecondsRealtime(HeartbeatInterval);
         }
     }
 
     static IEnumerator RefreshLobbyRoutine() {
-        while (_currentLobby != null) {
-            Debug.Log($"Refreshing lobby {_currentLobby.Id}");
-            var task = Lobbies.Instance.GetLobbyAsync(_currentLobby.Id);
+        while (CurrentLobby != null) {
+            Debug.Log($"Refreshing lobby {CurrentLobby.Id}");
+            var task = Lobbies.Instance.GetLobbyAsync(CurrentLobby.Id);
             yield return new WaitUntil(() => task.IsCompleted);
-            _currentLobby = task.Result;
-            yield return new WaitForSecondsRealtime(_refreshLobbyInterval);
+            CurrentLobby = task.Result;
+            yield return new WaitForSecondsRealtime(RefreshLobbyInterval);
         }
     }
 
     public static async Task JoinLobbyWithCodeAsync(string lobbyCode) {
-        if (_currentLobby != null) {
+        if (CurrentLobby != null) {
             throw new InvalidOperationException("Cannot join a lobby while already in a lobby");
         }
 
-        _currentLobby = await Lobbies.Instance.JoinLobbyByCodeAsync(lobbyCode);
-        var relayJoinCode = _currentLobby.Data[_relayJoinCodeKey].Value;
-        Debug.Log($"Joined lobby {_currentLobby.Id} using lobby code {_currentLobby.LobbyCode}");
+        CurrentLobby = await Lobbies.Instance.JoinLobbyByCodeAsync(lobbyCode);
+        var relayJoinCode = CurrentLobby.Data[RelayJoinCodeKey].Value;
+        Debug.Log($"Joined lobby {CurrentLobby.Id} using lobby code {CurrentLobby.LobbyCode}");
 
         var alloc = await RelayService.Instance.JoinAllocationAsync(relayJoinCode);
         Transport.SetClientRelayData(
@@ -147,7 +147,7 @@ public static class Matchmaking {
 
     public static async Task LockLobbyAsync() {
         try {
-            await Lobbies.Instance.UpdateLobbyAsync(_currentLobby.Id, new UpdateLobbyOptions { IsLocked = true });
+            await Lobbies.Instance.UpdateLobbyAsync(CurrentLobby.Id, new UpdateLobbyOptions { IsLocked = true });
         } catch (Exception e) {
             Debug.Log($"Failed closing lobby: {e}");
         }
@@ -159,20 +159,20 @@ public static class Matchmaking {
                 IsPrivate = options.IsPrivate
             };
 
-            updateOpts.Data[_mapIDKey] = new DataObject(
+            updateOpts.Data[MapIDKey] = new DataObject(
                 visibility: DataObject.VisibilityOptions.Public,
                 index: DataObject.IndexOptions.N1,
                 value: options.MapID.ToString()
             );
 
-            await Lobbies.Instance.UpdateLobbyAsync(_currentLobby.Id, updateOpts);
+            await Lobbies.Instance.UpdateLobbyAsync(CurrentLobby.Id, updateOpts);
         } catch (Exception e) {
             Debug.Log($"Failed updating lobby: {e}");
         }
     }
 
     public static async Task LeaveLobbyAsync() {
-        if (_currentLobby == null) {
+        if (CurrentLobby == null) {
             Debug.LogError("Cannot leave a lobby while not in a lobby");
             return;
         }
@@ -183,14 +183,14 @@ public static class Matchmaking {
         }
 
         try {
-            if (_currentLobby.HostId == _localPlayerId) {
-                await Lobbies.Instance.DeleteLobbyAsync(_currentLobby.Id);
+            if (CurrentLobby.HostId == _localPlayerId) {
+                await Lobbies.Instance.DeleteLobbyAsync(CurrentLobby.Id);
             } else {
-                await Lobbies.Instance.RemovePlayerAsync(_currentLobby.Id, _localPlayerId);
+                await Lobbies.Instance.RemovePlayerAsync(CurrentLobby.Id, _localPlayerId);
             }
-            _currentLobby = null;
+            CurrentLobby = null;
         } catch (LobbyServiceException e) {
-            Debug.LogError($"Failed to leave lobby {_currentLobby.Id}: {e.Message}");
+            Debug.LogError($"Failed to leave lobby {CurrentLobby.Id}: {e.Message}");
         }
     }
 }

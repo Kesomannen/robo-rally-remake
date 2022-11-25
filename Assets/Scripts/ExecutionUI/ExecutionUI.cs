@@ -27,11 +27,13 @@ public class ExecutionUI : MonoBehaviour {
     void OnEnable() {
         ExecutionPhase.OnNewSubPhase += OnNewSubPhase;
         ExecutionPhase.BeforeRegister += BeforeRegister;
+        ExecutionPhase.OnPlayersOrdered += OnPlayersOrdered;
     }
 
     void OnDisable() {
         ExecutionPhase.OnNewSubPhase -= OnNewSubPhase;
         ExecutionPhase.BeforeRegister -= BeforeRegister;
+        ExecutionPhase.OnPlayersOrdered -= OnPlayersOrdered;
     }
     
     void BeforeRegister(ProgramCardData card, int index, Player player) {
@@ -42,9 +44,17 @@ public class ExecutionUI : MonoBehaviour {
         _subPhaseImage.sprite = GetSubPhaseSprite(subPhase);
         _subPhaseText.text = subPhase.ToString();
     }
+    
+    void OnPlayersOrdered(IReadOnlyList<Player> players) {
+        for (var i = 0; i < players.Count; i++){
+            var player = players[i];
+            _playerSlices[player].transform.SetSiblingIndex(i + 1);
+        }
+    }
 
-    void Awake() {
+    void Start() {
         Setup();
+        gameObject.SetActive(false);
     }
 
     void Setup() {

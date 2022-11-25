@@ -14,7 +14,8 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
     public bool CanEnter(Vector2Int enterDir) => false;
     public bool CanExit(Vector2Int exitDir) => true;
 
-    public string Header => Owner.ToString();
+    // Add you after header if player is local
+    public string Header => PlayerManager.IsLocal(Owner) ? Owner + " (You)" : Owner.ToString();
     public string Description => null;
 
     public override void Fall(IBoard board) {
@@ -36,7 +37,7 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
             Owner.LaserDamage.Apply(hit.Owner);
         }
         
-        yield return Helpers.Wait(0.5f);
+        yield return Helpers.Wait(1f);
         lasers.ForEach(l => MapSystem.Instance.DestroyObject(l, false));
     }
 }

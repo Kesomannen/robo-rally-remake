@@ -23,10 +23,9 @@ public abstract class BoardElement<T, THandler> : MapObject, IOnEnterExitHandler
     }
 
     public virtual void OnExit(MapObject mapObject) {
-        if (mapObject is THandler handler) {
-            Handlers.Remove(handler);
-            if (Handlers.Count == 0) OnActivateEvent -= OnActivate;
-        }
+        if (mapObject is not THandler handler) return;
+        Handlers?.Remove(handler);
+        if (Handlers is { Count: 0 }) OnActivateEvent -= OnActivate;
     }
 
     void OnActivate() => Activate(Handlers.ToArray());

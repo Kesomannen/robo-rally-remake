@@ -14,6 +14,8 @@ public class PlayerManager : Singleton<PlayerManager> {
 
     static RebootToken[] _spawnPoints;
 
+    public static bool IsLocal(Player player) => player == LocalPlayer;
+    
     protected override void Awake() {
         base.Awake();
         MapSystem.OnMapLoaded += OnMapLoaded;

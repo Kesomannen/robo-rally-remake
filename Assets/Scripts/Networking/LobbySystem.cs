@@ -10,13 +10,15 @@ using System.Threading.Tasks;
 public class LobbySystem : NetworkBehaviour {
     public static LobbySystem Instance { get; private set; }
 
-    static Dictionary<ulong, LobbyPlayerData> _playersInLobby = new();
+    static readonly Dictionary<ulong, LobbyPlayerData> _playersInLobby = new();
     public static IReadOnlyDictionary<ulong, LobbyPlayerData> PlayersInLobby => _playersInLobby;
 
     public static byte LobbyMapId { get; private set; }
     
     public static event Action<ulong, LobbyPlayerData> OnPlayerUpdatedOrAdded;
     public static event Action<ulong> OnPlayerRemoved;
+
+    public static string LobbyJoinCode => Matchmaking.CurrentLobby.LobbyCode;
 
     void Awake() {
         Instance = this;

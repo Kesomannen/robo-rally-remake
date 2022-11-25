@@ -79,13 +79,15 @@ public static class Interaction {
         return false;
     }
 
-    public static bool Push(MapObject mapObject, Vector2Int dir, out MapEvent mapEvent){
-        mapEvent = new MapEvent(mapObject, dir);
+    public static bool Push(MapObject mapObject, Vector2Int dir, out MapEvent mapEvent) {
+        mapEvent = null;
 
         // Check exit
         var sourceTile = MapSystem.GetTile(mapObject.GridPos);
         var canExit = CheckTile(sourceTile, (ICanExitHandler o) => o.CanExit(dir), mapObject);
         if (!canExit) return false;
+        
+        mapEvent = new MapEvent(mapObject, dir);
         
         var targetTileFilled = MapSystem.TryGetTile(mapObject.GridPos + dir, out var targetTile);
         if (!targetTileFilled) return true;
@@ -96,13 +98,12 @@ public static class Interaction {
         if (blockages.Any(o => !o.Pushable)) return false;
 
         // Push next
-        if (Push(blockages[0].Object, dir, out var _)) {
+        if (Push(blockages[0].Object, dir, out _)) {
             // If we can push one, push all
             mapEvent.MapObjects.AddRange(blockages.Select(o => o.Object));
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 }
 

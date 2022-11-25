@@ -8,11 +8,12 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
 
     public const int RegisterCount = 5;
     const float RegisterDelay = 1f;
-    const float SubPhaseDelay = 0.5f;
+    const float SubPhaseDelay = 0.2f;
 
     public static event Action OnPhaseStart, OnPhaseEnd, OnExecutionComplete;
     public static event Action<ProgramCardData, int, Player> BeforeRegister, AfterRegister;
     public static event Action<ExecutionSubPhase> OnNewSubPhase;
+    public static event Action<IReadOnlyList<Player>> OnPlayersOrdered;
 
     public static IEnumerator DoPhaseRoutine() {
         OnPhaseStart?.Invoke();
@@ -20,6 +21,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
         
         for (CurrentRegister = 0; CurrentRegister < RegisterCount; CurrentRegister++){
             var orderedPlayers = PlayerManager.GetOrderedPlayers().ToArray();
+            OnPlayersOrdered?.Invoke(orderedPlayers);
 
             yield return DoSubPhase(ExecutionSubPhase.Registers, ExecuteRegister(orderedPlayers));
             yield return DoSubPhase(ExecutionSubPhase.Conveyor, Conveyor.ActivateElement());
@@ -63,11 +65,11 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
     }
 
     static IEnumerator FireLasers(IEnumerable<Player> players) {
-        foreach (var player in players) {
-            if (player.IsRebooted) continue;
-            var model = player.Model;
-            yield return model.FireLaser(model.Rotator.Identity);
-        }
+        return (from player 
+            in players where !player.IsRebooted 
+            select player.Model into model 
+            select model.FireLaser(model.Rotator.Identity))
+            .GetEnumerator();
     }
 }
 

@@ -21,7 +21,7 @@ public class PlayerSlice : Container<Player>, IPointerClickHandler {
         
         _player = player;
         
-        _nameText.text = _player.ToString();
+        _nameText.text = PlayerManager.IsLocal(_player) ? _player + " (You)" : _player.ToString();
         player.Energy.OnValueChanged += OnEnergyChanged;
     }
 
@@ -41,7 +41,7 @@ public class PlayerSlice : Container<Player>, IPointerClickHandler {
     }
     
     void OnPhaseStart() {
-        var local = PlayerManager.LocalPlayer == _player;
+        var local = PlayerManager.IsLocal(_player);
         for (var i = 0; i < _executionRegisters.Length; i++){
             var register = _executionRegisters[i];
             register.SetContent(_player.Program[i]);

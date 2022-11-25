@@ -49,8 +49,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
     }
 
     static void LockPlayerRegister(byte playerIndex, IEnumerable<byte> registerCardIds) {
-        var isLocal = PlayerManager.Players[playerIndex] == PlayerManager.LocalPlayer;
-        if (isLocal){
+        if (PlayerManager.IsLocal(PlayerManager.Players[playerIndex])){
             RegisterUI.Locked = true;
             _localPlayerSubmitted = true;
             return;

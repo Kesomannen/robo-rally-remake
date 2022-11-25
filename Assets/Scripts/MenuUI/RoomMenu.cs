@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using Unity.Netcode;
 
@@ -8,6 +9,7 @@ public class RoomMenu : Menu {
     [SerializeField] GameObject _readyButton;
     [SerializeField] LobbyPlayerPanel _playerPanelPrefab;
     [SerializeField] Transform _playerPanelParent;
+    [SerializeField] TMP_Text _lobbyCodeText;
 
     readonly List<LobbyPlayerPanel> _playerPanels = new();
 
@@ -16,6 +18,8 @@ public class RoomMenu : Menu {
     public override void Show() {
         base.Show();
 
+        _lobbyCodeText.text = LobbySystem.LobbyJoinCode;
+        
         foreach (var lobbyPlayerPanel in _playerPanels) {
             Destroy(lobbyPlayerPanel.gameObject);
         }
@@ -33,7 +37,7 @@ public class RoomMenu : Menu {
         }
     }
 
-    public async override void Hide() {
+    public override async void Hide() {
         base.Hide();
 
         LobbySystem.OnPlayerUpdatedOrAdded -= UpdatePanel;
@@ -59,10 +63,10 @@ public class RoomMenu : Menu {
 
     void RemovePanel(ulong playerId) {
         var playerPanel = _playerPanels.FirstOrDefault(x => x.PlayerId == playerId);
-        if (playerPanel != null) {
-            _playerPanels.Remove(playerPanel);
-            Destroy(playerPanel.gameObject);
-        }
+        if (playerPanel == null) return;
+        
+        _playerPanels.Remove(playerPanel);
+        Destroy(playerPanel.gameObject);
     }
 
     public void StartGame() {
@@ -72,5 +76,9 @@ public class RoomMenu : Menu {
     public void Ready() {
         LobbySystem.Instance.UpdatePlayerData(ready: true);
         _readyButton.SetActive(false);
+    }
+    
+    public void CopyInviteCode() {
+        GUIUtility.systemCopyBuffer = LobbySystem.LobbyJoinCode;
     }
 }

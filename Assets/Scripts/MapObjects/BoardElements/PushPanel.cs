@@ -5,16 +5,23 @@ using TMPro;
 using UnityEngine;
 
 public class PushPanel : BoardElement<PushPanel, ICanEnterHandler>, ITooltipable {
+    [Header("Push Panel")]
     [SerializeField] int[] _activeRegisters; 
     [SerializeField] Vector2Int _direction;
+
+    [Header("Animation")]
+    [SerializeField] float _pushSpeed;
+    [SerializeField] LeanTweenType _pushEaseType;
+    
+    [Header("References")]
     [SerializeField] TMP_Text[] _registerTexts;
 
     public string Header => "Push Panel";
     public string Description {
         get {
             var registers = _activeRegisters.Select(r => (r + 1).ToString()).ToArray();
-            var str = new StringBuilder($"Pushes objects one space in the direction of the panel. Activates on ");
-            str.Append(registers.Length == 1 ? $"register" : $"registers");
+            var str = new StringBuilder("Pushes objects one space in the direction of the panel. Activates on ");
+            str.Append(registers.Length == 1 ? "register " : $"registers ");
             str.Append(registers[0]);
             
             for (var i = 1; i < registers.Length; i++) {
@@ -32,18 +39,19 @@ public class PushPanel : BoardElement<PushPanel, ICanEnterHandler>, ITooltipable
             _direction = _direction.Transform(s);
         };
 
-        for (int i = 0; i < _registerTexts.Length; i++) {
-            var text = _registerTexts[i];
-            text.text = _activeRegisters[i].ToString();
+        for (var i = 0; i < _registerTexts.Length; i++) {
+            _registerTexts[i].text = (_activeRegisters[i] + 1).ToString();
         }
     }
 
     protected override void Activate(ICanEnterHandler[] targets) {
-        if (_activeRegisters.Contains(ExecutionPhase.CurrentRegister)) {
-            if (Interaction.Push(targets[0].Object, _direction, out var action)) {
-                action.MapObjects.AddRange(targets.Skip(1).Select(o => o.Object));
-            }
-            Scheduler.Push(Interaction.EaseEvent(action), "PushPanel");
-        }
+        var pushable = targets.Where(t => t.Pushable).ToArray();
+        if (pushable.Length == 0) return;
+        
+        if (!_activeRegisters.Contains(ExecutionPhase.CurrentRegister) ||
+            !Interaction.Push(pushable[0].Object, _direction, out var action)) return;
+        
+        action.MapObjects.AddRange(pushable.Skip(1).Select(o => o.Object));
+        Scheduler.Push(Interaction.EaseEvent(action, _pushEaseType, _pushSpeed), "PushPanel");
     }
 }

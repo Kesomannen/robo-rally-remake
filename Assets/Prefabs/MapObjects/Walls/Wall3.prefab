@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4613979876801270713}
   - component: {fileID: -4740117553140767400}
   - component: {fileID: 6974709325591947711}
+  - component: {fileID: 7570867031338514077}
   m_Layer: 0
   m_Name: Wall3
   m_TagString: Untagged
@@ -150,3 +151,34 @@ PolygonCollider2D:
       - {x: 0.32260504, y: -0.49172807}
       - {x: 0.4917281, y: -0.49172807}
       - {x: 0.49172813, y: 0.49448538}
+--- !u!114 &7570867031338514077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8977294978363438795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShadowGroup: 0
+  m_ComponentVersion: 1
+  m_HasRenderer: 1
+  m_UseRendererSilhouette: 1
+  m_CastsShadows: 1
+  m_SelfShadows: 0
+  m_ApplyToSortingLayers: 5f1ae68700000000ab84f43ae1134fbd
+  m_ShapePath:
+  - {x: -0.50459653, y: -0.50183916, z: 0}
+  - {x: -0.50735384, y: 0.5018392, z: 0}
+  - {x: 0.50459653, y: 0.4990819, z: 0}
+  - {x: 0.49632454, y: -0.4990819, z: 0}
+  - {x: 0.31571177, y: -0.4990728, z: 0}
+  - {x: 0.3129545, y: 0.31157583, z: 0}
+  - {x: -0.3101972, y: 0.31433314, z: 0}
+  - {x: -0.30468258, y: -0.5018301, z: 0}
+  m_ShapePathHash: 1214933959
+  m_Mesh: {fileID: 0}
+  m_InstanceId: -63652
