@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f6c6b32295aa64439b42e40e53bf1f3, type: 3}
+  m_Name: Gyroscope
+  m_EditorClassIdentifier: 
+  _name: Gyroscope
+  _description: 'Choose One: Turn Left. Turn Right. U Turn'
+  _artwork: {fileID: 21300000, guid: 5071412a5f3c54e468a29f2e6f92d3e5, type: 3}
+  _type: 0
+  _options:
+  - {fileID: 11400000, guid: 789c848c7ae69f4479f9670eb7ec46ac, type: 2}
+  - {fileID: 11400000, guid: a0c176612c85f9c45aa2ceba06c64869, type: 2}
+  - {fileID: 11400000, guid: 18607977aaffdee4e93c7b63daed4cf9, type: 2}
+  _choiceOverlay:
+    Header: Gyroscope
+    Subtitle: Choose a card to execute
+    Prefab: {fileID: 487802381806119471, guid: d6ba4746ecbe0da4cb2d657a607d96e8, type: 3}
+    CanPreview: 1

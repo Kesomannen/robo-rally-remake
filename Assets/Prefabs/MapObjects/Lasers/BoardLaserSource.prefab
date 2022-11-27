@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 1516992290082503}
   - component: {fileID: -5931279185381118030}
   - component: {fileID: 1984020141107778574}
+  - component: {fileID: 9082838855257949501}
   m_Layer: 0
   m_Name: BoardLaserSource
   m_TagString: Untagged
@@ -52,11 +53,11 @@ MonoBehaviour:
   GridPos: {x: 0, y: 0}
   _direction: {x: 1, y: 0}
   _laserPrefab: {fileID: 4459503290772829157, guid: 243af469c17ebc749abc669f9e996091, type: 3}
-  _damage:
-    Cards:
+  _affector:
+    _cards:
     - {fileID: 11400000, guid: ecc7d4ad841b0624999bcaff2184a12f, type: 2}
-    Destination: 2
-    Placement: 0
+    _destination: 0
+    _placement: 0
 --- !u!212 &3662140187091209615
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4901,8 +4902,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tooltipableLocation: 0
-  _standardMaterial: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
-  _highlightMaterial: {fileID: 2100000, guid: c385d055d2118d54584af44e2183a368, type: 2}
 --- !u!61 &1984020141107778574
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4929,3 +4928,16 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.18765831, y: 0.37905005}
   m_EdgeRadius: 0
+--- !u!114 &9082838855257949501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 451959291691688245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42c0858ea87a4f99ac759a80245f635e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _highlightMaterial: {fileID: 2100000, guid: c385d055d2118d54584af44e2183a368, type: 2}

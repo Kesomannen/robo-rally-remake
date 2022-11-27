@@ -17,7 +17,7 @@ public class GameSettings : ScriptableSingleton<GameSettings> {
     [SerializeField] Container<ProgramCardData> _programCardContainerPrefab;
 
     [Header("Damaging")]
-    [SerializeField] Damage _standardRebootDamage;
+    [SerializeField] ScriptableCardAffector _rebootAffector;
 
     [Header("Upgrades")]
     [SerializeField] int _upgradeSlots;
@@ -33,7 +33,7 @@ public class GameSettings : ScriptableSingleton<GameSettings> {
     public int StressTime => _stressTime;
     public Container<ProgramCardData> ProgramCardContainerPrefab => _programCardContainerPrefab;
 
-    public Damage StandardRebootDamage => _standardRebootDamage;
+    public ScriptableCardAffector RebootAffector => _rebootAffector;
     
     public int UpgradeSlots => _upgradeSlots;
     public Container<UpgradeCardData> UpgradeContainerPrefab => _upgradeContainerPrefab;

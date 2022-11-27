@@ -8,7 +8,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
 
     public const int RegisterCount = 5;
     const float RegisterDelay = 1f;
-    const float SubPhaseDelay = 0.2f;
+    const float SubPhaseDelay = 0.5f;
 
     public static event Action OnPhaseStart, OnPhaseEnd, OnExecutionComplete;
     public static event Action<ProgramCardData, int, Player> BeforeRegister, AfterRegister;
@@ -43,7 +43,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
 
         IEnumerator DoSubPhase(ExecutionSubPhase subPhase, IEnumerator routine) {
             OnNewSubPhase?.Invoke(subPhase);
-            yield return Helpers.Wait(SubPhaseDelay);
+            //yield return Helpers.Wait(SubPhaseDelay);
             yield return routine;
         }
     }
@@ -53,22 +53,19 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
             var card = player.Program[CurrentRegister];
             if (card == null) continue;
 
-            Scheduler.Enqueue(WrapExecution(card, player, CurrentRegister), $"ProgramCard ({card})", RegisterDelay);
-        }
-        yield return Scheduler.WaitUntilClearRoutine();
-
-        IEnumerator WrapExecution(ProgramCardData card, Player player, int register) {
-            BeforeRegister?.Invoke(card, register, player);
-            yield return card.ExecuteRoutine(player, register);
-            AfterRegister?.Invoke(card, register, player);
+            BeforeRegister?.Invoke(card, CurrentRegister, player);
+            
+            Scheduler.Enqueue(card.ExecuteRoutine(player, CurrentRegister), $"ProgramCard ({card})", RegisterDelay);
+            yield return Scheduler.WaitUntilClearRoutine();
+            
+            AfterRegister?.Invoke(card, CurrentRegister, player);
         }
     }
 
     static IEnumerator FireLasers(IEnumerable<Player> players) {
-        return (from player 
-            in players where !player.IsRebooted 
-            select player.Model into model 
-            select model.FireLaser(model.Rotator.Identity))
+        return players
+            .Where(p => !p.IsRebooted.Value)
+            .Select(p => p.Model.FireLaser(p.Model.Rotator.Identity))
             .GetEnumerator();
     }
 }

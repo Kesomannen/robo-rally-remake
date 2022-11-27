@@ -6,7 +6,7 @@ using UnityEngine;
 public class BoardLaser : MapObject, ITooltipable {
     [SerializeField] Vector2Int _direction;
     [SerializeField] Laser _laserPrefab;
-    [SerializeField] Damage _damage;
+    [SerializeField] CardAffector _affector;
     
     List<Laser> _lasers;
     readonly List<MapObject> _targets = new();
@@ -14,7 +14,7 @@ public class BoardLaser : MapObject, ITooltipable {
     static event Action OnActivate;
 
     public string Header => "Laser";
-    public string Description => $"Ending a register in this laser deals {_damage.Cards.Count} damage.";
+    public string Description => $"Ending a register in this laser deals {_affector.Cards.Count} damage.";
 
     protected override void Awake(){
         base.Awake();
@@ -39,11 +39,9 @@ public class BoardLaser : MapObject, ITooltipable {
     }
 
     void Activate(){
-        if (_targets.Count == 0) return;
         foreach (var target in _targets){
-            if (target is PlayerModel plrModel){
-                _damage.Apply(plrModel.Owner);
-            }
+            if (target is not IPlayer player) continue;
+            _affector.Apply(player);
         }
     }
 

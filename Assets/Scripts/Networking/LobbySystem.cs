@@ -13,7 +13,7 @@ public class LobbySystem : NetworkBehaviour {
     static readonly Dictionary<ulong, LobbyPlayerData> _playersInLobby = new();
     public static IReadOnlyDictionary<ulong, LobbyPlayerData> PlayersInLobby => _playersInLobby;
 
-    public static byte LobbyMapId { get; private set; }
+    public static byte LobbyMapId => (byte) Matchmaking.GetMapID();
     
     public static event Action<ulong, LobbyPlayerData> OnPlayerUpdatedOrAdded;
     public static event Action<ulong> OnPlayerRemoved;
@@ -39,16 +39,14 @@ public class LobbySystem : NetworkBehaviour {
 
     # region Public Methods
 
-    public async Task<bool> LeaveLobby() {
+    public async Task LeaveLobby() {
         Debug.Log("Leaving Lobby");
         try {
             _playersInLobby.Clear();
             NetworkManager.Shutdown();
             await Matchmaking.LeaveLobbyAsync();
-            return true;
         } catch (Exception e) {
             Debug.LogError($"Failed to leave lobby: {e.Message}");
-            return false;
         }
     }
 

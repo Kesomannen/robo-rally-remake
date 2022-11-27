@@ -2,17 +2,16 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-[RequireComponent(typeof(SpriteRenderer))]
+[RequireComponent(typeof(Highlight))]
 public class PhysicsTooltipTrigger : TooltipTrigger, IPointerMoveHandler {
-    [SerializeField] Material _standardMaterial, _highlightMaterial;
-    
     bool _active;
     bool _movedThisFrame;
-    SpriteRenderer _spriteRenderer;
+    Highlight _highlight;
 
     protected override void Awake() {
         base.Awake();
-        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _highlight = GetComponent<Highlight>();
+        _highlight.enabled = false;
     }
 
     public void OnPointerMove(PointerEventData e) {
@@ -20,14 +19,15 @@ public class PhysicsTooltipTrigger : TooltipTrigger, IPointerMoveHandler {
         if (_active) return;
         _active = true;
 
-        _spriteRenderer.material = _highlightMaterial;
+        _highlight.enabled = true;
         Show();
     }
 
     void LateUpdate() {
         if (_active && !_movedThisFrame) {
             _active = false;
-            _spriteRenderer.material = _standardMaterial;
+            
+            _highlight.enabled = false;
             Hide();
         }
         _movedThisFrame = false;

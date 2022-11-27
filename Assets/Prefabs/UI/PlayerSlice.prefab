@@ -97,6 +97,9 @@ MonoBehaviour:
     Subtitle: 
     Prefab: {fileID: 8736746822111478708, guid: 32ad063e5f2d1e643b3e505da88bfc06, type: 3}
     CanPreview: 0
+  _animationDuration: 0.5
+  _animationSize: 1.3
+  _easeType: 27
   _nameText: {fileID: 8721461443896073983}
   _energyText: {fileID: 8865016352835418931}
   _executionRegisters:

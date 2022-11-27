@@ -10,7 +10,7 @@ public static class Interaction {
     }
 
     static MapSystem _mapSystem;
-    const float DefaultMoveSpeed = 3f;
+    const float DefaultMoveSpeed = 2.5f;
     const LeanTweenType DefaultEaseType = LeanTweenType.easeInOutQuad;
         
     public static IEnumerator EaseMove(MapObject mapObject, Vector2Int gridPosition, LeanTweenType easeType, float speed) {

@@ -34,6 +34,10 @@ public static class Matchmaking {
     const int HeartbeatInterval = 15;
     const int RefreshLobbyInterval = 5;
 
+    public static int GetMapID() {
+        return CurrentLobby == null ? 0 : int.Parse(CurrentLobby.Data[MapIDKey].Value);
+    }
+    
     public static async Task InitializeAsync() {
         await InitializeUnityServicesAsync();
         await SignInAsync();

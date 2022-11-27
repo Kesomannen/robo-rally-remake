@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public abstract class BoardElement<T, THandler> : MapObject, IOnEnterExitHandler where THandler : IMapObject where T : BoardElement<T, THandler> {
-    protected List<THandler> Handlers;
+    List<THandler> _handlers;
 
     protected static Action OnActivateEvent;
 
@@ -17,16 +17,16 @@ public abstract class BoardElement<T, THandler> : MapObject, IOnEnterExitHandler
     
     public virtual void OnEnter(MapObject mapObject) {
         if (mapObject is not THandler handler) return;
-        Handlers ??= new List<THandler>();
-        Handlers.Add(handler);
-        if (Handlers.Count == 1) OnActivateEvent += OnActivate;
+        _handlers ??= new List<THandler>();
+        _handlers.Add(handler);
+        if (_handlers.Count == 1) OnActivateEvent += OnActivate;
     }
 
     public virtual void OnExit(MapObject mapObject) {
         if (mapObject is not THandler handler) return;
-        Handlers?.Remove(handler);
-        if (Handlers is { Count: 0 }) OnActivateEvent -= OnActivate;
+        _handlers?.Remove(handler);
+        if (_handlers is { Count: 0 }) OnActivateEvent -= OnActivate;
     }
 
-    void OnActivate() => Activate(Handlers.ToArray());
+    void OnActivate() => Activate(_handlers.ToArray());
 }

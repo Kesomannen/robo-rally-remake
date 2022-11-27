@@ -12,8 +12,9 @@ public class Checkpoint : BoardElement<Checkpoint, IPlayer>, ITooltipable {
             var c = PlayerManager.LocalPlayer.CurrentCheckpoint.Value;
             if (c == _index) return "This is your current checkpoint.";
             if (c + 1 == _index) return "This is the next checkpoint.";
-            if (c < _index) return "You have already passed this checkpoint.";
-            return "You have not yet reached this checkpoint.";
+            if (c > _index) return "This is not the next checkpoint.";
+            return c < _index ? "You have already passed this checkpoint." 
+                : "You have not yet reached this checkpoint.";
         }
     }
 

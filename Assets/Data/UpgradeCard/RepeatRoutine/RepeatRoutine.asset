@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3046940b504f79c4ab36f87e3b3ff8ef, type: 3}
+  m_Name: RepeatRoutine
+  m_EditorClassIdentifier: 
+  _name: Sandbox Routine
+  _description: Add an additional Repeat card onto your discard pile.
+  _icon: {fileID: 0}
+  _cost: 3
+  _isAction: 1
+  _temporaryAffectors: []
+  _permanentAffectors:
+  - {fileID: 11400000, guid: 25a853f3be1b240479ad084cc024f5ef, type: 2}

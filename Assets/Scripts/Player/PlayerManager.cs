@@ -26,7 +26,7 @@ public class PlayerManager : Singleton<PlayerManager> {
         MapSystem.OnMapLoaded -= OnMapLoaded;
     }
 
-    void OnMapLoaded() {
+    static void OnMapLoaded() {
         _spawnPoints = MapSystem.GetByType<RebootToken>().Where(x => x.IsSpawnPoint).ToArray();
     }
 
@@ -43,16 +43,18 @@ public class PlayerManager : Singleton<PlayerManager> {
             ModelPrefab = _playerModelPrefab,
             SpawnPoint = spawnPoint,
             StartingEnergy = settings.StartingEnergy,
+            CardsPerTurn = settings.CardsPerTurn,
             HandSize = settings.MaxCardsInHand,
             RegisterCount = ExecutionPhase.RegisterCount,
-            RebootDamage = settings.StandardRebootDamage,
+            RebootAffector = settings.RebootAffector.ToInstance(),
             UpgradeSlots = settings.UpgradeSlots,
         };
 
         var newPlayer = new Player(playerArgs);
         _players.Add(newPlayer);
-
-        if (NetworkManager.Singleton == null || NetworkManager.Singleton.LocalClientId == id) {
+    
+        var singleton = NetworkManager.Singleton;
+        if (singleton == null || singleton.LocalClientId == id) {
             LocalPlayer = newPlayer;
         }
 
@@ -60,7 +62,7 @@ public class PlayerManager : Singleton<PlayerManager> {
     }
 
     public static IEnumerable<Player> GetOrderedPlayers() {
-        var players = _players.ToDictionary(x => x.GetBonusPriority())
+        var players = _players.ToDictionary(x => x.BonusPriority)
                               .OrderBy(x => Antenna.GetDistance(x.Key.Model.GridPos))
                               .ToDictionary(x => x.Key, x => x.Value);
 

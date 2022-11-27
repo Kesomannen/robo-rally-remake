@@ -7,7 +7,7 @@ public class RotateProgram : ProgramCardData {
 
     public override bool CanPlace(Player player, int positionInRegister) => true;
 
-    public override IEnumerator ExecuteRoutine(Player player, int positionInRegister)  {
+    public override IEnumerator ExecuteRoutine(Player player, int positionInRegister){
         yield return player.Model.RotateRoutine(_rotation);
     }
 }

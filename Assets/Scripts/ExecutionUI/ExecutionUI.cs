@@ -27,17 +27,25 @@ public class ExecutionUI : MonoBehaviour {
     void OnEnable() {
         ExecutionPhase.OnNewSubPhase += OnNewSubPhase;
         ExecutionPhase.BeforeRegister += BeforeRegister;
+        ExecutionPhase.AfterRegister += AfterRegister;
         ExecutionPhase.OnPlayersOrdered += OnPlayersOrdered;
     }
 
     void OnDisable() {
         ExecutionPhase.OnNewSubPhase -= OnNewSubPhase;
         ExecutionPhase.BeforeRegister -= BeforeRegister;
+        ExecutionPhase.AfterRegister -= AfterRegister;
         ExecutionPhase.OnPlayersOrdered -= OnPlayersOrdered;
     }
     
     void BeforeRegister(ProgramCardData card, int index, Player player) {
+        player.Model.Highlight(true);
         _playerSlices[player].Show(index);
+    }
+    
+    void AfterRegister(ProgramCardData card, int index, Player player) {
+        player.Model.Highlight(false);
+        _playerSlices[player].Hide(index);
     }
     
     void OnNewSubPhase(ExecutionSubPhase subPhase) {

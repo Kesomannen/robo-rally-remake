@@ -1,11 +1,13 @@
-﻿using System;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class PlayerSlice : Container<Player>, IPointerClickHandler {
     [Header("Player Slice")]
     [SerializeField] OverlayData<PlayerOverlay> _overlayData;
+    [SerializeField] float _animationDuration;
+    [SerializeField] float _animationSize;
+    [SerializeField] LeanTweenType _easeType;
 
     [Header("References")]
     [SerializeField] TMP_Text _nameText;
@@ -50,7 +52,14 @@ public class PlayerSlice : Container<Player>, IPointerClickHandler {
     }
     
     public void Show(int index) {
-        _executionRegisters[index].Hidden = false;
+        var register = _executionRegisters[index];
+        register.Hidden = false;
+        LeanTween.scale(register.gameObject, _animationSize * Vector3.one, _animationDuration).setEase(_easeType);
+    }
+    
+    public void Hide(int index) {
+        var register = _executionRegisters[index];
+        LeanTween.scale(register.gameObject, Vector3.one, _animationDuration).setEase(_easeType);
     }
     
     public void OnPointerClick(PointerEventData e) {

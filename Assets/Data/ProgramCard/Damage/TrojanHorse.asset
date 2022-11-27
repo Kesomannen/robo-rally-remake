@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c41e8e1e1102d478b38f7f7e17913a, type: 3}
+  m_Name: TrojanHorse
+  m_EditorClassIdentifier: 
+  _name: Trojan Horse
+  _description: Deal two Spam cards to yourself. Execute the top card of your draw
+    pile and discard it.
+  _artwork: {fileID: 0}
+  _type: 1
+  _cardAffector:
+    _cards:
+    - {fileID: 11400000, guid: ecc7d4ad841b0624999bcaff2184a12f, type: 2}
+    - {fileID: 11400000, guid: ecc7d4ad841b0624999bcaff2184a12f, type: 2}
+    _destination: 0
+    _placement: 0

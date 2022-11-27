@@ -56,8 +56,8 @@ public class CardCollection {
         return cards.Count;
     }
 
-    public void RemoveCard(ProgramCardData card) {
-        _cards.Remove(card);
+    public bool RemoveCard(ProgramCardData card) {
+        return _cards.Remove(card);
     }
 
     public void RemoveCard(int index) {
@@ -88,7 +88,7 @@ public class CardCollection {
 }
 
 public enum CardPlacement {
-    Top,
-    Bottom,
-    Random,
+    Top = 0,
+    Bottom = 1,
+    Random = 2,
 }

@@ -57,7 +57,7 @@ public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
             .ToList();
         
         if (movable.Count == 0) return;
-        foreach (var obj in movable){
+        foreach (var obj in movable) {
             _progress[obj] -= _cost;
         }
 

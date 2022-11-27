@@ -4,63 +4,89 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class Player {
+public class Player : IPlayer {
+    # region Fields, Properties & Constructor
+    // Networking
+    readonly ulong _clientId;
+    
+    // Robot
     public readonly PlayerModel Model;
     public readonly RobotData RobotData;
-
-    public readonly ulong ClientId;
-    public readonly ObservableField<int> Energy;
+    
+    public readonly ObservableField<bool> IsRebooted;
     public readonly ObservableField<int> CurrentCheckpoint;
 
+    // Cards
     public readonly CardCollection Hand, DrawPile, DiscardPile;
     public readonly Program Program;
 
-    public Damage RebootDamage { get; set; }
-    public Damage LaserDamage { get; set; }
-
-    public bool IsRebooted { get; private set; }
+    public int CardsPerTurn;
     
+    public int BonusPriority;
+
+    // Damage
+    public readonly CardAffector RebootAffector;
+    public readonly CardAffector LaserAffector;
+    public readonly CardAffector PushAffector;
+
+    // Upgrades
     readonly UpgradeCardData[] _upgrades;
     public IReadOnlyList<UpgradeCardData> Upgrades => _upgrades;
+        
+    public readonly ObservableField<int> Energy;
 
+    // Implementations
+    public Player Owner => this;
+    public MapObject Object => Model;
+    
+    public override string ToString() => $"Player {_clientId}";
+    
+    // Events
     public event Action OnShuffleDeck;
     public event Action<ProgramCardData> OnDraw, OnDiscard;
 
     public Player(PlayerArgs args) {
-        ClientId = args.OwnerId;
+        _clientId = args.OwnerId;
         RobotData = args.RobotData;
 
+        // Cards
         Hand = new CardCollection(maxCards: args.HandSize);
         DrawPile = new CardCollection(startingCards: args.RobotData.StartingDeck);
         DiscardPile = new CardCollection();
         Program = new Program(args.RegisterCount);
         
         DrawPile.Shuffle();
+        
+        CardsPerTurn = args.CardsPerTurn;
 
-        RebootDamage = args.RebootDamage.Clone();
-        LaserDamage = RobotData.LaserDamage.Clone();
+        // Damage
+        RebootAffector = args.RebootAffector;
+        LaserAffector = RobotData.GetLaserDamage();
+        PushAffector = RobotData.GetPushDamage();
         
         Energy = new ObservableField<int>(args.StartingEnergy);
-        CurrentCheckpoint = new ObservableField<int>(0);
-
         _upgrades = new UpgradeCardData[args.UpgradeSlots];
-
+        
+        // Robot
+        CurrentCheckpoint = new ObservableField<int>(0);
         Model = MapSystem.Instance.CreateObject (
             args.ModelPrefab,
             args.SpawnPoint.GridPos
         );
+        IsRebooted = new ObservableField<bool>(false);
 
+        // Initialize
         Model.Init(this);
+        RobotData.OnSpawn(this);
 
         ExecutionPhase.OnPhaseEnd += () => {
-            IsRebooted = false;
+            IsRebooted.Value = false;
         };
     }
+    
+    #endregion
 
-    public int GetBonusPriority () {
-        return 0;
-    }
-
+    # region Card Management
     public CardCollection GetCollection(Pile target) {
         return target switch {
             Pile.Hand => Hand,
@@ -70,7 +96,7 @@ public class Player {
         };
     }
 
-    public void ShuffleDeck() {
+    void ShuffleDeck() {
         DrawPile.AddRange(DiscardPile.Cards, CardPlacement.Top);
         DiscardPile.Clear();
         DrawPile.Shuffle();
@@ -84,7 +110,7 @@ public class Player {
         return card;
     }
 
-    public ProgramCardData GetTopCardsUntil(Func<ProgramCardData, bool> predicate){
+    public ProgramCardData DiscardTopCardsUntil(Func<ProgramCardData, bool> predicate){
         while (true){
             var card = GetTopCard();
             if (predicate(card)) return card;
@@ -104,7 +130,7 @@ public class Player {
     public void DrawCards(int count) {
         for (var i = 0; i < count; i++) {
             DrawCard();
-        };
+        }
     }
 
     public void DrawCardsUpTo(int count) {
@@ -127,8 +153,8 @@ public class Player {
         DiscardCard(Hand.Cards.IndexOf(card));
     }
 
-    public void DiscardCards(IReadOnlyList<ProgramCardData> cards) {
-        for (var i = 0; i < cards.Count; i++) DiscardCard(cards[i]);
+    public void DiscardCards(IEnumerable<ProgramCardData> cards) {
+        foreach (var t in cards) DiscardCard(t);
     }
 
     public void DiscardHand() {
@@ -143,22 +169,7 @@ public class Player {
     public void DiscardRandomCards(int count) {
         for (var i = 0; i < count; i++) DiscardRandomCard();
     }
-
-    public void SerializeRegisters(out byte playerIndex, out byte[] registers) {
-        playerIndex = (byte) PlayerManager.Players.IndexOf(this);
-        registers = Program.Cards.Select(c => (byte) c.GetLookupId()).ToArray();
-    }
-
-    public void Reboot(IBoard board, bool takeDamage = true) {
-        IsRebooted = true;
-
-        board.Respawn(Model);
-        if (takeDamage) RebootDamage.Apply(this);
-        
-        DiscardHand();
-        DiscardProgram();
-    }
-
+    
     public void DiscardProgram() {
         for (var i = 0; i < Program.Cards.Count; i++) {
             var card = Program[i];
@@ -168,14 +179,32 @@ public class Player {
             Program.SetCard(i, null);
         }
     }
+    #endregion
+    
+    public void SerializeRegisters(out byte playerIndex, out byte[] registers) {
+        playerIndex = (byte) PlayerManager.Players.IndexOf(this);
+        registers = Program.Cards.Select(c => (byte) c.GetLookupId()).ToArray();
+    }
 
-    public override string ToString() => $"Player {ClientId}";
+    public void Reboot(IBoard board, bool takeDamage = true) {
+        IsRebooted.Value = true;
+
+        board.Respawn(Model);
+        if (takeDamage) RebootAffector.Apply(this);
+        
+        DiscardHand();
+        DiscardProgram();
+    }
+    
+    public void Reboot(bool takeDamage = true) {
+        Reboot(MapSystem.GetParentBoard(Model), takeDamage);
+    }
 }
 
 public enum Pile {
-    Hand,
-    DrawPile,
-    DiscardPile,
+    Hand = 2,
+    DrawPile = 1,
+    DiscardPile = 0,
 }
 
 public struct PlayerArgs {
@@ -184,8 +213,9 @@ public struct PlayerArgs {
     public RobotData RobotData;
     public PlayerModel ModelPrefab;
     public int StartingEnergy;
+    public int CardsPerTurn;
     public int HandSize;
     public int RegisterCount;
-    public Damage RebootDamage;
+    public CardAffector RebootAffector;
     public int UpgradeSlots;
 }

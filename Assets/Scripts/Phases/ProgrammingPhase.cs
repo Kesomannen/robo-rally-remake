@@ -27,7 +27,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
         var orderedPlayers = PlayerManager.GetOrderedPlayers();
 
         foreach (var player in orderedPlayers) {
-            player.DrawCardsUpTo(GameSettings.instance.CardsPerTurn);
+            player.DrawCardsUpTo(player.CardsPerTurn);
         }
 
         _playersReady = 0;
@@ -92,7 +92,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
             if (player.Program[i] != null) continue;
             
             var index = i;
-            player.Program.SetCard(index, player.GetTopCardsUntil(c => c.CanPlace(player, index)));
+            player.Program.SetCard(index, player.DiscardTopCardsUntil(c => c.CanPlace(player, index)));
         }
 
         // Lock registers

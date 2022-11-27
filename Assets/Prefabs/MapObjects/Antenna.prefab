@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6515729263213682735}
   - component: {fileID: 190938471748852388}
   - component: {fileID: 3033788125775827965}
+  - component: {fileID: 8304259703114528361}
   m_Layer: 0
   m_Name: Antenna
   m_TagString: Untagged
@@ -192,8 +193,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tooltipableLocation: 0
-  _standardMaterial: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
-  _highlightMaterial: {fileID: 2100000, guid: c385d055d2118d54584af44e2183a368, type: 2}
 --- !u!58 &3033788125775827965
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -210,3 +209,16 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!114 &8304259703114528361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4502528307342745366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42c0858ea87a4f99ac759a80245f635e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _highlightMaterial: {fileID: 2100000, guid: c385d055d2118d54584af44e2183a368, type: 2}

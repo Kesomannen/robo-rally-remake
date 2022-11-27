@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4057608821616774379}
   - component: {fileID: 5118204422011469620}
   - component: {fileID: 1225802664796442431}
+  - component: {fileID: 403407655739606527}
   m_Layer: 0
   m_Name: Wall1
   m_TagString: Untagged
@@ -91,8 +92,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -2014963105
-  m_SortingLayer: -1
+  m_SortingLayerID: 989103275
+  m_SortingLayer: 1
   m_SortingOrder: 1
   m_Sprite: {fileID: 1666223042, guid: c9dc22523d2ec934290c6c41428d8e7d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -118,8 +119,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tooltipableLocation: 0
-  _standardMaterial: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
-  _highlightMaterial: {fileID: 2100000, guid: c385d055d2118d54584af44e2183a368, type: 2}
 --- !u!61 &5118204422011469620
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -173,3 +172,16 @@ MonoBehaviour:
   m_ShapePathHash: -1006744385
   m_Mesh: {fileID: 0}
   m_InstanceId: -19728
+--- !u!114 &403407655739606527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8977294978363438795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42c0858ea87a4f99ac759a80245f635e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _highlightMaterial: {fileID: 2100000, guid: c385d055d2118d54584af44e2183a368, type: 2}

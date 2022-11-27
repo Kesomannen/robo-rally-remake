@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
+[RequireComponent(typeof(Highlight))]
 public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipable {
     [SerializeField] Laser _laserPrefab;
+    
+    Highlight _highlight;
     
     public Player Owner { get; private set; }
 
@@ -13,13 +15,17 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
 
     public bool CanEnter(Vector2Int enterDir) => false;
     public bool CanExit(Vector2Int exitDir) => true;
-
-    // Add you after header if player is local
+    
     public string Header => PlayerManager.IsLocal(Owner) ? Owner + " (You)" : Owner.ToString();
     public string Description => null;
 
     public override void Fall(IBoard board) {
         Owner.Reboot(board);
+    }
+
+    protected override void Awake() {
+        base.Awake();
+        _highlight = GetComponent<Highlight>();
     }
 
     public void Init(Player owner) {
@@ -34,10 +40,14 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
         // We only need to check the last laser in the chain
         var hits = MapSystem.GetTile(lasers.Last().GridPos).OfType<IPlayer>().ToArray();
         foreach (var hit in hits){
-            Owner.LaserDamage.Apply(hit.Owner);
+            Owner.LaserAffector.Apply(hit.Owner);
         }
         
         yield return Helpers.Wait(1f);
         lasers.ForEach(l => MapSystem.Instance.DestroyObject(l, false));
+    }
+    
+    public void Highlight(bool highlight) {
+        _highlight.enabled = highlight;
     }
 }
