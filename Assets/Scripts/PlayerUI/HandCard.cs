@@ -12,14 +12,15 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
     [SerializeField] LeanTweenType _easingType;
 
     static GraphicRaycaster _graphicRaycaster;
-
     static Player Owner => PlayerManager.LocalPlayer;
+    
     bool _isDragging;
     int _index;
     Vector3 _origin;
     Transform _originalParent;
+    RectTransform _rectTransform;
 
-     void SetHighlighted(bool value) {
+    void SetHighlighted(bool value) {
         if (_isHighlighted == value) return;
         _isHighlighted = value;
 
@@ -28,7 +29,7 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
             t.SetParent(_graphicRaycaster.transform);
             t.SetAsLastSibling();
 
-            var targetHeight = CanvasUtils.Scale.y * _highlightJumpHeight;
+            var targetHeight = CanvasUtils.CanvasScale.y * _highlightJumpHeight;
             LerpTo(t.position + Vector3.up * targetHeight);
             LeanTween.scale(gameObject, Vector3.one * _highlightedSize, 0.2f).setEase(_easingType);
         } else {
@@ -43,6 +44,8 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
     bool _isHighlighted;
 
     void Awake() {
+        _rectTransform = GetComponent<RectTransform>();
+        
         _originalParent = transform.parent;
         if (_graphicRaycaster == null) {
             _graphicRaycaster = FindObjectOfType<GraphicRaycaster>();
@@ -67,12 +70,13 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
 
     public void OnPointerExit(PointerEventData e) {
         SetHighlighted(false);
+        _isDragging = false;
     }
 
     public void OnPointerClick(PointerEventData e) {
         if (_isDragging) return;
 
-        for (int i = 0; i < ExecutionPhase.RegisterCount; i++) {
+        for (var i = 0; i < ExecutionPhase.RegisterCount; i++) {
             var register = RegisterUI.GetRegisterUI(i);
             if (register.IsEmpty && TryPlace(register)) {
                 break;
@@ -102,11 +106,10 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
         var results = new List<RaycastResult>();
         _graphicRaycaster.Raycast(e, results);
 
-        foreach (var hit in results) {
-            if (hit.gameObject.TryGetComponent(out RegisterUI register)) {
-                TryPlace(register);
-                return;
-            }
+        foreach (var hit in results){
+            if (!hit.gameObject.TryGetComponent(out RegisterUI register)) continue;
+            TryPlace(register);
+            return;
         }
 
         LerpTo(_origin);
@@ -118,13 +121,8 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
         return true;
     }
 
-    void Drag(PointerEventData e){
-        var t = transform;
-        
-        var pos = (Vector2) t.position;
-        pos += e.delta * CanvasUtils.Scale / 1.5f;
-
-        t.position = pos;
+    void Drag(PointerEventData e) {
+        _rectTransform.anchoredPosition += e.delta / CanvasUtils.ScreenScale;
     }
 
     int _currentMoveTweenId;

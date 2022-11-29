@@ -45,6 +45,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
             OnNewSubPhase?.Invoke(subPhase);
             //yield return Helpers.Wait(SubPhaseDelay);
             yield return routine;
+            yield return Helpers.Wait(0.5f);
         }
     }
 

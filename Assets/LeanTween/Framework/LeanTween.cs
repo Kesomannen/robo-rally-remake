@@ -1624,7 +1624,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * <summary>Scale a GameObject to a certain size</summary>
+    * <summary>CanvasScale a GameObject to a certain size</summary>
     * 
     * @method LeanTween.scale
     * @param {GameObject} gameObject:GameObject gameObject Gameobject that you wish to scale
@@ -1637,7 +1637,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * <summary>Scale a GUI Element to a certain width and height</summary>
+    * <summary>CanvasScale a GUI Element to a certain width and height</summary>
     * 
     * @method LeanTween.scale (GUI)
     * @param {LTRect} LTRect ltRect LTRect object that you wish to move
@@ -1649,14 +1649,14 @@ public class LeanTween : MonoBehaviour {
     * var bRect:LTRect = new LTRect( 0, 0, 100, 50 );<br />
     * LeanTween.scale( bRect, Vector2(bRect.rect.width, bRect.rect.height) * 1.3, 0.25 ).setEase(LeanTweenType.easeOutBounce);<br />
     * function OnGUI(){<br />
-    * &#160; if(GUI.Button(bRect.rect, "Scale")){ }<br />
+    * &#160; if(GUI.Button(bRect.rect, "CanvasScale")){ }<br />
     * }<br />
     * <br />
     * <i>Example C#: </i> <br />
     * LTRect bRect = new LTRect( 0f, 0f, 100f, 50f );<br />
     * LeanTween.scale( bRect, new Vector2(150f,75f), 0.25f ).setEase(LeanTweenType.easeOutBounce);<br />
     * void OnGUI(){<br />
-    * &#160; if(GUI.Button(bRect.rect, "Scale")){ }<br />
+    * &#160; if(GUI.Button(bRect.rect, "CanvasScale")){ }<br />
     * }<br />
     */
     public static LTDescr scale(LTRect ltRect, Vector2 to, float time){
@@ -1664,7 +1664,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * <summary>Scale a GameObject to a certain size along the x-axis only</summary>
+    * <summary>CanvasScale a GameObject to a certain size along the x-axis only</summary>
     * 
     * @method LeanTween.scaleX
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to scale
@@ -1677,7 +1677,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * <summary>Scale a GameObject to a certain size along the y-axis only</summary>
+    * <summary>CanvasScale a GameObject to a certain size along the y-axis only</summary>
     * 
     * @method LeanTween.scaleY
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to scale
@@ -1690,7 +1690,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * <summary>Scale a GameObject to a certain size along the z-axis only</summary>
+    * <summary>CanvasScale a GameObject to a certain size along the z-axis only</summary>
     * 
     * @method LeanTween.scaleZ
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to scale
@@ -2059,7 +2059,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * <summary>Scale a RectTransform object (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)</summary>
+    * <summary>CanvasScale a RectTransform object (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)</summary>
     * 
     * @method LeanTween.scale (RectTransform)
     * @param {RectTransform} rectTrans:RectTransform RectTransform that you wish to attach the tween to
@@ -3595,14 +3595,14 @@ public class LTSpline {
 * <strong>Example Javascript: </strong><br />var bRect:LTRect = new LTRect( 0, 0, 100, 50 );<br />
 * LeanTween.scale( bRect, Vector2(bRect.rect.width, bRect.rect.height) * 1.3, 0.25 );<br />
 * function OnGUI(){<br />
-* &#160; if(GUI.Button(bRect.rect, "Scale")){ }<br />
+* &#160; if(GUI.Button(bRect.rect, "CanvasScale")){ }<br />
 * }<br />
 * <br />
 * <strong>Example C#: </strong> <br />
 * LTRect bRect = new LTRect( 0f, 0f, 100f, 50f );<br />
 * LeanTween.scale( bRect, new Vector2(150f,75f), 0.25f );<br />
 * void OnGUI(){<br />
-* &#160; if(GUI.Button(bRect.rect, "Scale")){ }<br />
+* &#160; if(GUI.Button(bRect.rect, "CanvasScale")){ }<br />
 * }<br />
 *
 * @class LTRect

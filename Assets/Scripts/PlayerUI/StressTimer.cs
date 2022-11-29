@@ -50,7 +50,7 @@ public class StressTimer : MonoBehaviour, ITooltipable {
 
             // Hourglass animation
             var source = _hourglass.transform.position.y;
-            var target = source + _jumpHeight * CanvasUtils.Scale.y;
+            var target = source + _jumpHeight * CanvasUtils.CanvasScale.y;
 
             LeanTween.moveY(_hourglass, target, _jumpDuration / 2).setEase(LeanTweenType.easeOutExpo).setOnComplete(() => {
                 LeanTween.moveY(_hourglass, source, _jumpDuration / 2).setEase(LeanTweenType.easeInExpo);

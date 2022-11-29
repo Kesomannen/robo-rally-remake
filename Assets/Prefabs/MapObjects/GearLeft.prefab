@@ -59,5 +59,9 @@ PrefabInstance:
       propertyPath: _rotationSteps
       value: -1
       objectReference: {fileID: 0}
+    - target: {fileID: 6253491155309556402, guid: 6004144bc03e4a741a428eb965be6dd6, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 0aa5a366efb89e54caf069ee0beea4eb, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6004144bc03e4a741a428eb965be6dd6, type: 3}

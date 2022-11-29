@@ -166,7 +166,7 @@ public class HandController : Singleton<HandController> {
 
     Vector3 GetOrigin(int index) {
         var xPos = _cardSpacing * ((float)index - (float)_cardObjects.Count / 2f + 0.5f);
-        var pos = transform.position + CanvasUtils.Scale.x * xPos * Vector3.right;
+        var pos = transform.position + CanvasUtils.CanvasScale.x * xPos * Vector3.right;
         return pos;
     }
 

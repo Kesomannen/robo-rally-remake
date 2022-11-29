@@ -68,7 +68,7 @@ public class CardCollection {
 
     public void Clear() {
         var cards = _cards.Count;
-        for (var i = 0; i < cards; i++) {;
+        for (var i = 0; i < cards; i++) {
             RemoveCard(Cards.Count - 1);
         }
     }

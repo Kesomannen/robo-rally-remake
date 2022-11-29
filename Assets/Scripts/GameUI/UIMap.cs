@@ -84,7 +84,7 @@ public class UIMap : Singleton<UIMap>, IPointerEnterHandler, IPointerExitHandler
         
         var mousePos = (Vector2) _uiCamera.ScreenToWorldPoint(eventData.position);
 
-        var rectSize = _rectTransform.rect.size * t.localScale * CanvasUtils.Scale / 2f;
+        var rectSize = _rectTransform.rect.size * t.localScale * CanvasUtils.CanvasScale / 2f;
         var pivot = _rectTransform.pivot - new Vector2(0.5f, 0.5f);
         var rectPos = (Vector2) t.position - pivot * rectSize * 2f;
 

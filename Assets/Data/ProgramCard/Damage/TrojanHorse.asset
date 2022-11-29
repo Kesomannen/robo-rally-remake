@@ -17,9 +17,4 @@ MonoBehaviour:
     pile and discard it.
   _artwork: {fileID: 0}
   _type: 1
-  _cardAffector:
-    _cards:
-    - {fileID: 11400000, guid: ecc7d4ad841b0624999bcaff2184a12f, type: 2}
-    - {fileID: 11400000, guid: ecc7d4ad841b0624999bcaff2184a12f, type: 2}
-    _destination: 0
-    _placement: 0
+  _affector: {fileID: 11400000, guid: 2aef88bbc21e45f4cbcbcea2405f5c9e, type: 2}

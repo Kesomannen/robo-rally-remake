@@ -18,7 +18,7 @@ public class GeneralBasics2d : MonoBehaviour {
 		// Rotate Example
 		LeanTween.rotateAround( avatarRotate, Vector3.forward, -360f, 5f);
 
-		// Scale Example
+		// CanvasScale Example
 		LeanTween.scale( avatarScale, new Vector3(1.7f, 1.7f, 1.7f), 5f).setEase(LeanTweenType.easeOutBounce);
 		LeanTween.moveX( avatarScale, avatarScale.transform.position.x + 1f, 5f).setEase(LeanTweenType.easeOutBounce); // Simultaneously target many different tweens on the same object 
 
@@ -65,7 +65,7 @@ public class GeneralBasics2d : MonoBehaviour {
 				dude.transform.parent = rotator.transform;
 				dude.transform.localPosition = new Vector3(0f,0.5f,0.5f*i);
 
-				// Scale, pop-in
+				// CanvasScale, pop-in
 				dude.transform.localScale = new Vector3(0f,0f,0f);
 				LeanTween.scale(dude, new Vector3(0.65f,0.65f,0.65f), 1f).setDelay(i*0.2f).setEase(LeanTweenType.easeOutBack);
 

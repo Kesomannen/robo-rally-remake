@@ -9,9 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49a2ba9cb742c7947b216ea81ab50218, type: 3}
-  m_Name: RobotDataLookup
+  m_Script: {fileID: 11500000, guid: 32ce86690aa645da903c28b2348d6c54, type: 3}
+  m_Name: WormReboot
   m_EditorClassIdentifier: 
-  _values:
-  - {fileID: 11400000, guid: cef402b3b1958fb4a82076337d20b84a, type: 2}
-  - {fileID: 11400000, guid: 320533cde685f6c4fb5fbdfadf60086b, type: 2}
+  _takeDamage: 1

@@ -23,10 +23,8 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
         StressTimer.Value = GameSettings.instance.StressTime;
         
         OnPhaseStarted?.Invoke();
-
-        var orderedPlayers = PlayerManager.GetOrderedPlayers();
-
-        foreach (var player in orderedPlayers) {
+        
+        foreach (var player in PlayerManager.Players) {
             player.DrawCardsUpTo(player.CardsPerTurn);
         }
 

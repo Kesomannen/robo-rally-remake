@@ -27,7 +27,7 @@ public class GeneralUISpace : MonoBehaviour {
 		// Time.timeScale = 1f/4f;
 		
 		// *********** Main Window **********
-		// Scale the whole window in
+		// CanvasScale the whole window in
 		mainWindow.localScale = Vector3.zero;
 		LeanTween.scale( mainWindow, new Vector3(1f,1f,1f), 0.6f).setEase(LeanTweenType.easeOutBack);
 		LeanTween.alphaCanvas( mainWindow.GetComponent<CanvasGroup>(), 0f, 1f).setDelay(2f).setLoopPingPong().setRepeat(2);

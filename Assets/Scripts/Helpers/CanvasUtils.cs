@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public static class CanvasUtils {
     static CanvasScaler _canvasScaler;
-    public static CanvasScaler CanvasScaler {
+    static CanvasScaler CanvasScaler {
         get {
             if (_canvasScaler == null) {
                 _canvasScaler = Object.FindObjectOfType<CanvasScaler>();
@@ -12,5 +12,6 @@ public static class CanvasUtils {
         }
     }
 
-    public static Vector2 Scale => CanvasScaler.transform.localScale;
+    public static Vector2 CanvasScale => CanvasScaler.transform.localScale;
+    public static Vector2 ScreenScale => new Vector2(Screen.width, Screen.height) / CanvasScaler.referenceResolution;
 }

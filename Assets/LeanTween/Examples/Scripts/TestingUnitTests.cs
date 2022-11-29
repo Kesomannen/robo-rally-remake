@@ -172,7 +172,7 @@ namespace DentedPixel.LTExamples
                 LeanTest.expect(zeroCube.transform.position.x == 10f, "ZERO TIME FINSHES CORRECTLY", "final x:" + zeroCube.transform.position.x);
             });
 
-            // Scale, and OnStart
+            // CanvasScale, and OnStart
             GameObject cubeScale = cubeNamed("cubeScale");
             LeanTween.scale(cubeScale, new Vector3(5f, 5f, 5f), 0.01f).setOnStart(() => {
                 LeanTest.expect(true, "ON START WAS CALLED");

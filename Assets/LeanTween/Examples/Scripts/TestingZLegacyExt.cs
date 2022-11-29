@@ -72,7 +72,7 @@ public class TestingZLegacyExt : MonoBehaviour {
                 iter = 0;
             timingType = (TimingType)iter;
             useEstimatedTime = timingType == TimingType.IgnoreTimeScale;
-            Time.timeScale = useEstimatedTime ? 0 : 1f; // pause the Time Scale to show the effectiveness of the useEstimatedTime feature (this is very usefull with Pause Screens)
+            Time.timeScale = useEstimatedTime ? 0 : 1f; // pause the Time CanvasScale to show the effectiveness of the useEstimatedTime feature (this is very usefull with Pause Screens)
             if (timingType == TimingType.HalfTimeScale)
                 Time.timeScale = 0.5f;
 

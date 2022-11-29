@@ -49,12 +49,12 @@ public class OldGUIExamplesCS : MonoBehaviour {
 			}
 		}
 
-		if(GUI.Button(buttonRect1.rect, "Scale Centered")){
+		if(GUI.Button(buttonRect1.rect, "CanvasScale Centered")){
 			LeanTween.scale( buttonRect1, new Vector2(buttonRect1.rect.width, buttonRect1.rect.height) * 1.2f, 0.25f ).setEase( LeanTweenType.easeOutQuad );
 			LeanTween.move( buttonRect1, new Vector2(buttonRect1.rect.x-buttonRect1.rect.width*0.1f, buttonRect1.rect.y-buttonRect1.rect.height*0.1f), 0.25f ).setEase(LeanTweenType.easeOutQuad);
 		}
 
-		if(GUI.Button(buttonRect2.rect, "Scale")){
+		if(GUI.Button(buttonRect2.rect, "CanvasScale")){
 			LeanTween.scale( buttonRect2, new Vector2(buttonRect2.rect.width, buttonRect2.rect.height) * 1.2f, 0.25f ).setEase(LeanTweenType.easeOutBounce);
 		}
 

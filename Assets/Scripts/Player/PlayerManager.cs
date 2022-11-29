@@ -67,8 +67,8 @@ public class PlayerManager : Singleton<PlayerManager> {
                               .ToDictionary(x => x.Key, x => x.Value);
 
         for (var i = 0; i < players.Count; i++) {
-            var player = players.ElementAt(i).Key;
-            players[player] += _players.Count - i;
+            var player = players.ElementAt(i);
+            players[player.Key] += _players.Count - i;
         }
 
         return players
