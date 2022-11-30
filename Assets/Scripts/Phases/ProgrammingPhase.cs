@@ -20,7 +20,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
         IsStressed = false;
         RegisterUI.Locked = false;
         _localPlayerSubmitted = false;
-        StressTimer.Value = GameSettings.instance.StressTime;
+        StressTimer.Value = GameSettings.Instance.StressTime;
         
         OnPhaseStarted?.Invoke();
         

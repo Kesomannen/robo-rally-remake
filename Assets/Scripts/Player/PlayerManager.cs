@@ -32,12 +32,12 @@ public class PlayerManager : Singleton<PlayerManager> {
 
     public void CreatePlayer(ulong id, LobbyPlayerData data) {
         var index = _players.Count;
-        var settings = GameSettings.instance;
+        var settings = GameSettings.Instance;
 
         var robotData = RobotData.GetById(data.RobotId);
         var spawnPoint = _spawnPoints[index];
 
-        var playerArgs = new PlayerArgs() {
+        var playerArgs = new PlayerArgs {
             OwnerId = id,
             RobotData = robotData,
             ModelPrefab = _playerModelPrefab,

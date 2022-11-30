@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxPlayers: 6
   _minPlayers: 2
-  _startingEnergy: 3
+  _startingEnergy: 5
   _cardsPerTurn: 7
   _maxCardsInHand: 10
-  _stressTime: 20
+  _stressTime: 30
   _programCardContainerPrefab: {fileID: -4837892012670907284, guid: 852a4f1b39d0eff43b4ad4b129005922, type: 3}
   _rebootAffector: {fileID: 11400000, guid: 574c1b6113180c94b81fb77410b90faa, type: 2}
   _upgradeSlots: 5

@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿#if UNITY_EDITOR
+using UnityEditor;
 
 [CustomEditor(typeof(UpgradeCardData))]
 public class UpgradeCardDataEditor : Editor {
@@ -45,3 +46,4 @@ public class UpgradeCardDataEditor : Editor {
         return serializedObject.FindProperty(propertyName);
     }
 }
+#endif

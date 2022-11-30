@@ -1,7 +1,6 @@
-using UnityEditor;
 using UnityEngine;
 
-[FilePath("Assets/Data/GameSettings.asset", FilePathAttribute.Location.ProjectFolder)]
+[CreateAssetMenu(fileName = "NewGameSettings", menuName = "ScriptableObjects/GameSettings")]
 public class GameSettings : ScriptableSingleton<GameSettings> {
     [Header("General")]
     [SerializeField] int _maxPlayers;

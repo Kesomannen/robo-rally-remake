@@ -9,7 +9,10 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
 
     TransformRotator _rotator;
 
-    [ReadOnly] public Vector2Int GridPos;
+    #if UNITY_EDITOR
+    [ReadOnly] 
+    #endif
+    public Vector2Int GridPos;
 
     protected virtual bool CanRotate => false;
 

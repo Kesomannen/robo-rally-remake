@@ -20,7 +20,7 @@ public class UpgradeCardData : ScriptableObject, IContainable<UpgradeCardData> {
     public int Cost => _cost;
     public bool IsAction => _isAction;
 
-    public Container<UpgradeCardData> DefaultContainerPrefab => GameSettings.instance.UpgradeContainerPrefab;
+    public Container<UpgradeCardData> DefaultContainerPrefab => GameSettings.Instance.UpgradeContainerPrefab;
 
     public void Apply(IPlayer player) {
         if (_isAction){
