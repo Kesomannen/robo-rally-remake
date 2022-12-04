@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -36,11 +37,7 @@ public class CardCollection {
         OnShuffle?.Invoke();
     }
 
-    public bool AddCard(ProgramCardData card, CardPlacement placement) {
-        if (card == null) {
-            Debug.LogError("Cannot add null card to collection");
-            return false;
-        }
+    public bool AddCard([NotNull] ProgramCardData card, CardPlacement placement) {
         if (_cards.Count >= _maxCards) return false;
 
         var index = GetIndex(placement);

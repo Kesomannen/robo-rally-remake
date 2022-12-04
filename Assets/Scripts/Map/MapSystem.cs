@@ -40,9 +40,9 @@ public class MapSystem : Singleton<MapSystem> {
         Debug.Log($"Registered {_tiles.Count} tiles.");
 
         // Call OnEnter handlers
-        foreach (var handler in callHandlers) {
-            foreach (var obj in _tiles[handler.Object.GridPos]) {
-                if (obj == handler.Object) continue;
+        foreach (var handler in callHandlers){
+            foreach (var obj in _tiles[handler.Object.GridPos]
+                         .Where(obj => obj != handler.Object)){
                 handler.OnEnter(obj);
             }
         }
@@ -74,7 +74,7 @@ public class MapSystem : Singleton<MapSystem> {
         }
     }
 
-    void RemoveObject(MapObject mapObject, bool callOnExit = true) {
+    static void RemoveObject(MapObject mapObject, bool callOnExit = true) {
         if (!_tiles.ContainsKey(mapObject.GridPos)) return;
         
         var tile = _tiles[mapObject.GridPos];
@@ -137,8 +137,8 @@ public class MapSystem : Singleton<MapSystem> {
     public static IReadOnlyList<MapObject> GetTile(Vector2Int gridPos){
         return TryGetTile(gridPos, out var result) ? result : null;
     }
-    
-    public Vector2Int WorldToGrid(Vector3 worldPos) {
+
+    Vector2Int WorldToGrid(Vector3 worldPos) {
         return _grid.WorldToCell(worldPos).ToVec2Int();
     }
     

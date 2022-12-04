@@ -2,9 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 
 public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
     public static int CurrentRegister { get; private set; }
+    public static ExecutionSubPhase CurrentSubPhase { get; private set; }
+    [CanBeNull] public static Player CurrentPlayer { get; private set; }
 
     public const int RegisterCount = 5;
     const float RegisterDelay = 1f;
@@ -39,28 +42,34 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
             player.DiscardProgram();
         }
 
+        yield return Scheduler.WaitUntilClearRoutine();
+        
         OnPhaseEnd?.Invoke();
 
         IEnumerator DoSubPhase(ExecutionSubPhase subPhase, IEnumerator routine) {
+            CurrentSubPhase = subPhase;
             OnNewSubPhase?.Invoke(subPhase);
-            //yield return Helpers.Wait(SubPhaseDelay);
+
             yield return routine;
-            yield return Helpers.Wait(0.5f);
+            yield return CoroutineUtils.Wait(SubPhaseDelay);
         }
     }
 
     static IEnumerator ExecuteRegister(IEnumerable<Player> players) {
         foreach (var player in players) {
+            CurrentPlayer = player;
+            
             var card = player.Program[CurrentRegister];
             if (card == null) continue;
 
             BeforeRegister?.Invoke(card, CurrentRegister, player);
             
-            Scheduler.Enqueue(card.ExecuteRoutine(player, CurrentRegister), $"ProgramCard ({card})", RegisterDelay);
+            Scheduler.Push(card.ExecuteRoutine(player, CurrentRegister), $"ProgramCard ({card})", RegisterDelay);
             yield return Scheduler.WaitUntilClearRoutine();
             
             AfterRegister?.Invoke(card, CurrentRegister, player);
         }
+        CurrentPlayer = null;
     }
 
     static IEnumerator FireLasers(IEnumerable<Player> players) {

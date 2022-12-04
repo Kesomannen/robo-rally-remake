@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 
 #pragma warning disable 4014
 
-public class LobbySystem : NetworkBehaviour {
-    public static LobbySystem Instance { get; private set; }
-
+public class LobbySystem : NetworkSingleton<LobbySystem> {
     static readonly Dictionary<ulong, LobbyPlayerData> _playersInLobby = new();
     public static IReadOnlyDictionary<ulong, LobbyPlayerData> PlayersInLobby => _playersInLobby;
 
@@ -19,11 +17,6 @@ public class LobbySystem : NetworkBehaviour {
     public static event Action<ulong> OnPlayerRemoved;
 
     public static string LobbyJoinCode => Matchmaking.CurrentLobby.LobbyCode;
-
-    void Awake() {
-        Instance = this;
-    }
-
     void Start() {
         NetworkObject.DestroyWithScene = true;
 

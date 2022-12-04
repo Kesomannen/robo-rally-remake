@@ -14,9 +14,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Double Barrel Laser
   _description: "Deal an additional Spam\r damage card to any robot you\r shoot."
-  _icon: {fileID: 0}
+  _icon: {fileID: 21300000, guid: 67322689ccbfc26478db4b123adbde68, type: 3}
   _cost: 2
-  _isAction: 0
+  _useCost: 0
+  _type: 1
+  _useContext: 3
   _temporaryAffectors:
   - {fileID: 11400000, guid: 83ed83b7654667c479547ca7bde33c0c, type: 2}
   _permanentAffectors: []
+  _tooltips:
+  - _type: 3
+    _header: 
+    _description: 
+    _programCard: {fileID: 0}
+    _upgradeCard: {fileID: 0}
+    _mechanic: 0
+  - _type: 1
+    _header: 
+    _description: 
+    _programCard: {fileID: 11400000, guid: ecc7d4ad841b0624999bcaff2184a12f, type: 2}
+    _upgradeCard: {fileID: 0}
+    _mechanic: 0

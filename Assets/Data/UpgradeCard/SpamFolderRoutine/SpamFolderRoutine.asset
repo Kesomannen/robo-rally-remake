@@ -20,3 +20,10 @@ MonoBehaviour:
   _temporaryAffectors: []
   _permanentAffectors:
   - {fileID: 11400000, guid: 6fbda60dfe7210940bddbbd02a9d275d, type: 2}
+  _tooltips:
+  - _type: 1
+    _header: 
+    _description: 
+    _programCard: {fileID: 11400000, guid: cd562bb65f628654db3870673f9a2ed1, type: 2}
+    _upgradeCard: {fileID: 0}
+    _mechanic: 0

@@ -3,7 +3,7 @@ using UnityEngine;
 public abstract class Container<T> : MonoBehaviour {
     public T Data { get; private set; }
 
-    protected abstract void Serialize(T player);
+    protected abstract void Serialize(T data);
 
     public Container<T> SetContent(T data) {
         if (data.Equals(Data)) return this;

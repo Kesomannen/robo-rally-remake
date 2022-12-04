@@ -17,9 +17,8 @@ using ParrelSync;
 #endif
 
 public static class Matchmaking {
-    public static UnityTransport Transport {
+    static UnityTransport Transport {
         get => _transport != null ? _transport : _transport = Object.FindObjectOfType<UnityTransport>();
-        set => _transport = value;
     }
 
     public static Lobby CurrentLobby { get; private set; }

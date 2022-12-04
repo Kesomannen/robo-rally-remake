@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class CollectionOverlay : OverlayBase {
+public class CollectionOverlay : Overlay {
     [Header("References")]
-    [SerializeField] ProgramCard _cardPrefab;
     [SerializeField] Transform _cardContainer;
+    
+    [Header("Prefabs")]
+    [SerializeField] ProgramCard _cardPrefab;
+    
     [Header("Animation")]
-    [SerializeField] float _cardPopupDuration = 0.2f;
-    [SerializeField] float _cardPopupDelay = 0.05f;
-    [SerializeField] float _cardStartScale = 0.5f;
-    [SerializeField] LeanTweenType _easeType;
+    [SerializeField] DynamicUITween _onEnableTween;
 
     readonly List<ProgramCard> _cardObjects = new();
 
@@ -24,15 +24,6 @@ public class CollectionOverlay : OverlayBase {
             _cardObjects.Add(cardInstance);
             cardInstance.gameObject.SetActive(false);
         }
-        StartCoroutine(ShowCardsRoutine());
-
-        IEnumerator ShowCardsRoutine(){
-            foreach (var obj in _cardObjects.Select(card => card.gameObject)){
-                obj.transform.localScale = Vector3.one * _cardStartScale;
-                LeanTween.scale(obj, Vector3.one, _cardPopupDuration).setEase(_easeType);
-                obj.SetActive(true);
-                yield return Helpers.Wait(_cardPopupDelay);
-            }
-        }
+        StartCoroutine(TweenHelper.DoUITween(_onEnableTween.ToTween(_cardObjects.Select(c => c.gameObject))));
     }
 }

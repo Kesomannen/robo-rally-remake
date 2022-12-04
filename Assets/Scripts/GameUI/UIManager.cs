@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 public class UIManager : Singleton<UIManager> {
-    [SerializeField] Transform _playerUIParent, _executionUIParent;
+    [SerializeField] Transform _playerUIParent, _executionUIParent, _shopUIParent;
 
     public void ChangeState(UIState newState) {
         if (_currentState == newState) return;
@@ -46,7 +46,7 @@ public class UIManager : Singleton<UIManager> {
         }
 
         void Shop() {
-            throw new NotImplementedException();
+            _shopUIParent.gameObject.SetActive(true);
         }
     }
 
@@ -72,7 +72,7 @@ public class UIManager : Singleton<UIManager> {
         }
 
         void Shop() {
-            throw new NotImplementedException();
+            _shopUIParent.gameObject.SetActive(false);
         }
     }
 }

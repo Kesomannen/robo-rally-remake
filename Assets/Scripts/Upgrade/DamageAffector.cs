@@ -17,8 +17,8 @@ public class DamageAffector : ScriptableAffector<IPlayer> {
         if (_replace) damage.Cards.Clear();
         damage.Cards.AddRange(_cards);
 
-        damage.Destination = Helpers.ModifyEnumValue(damage.Destination, _destination);
-        damage.Placement = Helpers.ModifyEnumValue(damage.Placement, _placement);
+        damage.Destination = CoroutineUtils.ModifyEnumValue(damage.Destination, _destination);
+        damage.Placement = CoroutineUtils.ModifyEnumValue(damage.Placement, _placement);
     }
     
     public override void Remove(IPlayer target) {

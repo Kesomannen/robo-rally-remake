@@ -19,7 +19,7 @@ public static class Interaction {
         var duration = Vector2.Distance(prev, target) / speed;
         
         LeanTween.move(mapObject.gameObject, target, duration).setEase(easeType);
-        yield return Helpers.Wait(duration);
+        yield return CoroutineUtils.Wait(duration);
         MapSystem.RelocateObject(mapObject, gridPosition);
     }
 

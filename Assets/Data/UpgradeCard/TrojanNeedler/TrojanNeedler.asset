@@ -22,3 +22,22 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e8bce76a7ddfcd047a025613f4608367, type: 2}
   - {fileID: 11400000, guid: 3932043f51399474face537023daecbe, type: 2}
   _permanentAffectors: []
+  _tooltips:
+  - _type: 3
+    _header: 
+    _description: 
+    _programCard: {fileID: 0}
+    _upgradeCard: {fileID: 0}
+    _mechanic: 0
+  - _type: 1
+    _header: 
+    _description: 
+    _programCard: {fileID: 11400000, guid: 77f85db663062224b959a29d01660438, type: 2}
+    _upgradeCard: {fileID: 0}
+    _mechanic: 0
+  - _type: 1
+    _header: 
+    _description: 
+    _programCard: {fileID: 11400000, guid: ecc7d4ad841b0624999bcaff2184a12f, type: 2}
+    _upgradeCard: {fileID: 0}
+    _mechanic: 0

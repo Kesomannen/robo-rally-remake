@@ -4,8 +4,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerOverlay : OverlayBase {
-    [Header("Text Fields")]
+public class PlayerOverlay : Overlay {
+    [Header("References")]
     [SerializeField] TMP_Text _nameText;
     [SerializeField] TMP_Text _robotNameText;
     [Space]
@@ -16,7 +16,7 @@ public class PlayerOverlay : OverlayBase {
     [SerializeField] Image _iconImage;
 
     [Header("Animation")]
-    [SerializeField] UITween _tween;
+    [SerializeField] StaticUITween _tween;
 
     Player _player;
     

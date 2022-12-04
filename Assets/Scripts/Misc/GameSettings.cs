@@ -19,6 +19,7 @@ public class GameSettings : ScriptableSingleton<GameSettings> {
     [SerializeField] ScriptableCardAffector _rebootAffector;
 
     [Header("Upgrades")]
+    [SerializeField] int _shopSlots;
     [SerializeField] int _upgradeSlots;
     [SerializeField] Container<UpgradeCardData> _upgradeContainerPrefab;
 
@@ -34,6 +35,7 @@ public class GameSettings : ScriptableSingleton<GameSettings> {
 
     public ScriptableCardAffector RebootAffector => _rebootAffector;
     
+    public int ShopSlots => _shopSlots;
     public int UpgradeSlots => _upgradeSlots;
     public Container<UpgradeCardData> UpgradeContainerPrefab => _upgradeContainerPrefab;
 }

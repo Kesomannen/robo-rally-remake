@@ -1,6 +1,6 @@
 using System;
 
-public class ObservableField<T> : IObservableField<T> {
+public class ObservableField<T> {
     public event Action<T, T> OnValueChanged;
 
     public T Value {

@@ -1,40 +1,74 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "UpgradeCardData", menuName = "ScriptableObjects/UpgradeData")]
-public class UpgradeCardData : ScriptableObject, IContainable<UpgradeCardData> {
+public class UpgradeCardData : Lookup<UpgradeCardData>, IContainable<UpgradeCardData>, IAffector<IPlayer> {
     [SerializeField] string _name;
-    [SerializeField] [TextArea] string _description;
+    [TextArea]
+    [SerializeField] string _description;
     [SerializeField] Sprite _icon;
+    
     [SerializeField] int _cost;
-    [SerializeField] bool _isAction;
+    [SerializeField] int _useCost;
+    [SerializeField] UpgradeType _type;
+    [SerializeField] UseContext _useContext = UseContext.None;
 
-    [SerializeField] List<ScriptableAffector<IPlayer>> _temporaryAffectors;
-    [SerializeField] List<ScriptablePermanentAffector<IPlayer>> _permanentAffectors;
+    [SerializeField] ScriptableAffector<IPlayer>[] _temporaryAffectors;
+    [SerializeField] ScriptablePermanentAffector<IPlayer>[] _permanentAffectors;
+    
+    [SerializeField] UpgradeTooltipData[] _tooltips;
 
     public string Name => _name;
-    public string Description => _description;
+    public string Description => _description.Replace("\r", "");
     public Sprite Icon => _icon;
     public int Cost => _cost;
-    public bool IsAction => _isAction;
+    public int UseCost => _useCost;
+    public UpgradeType Type => _type;
+    public IEnumerable<UpgradeTooltipData> Tooltips => _tooltips;
 
     public Container<UpgradeCardData> DefaultContainerPrefab => GameSettings.Instance.UpgradeContainerPrefab;
 
-    public void Apply(IPlayer player) {
-        if (_isAction){
-            foreach (var affector in _permanentAffectors) affector.Apply(player);
-        } else {
-            foreach (var affector in _temporaryAffectors) affector.Apply(player);
+    public bool CanUse(IPlayer player) {
+        if (player.Owner.Energy.Value < UseCost) return false;
+        if (CanUseIn(UseContext.None)) return false;
+
+        return PhaseSystem.CurrentPhase switch {
+            Phase.Programming => CanUseIn(ProgrammingPhase.LocalPlayerSubmitted ? UseContext.AfterLockIn : UseContext.DuringProgramming),
+            Phase.Execution => ExecutionPhase.CurrentSubPhase == ExecutionSubPhase.Registers 
+                ? CanUseIn(PlayerManager.IsLocal(ExecutionPhase.CurrentPlayer) ? UseContext.OwnRegister : UseContext.OtherRegisters) 
+                : CanUseIn(UseContext.BoardElements),
+            Phase.Shop => CanUseIn(UseContext.Shop),
+            _ => throw new Exception("Unknown phase")
+        };
+
+        bool CanUseIn(UseContext context) => _useContext == context;
+    }
+
+    public void OnBuy(IPlayer player) {
+        if (_type == UpgradeType.Permanent){
+            Apply(player);
         }
     }
     
+    public void Apply(IPlayer player) {
+        var affectors = _type switch {
+            UpgradeType.Temporary => _temporaryAffectors,
+            UpgradeType.Permanent => _permanentAffectors,
+            UpgradeType.Action => _permanentAffectors,
+            _ => throw new Exception("Unknown upgrade type")
+        };
+        
+        foreach (var affector in affectors) {
+            affector.Apply(player);
+        }
+
+        player.Owner.Energy.Value -= _useCost;
+    }
+    
     public void Remove(IPlayer player) {
-        if (_isAction){
-            throw new InvalidOperationException("Cannot remove an action upgrade");
-        } 
-        foreach (var affector in _temporaryAffectors) {
+        if (_type != UpgradeType.Permanent) return;
+        foreach (var affector in _temporaryAffectors){
             affector.Remove(player);
         }
     }
@@ -43,10 +77,18 @@ public class UpgradeCardData : ScriptableObject, IContainable<UpgradeCardData> {
 [Flags]
 public enum UseContext {
     None = 0,
+    ProgrammingPhase = DuringProgramming | AfterLockIn,
+    ExecutionPhase = OwnRegister | OtherRegisters | BoardElements,
     DuringProgramming = 1,
     AfterLockIn = 2,
     OwnRegister = 4,
     OtherRegisters = 8,
     BoardElements = 16,
-    Shop = 32,
+    Shop = 32
+}
+
+public enum UpgradeType {
+    Temporary,
+    Permanent,
+    Action,
 }

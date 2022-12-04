@@ -315,9 +315,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2895f2346c195e745bb5a747702da987, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cardPrefab: {fileID: -4837892012670907284, guid: 852a4f1b39d0eff43b4ad4b129005922, type: 3}
   _cardContainer: {fileID: 1158280484}
-  _cardPopupDuration: 0.2
-  _cardPopupDelay: 0.015
-  _cardStartScale: 0.5
-  _easeType: 27
+  _cardPrefab: {fileID: -4837892012670907284, guid: 852a4f1b39d0eff43b4ad4b129005922, type: 3}
+  _onEnableTween:
+    _startSize: 0.3
+    _duration: 0.2
+    _interval: 0.02
+    _tweenType: 27

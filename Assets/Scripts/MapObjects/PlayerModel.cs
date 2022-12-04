@@ -43,7 +43,7 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
             Owner.LaserAffector.Apply(hit.Owner);
         }
         
-        yield return Helpers.Wait(1f);
+        yield return CoroutineUtils.Wait(1f);
         lasers.ForEach(l => MapSystem.Instance.DestroyObject(l, false));
     }
     

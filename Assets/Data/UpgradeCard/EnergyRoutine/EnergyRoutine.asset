@@ -12,11 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3046940b504f79c4ab36f87e3b3ff8ef, type: 3}
   m_Name: EnergyRoutine
   m_EditorClassIdentifier: 
-  _name: Sandbox Routine
+  _name: Energy Routine
   _description: Add an additional Energize card onto your discard pile.
-  _icon: {fileID: 0}
+  _icon: {fileID: 21300000, guid: 580fab44ef70f4948a8a1ff8eb51662b, type: 3}
   _cost: 3
-  _isAction: 1
+  _useCost: 0
+  _type: 0
+  _useContext: 35
   _temporaryAffectors: []
   _permanentAffectors:
   - {fileID: 11400000, guid: 1a7779f9eb7005f4c8c1914a4004044a, type: 2}
+  _tooltips:
+  - _type: 1
+    _header: 
+    _description: 
+    _programCard: {fileID: 11400000, guid: 6df06af95ee939f4f82c91f6f7371b63, type: 2}
+    _upgradeCard: {fileID: 0}
+    _mechanic: 0

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.Assertions;
 using Random = UnityEngine.Random;
 
 public class Player : IPlayer {
@@ -149,7 +151,7 @@ public class Player : IPlayer {
         OnDiscard?.Invoke(card);
     }
 
-    public void DiscardCard(ProgramCardData card) {
+    public void DiscardCard([NotNull] ProgramCardData card) {
         DiscardCard(Hand.Cards.IndexOf(card));
     }
 
@@ -198,6 +200,32 @@ public class Player : IPlayer {
     
     public void Reboot(bool takeDamage = true) {
         Reboot(MapSystem.GetParentBoard(Model), takeDamage);
+    }
+
+    public int GetOpenUpgradeSlot() {
+        for (var i = 0; i < _upgrades.Length; i++){
+            if (_upgrades[i] == null) return i;
+        }
+        return -1;
+    }
+
+    public void BuyUpgrade(UpgradeCardData upgrade, int index) {
+        RemoveUpgrade(index);
+        _upgrades[index] = upgrade;
+        upgrade.OnBuy(this);
+    }
+
+    public void UseUpgrade(int index) {
+        var upgrade = _upgrades[index];
+        upgrade.Apply(this);
+    }
+    
+    public void RemoveUpgrade(int index) {
+        var upgrade = _upgrades[index];
+        if (upgrade == null) return;
+        
+        upgrade.Remove(this);
+        _upgrades[index] = null;
     }
 }
 

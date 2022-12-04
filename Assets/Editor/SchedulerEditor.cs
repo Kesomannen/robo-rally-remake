@@ -6,7 +6,7 @@ public class SchedulerEditor : Editor {
     public override void OnInspectorGUI() {
         base.OnInspectorGUI();
         if (Scheduler.CurrentRoutine != null) {
-            var routine = (Scheduler.RoutineItem) Scheduler.CurrentRoutine;
+            var routine = (Scheduler.ScheduleItem) Scheduler.CurrentRoutine;
             EditorGUILayout.LabelField("Currently Playing ", routine.Label);
             
             foreach (var scheduleItem in Scheduler.RoutineList) {

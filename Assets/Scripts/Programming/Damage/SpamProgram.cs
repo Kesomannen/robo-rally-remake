@@ -10,7 +10,7 @@ public class SpamProgram : ProgramCardData {
         do {
             card = player.GetTopCard();
             player.DiscardPile.AddCard(card, CardPlacement.Top);
-            yield return Helpers.Wait(1);
+            yield return CoroutineUtils.Wait(1);
         } while (!card.CanPlace(player, positionInRegister));
 
         yield return card.ExecuteRoutine(player, positionInRegister);

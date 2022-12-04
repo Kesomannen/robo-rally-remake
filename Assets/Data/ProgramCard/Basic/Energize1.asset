@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dd037a74458b214b8b48105cce10700, type: 3}
   m_Name: Energize1
   m_EditorClassIdentifier: 
-  _name: Energize 1
+  _name: Energize
   _description: Replenish one energy.
   _artwork: {fileID: 21300000, guid: 14e1d027054496a43aa6a7cc502161cf, type: 3}
   _type: 2

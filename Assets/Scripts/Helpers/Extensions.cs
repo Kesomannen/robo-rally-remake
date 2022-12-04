@@ -15,6 +15,8 @@ public static class Extensions {
         for (var i = 0; i < list.Count; i++) if (list[i].Equals(item)) return i;
         return -1;
     }
+    
+    public static T GetRandom<T>(this IReadOnlyList<T> list) => list[Random.Range(0, list.Count)];
 
     public static TValue EnforceKey<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue) {
         if (!dictionary.ContainsKey(key)) dictionary.Add(key, defaultValue);

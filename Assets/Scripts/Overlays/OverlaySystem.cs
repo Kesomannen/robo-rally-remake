@@ -3,17 +3,21 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.InputSystem;
 
 public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
+    [Header("Input")]
+    [SerializeField] InputAction _exitAction;
+    
+    [Header("References")]
     [SerializeField] RectTransform _overlayParent;
     [SerializeField] TMP_Text _headerText, _subtitleText;
-    [SerializeField] Image _overlayColorImage;
 
     RectTransform _activeOverlayObject;
 
-    public bool IsOverlayActive => _activeOverlayObject != null;
+    bool IsOverlayActive => _activeOverlayObject != null;
 
-    public static event Action<PointerEventData> OnClick;
+    public static event Action OnClick;
     public static event Action<OverlayData> OnOverlayActivated;
     public static event Action OnOverlayDeactivated;
 
@@ -22,11 +26,26 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
         gameObject.SetActive(false);
     }
 
-    public T ShowOverlay<T>(OverlayData<T> data) where T : OverlayBase {
-        if (IsOverlayActive) {
-            Debug.LogWarning("Overlay already active");
-            return null;
-        }
+    void OnEnable() {
+        _exitAction.performed += OnExitAction;
+        _exitAction.Enable();
+    }
+    
+    void OnDisable() {
+        _exitAction.performed -= OnExitAction;
+        _exitAction.Disable();
+    }
+    
+    public void OnPointerClick(PointerEventData e) {
+        OnExitAction();
+    }
+    
+    static void OnExitAction(InputAction.CallbackContext c = default) {
+        OnClick?.Invoke();
+    }
+
+    public T ShowOverlay<T>(OverlayData<T> data) where T : Overlay {
+        if (IsOverlayActive) return null;
 
         gameObject.SetActive(true);
         
@@ -66,22 +85,18 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
 
         OnOverlayDeactivated?.Invoke();        
     }
-
-    public void OnPointerClick(PointerEventData e) {
-        OnClick?.Invoke(e);
-    }
 }
 
 [Serializable]
 public struct OverlayData {
     public string Header;
     public string Subtitle;
-    public OverlayBase Prefab;
+    public Overlay Prefab;
     public bool CanPreview;
 }
 
 [Serializable]
-public struct OverlayData<T> where T : OverlayBase {
+public struct OverlayData<T> where T : Overlay {
     public string Header;
     public string Subtitle;
     public T Prefab;

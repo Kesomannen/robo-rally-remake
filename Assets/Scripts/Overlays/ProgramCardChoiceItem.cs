@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class ProgramCardChoiceItem : ProgramCard, IPointerClickHandler {
+    [Header("References")]
     [SerializeField] Selectable _selectable;
     [SerializeField] GameObject _unavailableOverlay;
 

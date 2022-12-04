@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ProgramCardChoice : Choice<ProgramCardData> {
+    [Header("References")]
     [SerializeField] Transform _choiceContainer;
+    
+    [Header("Prefabs")]
     [SerializeField] ProgramCardChoiceItem _choicePrefab;
 
     protected override int MaxOptions => 8;

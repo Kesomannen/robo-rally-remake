@@ -4,24 +4,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Scheduler : Singleton<Scheduler> {
-    static readonly List<RoutineItem> _routineList = new();
-    public static IEnumerable<RoutineItem> RoutineList => _routineList;
-    public static RoutineItem? CurrentRoutine { get; private set; } = null;
+    static readonly Stack<ScheduleItem> _routineList = new();
+    public static IEnumerable<ScheduleItem> RoutineList => _routineList;
+    public static ScheduleItem? CurrentRoutine { get; private set; } = null;
 
     static bool _isPlaying;
 
     const float DefaultDelay = 0.5f;
 
     public static void Push(IEnumerator routine, string label, float delay = DefaultDelay) {
-        AddItem(new RoutineItem(routine, label, delay), _routineList.Count);
+        PushItem(new ScheduleItem(routine, label, delay));
     }
 
-    public static void Enqueue(IEnumerator routine, string label, float delay = DefaultDelay) {
-        AddItem(new RoutineItem(routine, label, delay), 0);
-    }
-
-    static void AddItem(RoutineItem item, int index) {
-        _routineList.Insert(index, item);
+    static void PushItem(ScheduleItem item) {
+        _routineList.Push(item);
         if (!_isPlaying) {
             Instance.StartCoroutine(PlayListRoutine());
         }
@@ -56,24 +52,24 @@ public class Scheduler : Singleton<Scheduler> {
     static IEnumerator PlayListRoutine() {
         _isPlaying = true;
         while (_routineList.Count > 0) {
-            var i = _routineList.Count - 1;
-            var routineItem = _routineList[i];
+            var routineItem = _routineList.Peek();
             CurrentRoutine = routineItem;
-            _routineList.RemoveAt(i);
 
             yield return routineItem.Routine;
-            yield return Helpers.Wait(routineItem.Delay);
+            yield return CoroutineUtils.Wait(routineItem.Delay);
+
+            _routineList.Pop();
         }
         CurrentRoutine = null;
         _isPlaying = false;
     }
 
-    public struct RoutineItem {
+    public struct ScheduleItem {
         public readonly IEnumerator Routine;
         public readonly string Label;
         public readonly float Delay;
 
-        public RoutineItem(IEnumerator routine, string label, float delay) {
+        public ScheduleItem(IEnumerator routine, string label, float delay) {
             Routine = routine;
             Label = label;
             Delay = delay;

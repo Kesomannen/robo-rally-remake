@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using System.Linq;
 using System;
+using Unity.VisualScripting;
 
 public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
     [SerializeField] Vector2Int _direction;
@@ -17,7 +18,7 @@ public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
     static readonly List<(Vector2Int pos, bool final, MapEvent mapEvent)> _moves = new();
     
     public string Header => "Conveyor";
-    public string Description => $"Moves objects {Helpers.Format(1f / _cost, "tile")} after each register.";
+    public string Description => $"Moves objects {StringUtils.Format(1f / _cost, "tile")} after each register.";
 
     protected override void Awake() {
         base.Awake();
@@ -42,10 +43,12 @@ public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
         
         OnActivateEvent?.Invoke();
 
-        // Execute moves
-        foreach (var (pos, final, mapEvent) in _moves){
+        // Execute moves in reverse order
+        for (var i = _moves.Count - 1; i >= 0; i--){
+            var (pos, final, mapEvent) = _moves[i];
+            
             var routine = Interaction.EaseEvent(mapEvent, EaseType, MoveSpeed);
-            Scheduler.Enqueue(routine, $"Conveyor moving to {pos}", 0);
+            Scheduler.Push(routine, $"Conveyor moving to {pos}", 0);
         }
 
         yield return Scheduler.WaitUntilClearRoutine();

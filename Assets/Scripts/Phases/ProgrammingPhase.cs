@@ -6,10 +6,11 @@ using Unity.Netcode;
 using System.Linq;
 
 public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
-    public static readonly ObservableField<int> StressTimer = new(0);
     public static bool IsStressed { get; private set; }
-
-    static bool _localPlayerSubmitted;
+    public static bool LocalPlayerSubmitted { get; private set; }
+    
+    public static readonly ObservableField<int> StressTimer = new(0);
+    
     static int _playersReady;
 
     public static event Action OnPhaseStarted;
@@ -19,7 +20,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
 
         IsStressed = false;
         RegisterUI.Locked = false;
-        _localPlayerSubmitted = false;
+        LocalPlayerSubmitted = false;
         StressTimer.Value = GameSettings.Instance.StressTime;
         
         OnPhaseStarted?.Invoke();
@@ -30,6 +31,8 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
 
         _playersReady = 0;
         yield return new WaitUntil(() => _playersReady >= PlayerManager.Players.Count);
+        
+        yield return Scheduler.WaitUntilClearRoutine();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -49,7 +52,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
     static void LockPlayerRegister(byte playerIndex, IEnumerable<byte> registerCardIds) {
         if (PlayerManager.IsLocal(PlayerManager.Players[playerIndex])){
             RegisterUI.Locked = true;
-            _localPlayerSubmitted = true;
+            LocalPlayerSubmitted = true;
             return;
         }
 
@@ -62,26 +65,25 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
             Debug.Log($"Register {i} of player {playerIndex} is now {cards[i]}");
         }
 
-        if (_localPlayerSubmitted || IsStressed) return;
+        if (LocalPlayerSubmitted || IsStressed) return;
         
         Scheduler.StartRoutine(StressRoutine());
     }
 
-    public static IEnumerator StressRoutine(){
+    static IEnumerator StressRoutine(){
         IsStressed = true;
-        while (!_localPlayerSubmitted) {
+        while (!LocalPlayerSubmitted) {
             StressTimer.Value--;
             if (StressTimer.Value <= 0) {
                 FillRegisters(PlayerManager.LocalPlayer);
                 IsStressed = false;
                 yield break;
             }
-            yield return Helpers.Wait(1);
+            yield return CoroutineUtils.Wait(1);
         }
     }
 
     static void FillRegisters(Player player) {
-        // Discard hand & register
         player.DiscardHand();
         player.DiscardProgram();
 

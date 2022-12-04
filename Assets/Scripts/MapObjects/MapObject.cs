@@ -45,6 +45,6 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
         
         var duration = Math.Abs(steps) * speed;
         LeanTween.rotateZ(gameObject, _rotator.RotZ * 90f, duration).setEase(easeType);
-        yield return Helpers.Wait(duration);
+        yield return CoroutineUtils.Wait(duration);
     }
 }

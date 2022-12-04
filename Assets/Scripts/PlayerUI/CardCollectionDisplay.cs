@@ -31,7 +31,6 @@ public class CardCollectionDisplay : MonoBehaviour, IPointerClickHandler {
     }
 
     public void OnPointerClick(PointerEventData e) {
-        var obj = OverlaySystem.Instance.ShowOverlay(_collectionOverlayData);
-        obj.Init(_collection.Cards, _shuffledView);
+        OverlaySystem.Instance.ShowOverlay(_collectionOverlayData)?.Init(_collection.Cards, _shuffledView);
     }
 }

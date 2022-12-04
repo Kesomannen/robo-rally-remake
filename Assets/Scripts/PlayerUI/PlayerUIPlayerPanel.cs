@@ -28,6 +28,6 @@ public class PlayerUIPlayerPanel : Container<Player>, IPointerClickHandler {
     }
     
     public void OnPointerClick(PointerEventData e){
-        OverlaySystem.Instance.ShowOverlay(_overlayData).Init(_player);
+        OverlaySystem.Instance.ShowOverlay(_overlayData)?.Init(_player);
     }
 }

@@ -36,7 +36,7 @@ public class HandController : Singleton<HandController> {
 
     IEnumerator UpdateHandRoutine() {
         while (true) {
-            yield return Helpers.WaitEndOfFrame();
+            yield return CoroutineUtils.WaitEndOfFrame();
             if (_actionQueue.Count <= 0) continue;
             
             var action = _actionQueue[0];
@@ -48,7 +48,7 @@ public class HandController : Singleton<HandController> {
                 CardActionType.Remove => RemoveCardRoutine(action),
                 _ => throw new ArgumentOutOfRangeException()
             };
-            yield return Helpers.Wait(action.Delay);
+            yield return CoroutineUtils.Wait(action.Delay);
         }
     }
 

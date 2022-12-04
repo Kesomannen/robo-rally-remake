@@ -1,14 +1,15 @@
 using System;
 using UnityEngine.EventSystems;
 
-public abstract class Choice<T> : OverlayBase {
-    Action<ChoiceResult> _callback;
+public abstract class Choice<T> : Overlay {
     protected T[] Options;
 
     protected abstract int MaxOptions { get; }
     protected abstract int MinOptions { get; }
 
     bool _isOptional;
+    
+    Action<ChoiceResult> _callback;
 
     protected void Init(T[] options, Action<ChoiceResult> callback, bool isOptional = false) {
         if (options.Length > MaxOptions || options.Length < MinOptions) {
@@ -20,9 +21,9 @@ public abstract class Choice<T> : OverlayBase {
         _isOptional = isOptional;
     }
 
-    protected override void OnOverlayClick(PointerEventData e){
+    protected override void OnOverlayClick(){
         if (!_isOptional) return;
-        base.OnOverlayClick(e);
+        base.OnOverlayClick();
         Cancel();
     }
 
