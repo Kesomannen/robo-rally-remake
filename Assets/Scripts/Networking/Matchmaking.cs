@@ -53,7 +53,7 @@ public static class Matchmaking {
         }
     }
 
-    public static async Task SignInAsync() {
+    static async Task SignInAsync() {
         if (!AuthenticationService.Instance.IsSignedIn) {
             Debug.Log("Signing in...");
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
@@ -159,14 +159,15 @@ public static class Matchmaking {
     public static async Task UpdateLobbyAsync(UpdateLobbyDataOptions options) {
         try {
             var updateOpts = new UpdateLobbyOptions {
-                IsPrivate = options.IsPrivate
+                IsPrivate = options.IsPrivate,
+                Data = {
+                    [MapIDKey] = new DataObject(
+                        visibility: DataObject.VisibilityOptions.Public,
+                        index: DataObject.IndexOptions.N1,
+                        value: options.MapID.ToString()
+                    )
+                }
             };
-
-            updateOpts.Data[MapIDKey] = new DataObject(
-                visibility: DataObject.VisibilityOptions.Public,
-                index: DataObject.IndexOptions.N1,
-                value: options.MapID.ToString()
-            );
 
             await Lobbies.Instance.UpdateLobbyAsync(CurrentLobby.Id, updateOpts);
         } catch (Exception e) {

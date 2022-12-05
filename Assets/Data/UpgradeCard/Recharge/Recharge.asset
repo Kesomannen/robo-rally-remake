@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Recharge
   _description: Gain 3 energy.
-  _icon: {fileID: 0}
+  _icon: {fileID: 21300000, guid: 30fc70d2d652da84cb00f5d3d68187f3, type: 3}
   _cost: 0
-  _isAction: 1
+  _useCost: 0
+  _type: 0
+  _useContext: 35
   _temporaryAffectors: []
   _permanentAffectors:
   - {fileID: 11400000, guid: cae7b568633b7a8458084cc7ecbfe38d, type: 2}

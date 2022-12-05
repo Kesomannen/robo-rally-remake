@@ -491,7 +491,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _upgradeParent: {fileID: 772788830}
-  _shopCardPrefab: {fileID: 794679407555492246, guid: 26adbe8b95cd2874ead727820fa407bc, type: 3}
+  _shopCardPrefab: {fileID: -3931275337680322805, guid: 26adbe8b95cd2874ead727820fa407bc, type: 3}
 --- !u!1 &244314945
 GameObject:
   m_ObjectHideFlags: 0
@@ -2121,8 +2121,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0.0013427734, y: 0}
-  m_SizeDelta: {x: -426.67, y: 100}
+  m_AnchoredPosition: {x: 0.0012207031, y: 0}
+  m_SizeDelta: {x: -426.66, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &772788831
 MonoBehaviour:
@@ -3250,7 +3250,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -488.9099, y: -99}
+  m_AnchoredPosition: {x: -488.90985, y: -99}
   m_SizeDelta: {x: -1024, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1262754481
@@ -4036,8 +4036,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _characterWrapLimit: 50
-  _fadeInSpeed: 7
-  _popupDuration: 0.2
+  _fadeInSpeed: 5
+  _popupDuration: 0.5
   _background: {fileID: 1380633120}
   _headerText: {fileID: 1416615868}
   _descriptionText: {fileID: 466211090}

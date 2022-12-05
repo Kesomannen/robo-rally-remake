@@ -217,6 +217,7 @@ MonoBehaviour:
   _backgroundImage: {fileID: 8197752021562342096}
   _selectable: {fileID: 3589565074063390391}
   _costSprites:
+  - {fileID: 21300000, guid: 3cfe7b3fa247c514385e1dcdefe90b7e, type: 3}
   - {fileID: 21300000, guid: 77ec748c69c6a2443929fc93ff05de2a, type: 3}
   - {fileID: 21300000, guid: e50e774af08d58f4da23a67af19ab185, type: 3}
   - {fileID: 21300000, guid: 292d532884775694aad58ae0ec2ed483, type: 3}

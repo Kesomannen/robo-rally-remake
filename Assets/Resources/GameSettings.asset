@@ -20,6 +20,6 @@ MonoBehaviour:
   _stressTime: 30
   _programCardContainerPrefab: {fileID: -4837892012670907284, guid: 852a4f1b39d0eff43b4ad4b129005922, type: 3}
   _rebootAffector: {fileID: 11400000, guid: 574c1b6113180c94b81fb77410b90faa, type: 2}
-  _shopSlots: 3
+  _shopSlots: 5
   _upgradeSlots: 5
   _upgradeContainerPrefab: {fileID: 5616511996089484015, guid: c74c614e9f3a9034e935ded9359f8dce, type: 3}

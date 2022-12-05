@@ -8,7 +8,7 @@ public class CardCleanerProgram : ProgramCardData {
     [SerializeField] Pile _pile;
     
     public override bool CanPlace(Player player, int positionInRegister) => true;
-
+    
     public override IEnumerator ExecuteRoutine(Player player, int positionInRegister) {
         var collection = player.GetCollection(_pile);
         for (var i = 0; i < _maxCards; i++){

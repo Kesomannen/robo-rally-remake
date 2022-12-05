@@ -12,11 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3046940b504f79c4ab36f87e3b3ff8ef, type: 3}
   m_Name: SpeedRoutine
   m_EditorClassIdentifier: 
-  _name: Sandbox Routine
+  _name: Speed Routine
   _description: Add an additional Move 3 card onto your discard pile.
-  _icon: {fileID: 0}
+  _icon: {fileID: 21300000, guid: 30fc70d2d652da84cb00f5d3d68187f3, type: 3}
   _cost: 3
-  _isAction: 1
+  _useCost: 0
+  _type: 0
+  _useContext: 35
   _temporaryAffectors: []
   _permanentAffectors:
   - {fileID: 11400000, guid: e289ce7d724d45c4692ae6928c410d89, type: 2}
