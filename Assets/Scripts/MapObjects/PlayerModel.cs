@@ -37,8 +37,8 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
         var lasers = Laser.ShootLaser(_laserPrefab, this, dir);
         if (lasers.Count == 0) yield break;
         
-        // We only need to check the last laser in the chain
-        var hits = MapSystem.GetTile(lasers.Last().GridPos).OfType<IPlayer>().ToArray();
+        // We check one step ahead of last laser
+        var hits = MapSystem.GetTile(lasers.Last().GridPos + dir).OfType<IPlayer>().ToArray();
         foreach (var hit in hits){
             Owner.LaserAffector.Apply(hit.Owner);
         }

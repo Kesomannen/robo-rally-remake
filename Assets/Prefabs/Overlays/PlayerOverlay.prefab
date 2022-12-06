@@ -499,10 +499,10 @@ MonoBehaviour:
   _discardPile: {fileID: 7305099927703498102}
   _iconImage: {fileID: 3577377623148178740}
   _tween:
-    Objects:
+    _objects:
     - {fileID: 3285257228356892880}
-    - {fileID: 8138132377332451374}
     - {fileID: 1321667755157307278}
+    - {fileID: 8138132377332451374}
     - {fileID: 1258969502476201579}
     - {fileID: 3027964596030918714}
     - {fileID: 304025973684085473}
@@ -513,10 +513,11 @@ MonoBehaviour:
     - {fileID: 5749000683899511329}
     - {fileID: 362258269162261813}
     - {fileID: 657284380729689493}
-    StartSize: 0.5
-    Duration: 0.15
-    Interval: 0.015
-    TweenType: 21
+    _startSize: 0.5
+    _duration: 0.3
+    _interval: 0.02
+    _tweenType: 27
+    _simultaneous: 0
 --- !u!1 &2353958363999294596
 GameObject:
   m_ObjectHideFlags: 0

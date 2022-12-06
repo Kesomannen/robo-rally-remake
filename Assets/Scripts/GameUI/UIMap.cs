@@ -28,6 +28,7 @@ public class UIMap : Singleton<UIMap>, IPointerEnterHandler, IPointerExitHandler
         base.Awake();
         _rectTransform = GetComponent<RectTransform>();
         _raycaster = _mapCamera.GetComponent<Physics2DRaycaster>();
+        gameObject.SetActive(false);
     }
 
     public void OnPointerEnter(PointerEventData e) {

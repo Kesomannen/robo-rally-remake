@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -28,6 +30,10 @@ public abstract class Lookup<T> : ScriptableObject where T : Lookup<T> {
 
     public static T GetRandom() {
         return (T) Table.Values.GetRandom();
+    }
+    
+    public static IEnumerable<T> GetAll() {
+        return Table.Values.Cast<T>();
     }
 
     public int GetLookupId() {

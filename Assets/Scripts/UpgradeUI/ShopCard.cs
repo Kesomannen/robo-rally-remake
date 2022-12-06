@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ShopCard : UpgradeCard {
+public class ShopCard : UpgradeCard, IPointerClickHandler {
     [SerializeField] DynamicUITween _onEnableTween;
     
     public event Action<ShopCard> OnCardClicked;
@@ -12,6 +12,10 @@ public class ShopCard : UpgradeCard {
     }
 
     public void Remove() {
+        Destroy(gameObject);
+    }
+
+    public void OnBuy() {
         Destroy(gameObject);
     }
 

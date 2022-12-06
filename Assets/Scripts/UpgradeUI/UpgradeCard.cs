@@ -28,7 +28,6 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
     protected override void Serialize(UpgradeCardData card) {
         _nameText.text = card.Name;
         _artworkImage.sprite = card.Icon;
-        Debug.Log(card.Cost - 1);
         _costImage.sprite = _costSprites[card.Cost];
         
         var cardSprite = card.Type switch {

@@ -17,9 +17,12 @@ public class ShopUI : MonoBehaviour {
 
     void OnEnable() {
         ShopPhase.OnRestock += OnRestock;
+        ShopPhase.OnPlayerDecision += OnPlayerDecision;
     }
+
     void OnDisable() {
         ShopPhase.OnRestock -= OnRestock;
+        ShopPhase.OnPlayerDecision -= OnPlayerDecision;
     }
     
     void OnRestock(int index, UpgradeCardData card) {
@@ -42,13 +45,22 @@ public class ShopUI : MonoBehaviour {
         var card = shopCard.Data;
         if (card.Cost > localPlayer.Energy.Value) return;
         
-        // Find open slot for card
         var slot = localPlayer.GetOpenUpgradeSlot();
         if (slot == -1) return;
         
-        shopCard.Remove();
-        _shopCards[Array.IndexOf(_shopCards, shopCard)] = null;
         ShopPhase.Instance.MakeDecision(false, card, slot);
+    }
+    
+    void OnPlayerDecision(Player player, bool skipped, UpgradeCardData card) {
+        if (skipped) return;
+        for (var i = 0; i < _shopCards.Length; i++){
+            var shopCard = _shopCards[i];
+            if (shopCard.Data != card) continue;
+            
+            shopCard.OnBuy();
+            _shopCards[i] = null;
+            break;
+        }
     }
 
     public void Skip() {

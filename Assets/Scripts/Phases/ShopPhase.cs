@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using Unity.Netcode;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class ShopPhase : NetworkSingleton<ShopPhase> {
     static int _skippedPlayers;
@@ -11,6 +13,9 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
 
     static UpgradeCardData[] _shopCards;
     public static IReadOnlyList<UpgradeCardData> ShopCards => _shopCards;
+    
+    static List<UpgradeCardData> _availableCards;
+    public static IReadOnlyList<UpgradeCardData> AvailableCards => _availableCards;
 
     [CanBeNull] public static Player CurrentPlayer { get; private set; }
     
@@ -22,6 +27,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
     protected override void Awake() {
         base.Awake();
         _shopCards = new UpgradeCardData[GameSettings.Instance.ShopSlots];
+        _availableCards = UpgradeCardData.GetAll().ToList();
     }
 
     public static IEnumerator DoPhaseRoutine() {
@@ -29,7 +35,10 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
         
         yield return RestockRoutine();
 
-        foreach (var player in PlayerManager.Players) {
+        var orderedPlayers = PlayerManager.GetOrderedPlayers();
+
+        foreach (var player in orderedPlayers) {
+            Debug.Log($"Shop phase for {player}");
             CurrentPlayer = player;
             _currentPlayerReady = false;
             yield return new WaitUntil(() => _currentPlayerReady);
@@ -50,8 +59,11 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
         for (var i = 0; i < _shopCards.Length; i++){
             var card = _shopCards[i];
             if (card != null) continue;
+
+            var randomIndex = Random.Range(0, _availableCards.Count);
+            _shopCards[i] = _availableCards[randomIndex];
+            _availableCards.RemoveAt(randomIndex);
             
-            _shopCards[i] = UpgradeCardData.GetRandom();
             Debug.Log($"Restocked {i} with {_shopCards[i].Name}");
             OnRestock?.Invoke(i, _shopCards[i]);
 
@@ -61,6 +73,13 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
     }
 
     public void MakeDecision(bool skipped, UpgradeCardData upgrade, int index) {
+        if (NetworkManager.Singleton == null){
+            SetReady((byte) PlayerManager.Players.IndexOf(PlayerManager.LocalPlayer),
+                skipped,
+                (byte) upgrade.GetLookupId(),
+                (byte) index);
+        }
+        
         MakeDecisionServerRpc (
             (byte) PlayerManager.Players.IndexOf(PlayerManager.LocalPlayer),
             skipped,
@@ -83,14 +102,17 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
     
     static void SetReady(byte playerIndex, bool skipped, byte upgradeID, byte index) {
         var player = PlayerManager.Players[playerIndex];
-        if (PlayerManager.IsLocal(player)) return;
-        
+
         if (skipped){
             _skippedPlayers++;
+            
             OnPlayerDecision?.Invoke(player, true, null);
         } else{
             var upgrade = UpgradeCardData.GetById(upgradeID);
+            player.Energy.Value -= upgrade.Cost;
             player.BuyUpgrade(upgrade, index);
+            _shopCards[_shopCards.IndexOf(upgrade)] = null;
+            
             OnPlayerDecision?.Invoke(player, false, upgrade);
         }
         _currentPlayerReady = true;
