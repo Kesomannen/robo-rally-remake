@@ -1,7 +1,6 @@
-using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
-using System.Linq;
+using UnityEngine.SceneManagement;
 
 #pragma warning disable 4014
 
@@ -9,7 +8,7 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
         
-        Debug.Log($"NetworkSystem spawned, loading map...");
+        Debug.Log("NetworkSystem spawned, loading map...");
         MapSystem.Instance.LoadMap(MapData.GetById(LobbySystem.LobbyMapId));
 
         if (!IsServer) return;
@@ -21,6 +20,10 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
         }
     }
 
+    void Start() {
+        PhaseSystem.StartPhaseSystem();
+    }
+
     public override void OnDestroy() {
         base.OnDestroy();
 
@@ -28,6 +31,12 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
         if (NetworkManager.Singleton != null) {
             NetworkManager.Shutdown();
         }
+    }
+
+    const int LobbySceneIndex = 0;
+    
+    public static void ReturnToLobby() {
+        SceneManager.LoadScene(LobbySceneIndex);
     }
 
     [ClientRpc]

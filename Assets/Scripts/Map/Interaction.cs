@@ -29,15 +29,13 @@ public static class Interaction {
         var moveActions = mapObjects.Select(obj => EaseMove(obj, obj.GridPos + mapEvent.Direction, easeType, speed)).ToArray();
         var rotateActions = mapObjects.Select(obj => obj.RotateRoutine(mapEvent.Rotation)).ToArray();
 
+        var mono = TaskScheduler.Instance;
         if (staggered) {
             for (var i = 0; i < mapObjects.Count; i++) {
-                yield return Scheduler.GroupRoutines(moveActions[i], rotateActions[i]);
+                yield return mono.RunRoutines(moveActions[i], rotateActions[i]);
             }
         } else {
-            yield return Scheduler.GroupRoutines(
-                Scheduler.GroupRoutines(moveActions),
-                Scheduler.GroupRoutines(rotateActions)
-            );
+            yield return mono.RunRoutines(moveActions.Concat(rotateActions).ToArray());
         }
     }
 
@@ -98,12 +96,10 @@ public static class Interaction {
         if (blockages.Any(o => !o.Pushable)) return false;
 
         // Push next
-        if (Push(blockages[0].Object, dir, out _)) {
-            // If we can push one, push all
-            mapEvent.MapObjects.AddRange(blockages.Select(o => o.Object));
-            return true;
-        }
-        return false;
+        if (!Push(blockages[0].Object, dir, out _)) return false;
+        // If we can push one, push all
+        mapEvent.MapObjects.AddRange(blockages.Select(o => o.Object));
+        return true;
     }
 }
 

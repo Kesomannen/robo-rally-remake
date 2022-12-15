@@ -25,7 +25,7 @@ public class UpgradeCardData : Lookup<UpgradeCardData>, IContainable<UpgradeCard
     public int Cost => _cost;
     public int UseCost => _useCost;
     public UpgradeType Type => _type;
-    public IEnumerable<UpgradeTooltipData> Tooltips => _tooltips;
+    public IReadOnlyList<UpgradeTooltipData> Tooltips => _tooltips;
 
     public Container<UpgradeCardData> DefaultContainerPrefab => GameSettings.Instance.UpgradeContainerPrefab;
 

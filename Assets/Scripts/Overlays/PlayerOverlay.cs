@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,25 +10,30 @@ public class PlayerOverlay : Overlay {
     [Header("References")]
     [SerializeField] TMP_Text _nameText;
     [SerializeField] TMP_Text _robotNameText;
+    [SerializeField] Image _iconImage;
     [Space]
     [SerializeField] TMP_Text _energyText;
     [SerializeField] TMP_Text _checkpointText;
     [SerializeField] TMP_Text _drawPile, _hand, _discardPile;
-    [Space]
-    [SerializeField] Image _iconImage;
+    [SerializeField] Transform _upgradeParent;
+
+    [Header("Prefabs")]
+    [SerializeField] Container<UpgradeCardData> _upgradeCardPrefab;
 
     [Header("Animation")]
-    [SerializeField] StaticUITween _tween;
+    [SerializeField] GameObject[] _objects;
+    [SerializeField] DynamicUITween _tween;
 
     Player _player;
-    
-    public void Init(Player player){
+    List<Container<UpgradeCardData>> _upgradeCards;
+
+    public void Init(Player player) {
         _player = player;
         Refresh();
-        StartCoroutine(TweenHelper.DoUITween(_tween));
+        StartCoroutine(TweenHelper.DoUITween(_tween, _objects.Concat(_upgradeCards.Select(c => c.gameObject))));
     }
 
-    void Refresh(){
+    void Refresh() {
         _nameText.text = _player.ToString();
         _energyText.text = _player.Energy.ToString();
         _iconImage.sprite = _player.RobotData.Icon;
@@ -35,6 +42,12 @@ public class PlayerOverlay : Overlay {
         _drawPile.text = Count(_player.DrawPile);
         _hand.text = Count(_player.Hand);
         _discardPile.text = Count(_player.DiscardPile);
+
+        _upgradeCards = new List<Container<UpgradeCardData>>();
+        foreach (var upgrade in _player.Upgrades) {
+            if (upgrade == null) continue;
+            _upgradeCards.Add(Instantiate(_upgradeCardPrefab, _upgradeParent).SetContent(upgrade));
+        }
         
         string Count(CardCollection collection){
             return collection.Cards.Count.ToString();

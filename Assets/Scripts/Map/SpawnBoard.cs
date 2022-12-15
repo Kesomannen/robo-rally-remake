@@ -7,6 +7,6 @@ public class SpawnBoard : MonoBehaviour, IBoard {
 
     public void Respawn(IPlayer player) {
         var spawnPoint = PlayerManager.GetSpawnPoint(player.Owner);
-        Scheduler.Push(spawnPoint.RespawnRoutine(player.Object), $"SpawnBoard Respawn {player}");
+        TaskScheduler.PushRoutine(spawnPoint.RespawnRoutine(player.Object));
     }
 }

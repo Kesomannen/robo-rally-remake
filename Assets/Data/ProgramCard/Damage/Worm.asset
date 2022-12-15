@@ -17,3 +17,4 @@ MonoBehaviour:
   _artwork: {fileID: 21300000, guid: 25462f21012789344b8838a8ac079126, type: 3}
   _type: 1
   _affector: {fileID: 11400000, guid: 7fb902123fb9f964281e505aecd1af22, type: 2}
+  _actAsSpam: 1

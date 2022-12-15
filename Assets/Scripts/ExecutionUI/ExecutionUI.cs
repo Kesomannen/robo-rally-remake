@@ -23,32 +23,35 @@ public class ExecutionUI : MonoBehaviour {
     [SerializeField] Transform _playerSliceParent;
 
     Dictionary<Player, PlayerSlice> _playerSlices;
+    PlayerModel _currentPlayer;
 
     void OnEnable() {
         ExecutionPhase.OnNewSubPhase += OnNewSubPhase;
-        ExecutionPhase.BeforeRegister += BeforeRegister;
-        ExecutionPhase.AfterRegister += AfterRegister;
+        ExecutionPhase.OnRegister += OnRegister;
         ExecutionPhase.OnPlayersOrdered += OnPlayersOrdered;
     }
 
     void OnDisable() {
         ExecutionPhase.OnNewSubPhase -= OnNewSubPhase;
-        ExecutionPhase.BeforeRegister -= BeforeRegister;
-        ExecutionPhase.AfterRegister -= AfterRegister;
+        ExecutionPhase.OnRegister -= OnRegister;
         ExecutionPhase.OnPlayersOrdered -= OnPlayersOrdered;
     }
     
-    void BeforeRegister(ProgramCardData card, int index, Player player) {
+    void OnRegister(ProgramCardData card, int index, Player player) {
+        if (_currentPlayer != null) {
+            _currentPlayer.Highlight(false);
+            _playerSlices[player].Hide(index);
+        }
         player.Model.Highlight(true);
         _playerSlices[player].Show(index);
+        _currentPlayer = player.Model;
     }
-    
-    void AfterRegister(ProgramCardData card, int index, Player player) {
-        player.Model.Highlight(false);
-        _playerSlices[player].Hide(index);
-    }
-    
+
     void OnNewSubPhase(ExecutionSubPhase subPhase) {
+        if ((int)subPhase == 1) {
+            _currentPlayer.Highlight(false);
+            _playerSlices[_currentPlayer.Owner].Hide(ExecutionPhase.CurrentRegister);
+        }
         _subPhaseImage.sprite = GetSubPhaseSprite(subPhase);
         _subPhaseText.text = subPhase.ToString();
     }

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
 public interface IBoard {
-    void Respawn(IPlayer playerModel);
+    void Respawn(IPlayer player);
     void Parent(Transform child);
 }

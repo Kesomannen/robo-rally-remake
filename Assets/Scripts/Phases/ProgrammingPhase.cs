@@ -15,7 +15,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
 
     public static event Action OnPhaseStarted;
 
-    public static IEnumerator DoPhaseRoutine() {
+    public static IEnumerator DoPhase() {
         UIManager.Instance.ChangeState(UIState.Hand);
 
         IsStressed = false;
@@ -32,7 +32,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
         _playersReady = 0;
         yield return new WaitUntil(() => _playersReady >= PlayerManager.Players.Count);
         
-        yield return Scheduler.WaitUntilClearRoutine();
+        yield return TaskScheduler.WaitUntilClear();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -49,7 +49,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
         _playersReady++;
     }
 
-    static void LockPlayerRegister(byte playerIndex, IEnumerable<byte> registerCardIds) {
+     void LockPlayerRegister(byte playerIndex, IEnumerable<byte> registerCardIds) {
         if (PlayerManager.IsLocal(PlayerManager.Players[playerIndex])){
             RegisterUI.Locked = true;
             LocalPlayerSubmitted = true;
@@ -67,15 +67,15 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
 
         if (LocalPlayerSubmitted || IsStressed) return;
         
-        Scheduler.StartRoutine(StressRoutine());
+        StartCoroutine(StressRoutine());
     }
 
-    static IEnumerator StressRoutine(){
+    IEnumerator StressRoutine(){
         IsStressed = true;
         while (!LocalPlayerSubmitted) {
             StressTimer.Value--;
             if (StressTimer.Value <= 0) {
-                FillRegisters(PlayerManager.LocalPlayer);
+                FillRegisters();
                 IsStressed = false;
                 yield break;
             }
@@ -83,7 +83,10 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
         }
     }
 
-    static void FillRegisters(Player player) {
+    void FillRegisters() {
+        // this is only supposed to be called on the local client
+        var player = PlayerManager.LocalPlayer;
+        
         player.DiscardHand();
         player.DiscardProgram();
 
@@ -97,7 +100,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
 
         // Lock registers
         player.SerializeRegisters(out var playerIndex, out var registerCardIds);
-        Instance.LockRegisterServerRpc(playerIndex, registerCardIds);
+        LockRegisterServerRpc(playerIndex, registerCardIds);
     }
 
     public static void Continue() {

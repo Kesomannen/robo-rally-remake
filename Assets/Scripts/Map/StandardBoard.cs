@@ -7,7 +7,7 @@ public class StandardBoard : MonoBehaviour, IBoard {
         child.SetParent(transform);
     }
 
-    public void Respawn(IPlayer obj) {
-        Scheduler.Push(_rebootToken.RespawnRoutine(obj.Object), $"StandardBoard Respawn {obj.Owner}");
+    public void Respawn(IPlayer player) {
+        TaskScheduler.PushRoutine(_rebootToken.RespawnRoutine(player.Object));
     }
 }

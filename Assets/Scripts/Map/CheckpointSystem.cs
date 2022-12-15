@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 
@@ -21,11 +22,14 @@ public class CheckpointSystem : Singleton<CheckpointSystem> {
             Debug.LogError("No checkpoints found in the scene!");
             return;
         }
-        _checkpoints.Last().OnPlayerReached += OnPlayerReachedLast;
+        _checkpoints.Last().OnPlayerReached += p => Instance.StartCoroutine(OnPlayerReachedLast(p));
     }
 
-    static void OnPlayerReachedLast(Player player) {
+    static IEnumerator OnPlayerReachedLast(Player player) {
+        PhaseSystem.StopPhaseSystem();
         Debug.Log($"{player} won the game!");
         // TODO: Show win screen
+        yield return CoroutineUtils.Wait(3);
+        NetworkSystem.ReturnToLobby();
     }
 }

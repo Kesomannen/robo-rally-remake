@@ -2,81 +2,88 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 
 public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
     public static int CurrentRegister { get; private set; }
     public static ExecutionSubPhase CurrentSubPhase { get; private set; }
-    [CanBeNull] public static Player CurrentPlayer { get; private set; }
+    public static Player CurrentPlayer { get; private set; }
 
     public const int RegisterCount = 5;
-    const float RegisterDelay = 1f;
-    const float SubPhaseDelay = 0.5f;
+    const float SubPhaseDelay = 0;
 
     public static event Action OnPhaseStart, OnPhaseEnd, OnExecutionComplete;
-    public static event Action<ProgramCardData, int, Player> BeforeRegister, AfterRegister;
+    public static event Action<ProgramCardData, int, Player> OnRegister;
     public static event Action<ExecutionSubPhase> OnNewSubPhase;
     public static event Action<IReadOnlyList<Player>> OnPlayersOrdered;
 
-    public static IEnumerator DoPhaseRoutine() {
+    public static IEnumerator DoPhase() {
         OnPhaseStart?.Invoke();
-        UIManager.Instance.ChangeState(UIState.Map);
+        UIManager.Instance.ChangeState(UIState.Execution);
         
-        for (CurrentRegister = 0; CurrentRegister < RegisterCount; CurrentRegister++){
-            var orderedPlayers = PlayerManager.GetOrderedPlayers().ToArray();
-            OnPlayersOrdered?.Invoke(orderedPlayers);
+        TaskScheduler.PushSequence(
+            actions: EnumerableUtils.For<Action>(RegisterCount, i => () => DoRegister(i)).ToArray()
+            );
 
-            yield return DoSubPhase(ExecutionSubPhase.Registers, ExecuteRegister(orderedPlayers));
-            yield return DoSubPhase(ExecutionSubPhase.Conveyor, Conveyor.ActivateElement());
-            yield return DoSubPhase(ExecutionSubPhase.PushPanel, PushPanel.ActivateElement());
-            yield return DoSubPhase(ExecutionSubPhase.Gear, Gear.ActivateElement());
-            yield return DoSubPhase(ExecutionSubPhase.BoardLaser, BoardLaser.ActivateElement());
-            yield return DoSubPhase(ExecutionSubPhase.PlayerLaser, FireLasers(orderedPlayers));
-            yield return DoSubPhase(ExecutionSubPhase.EnergySpace, EnergySpace.ActivateElement());
-            yield return DoSubPhase(ExecutionSubPhase.Checkpoint, Checkpoint.ActivateElement());
-        }
-
+        yield return TaskScheduler.WaitUntilClear();
+        
         OnExecutionComplete?.Invoke();
-
+        
         foreach (var player in PlayerManager.Players) {
             player.DiscardProgram();
         }
-
-        yield return Scheduler.WaitUntilClearRoutine();
         
         OnPhaseEnd?.Invoke();
+    }
 
-        IEnumerator DoSubPhase(ExecutionSubPhase subPhase, IEnumerator routine) {
+    static void DoRegister(int register) {
+        CurrentRegister = register;
+        var players = PlayerManager.GetOrderedPlayers().ToArray();
+        OnPlayersOrdered?.Invoke(players);
+
+        var registerRoutines = new IEnumerator[players.Length];
+        for (var i = 0; i < players.Length; i++) {
+            registerRoutines[i] = DoPlayerRegister(players[i]);
+        }
+
+        TaskScheduler.PushSequence(
+            delay: SubPhaseDelay,
+            DoSubPhase(ExecutionSubPhase.Registers, () => {
+                TaskScheduler.PushSequence(routines: registerRoutines);
+                return players.Any(p => !p.IsRebooted.Value);
+            }),
+            DoSubPhase(ExecutionSubPhase.Conveyor, Conveyor.ActivateElement),
+            DoSubPhase(ExecutionSubPhase.PushPanel, PushPanel.ActivateElement),
+            DoSubPhase(ExecutionSubPhase.Gear, Gear.ActivateElement),
+            DoSubPhase(ExecutionSubPhase.BoardLaser, BoardLaser.ActivateElement),
+            DoSubPhase(ExecutionSubPhase.PlayerLaser, () => {
+                TaskScheduler.PushSequence(
+                    routines: players
+                    .Where(p => !p.IsRebooted.Value)
+                    .Select(p => p.Model.FireLaser(p.Model.Rotator.Identity))
+                    .ToArray()
+                );
+                return true;
+            }),
+            DoSubPhase(ExecutionSubPhase.EnergySpace, EnergySpace.ActivateElement),
+            DoSubPhase(ExecutionSubPhase.Checkpoint, Checkpoint.ActivateElement)
+        );
+
+        IEnumerator DoSubPhase(ExecutionSubPhase subPhase, Func<bool> execute) {
             CurrentSubPhase = subPhase;
             OnNewSubPhase?.Invoke(subPhase);
-
-            yield return routine;
-            yield return CoroutineUtils.Wait(SubPhaseDelay);
+            if (execute()) {
+                yield return CoroutineUtils.Wait(SubPhaseDelay);
+            }
         }
-    }
 
-    static IEnumerator ExecuteRegister(IEnumerable<Player> players) {
-        foreach (var player in players) {
+        IEnumerator DoPlayerRegister(Player player) {
             CurrentPlayer = player;
+            var card = player.Program[register];
+            if (card == null) yield break;
             
-            var card = player.Program[CurrentRegister];
-            if (card == null) continue;
-
-            BeforeRegister?.Invoke(card, CurrentRegister, player);
-            
-            Scheduler.Push(card.ExecuteRoutine(player, CurrentRegister), $"ProgramCard ({card})", RegisterDelay);
-            yield return Scheduler.WaitUntilClearRoutine();
-            
-            AfterRegister?.Invoke(card, CurrentRegister, player);
+            OnRegister?.Invoke(card, register, player);
+            yield return card.ExecuteRoutine(player, register);
         }
-        CurrentPlayer = null;
-    }
-
-    static IEnumerator FireLasers(IEnumerable<Player> players) {
-        return players
-            .Where(p => !p.IsRebooted.Value)
-            .Select(p => p.Model.FireLaser(p.Model.Rotator.Identity))
-            .GetEnumerator();
     }
 }
 

@@ -24,7 +24,15 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -3548210113330695675, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _rotation.Array.data[0]._rotation
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -3548210113330695675, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
       propertyPath: _rotation.Array.data[0].RelativeDirection.x
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: -3548210113330695675, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _rotation.Array.data[0]._relativeDirection.x
       value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 944412202424250007, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
@@ -78,7 +86,7 @@ PrefabInstance:
     - target: {fileID: 8887188639176184730, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -352129111, guid: 8aa939c2ba20d6241b98567ceb429012, type: 3}
+      objectReference: {fileID: 1842813271, guid: 07aaa96725c8fae469e4f35956ebf6cb, type: 3}
     - target: {fileID: 8887188639176184730, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
       propertyPath: m_WasSpriteAssigned
       value: 1
@@ -107,7 +115,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 1.125, y: 1.125}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0

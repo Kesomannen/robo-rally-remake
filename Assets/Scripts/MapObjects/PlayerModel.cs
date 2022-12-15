@@ -1,11 +1,13 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(Highlight))]
 public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipable {
+    [Header("Prefabs")]
     [SerializeField] Laser _laserPrefab;
-    
+
     Highlight _highlight;
     
     public Player Owner { get; private set; }
@@ -38,15 +40,27 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
         if (lasers.Count == 0) yield break;
         
         // We check one step ahead of last laser
-        var hits = MapSystem.GetTile(lasers.Last().GridPos + dir).OfType<IPlayer>().ToArray();
-        foreach (var hit in hits){
-            Owner.LaserAffector.Apply(hit.Owner);
+        var targetTileFilled = MapSystem.TryGetTile(lasers.Last().GridPos + dir, out var hitTile);
+        if (targetTileFilled) {
+            var hits = hitTile.OfType<IPlayer>().ToArray();
+            foreach (var hit in hits){
+                Owner.LaserAffector.Apply(hit.Owner);
+            }   
         }
-        
+
         yield return CoroutineUtils.Wait(1f);
         lasers.ForEach(l => MapSystem.Instance.DestroyObject(l, false));
     }
-    
+
+    public IEnumerator Move(Vector2Int dir, bool relative) {
+        if (Owner.IsRebooted.Value) yield break;
+        
+        var moveVector = relative ? Rotator.Rotate(dir) : dir;
+        if (Interaction.Push(this, moveVector, out var mapEvent)){
+            yield return Interaction.EaseEvent(mapEvent);
+        }
+    }
+
     public void Highlight(bool highlight) {
         _highlight.enabled = highlight;
     }

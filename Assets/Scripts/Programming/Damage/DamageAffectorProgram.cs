@@ -11,10 +11,10 @@ public class DamageAffectorProgram : SpamProgram {
     public override IEnumerator ExecuteRoutine(Player player, int positionInRegister) {
         _affector.Apply(player);
         if (_actAsSpam) yield return base.ExecuteRoutine(player, positionInRegister);
-        else ExecutionPhase.OnExecutionComplete += RemoveSpamCard;
+        else ExecutionPhase.OnExecutionComplete += RemoveCard;
 
-        void RemoveSpamCard() {
-            ExecutionPhase.OnExecutionComplete -= RemoveSpamCard;
+        void RemoveCard() {
+            ExecutionPhase.OnExecutionComplete -= RemoveCard;
             player.Program.SetCard(positionInRegister, null);
         }
     }

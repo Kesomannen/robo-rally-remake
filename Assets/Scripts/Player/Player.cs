@@ -1,9 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine;
-using UnityEngine.Assertions;
 using Random = UnityEngine.Random;
 
 public class Player : IPlayer {
@@ -182,26 +182,9 @@ public class Player : IPlayer {
         }
     }
     #endregion
+
+    #region Upgrades
     
-    public void SerializeRegisters(out byte playerIndex, out byte[] registers) {
-        playerIndex = (byte) PlayerManager.Players.IndexOf(this);
-        registers = Program.Cards.Select(c => (byte) c.GetLookupId()).ToArray();
-    }
-
-    public void Reboot(IBoard board, bool takeDamage = true) {
-        IsRebooted.Value = true;
-
-        board.Respawn(Model);
-        if (takeDamage) RebootAffector.Apply(this);
-        
-        DiscardHand();
-        DiscardProgram();
-    }
-    
-    public void Reboot(bool takeDamage = true) {
-        Reboot(MapSystem.GetParentBoard(Model), takeDamage);
-    }
-
     public int GetOpenUpgradeSlot() {
         for (var i = 0; i < _upgrades.Length; i++){
             if (_upgrades[i] == null) return i;
@@ -226,6 +209,27 @@ public class Player : IPlayer {
         
         upgrade.Remove(this);
         _upgrades[index] = null;
+    }
+    
+    #endregion
+
+    public void Reboot(IBoard board, bool takeDamage = true) {
+        IsRebooted.Value = true;
+
+        board.Respawn(Model);
+        if (takeDamage) RebootAffector.Apply(this);
+        
+        DiscardHand();
+        DiscardProgram();
+    }
+    
+    public void Reboot(bool takeDamage = true) {
+        Reboot(MapSystem.GetParentBoard(Model), takeDamage);
+    }
+    
+    public void SerializeRegisters(out byte playerIndex, out byte[] registers) {
+        playerIndex = (byte) PlayerManager.Players.IndexOf(this);
+        registers = Program.Cards.Select(c => (byte) c.GetLookupId()).ToArray();
     }
 }
 

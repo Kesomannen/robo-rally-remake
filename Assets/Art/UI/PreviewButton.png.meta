@@ -178,27 +178,6 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: PreviewButton_3
-      rect:
-        serializedVersion: 2
-        x: 135
-        y: 0
-        width: 45
-        height: 21
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4e87ea3952e8294468d4064f18877f4f
-      internalID: 493874622
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -213,7 +192,6 @@ TextureImporter:
       PreviewButton_2: 1465108281
       PreviewButton_1: 1017260825
       PreviewButton_0: -348081501
-      PreviewButton_3: 493874622
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

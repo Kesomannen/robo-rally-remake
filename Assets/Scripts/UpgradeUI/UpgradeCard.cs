@@ -24,6 +24,8 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
     
     public string Header => $"{Data.Name} ({Data.Cost})";
     public string Description => Data.Description;
+    
+    public event Action<UpgradeCard> OnClick;
 
     protected override void Serialize(UpgradeCardData card) {
         _nameText.text = card.Name;
@@ -47,6 +49,7 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
     
     public void OnPointerClick(PointerEventData e) {
         if (Data == null) return;
+        OnClick?.Invoke(this);
         if (e.button == PointerEventData.InputButton.Right){
             var overlay = new OverlayData<UpgradeCardOverlay> {
                 Header = "Upgrade Card",

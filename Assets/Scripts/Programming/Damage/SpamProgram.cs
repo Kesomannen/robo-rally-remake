@@ -14,10 +14,11 @@ public class SpamProgram : ProgramCardData {
         } while (!card.CanPlace(player, positionInRegister));
 
         yield return card.ExecuteRoutine(player, positionInRegister);
-        ExecutionPhase.OnExecutionComplete += RemoveSpamCard;
+        ExecutionPhase.OnExecutionComplete += RemoveCard;
 
-        void RemoveSpamCard() {
-            ExecutionPhase.OnExecutionComplete -= RemoveSpamCard;
+        void RemoveCard() {
+            Debug.Log("Removing card");
+            ExecutionPhase.OnExecutionComplete -= RemoveCard;
             player.Program.SetCard(positionInRegister, null);
         }
     }

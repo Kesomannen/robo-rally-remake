@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: TrojanHorse
   m_EditorClassIdentifier: 
   _name: Trojan Horse
-  _description: Deal two Spam cards to yourself. Execute the top card of your draw
-    pile and discard it.
-  _artwork: {fileID: 0}
+  _description: Deal two Spam cards to yourself. Execute as Spam.
+  _artwork: {fileID: 21300000, guid: 2a9a03668199c634ab14ab4f42f5c696, type: 3}
   _type: 1
   _affector: {fileID: 11400000, guid: 2aef88bbc21e45f4cbcbcea2405f5c9e, type: 2}
+  _actAsSpam: 1

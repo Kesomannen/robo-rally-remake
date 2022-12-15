@@ -52,6 +52,6 @@ public class PushPanel : BoardElement<PushPanel, ICanEnterHandler>, ITooltipable
             !Interaction.Push(pushable[0].Object, _direction, out var action)) return;
         
         action.MapObjects.AddRange(pushable.Skip(1).Select(o => o.Object));
-        Scheduler.Push(Interaction.EaseEvent(action, _pushEaseType, _pushSpeed), "PushPanel");
+        TaskScheduler.PushRoutine(Interaction.EaseEvent(action, _pushEaseType, _pushSpeed));
     }
 }

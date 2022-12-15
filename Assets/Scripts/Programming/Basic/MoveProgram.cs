@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "MoveProgram", menuName = "ScriptableObjects/Programs/Move")]
@@ -10,18 +11,10 @@ public class MoveProgram : ProgramCardData {
 
     public override bool CanPlace(Player player, int positionInRegister) => true;
 
-    public override IEnumerator ExecuteRoutine(Player player, int positionInRegister)  {
-        var moveVector = _relative ? player.Model.Rotator.Rotate(_direction) : _direction;
-        for (var i = 0; i < _steps; i++) {
-            Scheduler.Push(Move(), $"Move Program for {player} in direction {moveVector}");
+    public override IEnumerator ExecuteRoutine(Player player, int positionInRegister) {
+        for (var i = 0; i < _steps; i++){
+            TaskScheduler.PushRoutine(player.Model.Move(_direction, _relative));
         }
         yield break;
-
-        IEnumerator Move() {
-            if (player.IsRebooted.Value) yield break;
-            if (Interaction.Push(player.Model, moveVector, out var action)) {
-                yield return Interaction.EaseEvent(action);
-            }
-        }
     }
 }

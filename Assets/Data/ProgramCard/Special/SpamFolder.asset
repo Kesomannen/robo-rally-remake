@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: SpamFolder
   m_EditorClassIdentifier: 
   _name: Spam Folder
-  _description: "Permanently discard a Spam card from\r your discard pile."
-  _artwork: {fileID: 0}
+  _description: Remove a Spam card from your discard pile.
+  _artwork: {fileID: 21300000, guid: 99a0bd3d2f7f6584d8a1591508123e02, type: 3}
   _type: 2
   _maxCards: 1
   _targetCard: {fileID: 11400000, guid: ecc7d4ad841b0624999bcaff2184a12f, type: 2}

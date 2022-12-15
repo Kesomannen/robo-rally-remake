@@ -32,6 +32,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 789c848c7ae69f4479f9670eb7ec46ac, type: 2}
   - {fileID: 11400000, guid: 3a6cd74cfa514e9499abb232d71084b7, type: 2}
   - {fileID: 11400000, guid: 18607977aaffdee4e93c7b63daed4cf9, type: 2}
+  - {fileID: 11400000, guid: 77f85db663062224b959a29d01660438, type: 2}
+  - {fileID: 11400000, guid: a7c40adc21baca8488f28e2788d6e15d, type: 2}
+  - {fileID: 11400000, guid: cd562bb65f628654db3870673f9a2ed1, type: 2}
   _laserDamage: {fileID: 11400000, guid: 62b9f46bf38d5c248aef57a59d49e9b8, type: 2}
   _pushDamage: {fileID: 11400000, guid: f12f970e8a61e8b4a8ff670aee35dece, type: 2}
   _onSpawnAffectors: []

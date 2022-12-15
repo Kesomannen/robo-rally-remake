@@ -12,6 +12,7 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
     #if UNITY_EDITOR
     [ReadOnly] 
     #endif
+    
     public Vector2Int GridPos;
 
     protected virtual bool CanRotate => false;

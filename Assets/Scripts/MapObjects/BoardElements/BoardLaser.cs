@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,6 +9,7 @@ public class BoardLaser : MapObject, ITooltipable {
     
     List<Laser> _lasers;
     readonly List<MapObject> _targets = new();
+    static int _lasersInScene;
 
     static event Action OnActivate;
 
@@ -18,6 +18,7 @@ public class BoardLaser : MapObject, ITooltipable {
 
     protected override void Awake(){
         base.Awake();
+        _lasersInScene++;
         _direction = Rotator.Rotate(_direction);
         OnRotationChanged += r => {
             _direction = _direction.Transform(r);
@@ -33,9 +34,10 @@ public class BoardLaser : MapObject, ITooltipable {
         });
     }
 
-    public static IEnumerator ActivateElement(){
+    public static bool ActivateElement() {
+        if (_lasersInScene == 0) return false;
         OnActivate?.Invoke();
-        yield return Scheduler.WaitUntilClearRoutine();
+        return true;
     }
 
     void Activate(){

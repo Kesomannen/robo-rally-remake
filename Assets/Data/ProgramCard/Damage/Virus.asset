@@ -13,13 +13,8 @@ MonoBehaviour:
   m_Name: Virus
   m_EditorClassIdentifier: 
   _name: Virus
-  _description: Deal a Spam card to all robots within 6 tiles. Execute the top card
-    of your draw pile and discard it.
-  _artwork: {fileID: 0}
+  _description: Deal a Spam card to all robots within 6 tiles. Execute as Spam.
+  _artwork: {fileID: 21300000, guid: 2cb9256a80a337748a362e454366ca6b, type: 3}
   _type: 1
   _infectionRange: 6
-  _cardAffector:
-    _cards:
-    - {fileID: 11400000, guid: ecc7d4ad841b0624999bcaff2184a12f, type: 2}
-    _destination: 0
-    _placement: 0
+  _affector: {fileID: 11400000, guid: bff3f122898707c47a06943bd258ef7e, type: 2}

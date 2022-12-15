@@ -21,7 +21,7 @@ public class UpgradeCardOverlay : Overlay {
     [SerializeField] DynamicUITween _onEnableTween;
 
     public void Init(UpgradeCardData upgrade) {
-        var objects = new List<GameObject>(2 + upgrade.Tooltips.Count()) {
+        var objects = new List<GameObject>(2 + upgrade.Tooltips.Count) {
             _upgradeContainer.gameObject,
             _descriptionText.gameObject,
         };

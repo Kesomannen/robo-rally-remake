@@ -1,33 +1,34 @@
 using System.Collections;
 
 public class PhaseSystem : Singleton<PhaseSystem> {
-    bool _isRunning;
+    static bool _isRunning;
 
     public static Phase CurrentPhase { get; private set; }
-    
-    const float PhaseDelay = 1f;
-    
-    void StartPhaseSystem() {
-        _isRunning = true;
-        StartCoroutine(PhaseSystemRoutine());
+
+    public static void StartPhaseSystem() {
+        Instance.StartCoroutine(PhaseSystemRoutine());
     }
 
-    IEnumerator PhaseSystemRoutine() {
-        while (_isRunning){
-            yield return DoPhaseRoutine(ShopPhase.DoPhaseRoutine(), Phase.Shop);
-            yield return DoPhaseRoutine(ProgrammingPhase.DoPhaseRoutine(), Phase.Programming);
-            yield return DoPhaseRoutine(ExecutionPhase.DoPhaseRoutine(), Phase.Execution);
+    public static void StopPhaseSystem() {
+        _isRunning = false;
+    }
+
+    static IEnumerator PhaseSystemRoutine() {
+        _isRunning = true;
+        while (true) {
+            yield return DoPhaseRoutine(ShopPhase.DoPhase(), Phase.Shop);
+            if (!_isRunning) yield break;
+            yield return DoPhaseRoutine(ProgrammingPhase.DoPhase(), Phase.Programming);
+            if (!_isRunning) yield break;
+            yield return DoPhaseRoutine(ExecutionPhase.DoPhase(), Phase.Execution);
+            if (!_isRunning) yield break;
         }
         
         IEnumerator DoPhaseRoutine(IEnumerator routine, Phase phase) {
             CurrentPhase = phase;
             yield return routine;
-            yield return CoroutineUtils.Wait(PhaseDelay);
+            yield return TaskScheduler.WaitUntilClear();
         }
-    }
-
-    void Start() {
-        StartPhaseSystem();
     }
 }
 

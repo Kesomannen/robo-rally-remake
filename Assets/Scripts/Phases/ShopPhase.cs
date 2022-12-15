@@ -22,25 +22,29 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
     const float RestockDelay = 0.5f;
 
     public static event Action<Player, bool, UpgradeCardData> OnPlayerDecision;
+    public static event Action<Player> OnNewPlayer; 
     public static event Action<int, UpgradeCardData> OnRestock;
 
     protected override void Awake() {
         base.Awake();
         _shopCards = new UpgradeCardData[GameSettings.Instance.ShopSlots];
-        _availableCards = UpgradeCardData.GetAll().ToList();
+        RefreshAvailableUpgrades();
     }
 
-    public static IEnumerator DoPhaseRoutine() {
+    public static IEnumerator DoPhase() {
         UIManager.Instance.ChangeState(UIState.Shop);
         
         yield return RestockRoutine();
 
         var orderedPlayers = PlayerManager.GetOrderedPlayers();
 
+        _skippedPlayers = 0;
         foreach (var player in orderedPlayers) {
-            Debug.Log($"Shop phase for {player}");
+            //Debug.Log($"Shop phase for {player}");
             CurrentPlayer = player;
+            OnNewPlayer?.Invoke(player);
             _currentPlayerReady = false;
+            
             yield return new WaitUntil(() => _currentPlayerReady);
         }
         CurrentPlayer = null;
@@ -51,15 +55,19 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
             }
             yield return RestockRoutine();
         }
-        
-        yield return Scheduler.WaitUntilClearRoutine();
     }
 
+    static void RefreshAvailableUpgrades() => _availableCards = UpgradeCardData.GetAll().ToList();
+    
     static IEnumerator RestockRoutine() {
         for (var i = 0; i < _shopCards.Length; i++){
             var card = _shopCards[i];
             if (card != null) continue;
 
+            if (_availableCards.Count == 0) {
+                RefreshAvailableUpgrades();
+            }
+            
             var randomIndex = Random.Range(0, _availableCards.Count);
             _shopCards[i] = _availableCards[randomIndex];
             _availableCards.RemoveAt(randomIndex);
@@ -69,23 +77,18 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
 
             yield return CoroutineUtils.Wait(RestockDelay);
         }
-        yield return Scheduler.WaitUntilClearRoutine();
+        yield return TaskScheduler.WaitUntilClear();
     }
 
     public void MakeDecision(bool skipped, UpgradeCardData upgrade, int index) {
-        if (NetworkManager.Singleton == null){
-            SetReady((byte) PlayerManager.Players.IndexOf(PlayerManager.LocalPlayer),
-                skipped,
-                (byte) upgrade.GetLookupId(),
-                (byte) index);
-        }
-        
-        MakeDecisionServerRpc (
+        var id = upgrade == null ? 0 : upgrade.GetLookupId();
+        Action<byte, bool, byte, byte> action = NetworkManager.Singleton == null ? SetReady : MakeDecisionServerRpc;
+        action (
             (byte) PlayerManager.Players.IndexOf(PlayerManager.LocalPlayer),
             skipped,
-            (byte) upgrade.GetLookupId(),
+            (byte) id,
             (byte) index
-        );
+            );
     }
     
     [ServerRpc(RequireOwnership = false)]

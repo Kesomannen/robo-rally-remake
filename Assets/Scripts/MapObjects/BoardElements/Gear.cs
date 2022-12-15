@@ -10,9 +10,8 @@ public class Gear : BoardElement<Gear, IMapObject>, ITooltipable {
     protected override void Activate(IMapObject[] targets) {
         var routines = new IEnumerator[targets.Length];
         for (var i = 0; i < targets.Length; i++) {
-            var target = targets[i].Object;
-            routines[i] = target.RotateRoutine(_rotationSteps);
+            routines[i] = targets[i].Object.RotateRoutine(_rotationSteps);
         }
-        Scheduler.Push(Scheduler.GroupRoutines(routines), $"Gear {_rotationSteps} steps");
+        TaskScheduler.PushRoutine(this.RunRoutines(routines));
     }
 }

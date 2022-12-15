@@ -21,7 +21,7 @@ public class UIManager : Singleton<UIManager> {
     void Enter(UIState state) {
         Action action = state switch {
             UIState.Hand => Hand,
-            UIState.Map => Map,
+            UIState.Execution => Execution,
             UIState.Shop => Shop,
             UIState.None => () => { },
             _ => throw new ArgumentOutOfRangeException()
@@ -37,7 +37,7 @@ public class UIManager : Singleton<UIManager> {
             UIMap.Instance.ZoomToDefault();
         }
 
-        void Map() {
+        void Execution() {
             _executionUIParent.gameObject.SetActive(true);
             UIMap.Instance.gameObject.SetActive(true);
 
@@ -53,7 +53,7 @@ public class UIManager : Singleton<UIManager> {
     void Exit(UIState state) {
         Action exitAction = state switch {
             UIState.Hand => Hand,
-            UIState.Map => Map,
+            UIState.Execution => Execution,
             UIState.Shop => Shop,
             UIState.None => () => { },
             _ => throw new ArgumentOutOfRangeException()
@@ -66,7 +66,7 @@ public class UIManager : Singleton<UIManager> {
             UIMap.Instance.gameObject.SetActive(false);
         }
 
-        void Map() {
+        void Execution() {
             _executionUIParent.gameObject.SetActive(false);
             UIMap.Instance.gameObject.SetActive(false);
         }
@@ -79,7 +79,7 @@ public class UIManager : Singleton<UIManager> {
 
 public enum UIState {
     Hand,
-    Map,
+    Execution,
     Shop,
     None,
 }
