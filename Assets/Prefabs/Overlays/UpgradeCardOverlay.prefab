@@ -300,6 +300,10 @@ PrefabInstance:
       propertyPath: _overlay
       value: 
       objectReference: {fileID: 4366056486496507193}
+    - target: {fileID: 5616511996089484015, guid: c74c614e9f3a9034e935ded9359f8dce, type: 3}
+      propertyPath: _showOverlayOnClick
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8197752021562342102, guid: c74c614e9f3a9034e935ded9359f8dce, type: 3}
       propertyPath: m_Name
       value: UpgradeCard
@@ -396,7 +400,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5821832709130163066, guid: c74c614e9f3a9034e935ded9359f8dce, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: c74c614e9f3a9034e935ded9359f8dce, type: 3}
 --- !u!224 &6211071988152063704 stripped
 RectTransform:

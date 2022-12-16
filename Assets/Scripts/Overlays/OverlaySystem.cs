@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
@@ -11,14 +12,14 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
     [Header("References")]
     [SerializeField] RectTransform _overlayParent;
     [SerializeField] TMP_Text _headerText, _subtitleText;
+    
+    readonly Stack<(OverlayData Data, Overlay Overlay)> _overlayStack = new();
+    Overlay _currentOverlay;
 
-    RectTransform _activeOverlayObject;
-
-    bool IsOverlayActive => _activeOverlayObject != null;
+    bool IsOverlayActive => _overlayStack.Count > 0;
 
     public static event Action OnClick;
-    public static event Action<OverlayData> OnOverlayActivated;
-    public static event Action OnOverlayDeactivated;
+    public static event Action<OverlayData> OnOverlayShown, OnOverlayHidden;
 
     protected override void Awake() {
         base.Awake();
@@ -43,46 +44,61 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
         OnClick?.Invoke();
     }
 
-    public T ShowOverlay<T>(OverlayData<T> data) where T : Overlay {
-        if (IsOverlayActive) return null;
-
-        gameObject.SetActive(true);
+    public T PushOverlay<T>(OverlayData<T> data) where T : Overlay {
+        var newOverlay = Instantiate(data.Prefab, _overlayParent);
+        _overlayStack.Push((data, newOverlay));
         
-        var obj = Instantiate(data.Prefab, _overlayParent);
-        _activeOverlayObject = obj.GetComponent<RectTransform>();
+        ShowTopOverlay();
+        return newOverlay;
+    }
 
+    void ShowTopOverlay() {
+        // If this is the first overlay, show the overlay system
+        if (_overlayStack.Count == 1) {
+            gameObject.SetActive(true);
+        } else {
+            // Hide current top overlay
+            _currentOverlay.SetActive(false);
+        }
+
+        var (data, overlay) = _overlayStack.Peek();
+        _currentOverlay = overlay;
+        overlay.SetActive(true);
+        
         SetText(data.Header, _headerText);
         SetText(data.Subtitle, _subtitleText);
 
-        OnOverlayActivated?.Invoke(data);
-
-        return obj;
+        OnOverlayShown?.Invoke(data);
 
         void SetText(string str, TMP_Text text) {
             if (string.IsNullOrEmpty(str)) {
-                text.gameObject.SetActive(false);
+                text.SetActive(false);
             } else {
-                text.gameObject.SetActive(true);
+                text.SetActive(true);
                 text.text = str;
             }
         }
     }
 
-    public void HideOverlay() {
+    public void DestroyCurrentOverlay() {
         if (!IsOverlayActive) {
             Debug.LogWarning("No overlay active");
             return;
         }
 
-        gameObject.SetActive(false);
+        var (data, obj) = _overlayStack.Pop();
+        Destroy(obj.gameObject);
+        
+        if (IsOverlayActive) {
+            ShowTopOverlay();
+        } else {
+            // That was the last overlay
+            gameObject.SetActive(false);
+            _headerText.gameObject.SetActive(false);
+            _subtitleText.gameObject.SetActive(false);
+        }
 
-        Destroy(_activeOverlayObject.gameObject);
-        _activeOverlayObject = null;
-
-        _headerText.gameObject.SetActive(false);
-        _subtitleText.gameObject.SetActive(false);
-
-        OnOverlayDeactivated?.Invoke();        
+        OnOverlayHidden?.Invoke(data);  
     }
 }
 

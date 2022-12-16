@@ -21,7 +21,7 @@ public abstract class Choice<T> : Overlay {
         _isOptional = isOptional;
     }
 
-    protected override void OnOverlayClick(){
+    protected override void OnOverlayClick() {
         if (!_isOptional) return;
         base.OnOverlayClick();
         Cancel();
@@ -32,7 +32,7 @@ public abstract class Choice<T> : Overlay {
             Choice = choice,
             WasCanceled = false
         });
-        OverlaySystem.Instance.HideOverlay();
+        OverlaySystem.Instance.DestroyCurrentOverlay();
     }
 
     protected void Cancel() {
@@ -41,7 +41,7 @@ public abstract class Choice<T> : Overlay {
             Choice = default,
             WasCanceled = true
         });
-        OverlaySystem.Instance.HideOverlay();
+        OverlaySystem.Instance.DestroyCurrentOverlay();
     }
 
     public struct ChoiceResult {

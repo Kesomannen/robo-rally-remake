@@ -15,6 +15,7 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
     [Header("Sprites")]
     [SerializeField] Sprite[] _costSprites;
     [SerializeField] CardSprite _temporarySprite, _permanentSprite, _actionSprite;
+    [SerializeField] bool _showOverlayOnClick = true;
     [SerializeField] UpgradeCardOverlay _overlay;
 
     [Serializable]
@@ -50,14 +51,15 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
     public void OnPointerClick(PointerEventData e) {
         if (Data == null) return;
         OnClick?.Invoke(this);
-        if (e.button == PointerEventData.InputButton.Right){
+        
+        if (_showOverlayOnClick && e.button == PointerEventData.InputButton.Right){
             var overlay = new OverlayData<UpgradeCardOverlay> {
                 Header = "Upgrade Card",
                 Subtitle = Data.Name,
                 CanPreview = false,
                 Prefab = _overlay
             };
-            OverlaySystem.Instance.ShowOverlay(overlay)?.Init(Data);
+            OverlaySystem.Instance.PushOverlay(overlay).Init(Data);
         }
     }
 }

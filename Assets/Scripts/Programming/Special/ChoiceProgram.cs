@@ -18,9 +18,8 @@ public class ChoiceProgram : ProgramCardData {
         _hasMadeChoice = false;
 
         var availableArray = _options.Select(c => c.CanPlace(player, positionInRegister)).ToArray();
-        var obj = OverlaySystem.Instance.ShowOverlay(_choiceOverlay);
-        if (obj == null) throw new Exception("Can't start choice; overlay is already active!");
-        
+        var obj = OverlaySystem.Instance.PushOverlay(_choiceOverlay);
+
         obj.Init(_options, availableArray, r => {
             _choiceRoutine = r.Choice.ExecuteRoutine(player, positionInRegister);
             _hasMadeChoice = true;

@@ -3,23 +3,23 @@ using UnityEngine.EventSystems;
 
 public class PreviewButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler {
     void Awake() {
-        OverlaySystem.OnOverlayActivated += OnOverlayActivated;
-        OverlaySystem.OnOverlayDeactivated += OnOverlayDeactivated;
+        OverlaySystem.OnOverlayShown += OnOverlayShown;
+        OverlaySystem.OnOverlayHidden += OnOverlayHidden;
         gameObject.SetActive(false);
     }
 
     void OnDestroy() {
-        OverlaySystem.OnOverlayActivated -= OnOverlayActivated;
-        OverlaySystem.OnOverlayDeactivated -= OnOverlayDeactivated;
+        OverlaySystem.OnOverlayShown -= OnOverlayShown;
+        OverlaySystem.OnOverlayHidden -= OnOverlayHidden;
     }
 
-    void OnOverlayActivated(OverlayData data) {
+    void OnOverlayShown(OverlayData data) {
         if (data.CanPreview) {
             gameObject.SetActive(true);
         }
     }
 
-    void OnOverlayDeactivated() {
+    void OnOverlayHidden(OverlayData data) {
         gameObject.SetActive(false);
     }
 

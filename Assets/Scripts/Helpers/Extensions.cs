@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 public static class Extensions {
@@ -31,4 +32,6 @@ public static class Extensions {
     public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<TKey> list, Func<TKey, TValue> valueSelector) {
         return list.ToDictionary(key => key, valueSelector);
     }
+    
+    public static void SetActive(this Component component, bool active) => component.gameObject.SetActive(active);
 }

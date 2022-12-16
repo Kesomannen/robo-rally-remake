@@ -12,7 +12,7 @@ public class ProgramCardChoice : Choice<ProgramCardData> {
     protected override int MaxOptions => 8;
     protected override int MinOptions => 2;
 
-    public void Init(ProgramCardData[] options, bool[] availableArray, Action<ChoiceResult> callback, bool isOptional = false) {
+    public void Init(ProgramCardData[] options, IReadOnlyList<bool> availableArray, Action<ChoiceResult> callback, bool isOptional = false) {
         Init(options, callback, isOptional);
         CreateCards(availableArray);
     }
@@ -25,11 +25,11 @@ public class ProgramCardChoice : Choice<ProgramCardData> {
         }
     }
 
-    void OnEnable() {
+    protected override void OnEnable() {
         ProgramCardChoiceItem.OnCardSelected += OnCardSelected;    
     }
 
-    void OnDisable() {
+    protected override void OnDisable() {
         ProgramCardChoiceItem.OnCardSelected -= OnCardSelected;
     }
 
