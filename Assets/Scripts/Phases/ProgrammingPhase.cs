@@ -15,7 +15,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
 
     public static event Action OnPhaseStarted;
 
-    public static IEnumerator DoPhase() {
+    public IEnumerator DoPhase() {
         UIManager.Instance.ChangeState(UIState.Hand);
 
         IsStressed = false;

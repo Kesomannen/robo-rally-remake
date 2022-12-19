@@ -46,6 +46,8 @@ public class Player : IPlayer {
     // Events
     public event Action OnShuffleDeck;
     public event Action<ProgramCardData> OnDraw, OnDiscard;
+    public event Action<UpgradeCardData, int> OnUpgradeAdded, OnUpgradeRemoved;
+    public event Action<UpgradeCardData> OnUpgradeUsed;
 
     public Player(PlayerArgs args) {
         _clientId = args.OwnerId;
@@ -192,15 +194,20 @@ public class Player : IPlayer {
         return -1;
     }
 
-    public void BuyUpgrade(UpgradeCardData upgrade, int index) {
+    public void AddUpgrade(UpgradeCardData upgrade, int index) {
         RemoveUpgrade(index);
         _upgrades[index] = upgrade;
         upgrade.OnBuy(this);
+        OnUpgradeAdded?.Invoke(upgrade, index);
     }
 
     public void UseUpgrade(int index) {
         var upgrade = _upgrades[index];
         upgrade.Apply(this);
+        OnUpgradeUsed?.Invoke(upgrade);
+        
+        if (upgrade.Type == UpgradeType.Temporary) 
+            RemoveUpgrade(index);
     }
     
     public void RemoveUpgrade(int index) {
@@ -209,6 +216,7 @@ public class Player : IPlayer {
         
         upgrade.Remove(this);
         _upgrades[index] = null;
+        OnUpgradeRemoved?.Invoke(upgrade, index);
     }
     
     #endregion

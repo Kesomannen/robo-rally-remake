@@ -30,7 +30,7 @@ public class PlayerManager : Singleton<PlayerManager> {
         _spawnPoints = MapSystem.GetByType<RebootToken>().Where(x => x.IsSpawnPoint).ToArray();
     }
 
-    public void CreatePlayer(ulong id, LobbyPlayerData data) {
+    public Player CreatePlayer(ulong id, LobbyPlayerData data) {
         var index = _players.Count;
         var settings = GameSettings.Instance;
 
@@ -59,6 +59,8 @@ public class PlayerManager : Singleton<PlayerManager> {
         }
 
         Debug.Log($"Created player for client {id}");
+        
+        return newPlayer;
     }
 
     public static IEnumerable<Player> GetOrderedPlayers() {

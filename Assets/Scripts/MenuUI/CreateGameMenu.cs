@@ -9,7 +9,7 @@ public class CreateGameMenu : Menu {
 
     public async void Submit() {
         var lobbyData = new LobbyData {
-            MapID = 1,
+            MapID = 10,
             MaxPlayers = (byte) GameSettings.Instance.MaxPlayers,
             IsPrivate = _privateCheckbox.isOn,
         };

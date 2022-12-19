@@ -5,14 +5,19 @@ using UnityEngine;
 public class Testing : MonoBehaviour {
     [SerializeField] MapData _mapToLoad;
     [SerializeField] RobotData _robotToLoad;
+    [SerializeField] UpgradeCardData[] _upgradesToLoad;
 
     void Awake(){
         if (NetworkManager.Singleton != null) return;
         
         MapSystem.Instance.LoadMap(_mapToLoad);
-        PlayerManager.Instance.CreatePlayer(0, new LobbyPlayerData() {
-            RobotId = (byte) _robotToLoad.GetLookupId()
+        var player = PlayerManager.Instance.CreatePlayer(0, new LobbyPlayerData {
+            RobotId = (byte)_robotToLoad.GetLookupId()
         });
+        for (var i = 0; i < _upgradesToLoad.Length; i++) {
+            var upgrade = _upgradesToLoad[i];
+            player.AddUpgrade(upgrade, i);
+        }
     }
 
     public void Continue() {

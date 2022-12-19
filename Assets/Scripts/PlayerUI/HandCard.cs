@@ -1,4 +1,3 @@
-using System.Linq;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,9 +6,11 @@ using UnityEngine.UI;
 
 public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
     [Header("Animation")]
-    [SerializeField] float _highlightJumpHeight;
+    [SerializeField] float _jumpHeight;
+    [SerializeField] float _jumpDuration;
     [SerializeField] float _highlightedSize;
     [SerializeField] LeanTweenType _easingType;
+    [SerializeField] float _moveDuration;
 
     static GraphicRaycaster _graphicRaycaster;
     static Player Owner => PlayerManager.LocalPlayer;
@@ -20,6 +21,8 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
     Transform _originalParent;
     RectTransform _rectTransform;
 
+    int _scaleTweenId;
+    
     void SetHighlighted(bool value) {
         if (_isHighlighted == value) return;
         _isHighlighted = value;
@@ -28,16 +31,24 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
             var t = transform;
             t.SetParent(_graphicRaycaster.transform);
             t.SetAsLastSibling();
-
-            var targetHeight = CanvasUtils.CanvasScale.y * _highlightJumpHeight;
-            LerpTo(t.position + Vector3.up * targetHeight);
-            LeanTween.scale(gameObject, Vector3.one * _highlightedSize, 0.2f).setEase(_easingType);
+                
+            var targetHeight = CanvasUtils.CanvasScale.y * _jumpHeight;
+            LerpTo(t.position + Vector3.up * targetHeight, _jumpDuration);
+            LeanTween.cancel(_scaleTweenId);
+            _scaleTweenId = LeanTween
+                .scale(gameObject, Vector3.one * _highlightedSize, _jumpDuration)
+                .setEase(_easingType)
+                .uniqueId;
         } else {
             transform.SetParent(_originalParent);
             transform.SetSiblingIndex(_index);
-
-            LerpTo(_origin);
-            LeanTween.scale(gameObject, Vector3.one, 0.2f).setEase(_easingType);
+            
+            LerpTo(_origin, _jumpDuration);
+            LeanTween.cancel(_scaleTweenId);
+            _scaleTweenId = LeanTween
+                .scale(gameObject, Vector3.one, _jumpDuration)
+                .setEase(_easingType)
+                .uniqueId;
         }
     }
 
@@ -127,13 +138,14 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
 
     int _currentMoveTweenId;
 
-    void LerpTo(Vector2 target, Action callback = null) {
+    void LerpTo(Vector2 target, float time = 0, Action callback = null) {
+        var duration = time == 0 ? _moveDuration : time;
         LeanTween.cancel(_currentMoveTweenId);
         _currentMoveTweenId = LeanTween
-            .move(gameObject, new Vector3(target.x, target.y), 0.2f)
+            .move(gameObject, new Vector3(target.x, target.y), duration)
             .setEase(_easingType)
             .setOnComplete(() => {
                 callback?.Invoke();
-            }).id;
+            }).uniqueId;
     }
 }

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb6edf0327ec592499d84f53c949547f, type: 3}
   m_Name: DefaultLaserDamage
   m_EditorClassIdentifier: 
-  _cards: []
+  _cards:
+  - {fileID: 11400000, guid: ecc7d4ad841b0624999bcaff2184a12f, type: 2}
   _destination: 0
   _placement: 0

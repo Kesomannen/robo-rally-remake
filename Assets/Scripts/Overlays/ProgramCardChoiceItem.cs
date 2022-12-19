@@ -14,7 +14,7 @@ public class ProgramCardChoiceItem : ProgramCard, IPointerClickHandler {
 
     public void OnPointerClick(PointerEventData e) {
         if (!_isAvailable) return;
-        OnCardSelected?.Invoke(Data);
+        OnCardSelected?.Invoke(Content);
     }
 
     public void SetAvailable(bool available) {

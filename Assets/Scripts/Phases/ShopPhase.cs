@@ -15,7 +15,6 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
     public static IReadOnlyList<UpgradeCardData> ShopCards => _shopCards;
     
     static List<UpgradeCardData> _availableCards;
-    public static IReadOnlyList<UpgradeCardData> AvailableCards => _availableCards;
 
     [CanBeNull] public static Player CurrentPlayer { get; private set; }
     
@@ -28,10 +27,10 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
     protected override void Awake() {
         base.Awake();
         _shopCards = new UpgradeCardData[GameSettings.Instance.ShopSlots];
-        RefreshAvailableUpgrades();
+        if (IsServer) RefreshAvailableUpgrades();
     }
 
-    public static IEnumerator DoPhase() {
+    public IEnumerator DoPhase() {
         UIManager.Instance.ChangeState(UIState.Shop);
         
         yield return RestockRoutine();
@@ -57,26 +56,51 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
         }
     }
 
+    [ClientRpc]
+    void RestockCardClientRpc(byte[] slots, byte[] cardIds) {
+        for (var i = 0; i < slots.Length; i++) {
+            _restockQueue.Enqueue((slots[i], UpgradeCardData.GetById(cardIds[i])));
+        }
+    }
+
+    static readonly Queue<(int Slot, UpgradeCardData Card)> _restockQueue = new();
     static void RefreshAvailableUpgrades() => _availableCards = UpgradeCardData.GetAll().ToList();
     
-    static IEnumerator RestockRoutine() {
-        for (var i = 0; i < _shopCards.Length; i++){
-            var card = _shopCards[i];
-            if (card != null) continue;
+    IEnumerator RestockRoutine() {
+        if (IsServer) {
+            // Randomize shop and send to clients
+            var slots = new List<byte>();
+            var cardIds = new List<byte>();
 
-            if (_availableCards.Count == 0) {
-                RefreshAvailableUpgrades();
+            for (var i = 0; i < _shopCards.Length; i++) {
+                var card = _shopCards[i];
+                if (card != null) continue;
+                
+                if (_availableCards.Count == 0) {
+                    RefreshAvailableUpgrades();
+                }
+                
+                var randomIndex = Random.Range(0, _availableCards.Count);
+                var newCard = _availableCards[randomIndex];
+                _shopCards[i] = newCard;
+                _availableCards.RemoveAt(randomIndex);
+                
+                slots.Add((byte) i);
+                cardIds.Add((byte) newCard.GetLookupId());
             }
-            
-            var randomIndex = Random.Range(0, _availableCards.Count);
-            _shopCards[i] = _availableCards[randomIndex];
-            _availableCards.RemoveAt(randomIndex);
-            
-            Debug.Log($"Restocked {i} with {_shopCards[i].Name}");
-            OnRestock?.Invoke(i, _shopCards[i]);
 
-            yield return CoroutineUtils.Wait(RestockDelay);
+            // Might be a problem if server is not host as local _restockQueue will not be updated
+            RestockCardClientRpc(slots.ToArray(), cardIds.ToArray());
+        } else {
+            yield return new WaitUntil(() => _restockQueue.Count > 0);   
         }
+
+        foreach (var (index, card) in _restockQueue) {
+            _shopCards[index] = card;
+            OnRestock?.Invoke(index, card);
+            yield return CoroutineUtils.Wait(RestockDelay);   
+        }
+        
         yield return TaskScheduler.WaitUntilClear();
     }
 
@@ -113,7 +137,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
         } else{
             var upgrade = UpgradeCardData.GetById(upgradeID);
             player.Energy.Value -= upgrade.Cost;
-            player.BuyUpgrade(upgrade, index);
+            player.AddUpgrade(upgrade, index);
             _shopCards[_shopCards.IndexOf(upgrade)] = null;
             
             OnPlayerDecision?.Invoke(player, false, upgrade);

@@ -90,6 +90,7 @@ GameObject:
   - component: {fileID: 3589565074063390391}
   - component: {fileID: 5616511996089484015}
   - component: {fileID: 5821832709130163066}
+  - component: {fileID: 5563013277522782113}
   m_Layer: 5
   m_Name: UpgradeCard
   m_TagString: Untagged
@@ -247,6 +248,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tooltipableLocation: 0
+--- !u!114 &5563013277522782113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8197752021562342102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4735e0729b9422a9d5343cb9756b57f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onHover:
+    _enabled: 1
+    _value: {fileID: 11400000, guid: 47a9cb90251471c4987ed5e2327b77eb, type: 2}
+  _onClick:
+    _enabled: 0
+    _value: {fileID: 0}
 --- !u!1 &8197752021984657519
 GameObject:
   m_ObjectHideFlags: 0
@@ -315,8 +334,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Double barrel laser
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: dc36b4b77fe26524c8dd6982a3c3f416, type: 2}
-  m_sharedMaterial: {fileID: 3231958733206975079, guid: dc36b4b77fe26524c8dd6982a3c3f416, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c87f036a1a6bc53468807a229be61f45, type: 2}
+  m_sharedMaterial: {fileID: -7100628907401325203, guid: c87f036a1a6bc53468807a229be61f45, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -340,7 +359,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15
+  m_fontSize: 13.55
   m_fontSizeBase: 12
   m_fontWeight: 400
   m_enableAutoSizing: 1

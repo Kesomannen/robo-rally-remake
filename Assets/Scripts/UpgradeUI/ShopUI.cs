@@ -42,7 +42,7 @@ public class ShopUI : MonoBehaviour {
         var localPlayer = PlayerManager.LocalPlayer;
         if (ShopPhase.CurrentPlayer != localPlayer) return;
         
-        var card = shopCard.Data;
+        var card = shopCard.Content;
         if (card.Cost > localPlayer.Energy.Value) return;
         
         var slot = localPlayer.GetOpenUpgradeSlot();
@@ -55,7 +55,7 @@ public class ShopUI : MonoBehaviour {
         if (skipped) return;
         for (var i = 0; i < _shopCards.Length; i++){
             var shopCard = _shopCards[i];
-            if (shopCard.Data != card) continue;
+            if (shopCard.Content != card) continue;
             
             shopCard.OnBuy();
             _shopCards[i] = null;

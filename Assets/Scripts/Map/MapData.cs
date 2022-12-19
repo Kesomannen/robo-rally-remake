@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "MapData", menuName = "ScriptableObjects/Map/Basic", order = 0)]
+[CreateAssetMenu(fileName = "MapData", menuName = "ScriptableObjects/Map")]
 public class MapData : Lookup<MapData> {
     [Header("Map")]
     [SerializeField] string _name;
@@ -14,8 +14,6 @@ public class MapData : Lookup<MapData> {
     public MapDifficulty Difficulty => _difficulty;
     public MapLength Length => _length;
     public GameObject Prefab => _prefab;
-
-    public virtual void OnLoad() { }
 
     public override string ToString() => _name;
 }

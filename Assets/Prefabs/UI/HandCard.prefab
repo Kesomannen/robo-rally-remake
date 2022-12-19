@@ -194,9 +194,29 @@ MonoBehaviour:
   _utilityIcon: {fileID: 21300000, guid: 45ddf7b3e01935d4a820f7a39ac3be94, type: 3}
   _name: {fileID: 1174991577562021719}
   _description: {fileID: 1174991577189273964}
-  _highlightJumpHeight: 50
+  _jumpHeight: 50
+  _jumpDuration: 0.2
   _highlightedSize: 1.25
   _easingType: 27
+  _moveDuration: 0.2
+--- !u!114 &-1580346966276908659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1174991577122899432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4735e0729b9422a9d5343cb9756b57f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onHover:
+    _enabled: 1
+    _value: {fileID: 11400000, guid: 47a9cb90251471c4987ed5e2327b77eb, type: 2}
+  _onClick:
+    _enabled: 0
+    _value: {fileID: 0}
 --- !u!114 &1174991577189273964 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8197752021629759058, guid: 852a4f1b39d0eff43b4ad4b129005922, type: 3}

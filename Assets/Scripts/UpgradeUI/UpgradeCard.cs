@@ -23,8 +23,8 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
         public Sprite Default, Selected;
     }
     
-    public string Header => $"{Data.Name} ({Data.Cost})";
-    public string Description => Data.Description;
+    public string Header => $"{Content.Name} ({Content.Cost})";
+    public string Description => Content.Description;
     
     public event Action<UpgradeCard> OnClick;
 
@@ -49,17 +49,17 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
     }
     
     public void OnPointerClick(PointerEventData e) {
-        if (Data == null) return;
+        if (Content == null) return;
         OnClick?.Invoke(this);
         
         if (_showOverlayOnClick && e.button == PointerEventData.InputButton.Right){
             var overlay = new OverlayData<UpgradeCardOverlay> {
                 Header = "Upgrade Card",
-                Subtitle = Data.Name,
+                Subtitle = Content.Name,
                 CanPreview = false,
                 Prefab = _overlay
             };
-            OverlaySystem.Instance.PushOverlay(overlay).Init(Data);
+            OverlaySystem.Instance.PushOverlay(overlay).Init(Content);
         }
     }
 }

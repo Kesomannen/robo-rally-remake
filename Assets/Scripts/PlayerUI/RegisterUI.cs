@@ -46,18 +46,18 @@ public class RegisterUI : MonoBehaviour, IPointerClickHandler {
 
     public bool Place(Container<ProgramCardData> item) {
         if (Locked || !IsEmpty) return false;
-        if (!item.Data.CanPlace(Owner, _index)) return false;
+        if (!item.Content.CanPlace(Owner, _index)) return false;
 
-        _cardContainer.SetContent(item.Data);
+        _cardContainer.SetContent(item.Content);
         _cardContainer.gameObject.SetActive(true);
-        Owner.Program.SetCard(_index, item.Data);
+        Owner.Program.SetCard(_index, item.Content);
 
         return true;
     }
 
     public void Remove() {
         if (Locked || IsEmpty) return;
-        if (!Owner.Hand.AddCard(_cardContainer.Data, CardPlacement.Top)) return;
+        if (!Owner.Hand.AddCard(_cardContainer.Content, CardPlacement.Top)) return;
         
         _cardContainer.gameObject.SetActive(false);
         Owner.Program.SetCard(_index, null);

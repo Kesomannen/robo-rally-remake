@@ -15,6 +15,74 @@ PrefabInstance:
       propertyPath: _direction.x
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.size
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[0]
+      value: 
+      objectReference: {fileID: 204647550, guid: ed828ac003ddcd94ba758aaf8d7e985d, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[1]
+      value: 
+      objectReference: {fileID: 28650628, guid: ed828ac003ddcd94ba758aaf8d7e985d, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[2]
+      value: 
+      objectReference: {fileID: 210344224, guid: ed828ac003ddcd94ba758aaf8d7e985d, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[3]
+      value: 
+      objectReference: {fileID: -1216118213, guid: ed828ac003ddcd94ba758aaf8d7e985d, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[4]
+      value: 
+      objectReference: {fileID: -1614316194, guid: ed828ac003ddcd94ba758aaf8d7e985d, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[5]
+      value: 
+      objectReference: {fileID: -829682039, guid: ed828ac003ddcd94ba758aaf8d7e985d, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[6]
+      value: 
+      objectReference: {fileID: 1177324976, guid: ed828ac003ddcd94ba758aaf8d7e985d, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[7]
+      value: 
+      objectReference: {fileID: -1052921007, guid: ed828ac003ddcd94ba758aaf8d7e985d, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[8]
+      value: 
+      objectReference: {fileID: -801939740, guid: ed828ac003ddcd94ba758aaf8d7e985d, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[9]
+      value: 
+      objectReference: {fileID: -1244009066, guid: ed828ac003ddcd94ba758aaf8d7e985d, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[10]
+      value: 
+      objectReference: {fileID: -513703864, guid: ed828ac003ddcd94ba758aaf8d7e985d, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[11]
+      value: 
+      objectReference: {fileID: 1890175051, guid: ed828ac003ddcd94ba758aaf8d7e985d, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[12]
+      value: 
+      objectReference: {fileID: -2139559678, guid: ed828ac003ddcd94ba758aaf8d7e985d, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[13]
+      value: 
+      objectReference: {fileID: 1259182741, guid: ed828ac003ddcd94ba758aaf8d7e985d, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[14]
+      value: 
+      objectReference: {fileID: 792247244, guid: ed828ac003ddcd94ba758aaf8d7e985d, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[15]
+      value: 
+      objectReference: {fileID: 2096829244, guid: ed828ac003ddcd94ba758aaf8d7e985d, type: 3}
     - target: {fileID: 944412202424250007, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
       propertyPath: m_Name
       value: StraightConveyorFast
@@ -95,7 +163,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 1.125, y: 1.125}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -104,23 +172,3 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.9531257, y: 0.68}
   m_EdgeRadius: 0
---- !u!95 &6043877205137956357
-Animator:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5401002086467324514}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 22100000, guid: 4b151849dd52f48458478fa59e39e172, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0

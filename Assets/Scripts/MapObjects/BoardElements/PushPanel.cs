@@ -39,7 +39,7 @@ public class PushPanel : BoardElement<PushPanel, ICanEnterHandler>, ITooltipable
             _direction = _direction.Transform(s);
         };
 
-        for (var i = 0; i < _registerTexts.Length; i++) {
+        for (var i = 0; i < _activeRegisters.Length; i++) {
             _registerTexts[i].text = (_activeRegisters[i] + 1).ToString();
         }
     }

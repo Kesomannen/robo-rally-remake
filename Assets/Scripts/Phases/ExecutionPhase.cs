@@ -16,7 +16,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
     public static event Action<ExecutionSubPhase> OnNewSubPhase;
     public static event Action<IReadOnlyList<Player>> OnPlayersOrdered;
 
-    public static IEnumerator DoPhase() {
+    public IEnumerator DoPhase() {
         OnPhaseStart?.Invoke();
         UIManager.Instance.ChangeState(UIState.Execution);
         
@@ -62,7 +62,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
                     .Select(p => p.Model.FireLaser(p.Model.Rotator.Identity))
                     .ToArray()
                 );
-                return true;
+                return players.Any(p => !p.IsRebooted.Value);
             }),
             DoSubPhase(ExecutionSubPhase.EnergySpace, EnergySpace.ActivateElement),
             DoSubPhase(ExecutionSubPhase.Checkpoint, Checkpoint.ActivateElement)

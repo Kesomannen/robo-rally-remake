@@ -121,7 +121,7 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 45
+        width: 63
         height: 21
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -140,9 +140,9 @@ TextureImporter:
       name: LockInButton_1
       rect:
         serializedVersion: 2
-        x: 45
+        x: 63
         y: 0
-        width: 45
+        width: 63
         height: 21
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -161,9 +161,9 @@ TextureImporter:
       name: LockInButton_2
       rect:
         serializedVersion: 2
-        x: 90
+        x: 126
         y: 0
-        width: 45
+        width: 63
         height: 21
       alignment: 0
       pivot: {x: 0, y: 0}

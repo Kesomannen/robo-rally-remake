@@ -7,8 +7,8 @@ public class ExecutionRegister : Container<ProgramCardData>, ITooltipable {
 
     bool _hidden;
 
-    public string Header => _hidden ? "???" : Data.Header;
-    public string Description => _hidden ? "???" : Data.Description;
+    public string Header => _hidden ? "???" : Content.Header;
+    public string Description => _hidden ? "???" : Content.Description;
 
     public bool Hidden {
         set {

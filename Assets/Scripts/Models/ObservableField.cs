@@ -15,7 +15,7 @@ public class ObservableField<T> {
 
     T _value;
 
-    public ObservableField(T initialValue) {
+    public ObservableField(T initialValue = default) {
         _value = initialValue;
     }
 

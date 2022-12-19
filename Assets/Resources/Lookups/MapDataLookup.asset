@@ -13,5 +13,22 @@ MonoBehaviour:
   m_Name: MapDataLookup
   m_EditorClassIdentifier: 
   _values:
+  - {fileID: 11400000, guid: ecd6b40d9b330dd4e8c947187a002b2f, type: 2}
   - {fileID: 11400000, guid: b0f5e608bc8120e45863f455a917919f, type: 2}
+  - {fileID: 11400000, guid: 202a02d45b84c9847af5c4a652557d7f, type: 2}
   - {fileID: 11400000, guid: fdcc374f8bfe0c042b9ecc1d07ca3169, type: 2}
+  - {fileID: 11400000, guid: 464a53dfa8c43494e850987fdafa5bff, type: 2}
+  - {fileID: 11400000, guid: 346b3615c1fadc54ab823ee53d2760fb, type: 2}
+  - {fileID: 11400000, guid: a97ceff9d04c69a4eb29a1c2bbd3c09e, type: 2}
+  - {fileID: 11400000, guid: fe656fb49eafdf1449a7e72e132699e8, type: 2}
+  - {fileID: 11400000, guid: 79c96ea45bc6ada44b9c6ee82d22f36e, type: 2}
+  - {fileID: 11400000, guid: 35d4720e71d934e468cf518864aa49e3, type: 2}
+  - {fileID: 11400000, guid: b86ee567c389a45468a6a8161b675d69, type: 2}
+  - {fileID: 11400000, guid: ee6058072b906024f90f5c10f1ceb3de, type: 2}
+  - {fileID: 11400000, guid: c752e7bf705b4724981e5c12567113e5, type: 2}
+  - {fileID: 11400000, guid: 865a417018fdc1c4ea203552d8f8e3d7, type: 2}
+  - {fileID: 11400000, guid: 39ca7e4bf75864349961ca9c490debdd, type: 2}
+  - {fileID: 11400000, guid: a7673799179269a4b830050a4d777784, type: 2}
+  - {fileID: 11400000, guid: 10d9e468a9cdc464bb0f6d73e1a0fa2b, type: 2}
+  - {fileID: 11400000, guid: 37198eb64666d204fac61c3a11f4c391, type: 2}
+  - {fileID: 11400000, guid: e700537af5cfd504abfec68e0b839b56, type: 2}

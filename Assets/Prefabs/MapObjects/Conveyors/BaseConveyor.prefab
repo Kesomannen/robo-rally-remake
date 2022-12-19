@@ -10,9 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 8303127269129446033}
   - component: {fileID: -3548210113330695675}
-  - component: {fileID: 8887188639176184730}
-  - component: {fileID: 8461673343817535162}
   - component: {fileID: 7973181282955915177}
+  - component: {fileID: 8461673343817535162}
+  - component: {fileID: 145450883817808500}
+  - component: {fileID: 8887188639176184730}
   m_Layer: 0
   m_Name: BaseConveyor
   m_TagString: Untagged
@@ -51,6 +52,46 @@ MonoBehaviour:
   _direction: {x: 0, y: 0}
   _cost: 0
   _rotation: []
+--- !u!114 &7973181282955915177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 944412202424250007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42c0858ea87a4f99ac759a80245f635e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _highlightMaterial: {fileID: 2100000, guid: c385d055d2118d54584af44e2183a368, type: 2}
+--- !u!114 &8461673343817535162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 944412202424250007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2efb1d58b054d4183ddeddc2a4d8ffd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tooltipableLocation: 0
+--- !u!114 &145450883817808500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 944412202424250007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d9db881a78a4b618eeffc76536bd07a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _frameTime: 0.05
+  _sprites: []
 --- !u!212 &8887188639176184730
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -103,29 +144,3 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &8461673343817535162
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 944412202424250007}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f2efb1d58b054d4183ddeddc2a4d8ffd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _tooltipableLocation: 0
---- !u!114 &7973181282955915177
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 944412202424250007}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42c0858ea87a4f99ac759a80245f635e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _highlightMaterial: {fileID: 2100000, guid: c385d055d2118d54584af44e2183a368, type: 2}
