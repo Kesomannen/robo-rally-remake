@@ -14,24 +14,24 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
 
     static GraphicRaycaster _graphicRaycaster;
     static Player Owner => PlayerManager.LocalPlayer;
+    public Transform HighlightParent { set => _highlightParent = value; }
     
     bool _isDragging;
     int _index;
     Vector3 _origin;
     Transform _originalParent;
+    Transform _highlightParent;
     RectTransform _rectTransform;
-
     int _scaleTweenId;
-    
+
     void SetHighlighted(bool value) {
         if (_isHighlighted == value) return;
         _isHighlighted = value;
 
-        if (_isHighlighted){
+        if (_isHighlighted) {
             var t = transform;
-            t.SetParent(_graphicRaycaster.transform);
-            t.SetAsLastSibling();
-                
+            transform.SetParent(_highlightParent);
+
             var targetHeight = CanvasUtils.CanvasScale.y * _jumpHeight;
             LerpTo(t.position + Vector3.up * targetHeight, _jumpDuration);
             LeanTween.cancel(_scaleTweenId);
@@ -40,9 +40,10 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
                 .setEase(_easingType)
                 .uniqueId;
         } else {
-            transform.SetParent(_originalParent);
-            transform.SetSiblingIndex(_index);
-            
+            var t = transform;
+            t.SetParent(_originalParent);
+            t.SetSiblingIndex(_index);
+
             LerpTo(_origin, _jumpDuration);
             LeanTween.cancel(_scaleTweenId);
             _scaleTweenId = LeanTween

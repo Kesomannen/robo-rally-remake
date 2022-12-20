@@ -13,11 +13,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -3548210113330695675, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
       propertyPath: _direction.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -3548210113330695675, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
       propertyPath: _direction.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -3548210113330695675, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
       propertyPath: _rotation.Array.size
@@ -29,7 +29,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -3548210113330695675, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
       propertyPath: _rotation.Array.data[0]._rotation
-      value: 1
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: -3548210113330695675, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
       propertyPath: _rotation.Array.data[0].RelativeDirection.y
@@ -37,11 +37,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -3548210113330695675, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
       propertyPath: _rotation.Array.data[0]._relativeDirection.x
-      value: -1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -3548210113330695675, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
       propertyPath: _rotation.Array.data[0]._relativeDirection.y
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
       propertyPath: _sprites.Array.size
@@ -184,14 +184,14 @@ PolygonCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 1.125, y: 1.125}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -199,13 +199,15 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.46954104, y: 0.37293947}
-      - {x: -0.46960214, y: -0.3122849}
-      - {x: -0.313468, y: -0.3125798}
-      - {x: -0.31831023, y: -0.46885735}
+    - - {x: -0.36331472, y: 0.3746809}
+      - {x: -0.38601422, y: -0.30706063}
+      - {x: -0.38545358, y: -0.31073403}
+      - {x: -0.38475847, y: -0.46701157}
       - {x: 0.37731746, y: -0.47007784}
       - {x: 0.38078785, y: -0.37463635}
-      - {x: 0.37820244, y: 0.25198162}
-      - {x: 0.37536958, y: 0.31595483}
+      - {x: 0.38052115, y: -0.3099934}
+      - {x: 0.4394568, y: -0.3118473}
+      - {x: 0.44284225, y: 0.37746128}
+      - {x: 0.37536958, y: 0.37490034}
       - {x: 0.37536958, y: 0.36884847}
       - {x: -0.25229496, y: 0.37324202}

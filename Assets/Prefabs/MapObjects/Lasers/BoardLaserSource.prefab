@@ -52,7 +52,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GridPos: {x: 0, y: 0}
   _direction: {x: 1, y: 0}
-  _laserPrefab: {fileID: 4459503290772829157, guid: 243af469c17ebc749abc669f9e996091, type: 3}
+  _laserPrefab: {fileID: 7356243174931234761, guid: ac3e6873540355d4faa9585b0340f4f1, type: 3}
   _affector:
     _cards:
     - {fileID: 11400000, guid: ecc7d4ad841b0624999bcaff2184a12f, type: 2}

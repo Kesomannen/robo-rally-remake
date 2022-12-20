@@ -2,14 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
 
 public class HandController : Singleton<HandController> {
     [Header("References")]
     [SerializeField] HandCard _cardPrefab;
     [SerializeField] RectTransform _drawPile;
-    [FormerlySerializedAs("discardPile")] [SerializeField] RectTransform _discardPile;
+    [SerializeField] Transform _highlightParent;
 
     [Header("Animation")]
     [SerializeField] float _cardSpacing;
@@ -137,6 +135,7 @@ public class HandController : Singleton<HandController> {
 
     HandCard CreateCard(ProgramCardData card, int index) {
         var cardObject = Instantiate(_cardPrefab, transform);
+        cardObject.HighlightParent = _highlightParent;
         cardObject.enabled = false;
 
         cardObject.SetContent(card);
@@ -147,7 +146,7 @@ public class HandController : Singleton<HandController> {
     }
 
     void CreateHand() {
-        for (int i = 0; i < Owner.Hand.Cards.Count; i++) {
+        for (var i = 0; i < Owner.Hand.Cards.Count; i++) {
             var card = Owner.Hand.Cards[i];
             _actionQueue.Add(new CardAction {
                 Type = CardActionType.Draw,
@@ -165,7 +164,7 @@ public class HandController : Singleton<HandController> {
     }
 
     Vector3 GetOrigin(int index) {
-        var xPos = _cardSpacing * ((float)index - (float)_cardObjects.Count / 2f + 0.5f);
+        var xPos = _cardSpacing * (index - _cardObjects.Count / 2f + 0.5f);
         var pos = transform.position + CanvasUtils.CanvasScale.x * xPos * Vector3.right;
         return pos;
     }

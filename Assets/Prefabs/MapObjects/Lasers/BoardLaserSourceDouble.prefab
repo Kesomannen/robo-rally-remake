@@ -32,6 +32,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2133986749, guid: eb0b9157c30f44d4c9cfb74dca42b12a, type: 3}
     - target: {fileID: 8271988004569114498, guid: 7d89b864ec6bb3544ac812938dfad5aa, type: 3}
+      propertyPath: _laserPrefab
+      value: 
+      objectReference: {fileID: 2213794033764806438, guid: be857ba970561f34ab8643e302324b3f, type: 3}
+    - target: {fileID: 8271988004569114498, guid: 7d89b864ec6bb3544ac812938dfad5aa, type: 3}
       propertyPath: _damage.NumberOfCards
       value: 2
       objectReference: {fileID: 0}

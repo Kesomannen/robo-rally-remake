@@ -6,20 +6,32 @@ public class PlayerUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerEx
     [SerializeField] LeanTweenType _tweenType;
     [SerializeField] float _tweenDuration;
     [SerializeField] float _highlightScale;
-    
+
+    Transform _highlightParent;
+    Transform _originalParent;
     Vector3 _originalSize;
 
     static Player Owner => PlayerManager.LocalPlayer;
 
+    public Transform HighlightParent { set => _highlightParent = value; }
+    
     void Awake() {
-        _originalSize = transform.localScale;
+        var t = transform;
+        _originalParent = t.parent;
+        _originalSize = t.localScale;
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
+        var t = transform;
+        t.SetParent(_highlightParent, true);
+        t.SetAsLastSibling();
+        
         ScaleTo(_highlightScale);
     }
     
     public void OnPointerExit(PointerEventData eventData) {
+        transform.SetParent(_originalParent);
+        
         ScaleTo(1);
     }
 

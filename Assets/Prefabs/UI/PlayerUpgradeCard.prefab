@@ -117,7 +117,7 @@ MonoBehaviour:
   _upgradeCard: {fileID: 3397558776210219767}
   _tweenType: 27
   _tweenDuration: 0.2
-  _highlightScale: 1.5
+  _highlightScale: 1.1
 --- !u!114 &3397558776210219767 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5616511996089484015, guid: c74c614e9f3a9034e935ded9359f8dce, type: 3}

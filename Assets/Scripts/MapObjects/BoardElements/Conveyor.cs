@@ -70,27 +70,27 @@ public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
         
         // If another non-pushable object is ending on the same tile, neither object moves
         if (CheckForObstruction()) return;
-
+        
+        MapSystem.TryGetTile(targetPos, out var targetTile);
+        
         // Check if there is a conveyor at the target position
-        var emptyTarget = !MapSystem.TryGetTile(targetPos, out var targetTile);
-        if (emptyTarget) {
-            // If not this is a final move
-            _moves.Add((targetPos, true, new MapEvent(movable, _direction)));
-        } else {
-            var obj = targetTile.FirstOrDefault(t => t is Conveyor);
-            if (obj == null) {
-                if (Interaction.SoftMove(movable[0].Object, _direction, out var mapEvent)){
-                    // Add remaining objects to the map event
-                    mapEvent.MapObjects.AddRange(movable.Skip(1).Select(o => o.Object));
-                }
-            } else {
-                // If there is a conveyor, recursively activate it
-                var next = (Conveyor)obj;
-                var rot = next.GetRotation(-_direction);
-                
-                _moves.Add((targetPos, false, new MapEvent(movable, _direction, rot)));
-                next.Activate(movable.ToArray());
+        var conveyor = targetTile.FirstOrDefault(t => t is Conveyor);
+        if (conveyor == null) {
+            // If there's no conveyor, this is a final move
+            // We are also assuming adjacent conveyors are accessible from each other
+            
+            if (Interaction.SoftMove(movable[0].Object, _direction, out var mapEvent)){
+                // Add remaining objects to the map event
+                mapEvent.MapObjects.AddRange(movable.Skip(1).Select(o => o.Object));
+                _moves.Add((targetPos, true, mapEvent));
             }
+        } else {
+            // If there is a conveyor, recursively activate it
+            var next = (Conveyor)conveyor;
+            var rot = next.GetRotation(-_direction);
+                
+            _moves.Add((targetPos, false, new MapEvent(movable, _direction, rot)));
+            next.Activate(movable.ToArray());
         }
 
         bool CheckForObstruction() {

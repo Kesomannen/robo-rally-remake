@@ -14,9 +14,16 @@ public class BoardLaser : MapObject, ITooltipable {
     static event Action OnActivate;
 
     public string Header => "Laser";
-    public string Description => $"Ending a register in this laser deals {_affector.Cards.Count} damage.";
+    public string Description {
+        get {
+            var cards = _affector.Cards;
+            var count = cards.Count;
+            var word = count == 1 ? "card" : "cards";
+            return $"Ending a register in this laser deals {count} {cards[0].Name} {word}.";
+        }
+    }
 
-    protected override void Awake(){
+    protected override void Awake() {
         base.Awake();
         _lasersInScene++;
         _direction = Rotator.Rotate(_direction);
@@ -40,25 +47,25 @@ public class BoardLaser : MapObject, ITooltipable {
         return true;
     }
 
-    void Activate(){
+    void Activate() {
         foreach (var target in _targets){
             if (target is not IPlayer player) continue;
             _affector.Apply(player);
         }
     }
 
-    void OnUnobstructed(Laser laser, MapObject obj){
+    void OnUnobstructed(Laser laser, MapObject obj) {
         _targets.Remove(obj);
         var index = _lasers.IndexOf(laser);
-        for (var i = index + 1; i < _lasers.Count; i++){
+        for (var i = index + 1; i < _lasers.Count; i++) {
             _lasers[i].gameObject.SetActive(true);
         }
     }
     
-    void OnObstructed(Laser laser, MapObject obj){
+    void OnObstructed(Laser laser, MapObject obj) {
         _targets.Add(obj);
         var index = _lasers.IndexOf(laser);
-        for (var i = index + 1; i < _lasers.Count; i++){
+        for (var i = index + 1; i < _lasers.Count; i++) {
             _lasers[i].gameObject.SetActive(false);
         }
     }

@@ -5,13 +5,12 @@ using UnityEngine.UI;
 
 public class PlayerUIPlayerPanel : Container<Player>, IPointerClickHandler {
     [SerializeField] TMP_Text _nameText;
-    [SerializeField] TMP_Text _energyText;
     [SerializeField] Image _robotIcon;
     [SerializeField] OverlayData<PlayerOverlay> _overlayData;
 
     Player _player;
     
-    protected override void Serialize(Player player){
+    protected override void Serialize(Player player) {
         if (_player != null){
             _player.Energy.OnValueChanged -= OnEnergyChanged;
         }
@@ -19,15 +18,14 @@ public class PlayerUIPlayerPanel : Container<Player>, IPointerClickHandler {
         player.Energy.OnValueChanged += OnEnergyChanged;
         
         _nameText.text = player.ToString();
-        _energyText.text = player.Energy.ToString();
         _robotIcon.sprite = player.RobotData.Icon;
     }
     
-    void OnEnergyChanged(int prev, int next){
-        _energyText.text = next.ToString();
+    void OnEnergyChanged(int prev, int next) {
+        
     }
     
-    public void OnPointerClick(PointerEventData e){
+    public void OnPointerClick(PointerEventData e) {
         OverlaySystem.Instance.PushOverlay(_overlayData).Init(_player);
     }
 }

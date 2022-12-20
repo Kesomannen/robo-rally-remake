@@ -24,9 +24,89 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -3548210113330695675, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _rotation.Array.data[0]._rotation
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -3548210113330695675, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
       propertyPath: _rotation.Array.data[0].RelativeDirection.y
       value: -1
       objectReference: {fileID: 0}
+    - target: {fileID: -3548210113330695675, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _rotation.Array.data[0]._relativeDirection.y
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _frameTime
+      value: 0.025
+      objectReference: {fileID: 0}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.size
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[0]
+      value: 
+      objectReference: {fileID: 1289902191, guid: bbf430e6ad388f34e8a2742bd0577d44, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[1]
+      value: 
+      objectReference: {fileID: -183192981, guid: bbf430e6ad388f34e8a2742bd0577d44, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[2]
+      value: 
+      objectReference: {fileID: -385577048, guid: bbf430e6ad388f34e8a2742bd0577d44, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[3]
+      value: 
+      objectReference: {fileID: 1355904844, guid: bbf430e6ad388f34e8a2742bd0577d44, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[4]
+      value: 
+      objectReference: {fileID: -71516505, guid: bbf430e6ad388f34e8a2742bd0577d44, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[5]
+      value: 
+      objectReference: {fileID: 434795757, guid: bbf430e6ad388f34e8a2742bd0577d44, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[6]
+      value: 
+      objectReference: {fileID: 1424981610, guid: bbf430e6ad388f34e8a2742bd0577d44, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[7]
+      value: 
+      objectReference: {fileID: -2098770408, guid: bbf430e6ad388f34e8a2742bd0577d44, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[8]
+      value: 
+      objectReference: {fileID: 1506941713, guid: bbf430e6ad388f34e8a2742bd0577d44, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[9]
+      value: 
+      objectReference: {fileID: 1679560756, guid: bbf430e6ad388f34e8a2742bd0577d44, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[10]
+      value: 
+      objectReference: {fileID: -1772411922, guid: bbf430e6ad388f34e8a2742bd0577d44, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[11]
+      value: 
+      objectReference: {fileID: 2000731572, guid: bbf430e6ad388f34e8a2742bd0577d44, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[12]
+      value: 
+      objectReference: {fileID: 639683272, guid: bbf430e6ad388f34e8a2742bd0577d44, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[13]
+      value: 
+      objectReference: {fileID: 1099088381, guid: bbf430e6ad388f34e8a2742bd0577d44, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[14]
+      value: 
+      objectReference: {fileID: 265894838, guid: bbf430e6ad388f34e8a2742bd0577d44, type: 3}
+    - target: {fileID: 145450883817808500, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: _sprites.Array.data[15]
+      value: 
+      objectReference: {fileID: -134357871, guid: bbf430e6ad388f34e8a2742bd0577d44, type: 3}
     - target: {fileID: 944412202424250007, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
       propertyPath: m_Name
       value: CurvedConveyorFast
@@ -76,12 +156,62 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8887188639176184730, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: m_Size.x
+      value: 1.125
+      objectReference: {fileID: 0}
+    - target: {fileID: 8887188639176184730, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+      propertyPath: m_Size.y
+      value: 1.125
+      objectReference: {fileID: 0}
+    - target: {fileID: 8887188639176184730, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 1644313946, guid: 4bb65e4efa38da2498597aca8028be9b, type: 3}
+      objectReference: {fileID: 1289902191, guid: bbf430e6ad388f34e8a2742bd0577d44, type: 3}
     - target: {fileID: 8887188639176184730, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+--- !u!1 &5401002086467324514 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 944412202424250007, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
+  m_PrefabInstance: {fileID: 5183378381471606005}
+  m_PrefabAsset: {fileID: 0}
+--- !u!60 &5562931969035514851
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5401002086467324514}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.125, y: 1.125}
+    newSize: {x: 1.125, y: 1.125}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: -0.36331472, y: 0.3746809}
+      - {x: -0.38601422, y: -0.30706063}
+      - {x: -0.38545358, y: -0.31073403}
+      - {x: -0.38475847, y: -0.46701157}
+      - {x: 0.37731746, y: -0.47007784}
+      - {x: 0.38078785, y: -0.37463635}
+      - {x: 0.38052115, y: -0.3099934}
+      - {x: 0.4394568, y: -0.3118473}
+      - {x: 0.44284225, y: 0.37746128}
+      - {x: 0.37536958, y: 0.37490034}
+      - {x: 0.37536958, y: 0.36884847}
+      - {x: -0.25229496, y: 0.37324202}

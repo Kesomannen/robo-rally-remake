@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 2474868672773014524}
   - component: {fileID: -9040603256064686553}
   - component: {fileID: -5728226564931831390}
-  - component: {fileID: 8723894506191611173}
   - component: {fileID: 1143103859472218849}
   - component: {fileID: 1726744243505749133}
   - component: {fileID: 8486632034240765099}
+  - component: {fileID: 844908574313837030}
   m_Layer: 0
   m_Name: SpawnPoint
   m_TagString: Untagged
@@ -104,26 +104,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &8723894506191611173
-Animator:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2474868672773014525}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: bd809423094c3714d9ddb7044554295c, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &1143103859472218849
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,3 +146,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _highlightMaterial: {fileID: 2100000, guid: c385d055d2118d54584af44e2183a368, type: 2}
+--- !u!114 &844908574313837030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2474868672773014525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d9db881a78a4b618eeffc76536bd07a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _frameTime: 0.1
+  _sprites:
+  - {fileID: 595418174, guid: 5d925723b0d12a74e9196342256d672d, type: 3}
+  - {fileID: 1342798442, guid: 5d925723b0d12a74e9196342256d672d, type: 3}
+  - {fileID: -851246326, guid: 5d925723b0d12a74e9196342256d672d, type: 3}
+  - {fileID: -1268347818, guid: 5d925723b0d12a74e9196342256d672d, type: 3}
+  - {fileID: 507223725, guid: 5d925723b0d12a74e9196342256d672d, type: 3}
+  - {fileID: 187754901, guid: 5d925723b0d12a74e9196342256d672d, type: 3}
+  - {fileID: -615026018, guid: 5d925723b0d12a74e9196342256d672d, type: 3}
