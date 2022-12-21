@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 
 public abstract class BoardElement<T, THandler> : MapObject, IOnEnterExitHandler where THandler : IMapObject where T : BoardElement<T, THandler> {

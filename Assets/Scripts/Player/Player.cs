@@ -205,9 +205,10 @@ public class Player : IPlayer {
         var upgrade = _upgrades[index];
         upgrade.Apply(this);
         OnUpgradeUsed?.Invoke(upgrade);
-        
-        if (upgrade.Type == UpgradeType.Temporary) 
-            RemoveUpgrade(index);
+
+        if (upgrade.Type == UpgradeType.Temporary) {
+            RemoveUpgrade(index);   
+        }
     }
     
     public void RemoveUpgrade(int index) {

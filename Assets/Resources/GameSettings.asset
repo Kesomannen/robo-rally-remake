@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f67af4c74aeeb0c45b09c5d4f4c109d7, type: 3}
   m_Name: GameSettings
   m_EditorClassIdentifier: 
-  _maxPlayers: 6
+  _maxPlayers: 4
   _minPlayers: 2
   _startingEnergy: 5
   _cardsPerTurn: 7
-  _maxCardsInHand: 10
+  _maxCardsInHand: 12
   _stressTime: 30
   _programCardContainerPrefab: {fileID: -4837892012670907284, guid: 852a4f1b39d0eff43b4ad4b129005922, type: 3}
   _rebootAffector: {fileID: 11400000, guid: 574c1b6113180c94b81fb77410b90faa, type: 2}

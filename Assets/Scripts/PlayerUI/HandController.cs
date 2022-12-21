@@ -8,9 +8,11 @@ public class HandController : Singleton<HandController> {
     [SerializeField] HandCard _cardPrefab;
     [SerializeField] RectTransform _drawPile;
     [SerializeField] Transform _highlightParent;
-
+    
     [Header("Animation")]
-    [SerializeField] float _cardSpacing;
+    [SerializeField] float _maxCardSpacing;
+    [SerializeField] float _maxSize;
+    [SerializeField] float _cardVerticalOffset;
     [SerializeField] LeanTweenType _easingType;
     [SerializeField] float _cardMoveDuration;
     [SerializeField] float _drawDiscardDelay;
@@ -19,6 +21,10 @@ public class HandController : Singleton<HandController> {
     readonly List<CardAction> _actionQueue = new();
 
     static Player Owner => PlayerManager.LocalPlayer;
+    float CardSpacing
+            => _maxCardSpacing * _cardObjects.Count > _maxSize 
+            ? _maxSize / _cardObjects.Count 
+            : _maxCardSpacing;
 
     void Start() {
         Owner.Hand.OnAdd += OnCardAdded;
@@ -53,9 +59,9 @@ public class HandController : Singleton<HandController> {
     IEnumerator DrawCardRoutine(CardAction a) {
         var cardObject = CreateCard(a.Card, a.Index);
         cardObject.transform.position = _drawPile.position;
-        var tween = LeanTween.move(cardObject.gameObject, GetOrigin(a.Index), _cardMoveDuration)
+        LeanTween.move(cardObject.gameObject, GetOrigin(a.Index).Origin, _cardMoveDuration)
                              .setEase(_easingType);
-        yield return tween;
+        yield return CoroutineUtils.Wait(_cardMoveDuration);
 
         cardObject.enabled = true;
     }
@@ -157,16 +163,18 @@ public class HandController : Singleton<HandController> {
     }
 
     void UpdateCards() {
-        for (int i = 0; i < _cardObjects.Count; i++) {
-            var cardObject = _cardObjects[i];
-            cardObject.SetOrigin(GetOrigin(i), i);
+        for (var i = 0; i < _cardObjects.Count; i++) {
+            var (origin, offset) = GetOrigin(i);
+            _cardObjects[i].SetOrigin(origin, i, offset);
         }
     }
 
-    Vector3 GetOrigin(int index) {
-        var xPos = _cardSpacing * (index - _cardObjects.Count / 2f + 0.5f);
-        var pos = transform.position + CanvasUtils.CanvasScale.x * xPos * Vector3.right;
-        return pos;
+    (Vector2 Origin, float VerticalOffset) GetOrigin(int index) {
+        var centeredIndex = index - _cardObjects.Count / 2f + 0.5f;
+        var xPos = CardSpacing * centeredIndex;
+        var yPos = -Mathf.Abs(centeredIndex) * _cardVerticalOffset;
+        var pos = (Vector2) transform.position + CanvasUtils.CanvasScale * new Vector2(xPos, yPos);
+        return (pos, yPos);
     }
 
     struct CardAction {

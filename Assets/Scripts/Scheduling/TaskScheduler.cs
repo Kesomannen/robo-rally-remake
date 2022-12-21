@@ -39,8 +39,6 @@ public class TaskScheduler : Singleton<TaskScheduler> {
         _isRunning = true;
         while (_tasks.Count > 0){
             var task = _tasks.Pop();
-            Debug.Log($"Next task in queue, total: {_tasks.Count}");
-
             yield return task.Routine;
             task.Callback?.Invoke();
             yield return CoroutineUtils.Wait(task.Delay);
@@ -50,17 +48,5 @@ public class TaskScheduler : Singleton<TaskScheduler> {
     
     public static IEnumerator WaitUntilClear() {
         yield return new WaitWhile(() => _tasks.Count > 0);
-    }
-
-    struct TaskData {
-        public readonly IEnumerator Routine;
-        public readonly Action Callback;
-        public readonly float Delay;
-
-        public TaskData(IEnumerator routine, Action callback, float delay) {
-            Routine = routine;
-            Callback = callback;
-            Delay = delay;
-        }
     }
 }

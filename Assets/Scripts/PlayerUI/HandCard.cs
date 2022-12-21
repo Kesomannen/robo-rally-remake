@@ -19,6 +19,7 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
     bool _isDragging;
     int _index;
     Vector3 _origin;
+    float _verticalOffset;
     Transform _originalParent;
     Transform _highlightParent;
     RectTransform _rectTransform;
@@ -32,8 +33,9 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
             var t = transform;
             transform.SetParent(_highlightParent);
 
-            var targetHeight = CanvasUtils.CanvasScale.y * _jumpHeight;
+            var targetHeight = CanvasUtils.CanvasScale.y * (_jumpHeight - _verticalOffset);
             LerpTo(t.position + Vector3.up * targetHeight, _jumpDuration);
+            
             LeanTween.cancel(_scaleTweenId);
             _scaleTweenId = LeanTween
                 .scale(gameObject, Vector3.one * _highlightedSize, _jumpDuration)
@@ -45,6 +47,7 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
             t.SetSiblingIndex(_index);
 
             LerpTo(_origin, _jumpDuration);
+            
             LeanTween.cancel(_scaleTweenId);
             _scaleTweenId = LeanTween
                 .scale(gameObject, Vector3.one, _jumpDuration)
@@ -68,8 +71,9 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
         transform.position = _origin;    
     }
 
-    public void SetOrigin(Vector2 origin, int index) {
+    public void SetOrigin(Vector2 origin, int index, float verticalOffset) {
         _origin = origin;
+        _verticalOffset = verticalOffset;
         _index = index;
         transform.SetSiblingIndex(_index);
 

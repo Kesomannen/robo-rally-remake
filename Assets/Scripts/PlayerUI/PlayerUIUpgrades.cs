@@ -1,11 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerUIUpgrades : MonoBehaviour {
-    [SerializeField] Container<UpgradeCardData> _playerPanelPrefab;
-    [SerializeField] Transform _playerPanelParent;
+    [FormerlySerializedAs("_playerPanelPrefab")] 
+    [SerializeField] Container<UpgradeCardData> _upgradePanelPrefab;
+    
+    [FormerlySerializedAs("_playerPanelParent")] 
+    [SerializeField] Transform _upgradePanelParent;
+
+    [FormerlySerializedAs("_playerPanelSize")] 
+    [SerializeField] Vector2 _upgradePanelSize;
+    
     [SerializeField] Transform _highlightParent;
-    [SerializeField] Vector2 _playerPanelSize;
 
     readonly List<Container<UpgradeCardData>> _panels = new();
 
@@ -22,7 +29,7 @@ public class PlayerUIUpgrades : MonoBehaviour {
     }
 
     void CreatePanel(UpgradeCardData data, int index) {
-        var newPanel = Instantiate(_playerPanelPrefab, _playerPanelParent);
+        var newPanel = Instantiate(_upgradePanelPrefab, _upgradePanelParent);
         newPanel.SetContent(data);
         newPanel.GetComponent<PlayerUpgradeCard>().HighlightParent = _highlightParent;
         _panels.Insert(index, newPanel);
@@ -48,7 +55,7 @@ public class PlayerUIUpgrades : MonoBehaviour {
                 if (i >= _panels.Count) return;
                 
                 var panel = _panels[i];
-                var position = new Vector2(column * _playerPanelSize.x, -row * _playerPanelSize.y);
+                var position = new Vector2(column * _upgradePanelSize.x, -row * _upgradePanelSize.y);
                 panel.transform.localPosition = position;
                 panel.transform.SetSiblingIndex(i);
                 i++;

@@ -19,7 +19,5 @@ public class ObservableField<T> {
         _value = initialValue;
     }
 
-    public override string ToString() {
-        return _value.ToString();
-    }
+    public override string ToString() => _value.ToString();
 }

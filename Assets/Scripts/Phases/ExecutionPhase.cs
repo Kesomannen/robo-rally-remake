@@ -10,18 +10,21 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
 
     public const int RegisterCount = 5;
     const float SubPhaseDelay = 0;
+    const float StepDelay = 1f;
 
     public static event Action OnPhaseStart, OnPhaseEnd, OnExecutionComplete;
-    public static event Action<ProgramCardData, int, Player> OnRegister;
+    public static event Action<ProgramCardData, int, Player> OnPlayerRegister;
     public static event Action<ExecutionSubPhase> OnNewSubPhase;
     public static event Action<IReadOnlyList<Player>> OnPlayersOrdered;
+    public static event Action<int> OnNewRegister; 
 
     public IEnumerator DoPhase() {
         OnPhaseStart?.Invoke();
         UIManager.Instance.ChangeState(UIState.Execution);
         
         TaskScheduler.PushSequence(
-            actions: EnumerableUtils.For<Action>(RegisterCount, i => () => DoRegister(i)).ToArray()
+            delay: StepDelay,
+            routines: EnumerableUtils.For(RegisterCount, DoRegister).ToArray()
             );
 
         yield return TaskScheduler.WaitUntilClear();
@@ -35,10 +38,16 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
         OnPhaseEnd?.Invoke();
     }
 
-    static void DoRegister(int register) {
+    static IEnumerator DoRegister(int register) {
         CurrentRegister = register;
+        OnNewRegister?.Invoke(register);
+
+        yield return CoroutineUtils.Wait(StepDelay);
+
         var players = PlayerManager.GetOrderedPlayers().ToArray();
         OnPlayersOrdered?.Invoke(players);
+        
+        yield return CoroutineUtils.Wait(StepDelay);
 
         var registerRoutines = new IEnumerator[players.Length];
         for (var i = 0; i < players.Length; i++) {
@@ -81,7 +90,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
             var card = player.Program[register];
             if (card == null) yield break;
             
-            OnRegister?.Invoke(card, register, player);
+            OnPlayerRegister?.Invoke(card, register, player);
             yield return card.ExecuteRoutine(player, register);
         }
     }

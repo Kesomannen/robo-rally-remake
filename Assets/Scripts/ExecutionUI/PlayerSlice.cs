@@ -24,6 +24,7 @@ public class PlayerSlice : Container<Player>, IPointerClickHandler {
         _player = player;
         
         _nameText.text = PlayerManager.IsLocal(_player) ? _player + " (You)" : _player.ToString();
+        _energyText.text = player.Energy.ToString();
         player.Energy.OnValueChanged += OnEnergyChanged;
     }
 

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 41d6cd3e30894fb9906289775660f9a9, type: 3}
-  m_Name: RechargeThreeEnergy
+  m_Name: RechargeEnergy
   m_EditorClassIdentifier: 
   _value: 3
   _target: 1

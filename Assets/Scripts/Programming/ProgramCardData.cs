@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public abstract class ProgramCardData : Lookup<ProgramCardData>, IContainable<ProgramCardData>, ITooltipable {
+public abstract class ProgramCardData : Lookup<ProgramCardData>, ITooltipable {
     [SerializeField] string _name;
     [SerializeField] [TextArea] string _description;
     [SerializeField] Sprite _artwork;
@@ -12,8 +12,6 @@ public abstract class ProgramCardData : Lookup<ProgramCardData>, IContainable<Pr
     public string Description => _description;
     public Sprite Artwork => _artwork;
     public CardType Type => _type;
-
-    public Container<ProgramCardData> DefaultContainerPrefab => GameSettings.Instance.ProgramCardContainerPrefab;
 
     public abstract IEnumerator ExecuteRoutine(Player player, int positionInRegister);
     public abstract bool CanPlace(Player player, int positionInRegister);

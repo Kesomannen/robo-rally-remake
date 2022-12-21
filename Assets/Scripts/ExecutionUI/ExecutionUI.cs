@@ -27,17 +27,17 @@ public class ExecutionUI : MonoBehaviour {
 
     void OnEnable() {
         ExecutionPhase.OnNewSubPhase += OnNewSubPhase;
-        ExecutionPhase.OnRegister += OnRegister;
+        ExecutionPhase.OnPlayerRegister += OnPlayerRegister;
         ExecutionPhase.OnPlayersOrdered += OnPlayersOrdered;
     }
 
     void OnDisable() {
         ExecutionPhase.OnNewSubPhase -= OnNewSubPhase;
-        ExecutionPhase.OnRegister -= OnRegister;
+        ExecutionPhase.OnPlayerRegister -= OnPlayerRegister;
         ExecutionPhase.OnPlayersOrdered -= OnPlayersOrdered;
     }
     
-    void OnRegister(ProgramCardData card, int index, Player player) {
+    void OnPlayerRegister(ProgramCardData card, int index, Player player) {
         if (_currentPlayer != null) {
             _currentPlayer.Highlight(false);
             _playerSlices[player].Hide(index);

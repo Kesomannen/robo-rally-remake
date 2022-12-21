@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "UpgradeCardData", menuName = "ScriptableObjects/UpgradeData")]
-public class UpgradeCardData : Lookup<UpgradeCardData>, IContainable<UpgradeCardData>, IAffector<IPlayer> {
+public class UpgradeCardData : Lookup<UpgradeCardData>, IAffector<IPlayer> {
     [SerializeField] string _name;
-    [TextArea(minLines: 1, maxLines: 5)]
+    [TextArea(minLines: 1, maxLines: 10)]
     [SerializeField] string _description;
     [SerializeField] Sprite _icon;
     
@@ -27,12 +27,9 @@ public class UpgradeCardData : Lookup<UpgradeCardData>, IContainable<UpgradeCard
     public UpgradeType Type => _type;
     public IReadOnlyList<UpgradeTooltipData> Tooltips => _tooltips;
 
-    public Container<UpgradeCardData> DefaultContainerPrefab => GameSettings.Instance.UpgradeContainerPrefab;
-
     public bool CanUse(IPlayer player) {
         if (_type == UpgradeType.Permanent
-            || _type == UpgradeType.Action && player.Owner.Energy.Value < UseCost
-            || CanUseIn(UseContext.None)) return false;
+            || _type == UpgradeType.Action && player.Owner.Energy.Value < UseCost) return false;
 
         return PhaseSystem.CurrentPhase switch {
             Phase.Programming => CanUseIn(ProgrammingPhase.LocalPlayerSubmitted ? UseContext.AfterLockIn : UseContext.DuringProgramming),
@@ -43,7 +40,7 @@ public class UpgradeCardData : Lookup<UpgradeCardData>, IContainable<UpgradeCard
             _ => throw new Exception("Unknown phase")
         };
 
-        bool CanUseIn(UseContext context) => _useContext == context;
+        bool CanUseIn(UseContext context) => _useContext.HasFlag(context);
     }
 
     public void OnBuy(IPlayer player) {
@@ -54,18 +51,19 @@ public class UpgradeCardData : Lookup<UpgradeCardData>, IContainable<UpgradeCard
     
     public void Apply(IPlayer player) {
         var affectors = _type switch {
-            UpgradeType.Temporary => _temporaryAffectors,
-            UpgradeType.Permanent => _permanentAffectors,
+            UpgradeType.Temporary => _permanentAffectors,
+            UpgradeType.Permanent => _temporaryAffectors,
             UpgradeType.Action => _permanentAffectors,
             _ => throw new Exception("Unknown upgrade type")
         };
-        
+
         foreach (var affector in affectors) {
             affector.Apply(player);
         }
 
-        if (_type == UpgradeType.Action)
+        if (_type == UpgradeType.Action) {
             player.Owner.Energy.Value -= _useCost;
+        }
     }
     
     public void Remove(IPlayer player) {

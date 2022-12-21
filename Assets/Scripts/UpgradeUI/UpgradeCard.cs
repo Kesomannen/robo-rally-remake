@@ -52,7 +52,7 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
         if (Content == null) return;
         OnClick?.Invoke(this);
         
-        if (_showOverlayOnClick && e.button == PointerEventData.InputButton.Right){
+        if (_showOverlayOnClick && e.button == PointerEventData.InputButton.Right) {
             var overlay = new OverlayData<UpgradeCardOverlay> {
                 Header = "Upgrade Card",
                 Subtitle = Content.Name,

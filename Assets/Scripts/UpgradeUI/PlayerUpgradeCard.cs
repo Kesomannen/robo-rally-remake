@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
+[RequireComponent(typeof(UpgradeCardData))]
 public class PlayerUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
-    [SerializeField] Container<UpgradeCardData> _upgradeCard;
     [SerializeField] LeanTweenType _tweenType;
     [SerializeField] float _tweenDuration;
     [SerializeField] float _highlightScale;
 
+    Container<UpgradeCardData> _upgradeCard;
     Transform _highlightParent;
     Transform _originalParent;
     Vector3 _originalSize;
@@ -16,6 +17,8 @@ public class PlayerUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerEx
     public Transform HighlightParent { set => _highlightParent = value; }
     
     void Awake() {
+        _upgradeCard = GetComponent<Container<UpgradeCardData>>();
+        
         var t = transform;
         _originalParent = t.parent;
         _originalSize = t.localScale;

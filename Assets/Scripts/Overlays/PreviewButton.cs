@@ -24,10 +24,14 @@ public class PreviewButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     }
 
     public void OnPointerDown(PointerEventData e) {
+        if (e.button != PointerEventData.InputButton.Left) return;
+        
         ShowPreview();
     }
 
     public void OnPointerUp(PointerEventData e) {
+        if (e.button != PointerEventData.InputButton.Left) return;
+        
         HidePreview();
     }
 
