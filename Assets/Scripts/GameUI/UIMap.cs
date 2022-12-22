@@ -8,10 +8,10 @@ public class UIMap : Singleton<UIMap>, IPointerEnterHandler, IPointerExitHandler
     [SerializeField] float _lerpTime;
     [Space]
     [SerializeField] float _focusedSize;
-    [SerializeField] Vector2 _defaultPosition;
+    [SerializeField] Transform _defaultPosition;
     [Space]
     [SerializeField] float _fullScreenSize;
-    [SerializeField] Vector2 _fullScreenPosition;
+    [SerializeField] Transform _fullScreenPosition;
     [Header("References")]
     [SerializeField] Camera _mapCamera;
     [SerializeField] Camera _uiCamera;
@@ -47,32 +47,30 @@ public class UIMap : Singleton<UIMap>, IPointerEnterHandler, IPointerExitHandler
         if (InFullscreen) return;
         InFullscreen = true;
 
-        LerpElementSize(_fullScreenSize);
-        LerpElementPosition(_fullScreenPosition);
+        var t = transform;
+        t.localScale = _fullScreenSize * Vector3.one;
+        t.position = _fullScreenPosition.position;
     }
 
     public void ZoomToDefault() {
         if (!InFullscreen) return;
         InFullscreen = false;
 
-        LerpElementSize(1);
-        LerpElementPosition(_defaultPosition);
+        var t = transform;
+        t.localScale = Vector3.one;
+        t.position = _defaultPosition.position;
     }
 
     int _currentSizeTweenId;
 
     void LerpElementSize(float scale) {
         LeanTween.cancel(_currentSizeTweenId);
-        _currentSizeTweenId = LeanTween.scale(gameObject, scale * Vector3.one, _lerpTime).setEase(_lerpType).id;
+        _currentSizeTweenId = LeanTween
+            .scale(gameObject, scale * Vector3.one, _lerpTime)
+            .setEase(_lerpType)
+            .uniqueId;
     }
-
-    int _currentPosTweenId;
-
-    void LerpElementPosition(Vector2 position) {
-        LeanTween.cancel(_currentPosTweenId);
-        _currentPosTweenId = LeanTween.move(_rectTransform, position, _lerpTime).setEase(_lerpType).id;
-    }
-
+    
     public void OnPointerMove(PointerEventData e) {
         if (_lastMousePos == e.position) return;
         Raycast(e, ExecuteEvents.pointerMoveHandler);

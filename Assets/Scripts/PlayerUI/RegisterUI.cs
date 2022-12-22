@@ -1,10 +1,10 @@
-using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class RegisterUI : MonoBehaviour, IPointerClickHandler {
     [SerializeField] int _index;
     [SerializeField] Container<ProgramCardData> _cardContainer;
+    [SerializeField] SoundEffect _onPlaceSound, _onRemoveSound;
 
     static Player Owner => PlayerManager.LocalPlayer;
 
@@ -51,7 +51,9 @@ public class RegisterUI : MonoBehaviour, IPointerClickHandler {
         _cardContainer.SetContent(item.Content);
         _cardContainer.gameObject.SetActive(true);
         Owner.Program.SetCard(_index, item.Content);
-
+        
+        _onPlaceSound.Play();
+        
         return true;
     }
 
@@ -61,6 +63,8 @@ public class RegisterUI : MonoBehaviour, IPointerClickHandler {
         
         _cardContainer.gameObject.SetActive(false);
         Owner.Program.SetCard(_index, null);
+        
+        _onRemoveSound.Play();
     }
 
     public void OnPointerClick(PointerEventData e) {

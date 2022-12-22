@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 3854250572f9a494d8197df35f016db7
+guid: 96da1b9dabbaed347b16033c20a4d6d9
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -116,43 +116,43 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PlayerUIPanelLarge_0
+      name: UIPanel_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 63
-        height: 81
+        width: 18
+        height: 18
       alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 2, y: 4, z: 3, w: 2}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 19d02b650190fae42b70e874d4c49b5e
-      internalID: 32781138
+      spriteID: d5fe41c11d18e0049b3bc5bc4e7e9b71
+      internalID: -1956483367
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlayerUIPanelLarge_1
+      name: UIPanel_1
       rect:
         serializedVersion: 2
-        x: 63
+        x: 18
         y: 0
-        width: 63
-        height: 81
+        width: 18
+        height: 18
       alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 2, y: 4, z: 3, w: 2}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4a83cbd4887821343885a34121c7478b
-      internalID: -1277047439
+      spriteID: 632352ec2234c7243baea72911bf9988
+      internalID: 349665090
       vertices: []
       indices: 
       edges: []
@@ -168,8 +168,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      PlayerUIPanelLarge_0: 32781138
-      PlayerUIPanelLarge_1: -1277047439
+      UIPanel_1: 349665090
+      UIPanel_0: -1956483367
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

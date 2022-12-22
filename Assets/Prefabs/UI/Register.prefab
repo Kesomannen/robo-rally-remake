@@ -93,6 +93,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _index: 0
   _cardContainer: {fileID: 4040616585236498420}
+  _onPlaceSound: {fileID: 11400000, guid: ba93fa178869d8d4ba287294cfe48088, type: 2}
+  _onRemoveSound: {fileID: 11400000, guid: aa510a7a76ae1eb4f9727aa2497c2179, type: 2}
 --- !u!114 &6312176017435219397
 MonoBehaviour:
   m_ObjectHideFlags: 0

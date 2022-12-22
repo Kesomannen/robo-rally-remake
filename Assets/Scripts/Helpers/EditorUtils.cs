@@ -3,8 +3,10 @@ using UnityEditor;
 using UnityEngine;
 
 public static class EditorUtils {
-    public static Rect GetNextLine(Rect rect) {
-        return new Rect(rect.x, rect.y + EditorGUIUtility.singleLineHeight, rect.width, EditorGUIUtility.singleLineHeight);
+    const float DefaultLineSpacing = 1f;
+    
+    public static Rect GetNextLine(Rect rect, float spacing = DefaultLineSpacing) {
+        return new Rect(rect.x, rect.y + spacing + EditorGUIUtility.singleLineHeight, rect.width, EditorGUIUtility.singleLineHeight);
     }
 }
 # endif
