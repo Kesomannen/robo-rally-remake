@@ -18,7 +18,7 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
     public bool CanEnter(Vector2Int enterDir) => false;
     public bool CanExit(Vector2Int exitDir) => true;
     
-    public string Header => PlayerManager.IsLocal(Owner) ? Owner + " (You)" : Owner.ToString();
+    public string Header => PlayerSystem.IsLocal(Owner) ? Owner + " (You)" : Owner.ToString();
     public string Description => null;
 
     public override void Fall(IBoard board) {

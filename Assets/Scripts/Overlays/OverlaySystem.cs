@@ -44,7 +44,7 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
         OnClick?.Invoke();
     }
 
-    public T PushOverlay<T>(OverlayData<T> data) where T : Overlay {
+    public T PushAndShowOverlay<T>(OverlayData<T> data) where T : Overlay {
         var newOverlay = Instantiate(data.Prefab, _overlayParent);
         _overlayStack.Push((data, newOverlay));
         

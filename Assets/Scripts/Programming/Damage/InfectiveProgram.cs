@@ -7,7 +7,7 @@ public class InfectiveProgram : SpamProgram {
     [SerializeField] ScriptablePermanentAffector<IPlayer> _affector;
     
     public override IEnumerator ExecuteRoutine(Player player, int positionInRegister) {
-        foreach (var plr in PlayerManager.Players){
+        foreach (var plr in PlayerSystem.Players){
             if (plr == player) continue;
             if (Vector2Int.Distance(plr.Model.GridPos, player.Model.GridPos) <= _infectionRange){
                 _affector.Apply(plr);

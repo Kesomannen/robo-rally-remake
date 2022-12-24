@@ -7,72 +7,76 @@ using System.Linq;
 
 public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
     public static bool IsStressed { get; private set; }
-    public static bool LocalPlayerSubmitted { get; private set; }
+    public static bool LocalPlayerLockedIn { get; private set; }
     
     public static readonly ObservableField<int> StressTimer = new(0);
     
-    static int _playersReady;
+    static int _playersLockedIn;
 
     public static event Action OnPhaseStarted;
+    public static event Action<Player> OnPlayerLockedIn, OnStressStarted;
 
     public IEnumerator DoPhase() {
-        UIManager.Instance.ChangeState(UIState.Hand);
+        UIManager.Instance.ChangeState(UIState.Programming);
 
         IsStressed = false;
-        RegisterUI.Locked = false;
-        LocalPlayerSubmitted = false;
+        PlayerRegisterUI.Locked = false;
+        LocalPlayerLockedIn = false;
         StressTimer.Value = GameSettings.Instance.StressTime;
         
         OnPhaseStarted?.Invoke();
         
-        foreach (var player in PlayerManager.Players) {
+        foreach (var player in PlayerSystem.Players) {
             player.DrawCardsUpTo(player.CardsPerTurn);
         }
 
-        _playersReady = 0;
-        yield return new WaitUntil(() => _playersReady >= PlayerManager.Players.Count);
-        
-        yield return TaskScheduler.WaitUntilClear();
+        _playersLockedIn = 0;
+        Debug.Log(PlayerSystem.Players.Count);
+        yield return new WaitUntil(() => _playersLockedIn >= PlayerSystem.Players.Count);
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void LockRegisterServerRpc(byte playerIndex, byte[] registerCardIds) {
         LockPlayerRegister(playerIndex, registerCardIds);
         LockRegisterClientRpc(playerIndex, registerCardIds);
-        _playersReady++;
+        _playersLockedIn++;
     }
 
     [ClientRpc]
     void LockRegisterClientRpc(byte playerIndex, byte[] registerCardIds) {
         if (IsServer) return;
         LockPlayerRegister(playerIndex, registerCardIds);
-        _playersReady++;
+        _playersLockedIn++;
     }
 
      void LockPlayerRegister(byte playerIndex, IEnumerable<byte> registerCardIds) {
-        if (PlayerManager.IsLocal(PlayerManager.Players[playerIndex])){
-            RegisterUI.Locked = true;
-            LocalPlayerSubmitted = true;
-            return;
-        }
+         var player = PlayerSystem.Players[playerIndex];
+         
+         OnPlayerLockedIn?.Invoke(player);
+         
+         if (PlayerSystem.IsLocal(player)) {
+             PlayerRegisterUI.Locked = true;
+             LocalPlayerLockedIn = true;
+         } else {
+             var cards = registerCardIds.Select(c => ProgramCardData.GetById(c)).ToArray();
+             for (var i = 0; i < cards.Length; i++) {
+                 player.Program.SetCard(i, cards[i]);
+                 Debug.Log($"Register {i} of player {playerIndex} is now {cards[i]}");
+             }
+             
+             if (!IsStressed) {
+                 StartCoroutine(StressRoutine());   
+             }
+         }
 
-        Debug.Log($"Locking register for player {playerIndex}");
+         if (IsStressed) return;
+         OnStressStarted?.Invoke(player);
+     }
 
-        var player = PlayerManager.Players[playerIndex];
-        var cards = registerCardIds.Select(id => ProgramCardData.GetById(id)).ToArray();
-        for (var i = 0; i < cards.Length; i++) {
-            player.Program.SetCard(i, cards[i]);
-            Debug.Log($"Register {i} of player {playerIndex} is now {cards[i]}");
-        }
-
-        if (LocalPlayerSubmitted || IsStressed) return;
-        
-        StartCoroutine(StressRoutine());
-    }
-
-    IEnumerator StressRoutine(){
+    IEnumerator StressRoutine() {
         IsStressed = true;
-        while (!LocalPlayerSubmitted) {
+
+        while (!LocalPlayerLockedIn) {
             StressTimer.Value--;
             if (StressTimer.Value <= 0) {
                 FillRegisters();
@@ -84,8 +88,8 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
     }
 
     void FillRegisters() {
-        // this is only supposed to be called on the local client
-        var player = PlayerManager.LocalPlayer;
+        // This is only supposed to be called on the local client
+        var player = PlayerSystem.LocalPlayer;
         
         player.DiscardHand();
         player.DiscardProgram();
@@ -104,6 +108,6 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
     }
 
     public static void Continue() {
-        _playersReady = PlayerManager.Players.Count;
+        _playersLockedIn = PlayerSystem.Players.Count;
     }
 }

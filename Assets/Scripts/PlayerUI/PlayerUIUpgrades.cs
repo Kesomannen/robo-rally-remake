@@ -16,7 +16,7 @@ public class PlayerUIUpgrades : MonoBehaviour {
 
     readonly List<Container<UpgradeCardData>> _panels = new();
 
-    static Player Owner => PlayerManager.LocalPlayer;
+    static Player Owner => PlayerSystem.LocalPlayer;
 
     void Awake() {
         for (var i = 0; i < Owner.Upgrades.Count; i++) {
@@ -31,7 +31,7 @@ public class PlayerUIUpgrades : MonoBehaviour {
     void CreatePanel(UpgradeCardData data, int index) {
         var newPanel = Instantiate(_upgradePanelPrefab, _upgradePanelParent);
         newPanel.SetContent(data);
-        newPanel.GetComponent<PlayerUpgradeCard>().HighlightParent = _highlightParent;
+        newPanel.GetComponent<HandUpgradeCard>().HighlightParent = _highlightParent;
         _panels.Insert(index, newPanel);
         
         newPanel.transform.SetSiblingIndex(index);

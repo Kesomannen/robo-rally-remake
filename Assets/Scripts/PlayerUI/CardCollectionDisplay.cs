@@ -11,7 +11,7 @@ public class CardCollectionDisplay : MonoBehaviour, IPointerClickHandler {
     [SerializeField] TMP_Text _cardCountText;
 
     CardCollection _collection;
-    static Player Owner => PlayerManager.LocalPlayer;
+    static Player Owner => PlayerSystem.LocalPlayer;
 
     void Start() {
         _collection = Owner.GetCollection(_targetPile);
@@ -31,6 +31,6 @@ public class CardCollectionDisplay : MonoBehaviour, IPointerClickHandler {
     }
 
     public void OnPointerClick(PointerEventData e) {
-        OverlaySystem.Instance.PushOverlay(_collectionOverlayData).Init(_collection.Cards, _shuffledView);
+        OverlaySystem.Instance.PushAndShowOverlay(_collectionOverlayData).Init(_collection.Cards, _shuffledView);
     }
 }

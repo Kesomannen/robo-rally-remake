@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ReadyButton : MonoBehaviour, IPointerClickHandler {
+public class LockInButton : MonoBehaviour, IPointerClickHandler {
     [SerializeField] Image _image;
     [SerializeField] Selectable _selectable;
     [SerializeField] Color _invalidColor;
@@ -20,7 +20,7 @@ public class ReadyButton : MonoBehaviour, IPointerClickHandler {
         }
     }
     
-    static Player Owner => PlayerManager.LocalPlayer;
+    static Player Owner => PlayerSystem.LocalPlayer;
 
     public void OnPointerClick(PointerEventData e) {
         if (!CanClick) return;
@@ -30,21 +30,25 @@ public class ReadyButton : MonoBehaviour, IPointerClickHandler {
             Owner.SerializeRegisters(out var playerIndex, out var registerCardIds);
             ProgrammingPhase.Instance.LockRegisterServerRpc(playerIndex, registerCardIds);
         } else {
-            _image.color = _invalidColor;
-            LeanTween.value(gameObject, _image.color, Color.white, _shakeDuration)
-                .setOnUpdate(c => _image.color = c);
-            
-            var pos = transform.position;
-            LeanTween
-                .moveX(gameObject, pos.x + _shakeMagnitude, _shakeDuration)
-                .setFrom(pos.x - _shakeMagnitude)
-                .setOnComplete(() => {
-                    LeanTween
-                        .moveX(gameObject, pos.x, _shakeDuration / 5)
-                        .setEase(LeanTweenType.easeOutBack)
-                        .setOnComplete(() => CanClick = true);
-                })
-                .setEase(LeanTweenType.easeShake);
+            InvalidAnimation();
         }
+    }
+    
+    void InvalidAnimation() {
+        _image.color = _invalidColor;
+        LeanTween.value(gameObject, _image.color, Color.white, _shakeDuration)
+            .setOnUpdate(c => _image.color = c);
+
+        var pos = transform.position;
+        LeanTween
+            .moveX(gameObject, pos.x + _shakeMagnitude, _shakeDuration)
+            .setFrom(pos.x - _shakeMagnitude)
+            .setOnComplete(() => {
+                LeanTween
+                    .moveX(gameObject, pos.x, _shakeDuration / 5)
+                    .setEase(LeanTweenType.easeOutBack)
+                    .setOnComplete(() => CanClick = true);
+            })
+            .setEase(LeanTweenType.easeShake);
     }
 }

@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 
 public class UIManager : Singleton<UIManager> {
+    [SerializeField] UITransition _transition;
     [SerializeField] Transform _playerUIParent, _executionUIParent, _shopUIParent;
 
     public void ChangeState(UIState newState) {
@@ -20,7 +21,7 @@ public class UIManager : Singleton<UIManager> {
 
     void Enter(UIState state) {
         Action action = state switch {
-            UIState.Hand => Hand,
+            UIState.Programming => Programming,
             UIState.Execution => Execution,
             UIState.Shop => Shop,
             UIState.None => () => { },
@@ -29,30 +30,36 @@ public class UIManager : Singleton<UIManager> {
 
         action();
 
-        void Hand() {
-            _playerUIParent.gameObject.SetActive(true);
-            UIMap.Instance.gameObject.SetActive(true);
+        void Programming() {
+            _transition.DoTransition("Programming Phase", () => {
+                _playerUIParent.gameObject.SetActive(true);
+                UIMap.Instance.gameObject.SetActive(true);
 
-            UIMap.Instance.CanFocus = true;
-            UIMap.Instance.ZoomToDefault();
+                UIMap.Instance.CanFocus = true;
+                UIMap.Instance.ZoomToDefault();
+            });
         }
 
         void Execution() {
-            _executionUIParent.gameObject.SetActive(true);
-            UIMap.Instance.gameObject.SetActive(true);
+            _transition.DoTransition("Execution Phase", () => {
+                _executionUIParent.gameObject.SetActive(true);
+                UIMap.Instance.gameObject.SetActive(true);
 
-            UIMap.Instance.CanFocus = false;
-            UIMap.Instance.ZoomToFullscreen();
+                UIMap.Instance.CanFocus = false;
+                UIMap.Instance.ZoomToFullscreen(); 
+            });
         }
 
         void Shop() {
-            _shopUIParent.gameObject.SetActive(true);
+            _transition.DoTransition("Shop Phase", () => {
+                _shopUIParent.gameObject.SetActive(true); 
+            });
         }
     }
 
     void Exit(UIState state) {
         Action exitAction = state switch {
-            UIState.Hand => Hand,
+            UIState.Programming => Programming,
             UIState.Execution => Execution,
             UIState.Shop => Shop,
             UIState.None => () => { },
@@ -61,7 +68,7 @@ public class UIManager : Singleton<UIManager> {
 
         exitAction();
 
-        void Hand() {
+        void Programming() {
             _playerUIParent.gameObject.SetActive(false);
             UIMap.Instance.gameObject.SetActive(false);
         }
@@ -78,7 +85,7 @@ public class UIManager : Singleton<UIManager> {
 }
 
 public enum UIState {
-    Hand,
+    Programming,
     Execution,
     Shop,
     None,

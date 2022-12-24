@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
+public class HandProgramCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
     [Header("Animation")]
     [SerializeField] float _jumpHeight;
     [SerializeField] float _jumpDuration;
@@ -13,7 +13,7 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
     [SerializeField] float _moveDuration;
 
     static GraphicRaycaster _graphicRaycaster;
-    static Player Owner => PlayerManager.LocalPlayer;
+    static Player Owner => PlayerSystem.LocalPlayer;
     public Transform HighlightParent { set => _highlightParent = value; }
     
     bool _isDragging;
@@ -93,7 +93,7 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
         if (_isDragging) return;
 
         for (var i = 0; i < ExecutionPhase.RegisterCount; i++) {
-            var register = RegisterUI.GetRegisterUI(i);
+            var register = PlayerRegisterUI.GetRegister(i);
             if (register.IsEmpty && TryPlace(register)) {
                 break;
             }
@@ -123,7 +123,7 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
         _graphicRaycaster.Raycast(e, results);
 
         foreach (var hit in results){
-            if (!hit.gameObject.TryGetComponent(out RegisterUI register)) continue;
+            if (!hit.gameObject.TryGetComponent(out PlayerRegisterUI register)) continue;
             TryPlace(register);
             return;
         }
@@ -131,8 +131,8 @@ public class HandCard : ProgramCard, IDragHandler, IBeginDragHandler, IEndDragHa
         LerpTo(_origin);
     }
 
-    bool TryPlace(RegisterUI register){
-        if (!register.Place(this)) return false;
+    bool TryPlace(PlayerRegisterUI playerRegisterUI){
+        if (!playerRegisterUI.Place(this)) return false;
         Owner.Hand.RemoveCard(_index);
         return true;
     }

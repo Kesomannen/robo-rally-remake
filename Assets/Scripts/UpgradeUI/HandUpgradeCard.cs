@@ -2,7 +2,7 @@
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(UpgradeCardData))]
-public class PlayerUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
+public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
     [SerializeField] LeanTweenType _tweenType;
     [SerializeField] float _tweenDuration;
     [SerializeField] float _highlightScale;
@@ -12,7 +12,7 @@ public class PlayerUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerEx
     Transform _originalParent;
     Vector3 _originalSize;
 
-    static Player Owner => PlayerManager.LocalPlayer;
+    static Player Owner => PlayerSystem.LocalPlayer;
 
     public Transform HighlightParent { set => _highlightParent = value; }
     

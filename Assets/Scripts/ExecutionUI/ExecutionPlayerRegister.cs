@@ -1,8 +1,7 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class ExecutionRegister : Container<ProgramCardData>, ITooltipable {
+public class ExecutionPlayerRegister : Container<ProgramCardData>, ITooltipable {
     [Header("Execution Register")]
     [SerializeField] Sprite _closedSprite;
     [SerializeField] Sprite _closedSpriteHighlighted;

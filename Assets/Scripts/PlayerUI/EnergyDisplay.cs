@@ -7,7 +7,7 @@ public class EnergyDisplay : MonoBehaviour, ITooltipable {
     public string Header => "Energy";
     public string Description => $"You have {Owner.Energy.Value} energy.";
     
-    static Player Owner => PlayerManager.LocalPlayer;
+    static Player Owner => PlayerSystem.LocalPlayer;
 
     void Start(){
         Owner.Energy.OnValueChanged += UpdateText;

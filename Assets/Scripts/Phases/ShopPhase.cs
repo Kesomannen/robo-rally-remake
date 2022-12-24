@@ -17,12 +17,13 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
     static List<UpgradeCardData> _availableCards;
 
     [CanBeNull] public static Player CurrentPlayer { get; private set; }
-    
+
     const float RestockDelay = 0.5f;
 
     public static event Action<Player, bool, UpgradeCardData> OnPlayerDecision;
     public static event Action<Player> OnNewPlayer; 
     public static event Action<int, UpgradeCardData> OnRestock;
+    public static event Action OnPhaseStarted;
 
     protected override void Awake() {
         base.Awake();
@@ -32,10 +33,11 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
 
     public IEnumerator DoPhase() {
         UIManager.Instance.ChangeState(UIState.Shop);
+        OnPhaseStarted?.Invoke();
         
         yield return RestockRoutine();
 
-        var orderedPlayers = PlayerManager.GetOrderedPlayers();
+        var orderedPlayers = PlayerSystem.GetOrderedPlayers();
 
         _skippedPlayers = 0;
         foreach (var player in orderedPlayers) {
@@ -48,7 +50,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
         }
         CurrentPlayer = null;
         
-        if (_skippedPlayers == PlayerManager.Players.Count) {
+        if (_skippedPlayers == PlayerSystem.Players.Count) {
             for (var i = 0; i < _shopCards.Length; i++){
                 _shopCards[i] = null;
             }
@@ -108,7 +110,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
         var id = upgrade == null ? 0 : upgrade.GetLookupId();
         Action<byte, bool, byte, byte> action = NetworkManager.Singleton == null ? SetReady : MakeDecisionServerRpc;
         action (
-            (byte) PlayerManager.Players.IndexOf(PlayerManager.LocalPlayer),
+            (byte) PlayerSystem.Players.IndexOf(PlayerSystem.LocalPlayer),
             skipped,
             (byte) id,
             (byte) index
@@ -128,7 +130,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
     }
     
     static void SetReady(byte playerIndex, bool skipped, byte upgradeID, byte index) {
-        var player = PlayerManager.Players[playerIndex];
+        var player = PlayerSystem.Players[playerIndex];
 
         if (skipped){
             _skippedPlayers++;

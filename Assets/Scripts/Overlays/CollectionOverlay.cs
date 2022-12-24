@@ -1,16 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class CollectionOverlay : Overlay {
-    [Header("References")]
     [SerializeField] Transform _cardContainer;
-    
-    [Header("Prefabs")]
     [SerializeField] ProgramCard _cardPrefab;
-    
-    [Header("Animation")]
     [SerializeField] DynamicUITween _onEnableTween;
 
     readonly List<ProgramCard> _cardObjects = new();

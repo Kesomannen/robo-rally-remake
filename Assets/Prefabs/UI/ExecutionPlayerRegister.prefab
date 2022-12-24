@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1661919178803664639}
   - component: {fileID: 6912019744260675600}
   m_Layer: 5
-  m_Name: ExecutionRegister
+  m_Name: ExecutionPlayerRegister
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

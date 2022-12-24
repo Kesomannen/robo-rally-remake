@@ -5,9 +5,9 @@ public class PlayerUIPlayers : MonoBehaviour {
     [SerializeField] Transform _playerPanelParent;
     [SerializeField] bool _showLocalPlayer = true;
 
-    void Start(){
-        foreach (var player in PlayerManager.Players){ 
-            if (!_showLocalPlayer && PlayerManager.IsLocal(player)) continue;
+    void Start() {
+        foreach (var player in PlayerSystem.Players){ 
+            if (!_showLocalPlayer && PlayerSystem.IsLocal(player)) continue;
             Instantiate(_playerPanelPrefab, _playerPanelParent).SetContent(player);
         }
     }

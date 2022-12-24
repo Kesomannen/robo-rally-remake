@@ -103,7 +103,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
             NetworkManager.OnClientConnectedCallback += OnClientConnected;
 
             var id = NetworkManager.LocalClientId;
-            _playersInLobby.Add(id, new LobbyPlayerData() { IsHost = true });
+            _playersInLobby.Add(id, new LobbyPlayerData { IsHost = true });
             OnPlayerUpdatedOrAdded?.Invoke(id, _playersInLobby[id]);
         }
 

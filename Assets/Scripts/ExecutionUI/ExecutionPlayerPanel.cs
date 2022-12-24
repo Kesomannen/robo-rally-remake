@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class PlayerSlice : Container<Player>, IPointerClickHandler {
+public class ExecutionPlayerPanel : Container<Player>, IPointerClickHandler {
     [Header("Player Slice")]
     [SerializeField] OverlayData<PlayerOverlay> _overlayData;
     [SerializeField] float _animationDuration;
@@ -12,7 +12,7 @@ public class PlayerSlice : Container<Player>, IPointerClickHandler {
     [Header("References")]
     [SerializeField] TMP_Text _nameText;
     [SerializeField] TMP_Text _energyText;
-    [SerializeField] ExecutionRegister[] _executionRegisters;
+    [SerializeField] ExecutionPlayerRegister[] _executionRegisters;
     
     Player _player;
 
@@ -23,7 +23,7 @@ public class PlayerSlice : Container<Player>, IPointerClickHandler {
         
         _player = player;
         
-        _nameText.text = PlayerManager.IsLocal(_player) ? _player + " (You)" : _player.ToString();
+        _nameText.text = PlayerSystem.IsLocal(_player) ? _player + " (You)" : _player.ToString();
         _energyText.text = player.Energy.ToString();
         player.Energy.OnValueChanged += OnEnergyChanged;
     }
@@ -44,7 +44,7 @@ public class PlayerSlice : Container<Player>, IPointerClickHandler {
     }
     
     void OnPhaseStart() {
-        var local = PlayerManager.IsLocal(_player);
+        var local = PlayerSystem.IsLocal(_player);
         for (var i = 0; i < _executionRegisters.Length; i++){
             var register = _executionRegisters[i];
             register.SetContent(_player.Program[i]);
@@ -64,6 +64,6 @@ public class PlayerSlice : Container<Player>, IPointerClickHandler {
     }
     
     public void OnPointerClick(PointerEventData e) {
-        OverlaySystem.Instance.PushOverlay(_overlayData).Init(_player);
+        OverlaySystem.Instance.PushAndShowOverlay(_overlayData).Init(_player);
     }
 }

@@ -39,7 +39,7 @@ public class ShopUI : MonoBehaviour {
     }
     
     void OnCardClicked(ShopCard shopCard) {
-        var localPlayer = PlayerManager.LocalPlayer;
+        var localPlayer = PlayerSystem.LocalPlayer;
         if (ShopPhase.CurrentPlayer != localPlayer) return;
         
         var card = shopCard.Content;

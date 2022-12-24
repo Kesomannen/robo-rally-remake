@@ -31,7 +31,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
         
         OnExecutionComplete?.Invoke();
         
-        foreach (var player in PlayerManager.Players) {
+        foreach (var player in PlayerSystem.Players) {
             player.DiscardProgram();
         }
         
@@ -44,7 +44,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
 
         yield return CoroutineUtils.Wait(StepDelay);
 
-        var players = PlayerManager.GetOrderedPlayers().ToArray();
+        var players = PlayerSystem.GetOrderedPlayers().ToArray();
         OnPlayersOrdered?.Invoke(players);
         
         yield return CoroutineUtils.Wait(StepDelay);

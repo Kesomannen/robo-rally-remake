@@ -2,10 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class HandController : Singleton<HandController> {
     [Header("References")]
-    [SerializeField] HandCard _cardPrefab;
+    [FormerlySerializedAs("_cardPrefab")]
+    [SerializeField] HandProgramCard _programCardPrefab;
     [SerializeField] RectTransform _drawPile;
     [SerializeField] Transform _highlightParent;
     
@@ -17,10 +19,10 @@ public class HandController : Singleton<HandController> {
     [SerializeField] float _cardMoveDuration;
     [SerializeField] float _drawDiscardDelay;
 
-    readonly List<HandCard> _cardObjects = new();
+    readonly List<HandProgramCard> _cardObjects = new();
     readonly List<CardAction> _actionQueue = new();
 
-    static Player Owner => PlayerManager.LocalPlayer;
+    static Player Owner => PlayerSystem.LocalPlayer;
     float CardSpacing
             => _maxCardSpacing * _cardObjects.Count > _maxSize 
             ? _maxSize / _cardObjects.Count 
@@ -139,8 +141,8 @@ public class HandController : Singleton<HandController> {
         UpdateCards();
     }
 
-    HandCard CreateCard(ProgramCardData card, int index) {
-        var cardObject = Instantiate(_cardPrefab, transform);
+    HandProgramCard CreateCard(ProgramCardData card, int index) {
+        var cardObject = Instantiate(_programCardPrefab, transform);
         cardObject.HighlightParent = _highlightParent;
         cardObject.enabled = false;
 

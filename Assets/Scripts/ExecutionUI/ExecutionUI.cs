@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class ExecutionUI : MonoBehaviour {
@@ -18,11 +19,12 @@ public class ExecutionUI : MonoBehaviour {
     [SerializeField] Sprite _energySpaceSprite;
     [SerializeField] Sprite _checkpointSprite;
 
+    [FormerlySerializedAs("_playerSlicePrefab")]
     [Header("References")]
-    [SerializeField] PlayerSlice _playerSlicePrefab;
+    [SerializeField] ExecutionPlayerPanel _executionPlayerPanelPrefab;
     [SerializeField] Transform _playerSliceParent;
 
-    Dictionary<Player, PlayerSlice> _playerSlices;
+    Dictionary<Player, ExecutionPlayerPanel> _playerSlices;
     PlayerModel _currentPlayer;
 
     void OnEnable() {
@@ -69,9 +71,9 @@ public class ExecutionUI : MonoBehaviour {
     }
 
     void Setup() {
-        _playerSlices = PlayerManager.Players
+        _playerSlices = PlayerSystem.Players
             .ToDictionary(p => 
-                (PlayerSlice)Instantiate(_playerSlicePrefab, _playerSliceParent)
+                (ExecutionPlayerPanel)Instantiate(_executionPlayerPanelPrefab, _playerSliceParent)
                     .SetContent(p));
     }
 

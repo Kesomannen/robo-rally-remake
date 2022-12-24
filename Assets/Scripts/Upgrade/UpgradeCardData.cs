@@ -32,9 +32,9 @@ public class UpgradeCardData : Lookup<UpgradeCardData>, IAffector<IPlayer> {
             || _type == UpgradeType.Action && player.Owner.Energy.Value < UseCost) return false;
 
         return PhaseSystem.CurrentPhase switch {
-            Phase.Programming => CanUseIn(ProgrammingPhase.LocalPlayerSubmitted ? UseContext.AfterLockIn : UseContext.DuringProgramming),
+            Phase.Programming => CanUseIn(ProgrammingPhase.LocalPlayerLockedIn ? UseContext.AfterLockIn : UseContext.DuringProgramming),
             Phase.Execution => ExecutionPhase.CurrentSubPhase == ExecutionSubPhase.Registers 
-                ? CanUseIn(PlayerManager.IsLocal(ExecutionPhase.CurrentPlayer) ? UseContext.OwnRegister : UseContext.OtherRegisters) 
+                ? CanUseIn(PlayerSystem.IsLocal(ExecutionPhase.CurrentPlayer) ? UseContext.OwnRegister : UseContext.OtherRegisters) 
                 : CanUseIn(UseContext.BoardElements),
             Phase.Shop => CanUseIn(UseContext.Shop),
             _ => throw new Exception("Unknown phase")

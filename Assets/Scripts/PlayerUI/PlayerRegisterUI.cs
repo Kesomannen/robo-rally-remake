@@ -1,15 +1,15 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class RegisterUI : MonoBehaviour, IPointerClickHandler {
+public class PlayerRegisterUI : MonoBehaviour, IPointerClickHandler {
     [SerializeField] int _index;
     [SerializeField] Container<ProgramCardData> _cardContainer;
     [SerializeField] SoundEffect _onPlaceSound, _onRemoveSound;
 
-    static Player Owner => PlayerManager.LocalPlayer;
+    static Player Owner => PlayerSystem.LocalPlayer;
 
-    static readonly RegisterUI[] _registers = new RegisterUI[ExecutionPhase.RegisterCount];
-    public static RegisterUI GetRegisterUI(int index) => _registers[index];
+    static readonly PlayerRegisterUI[] _registers = new PlayerRegisterUI[ExecutionPhase.RegisterCount];
+    public static PlayerRegisterUI GetRegister(int index) => _registers[index];
     
     public static bool Locked { get; set; }
 
@@ -45,8 +45,7 @@ public class RegisterUI : MonoBehaviour, IPointerClickHandler {
 
 
     public bool Place(Container<ProgramCardData> item) {
-        if (Locked || !IsEmpty) return false;
-        if (!item.Content.CanPlace(Owner, _index)) return false;
+        if (Locked || !IsEmpty || !item.Content.CanPlace(Owner, _index)) return false;
 
         _cardContainer.SetContent(item.Content);
         _cardContainer.gameObject.SetActive(true);
@@ -58,9 +57,8 @@ public class RegisterUI : MonoBehaviour, IPointerClickHandler {
     }
 
     public void Remove() {
-        if (Locked || IsEmpty) return;
-        if (!Owner.Hand.AddCard(_cardContainer.Content, CardPlacement.Top)) return;
-        
+        if (Locked || IsEmpty || !Owner.Hand.AddCard(_cardContainer.Content, CardPlacement.Top)) return;
+
         _cardContainer.gameObject.SetActive(false);
         Owner.Program.SetCard(_index, null);
         

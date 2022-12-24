@@ -9,7 +9,7 @@ public class Checkpoint : BoardElement<Checkpoint, IPlayer>, ITooltipable {
     public string Header => $"Checkpoint {_index}";
     public string Description {
         get {
-            var current = PlayerManager.LocalPlayer.CurrentCheckpoint.Value;
+            var current = PlayerSystem.LocalPlayer.CurrentCheckpoint.Value;
             if (current == _index) return "This is your current checkpoint.";
             if (current + 1 == _index) return "This is the next checkpoint.";
             if (current < _index) return "This is not the next checkpoint.";

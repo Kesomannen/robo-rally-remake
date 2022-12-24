@@ -18,7 +18,7 @@ public class ChoiceProgram : ProgramCardData {
         _hasMadeChoice = false;
 
         var availableArray = _options.Select(c => c.CanPlace(player, positionInRegister)).ToArray();
-        var obj = OverlaySystem.Instance.PushOverlay(_choiceOverlay);
+        var obj = OverlaySystem.Instance.PushAndShowOverlay(_choiceOverlay);
 
         obj.Init(_options, availableArray, r => {
             _choiceRoutine = r.Choice.ExecuteRoutine(player, positionInRegister);

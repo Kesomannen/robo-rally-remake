@@ -3,8 +3,8 @@ using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class PassiveAnimation : MonoBehaviour {
-    [SerializeField] [Min(0)] float _frameTime;
-    [SerializeField] Sprite[] _sprites;
+    [Min(0)] public float _frameTime;
+    public Sprite[] _sprites;
     
     SpriteRenderer _renderer;
 

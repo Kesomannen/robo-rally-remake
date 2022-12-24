@@ -16,7 +16,7 @@ public class RebootToken : MapObject, ITooltipable {
             if (_isSpawnPoint){
                 return "Robots spawn here at the start of the game.";
             }
-            var playerBoard = MapSystem.GetParentBoard(PlayerManager.LocalPlayer.Model);
+            var playerBoard = MapSystem.GetParentBoard(PlayerSystem.LocalPlayer.Model);
             var board = MapSystem.GetParentBoard(this);
             return playerBoard == board ? "You will respawn here if you reboot." : "Robots rebooting on this board will respawn here.";
         }

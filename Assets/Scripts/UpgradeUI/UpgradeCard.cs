@@ -59,7 +59,7 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
                 CanPreview = false,
                 Prefab = _overlay
             };
-            OverlaySystem.Instance.PushOverlay(overlay).Init(Content);
+            OverlaySystem.Instance.PushAndShowOverlay(overlay).Init(Content);
         }
     }
 }

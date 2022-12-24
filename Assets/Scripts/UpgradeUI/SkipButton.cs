@@ -15,6 +15,6 @@ public class SkipButton : MonoBehaviour, IPointerClickHandler {
     }
     
     void OnNewPlayer(Player player) {
-        gameObject.SetActive(PlayerManager.IsLocal(player));
+        gameObject.SetActive(PlayerSystem.IsLocal(player));
     }
 }

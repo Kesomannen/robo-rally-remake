@@ -237,7 +237,7 @@ public class Player : IPlayer {
     }
     
     public void SerializeRegisters(out byte playerIndex, out byte[] registers) {
-        playerIndex = (byte) PlayerManager.Players.IndexOf(this);
+        playerIndex = (byte) PlayerSystem.Players.IndexOf(this);
         registers = Program.Cards.Select(c => (byte) c.GetLookupId()).ToArray();
     }
 }
