@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 public class LobbyPlayerPanel : MonoBehaviour {
     [SerializeField] TMP_Text _nameText;
-    [SerializeField] TMP_Text _readyText;
+    [SerializeField] Image _readyImage;
+    [SerializeField] Sprite _readySprite, _notReadySprite;
     [SerializeField] Image _hostIcon;
     [SerializeField] Image _robotIcon;
 
@@ -17,7 +18,7 @@ public class LobbyPlayerPanel : MonoBehaviour {
         PlayerData = playerData;
 
         _nameText.text = playerID == NetworkManager.Singleton.LocalClientId ? $"{playerID} (You)" : playerID.ToString();
-        _readyText.text = playerData.IsReady ? "Ready" : "Not Ready";
+        _readyImage.sprite = playerData.IsReady ? _readySprite : _notReadySprite;
         _robotIcon.sprite = RobotData.GetById(playerData.RobotId).Icon;
         
         _hostIcon.gameObject.SetActive(playerData.IsHost);

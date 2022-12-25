@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MenuSystem : Singleton<MenuSystem> {
@@ -8,26 +9,27 @@ public class MenuSystem : Singleton<MenuSystem> {
     [SerializeField] JoinGameMenu _joinGameMenu;
     [SerializeField] RoomMenu _roomMenu;
 
-    public MenuState CurrentState { get; private set; }
-    public Menu CurrentMenu { get; private set; }
-
-    public event Action<MenuState, MenuState> OnMenuStateChanged;
+    readonly Stack<Menu> _menuStack = new();
 
     void Start() {
-        ChangeMenu(MenuState.Main);
+        PushMenu(MenuState.Main);
     }
 
-    public void ChangeMenu(MenuState newState) {
-        var oldState = CurrentState;
-        var oldMenu = CurrentMenu;
+    public void PushMenu(MenuState newState) {
+        if (_menuStack.Count > 0) {
+            _menuStack.Peek().Hide();
+        }
+        var newMenu = GetMenu(newState);
+        newMenu.Show();
+        _menuStack.Push(newMenu);
+    }
 
-        CurrentState = newState;
-        CurrentMenu = GetMenu(newState);
-
-        oldMenu?.Hide();
-        CurrentMenu.Show();
-
-        OnMenuStateChanged?.Invoke(oldState, newState);
+    public void GoBack() {
+        var oldMenu = _menuStack.Pop();
+        var newMenu = _menuStack.Peek();
+        
+        oldMenu.Hide();
+        newMenu.Show();
     }
 
     Menu GetMenu(MenuState state) => state switch {
@@ -41,10 +43,10 @@ public class MenuSystem : Singleton<MenuSystem> {
 }
 
 public enum MenuState {
+    None,
     Main,
     Options,
     CreateGame,
     JoinGame,
     Room,
-    None = default,
 }

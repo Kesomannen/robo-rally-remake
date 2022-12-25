@@ -12,9 +12,7 @@ public class RoomMenu : Menu {
     [SerializeField] TMP_Text _lobbyCodeText;
 
     readonly List<LobbyPlayerPanel> _playerPanels = new();
-
-    protected override MenuState PreviousMenuState => MenuState.JoinGame;
-
+    
     public override void Show() {
         base.Show();
 

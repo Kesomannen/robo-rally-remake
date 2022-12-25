@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: RobotDataLookup
   m_EditorClassIdentifier: 
   _values:
+  - {fileID: 11400000, guid: f5662703ca885694093898b0567926b5, type: 2}
+  - {fileID: 11400000, guid: 15f17d4ffc1e55b4fbfd3d6c4a1863d8, type: 2}
   - {fileID: 11400000, guid: cef402b3b1958fb4a82076337d20b84a, type: 2}
   - {fileID: 11400000, guid: 320533cde685f6c4fb5fbdfadf60086b, type: 2}

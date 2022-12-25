@@ -22,6 +22,7 @@ public static class Matchmaking {
     }
 
     public static Lobby CurrentLobby { get; private set; }
+    public static int CurrentMapID => int.Parse(CurrentLobby.Data[MapIDKey].Value);
     
     static UnityTransport _transport;
     static string _localPlayerId;
@@ -33,10 +34,6 @@ public static class Matchmaking {
     const int HeartbeatInterval = 15;
     const int RefreshLobbyInterval = 5;
 
-    public static int GetMapID() {
-        return CurrentLobby == null ? 0 : int.Parse(CurrentLobby.Data[MapIDKey].Value);
-    }
-    
     public static async Task InitializeAsync() {
         await InitializeUnityServicesAsync();
         await SignInAsync();
@@ -158,19 +155,29 @@ public static class Matchmaking {
 
     public static async Task UpdateLobbyAsync(UpdateLobbyDataOptions options) {
         try {
+            if (!options.MapID.HasValue
+                && !options.IsPrivate.HasValue) return;
+            
+            var sameMap = options.MapID.HasValue && options.MapID.Value == CurrentMapID;
+            var samePrivacy = options.IsPrivate.HasValue && options.IsPrivate.Value == CurrentLobby.IsPrivate;
+            if (sameMap && samePrivacy) return;
+            
             var updateOpts = new UpdateLobbyOptions {
-                IsPrivate = options.IsPrivate,
-                Data = {
-                    [MapIDKey] = new DataObject(
+                IsPrivate = options.IsPrivate
+            };
+            
+            if (!sameMap) {
+                updateOpts.Data = new Dictionary<string, DataObject> {
+                    [MapIDKey] = new(
                         visibility: DataObject.VisibilityOptions.Public,
                         index: DataObject.IndexOptions.N1,
                         value: options.MapID.ToString()
                     )
-                }
-            };
+                };
+            }
 
             await Lobbies.Instance.UpdateLobbyAsync(CurrentLobby.Id, updateOpts);
-        } catch (Exception e) {
+        } catch (LobbyServiceException e) {
             Debug.Log($"Failed updating lobby: {e}");
         }
     }

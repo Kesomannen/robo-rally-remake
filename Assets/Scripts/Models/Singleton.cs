@@ -22,7 +22,7 @@ public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T> {
         }
     }
 
-    protected virtual void OnDestroy(){
+    protected virtual void OnDestroy() {
         if (_instance != this) return;
         _instance = null;
         _instanceExists = false;

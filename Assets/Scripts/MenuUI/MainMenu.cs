@@ -2,18 +2,16 @@ using System;
 using UnityEngine;
 
 public class MainMenu : Menu {
-    protected override MenuState PreviousMenuState => MenuState.None;
-
     public void CreateGame() {
-        MenuSystem.Instance.ChangeMenu(MenuState.CreateGame);
+        MenuSystem.Instance.PushMenu(MenuState.CreateGame);
     }
 
     public void JoinGame() {
-        MenuSystem.Instance.ChangeMenu(MenuState.JoinGame);
+        MenuSystem.Instance.PushMenu(MenuState.JoinGame);
     }
 
     public void Options() {
-        MenuSystem.Instance.ChangeMenu(MenuState.Options);
+        MenuSystem.Instance.PushMenu(MenuState.Options);
     }
     
     public void Quit() {
