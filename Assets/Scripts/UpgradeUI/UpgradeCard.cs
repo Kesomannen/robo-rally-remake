@@ -51,15 +51,14 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
     public void OnPointerClick(PointerEventData e) {
         if (Content == null) return;
         OnClick?.Invoke(this);
-        
-        if (_showOverlayOnClick && e.button == PointerEventData.InputButton.Right) {
-            var overlay = new OverlayData<UpgradeCardOverlay> {
-                Header = "Upgrade Card",
-                Subtitle = Content.Name,
-                CanPreview = false,
-                Prefab = _overlay
-            };
-            OverlaySystem.Instance.PushAndShowOverlay(overlay).Init(Content);
-        }
+
+        if (!_showOverlayOnClick || e.button != PointerEventData.InputButton.Right) return;
+        var overlay = new OverlayData<UpgradeCardOverlay> {
+            Header = "Upgrade Card",
+            Subtitle = Content.Name,
+            CanPreview = false,
+            Prefab = _overlay
+        };
+        OverlaySystem.Instance.PushAndShowOverlay(overlay).Init(Content);
     }
 }

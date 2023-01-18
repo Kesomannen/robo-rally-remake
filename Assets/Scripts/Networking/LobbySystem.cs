@@ -6,6 +6,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
+using Unity.Services.Lobbies;
 using Random = UnityEngine.Random;
 
 #pragma warning disable 4014
@@ -49,29 +50,24 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         }
     }
 
-    public async Task<bool> JoinLobby(string lobbyCode) {
+    public async Task JoinLobby(string lobbyCode) {
         Debug.Log($"Joining lobby {lobbyCode}");
         try {
             await Matchmaking.JoinLobbyWithCodeAsync(lobbyCode);
             NetworkManager.StartClient();
-            return true;
-        }
-        catch (Exception e) {
+        }catch (Exception e) {
             Debug.LogError($"Failed to join lobby: {e.Message}");
-            return false;
         }
     }
 
-    public async Task<bool> CreateLobby(LobbyData lobbyData) {
+    public async Task CreateLobby(LobbyData lobbyData) {
         Debug.Log("Creating lobby");
         try {
             await Matchmaking.CreateLobbyAndAllocationAsync(lobbyData);
             NetworkManager.StartHost();
-            return true;
         }
-        catch (Exception e) {
+        catch (LobbyServiceException e) {
             Debug.LogError($"Failed to create lobby: {e.Message}");
-            return false;
         }
     }
 

@@ -73,8 +73,7 @@ public class ExecutionUI : MonoBehaviour {
     void Setup() {
         _playerSlices = PlayerSystem.Players
             .ToDictionary(p => 
-                (ExecutionPlayerPanel)Instantiate(_executionPlayerPanelPrefab, _playerSliceParent)
-                    .SetContent(p));
+                (ExecutionPlayerPanel)Instantiate(_executionPlayerPanelPrefab, _playerSliceParent).SetContent(p));
     }
 
     Sprite GetSubPhaseSprite(ExecutionSubPhase phase) {

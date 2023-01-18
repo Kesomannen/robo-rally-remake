@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using TMPro;
@@ -11,12 +12,17 @@ public class RoomMenu : Menu {
     [SerializeField] Transform _playerPanelParent;
     [SerializeField] TMP_Text _lobbyCodeText;
 
+    public static bool LocalPlayerReady { get; private set; }
+    
     readonly List<LobbyPlayerPanel> _playerPanels = new();
     
+    public static event Action OnLocalPlayerReady; 
+
     public override void Show() {
         base.Show();
 
         _lobbyCodeText.text = LobbySystem.LobbyJoinCode;
+        LocalPlayerReady = false;
         
         foreach (var lobbyPlayerPanel in _playerPanels) {
             Destroy(lobbyPlayerPanel.gameObject);
@@ -73,6 +79,8 @@ public class RoomMenu : Menu {
 
     public void Ready() {
         LobbySystem.Instance.UpdatePlayerData(ready: true);
+        LocalPlayerReady = true;
+        OnLocalPlayerReady?.Invoke();
         _readyButton.SetActive(false);
     }
     

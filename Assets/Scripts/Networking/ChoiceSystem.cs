@@ -20,47 +20,45 @@ public class ChoiceSystem : NetworkSingleton<ChoiceSystem> {
     void RandomizeChoice() {
         int randomChoice;
         do { randomChoice = Random.Range(0, _current.Choices); }
-        while (!_current.UnavailableChoices[randomChoice]);
+        while (_current.AvailableChoices[randomChoice]);
 
-        StartCoroutine(EndChoice(randomChoice));
+        EndChoice(randomChoice);
     }
-
-    public IEnumerator StartChoice(IEnumerable<bool> unavailableChoices, int choices, float maxTime = DefaultTime) {
+    
+    public void StartChoice(IEnumerable<bool> availableChoices, int choices, float maxTime = DefaultTime) {
         if (IsActive) {
             Debug.LogError("Choice is already active");
-            yield break;
+            return;
         }
         
-        var choiceArray = unavailableChoices.ToArray();
+        var choiceArray = availableChoices.ToArray();
         if (choiceArray.Length != choices) {
             Debug.LogError("Unavailable choices array length does not match choices");
-            yield break;
+            return;
         }
         if (choiceArray.All(x => !x)) {
             Debug.LogError("All choices are unavailable");
-            yield break;
+            return;
         }
         
         OnTimeUp += RandomizeChoice;
         StartChoiceServerRpc(new ChoiceData {
-            UnavailableChoices = choiceArray,
+            AvailableChoices = choiceArray,
             Choices = (byte) choices,
             MaxTime = (short) maxTime
         });
-        yield return new WaitUntil(() => IsActive);
     }
     
-    public IEnumerator EndChoice(int choice) {
+    public void EndChoice(int choice) {
         if (!IsActive) {
             Debug.LogError("Choice is not active");
-            yield break;
+            return;
         }
         OnTimeUp -= RandomizeChoice;
         EndChoiceServerRpc((byte) choice);
-        yield return new WaitUntil(() => !IsActive);
     }
     
-    static IEnumerator StartTimer(float time) {
+    static IEnumerator DoTimer(float time) {
         TimeLeft.Value = time;
         while (TimeLeft.Value > 0) {
             yield return CoroutineUtils.Wait(1);
@@ -73,7 +71,7 @@ public class ChoiceSystem : NetworkSingleton<ChoiceSystem> {
     void StartChoiceServerRpc(ChoiceData data) {
         _current = data;
         IsActive = true;
-        StartCoroutine(StartTimer(data.MaxTime));
+        StartCoroutine(DoTimer(data.MaxTime));
         
         StartChoiceClientRpc(data);
     }
@@ -84,7 +82,7 @@ public class ChoiceSystem : NetworkSingleton<ChoiceSystem> {
         
         _current = data;
         IsActive = true;
-        StartCoroutine(StartTimer(data.MaxTime));
+        StartCoroutine(DoTimer(data.MaxTime));
     }
     
     [ServerRpc(RequireOwnership = false)]
@@ -104,13 +102,13 @@ public class ChoiceSystem : NetworkSingleton<ChoiceSystem> {
     struct ChoiceData : INetworkSerializable {
         public short MaxTime;
         public byte Choices;
-        public bool[] UnavailableChoices;
+        public bool[] AvailableChoices;
         
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter {
             serializer.SerializeValue(ref MaxTime);
             serializer.SerializeValue(ref Choices);
-            if (UnavailableChoices is not null && UnavailableChoices.Length > 0) {
-                serializer.SerializeValue(ref UnavailableChoices);
+            if (AvailableChoices is not null && AvailableChoices.Length > 0) {
+                serializer.SerializeValue(ref AvailableChoices);
             }
         }
     }

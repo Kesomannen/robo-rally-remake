@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ShopUI : MonoBehaviour {
     [Header("References")]
@@ -10,7 +9,7 @@ public class ShopUI : MonoBehaviour {
 
     ShopCard[] _shopCards;
 
-    void Start() {
+    void Awake() {
         _shopCards = new ShopCard[GameSettings.Instance.ShopSlots];
         gameObject.SetActive(false);
     }
@@ -27,7 +26,7 @@ public class ShopUI : MonoBehaviour {
     
     void OnRestock(int index, UpgradeCardData card) {
         var shopCard = _shopCards[index];
-        if (shopCard != null){
+        if (shopCard != null) {
             shopCard.OnCardClicked -= OnCardClicked;
             shopCard.Remove();
         }
@@ -55,6 +54,7 @@ public class ShopUI : MonoBehaviour {
         if (skipped) return;
         for (var i = 0; i < _shopCards.Length; i++){
             var shopCard = _shopCards[i];
+            if (shopCard == null) return;
             if (shopCard.Content != card) continue;
             
             shopCard.OnBuy();

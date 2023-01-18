@@ -1,5 +1,4 @@
 using UnityEngine;
-using TMPro;
 using UnityEngine.UI;
 
 public class CreateGameMenu : Menu {
@@ -12,12 +11,7 @@ public class CreateGameMenu : Menu {
             IsPrivate = _privateCheckbox.isOn,
         };
 
-        var success = await LobbySystem.Instance.CreateLobby(lobbyData);
-
-        if (success) {
-            MenuSystem.Instance.PushMenu(MenuState.Room);
-        } else {
-            Debug.LogWarning("Failed to create lobby");
-        }
+        await LobbySystem.Instance.CreateLobby(lobbyData);
+        MenuSystem.Instance.PushMenu(MenuState.Room);
     }
 }

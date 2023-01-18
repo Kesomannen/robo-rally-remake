@@ -4,8 +4,7 @@ using UnityEngine;
 public abstract class TooltipTrigger : MonoBehaviour {
     [SerializeField] TooltipableLocation _tooltipableLocation;
 
-    protected ITooltipable Tooltipable;
-    
+    ITooltipable _tooltipable;
     bool _isTooltipActive;
 
     protected virtual void Awake(){
@@ -14,12 +13,12 @@ public abstract class TooltipTrigger : MonoBehaviour {
             Debug.LogError($"No tooltipable found on {gameObject.name}");
             return;
         }
-        Tooltipable = item;
+        _tooltipable = item;
     }
 
     protected void OnDisable() {
         if (!_isTooltipActive) return;
-        Tooltip.Instance.Hide(Tooltipable);
+        Tooltip.Instance.Hide(_tooltipable);
         _isTooltipActive = false;
     }
 
@@ -33,12 +32,12 @@ public abstract class TooltipTrigger : MonoBehaviour {
     }
 
     protected void Show() {
-        Tooltip.Instance.Show(Tooltipable);
+        Tooltip.Instance.Show(_tooltipable);
         _isTooltipActive = true;
     }
     
     protected void Hide() {
-        Tooltip.Instance.Hide(Tooltipable);
+        Tooltip.Instance.Hide(_tooltipable);
         _isTooltipActive = false;
     }
 

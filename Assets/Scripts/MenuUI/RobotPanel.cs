@@ -1,31 +1,66 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class RobotPanel : Container<RobotData>, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
     [SerializeField] Image _iconImage;
+    [SerializeField] Image _backgroundImage;
     [SerializeField] TMP_Text _nameText;
     [SerializeField] TMP_Text _descriptionText;
-    [SerializeField] Selectable _selectable;
-    [SerializeField] bool _interactable;
+    [SerializeField] UISounds _uiSounds;
     [Space]
+    [SerializeField] Sprite _defaultSprite;
+    [SerializeField] Sprite _highlightedSprite;
+    [SerializeField] Sprite _selectedSprite;
+    [Space]
+    [SerializeField] Color _grayColor = Color.gray;
     [SerializeField] float _hoverScale;
     [SerializeField] float _tweenDuration;
     [SerializeField] LeanTweenType _tweenType;
 
-    public bool Interactable {
-        get => _interactable;
-        set {
-            _interactable = value;
-            _selectable.interactable = value;
+    State _state;
+    
+    public enum State {
+        Available,
+        Unavailable,
+        Selected
+    }
+
+    public void SetState(State state) {
+        if (state == _state) return;
+        _state = state;
+        
+        Debug.Log($"Set state to {_state}", this);
+        
+        _uiSounds.enabled = _state == State.Available;
+
+        switch (_state) {
+            case State.Available:
+                _backgroundImage.sprite = _defaultSprite;
+                FadeIconTo(_grayColor);
+                ScaleElementsTo(1);
+                break;
+            
+            case State.Unavailable:
+                _backgroundImage.sprite = _defaultSprite;
+                FadeIconTo(_grayColor);
+                ScaleElementsTo(1);
+                break;
+            
+            case State.Selected:
+                _backgroundImage.sprite = _selectedSprite;
+                FadeIconTo(Color.white);
+                ScaleElementsTo(_hoverScale);
+                break;
+            
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 
-    Color _defaultColor;
-
-    void Start() {
-        _defaultColor = _iconImage.color;
+    void Awake() {
         _scaleTargets = new[] {
             _iconImage.gameObject, _nameText.gameObject, _descriptionText.gameObject
         };
@@ -33,19 +68,21 @@ public class RobotPanel : Container<RobotData>, IPointerEnterHandler, IPointerEx
     }
 
     public void OnPointerEnter(PointerEventData e) {
-        if (!Interactable) return;
+        if (_state != State.Available) return;
+        _backgroundImage.sprite = _highlightedSprite;
         ScaleElementsTo(_hoverScale);
         FadeIconTo(Color.white);
     }
 
     public void OnPointerExit(PointerEventData e) {
-        if (!Interactable) return;
+        if (_state != State.Available) return;
+        _backgroundImage.sprite = _defaultSprite;
         ScaleElementsTo(1);
-        FadeIconTo(_defaultColor);
+        FadeIconTo(_grayColor);
     }
     
     public void OnPointerClick(PointerEventData e) {
-        if (!Interactable) return;
+        if (_state != State.Available) return;
         LobbySystem.Instance.UpdatePlayerData(robotId: (byte) Content.GetLookupId());
     }
     

@@ -13,7 +13,7 @@ public class UpgradeTooltipDataPropertyDrawer : PropertyDrawer {
         EditorGUI.PropertyField(typeRect, typeProperty, label);
         var type = (UpgradeTooltipType)typeProperty.enumValueIndex;
 
-        switch (type){
+        switch (type) {
             case UpgradeTooltipType.Text:
                 var headerRect = EditorUtils.GetNextLine(position);
                 var descriptionRect = EditorUtils.GetNextLine(headerRect);

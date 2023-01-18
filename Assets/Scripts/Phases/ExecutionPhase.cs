@@ -38,6 +38,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
         OnPhaseEnd?.Invoke();
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     static IEnumerator DoRegister(int register) {
         CurrentRegister = register;
         OnNewRegister?.Invoke(register);
@@ -67,9 +68,9 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
             DoSubPhase(ExecutionSubPhase.PlayerLaser, () => {
                 TaskScheduler.PushSequence(
                     routines: players
-                    .Where(p => !p.IsRebooted.Value)
-                    .Select(p => p.Model.FireLaser(p.Model.Rotator.Identity))
-                    .ToArray()
+                        .Where(p => !p.IsRebooted.Value)
+                        .Select(p => p.Model.FireLaser(p.Model.Rotator.Identity))
+                        .ToArray()
                 );
                 return players.Any(p => !p.IsRebooted.Value);
             }),

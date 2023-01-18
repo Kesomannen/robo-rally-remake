@@ -1,4 +1,5 @@
 # if UNITY_EDITOR
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ public class Testing : MonoBehaviour {
     [SerializeField] RobotData _robotToLoad;
     [SerializeField] UpgradeCardData[] _upgradesToLoad;
 
-    void Awake(){
+    void Awake() {
         if (NetworkManager.Singleton != null) return;
         
         MapSystem.Instance.LoadMap(_mapToLoad);
@@ -18,6 +19,12 @@ public class Testing : MonoBehaviour {
             var upgrade = _upgradesToLoad[i];
             player.AddUpgrade(upgrade, i);
         }
+    }
+
+    void Start() {
+        if (NetworkManager.Singleton != null) return;
+        
+        PhaseSystem.StartPhaseSystem();
     }
 
     public void Continue() {

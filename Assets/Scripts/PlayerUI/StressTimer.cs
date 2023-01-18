@@ -1,5 +1,4 @@
-﻿using System;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 public class StressTimer : MonoBehaviour, ITooltipable {
@@ -12,14 +11,10 @@ public class StressTimer : MonoBehaviour, ITooltipable {
 
     public string Header => "Programming Timer";
     public string Description {
-        get{
-            if (_isStressed){
-                var stressTime = ProgrammingPhase.StressTimer.Value;
-                var second = stressTime == 0 ? "second" : "seconds";
-                return $"You have {stressTime} {second} left to finish your program!";
-            } else{
-                return "Nobody has finished their program yet.";
-            }
+        get {
+            return !_isStressed 
+                ? "Nobody has finished their program yet." 
+                : $"You have {StringUtils.FormatMultiple(ProgrammingPhase.StressTimer.Value, "second")} left to finish your program!";
         }
     }
     
@@ -38,7 +33,7 @@ public class StressTimer : MonoBehaviour, ITooltipable {
         _text.text = "---";
     }
 
-    void OnStressValueChanged(int prev, int next){
+    void OnStressValueChanged(int prev, int next) {
         _text.text = next.ToString();
         if (!ProgrammingPhase.IsStressed) return;
 

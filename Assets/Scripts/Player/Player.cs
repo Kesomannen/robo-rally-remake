@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -72,12 +71,12 @@ public class Player : IPlayer {
         _upgrades = new UpgradeCardData[args.UpgradeSlots];
         
         // Robot
-        CurrentCheckpoint = new ObservableField<int>(0);
+        CurrentCheckpoint = new ObservableField<int>();
         Model = MapSystem.Instance.CreateObject (
             args.ModelPrefab,
             args.SpawnPoint.GridPos
         );
-        IsRebooted = new ObservableField<bool>(false);
+        IsRebooted = new ObservableField<bool>();
 
         // Initialize
         Model.Init(this);
@@ -114,12 +113,16 @@ public class Player : IPlayer {
         return card;
     }
 
-    public ProgramCardData DiscardTopCardsUntil(Func<ProgramCardData, bool> predicate){
-        while (true){
+    const int MaxDrawAttempts = 30;
+    
+    public ProgramCardData DiscardTopCardsUntil(Func<ProgramCardData, bool> predicate, int maxAttempts = MaxDrawAttempts) {
+        for (var i = 0; i < maxAttempts; i++) {
             var card = GetTopCard();
             if (predicate(card)) return card;
             DiscardPile.AddCard(card, CardPlacement.Top);
         }
+        Debug.LogError($"Failed to find card matching predicate after {maxAttempts} attempts");
+        return null;
     }
 
     public void DrawCard() {
@@ -232,7 +235,7 @@ public class Player : IPlayer {
         DiscardProgram();
     }
     
-    public void Reboot(bool takeDamage = true) {
+    public void RebootFromParentBoard(bool takeDamage = true) {
         Reboot(MapSystem.GetParentBoard(Model), takeDamage);
     }
     

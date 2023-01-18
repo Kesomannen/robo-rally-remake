@@ -5,6 +5,6 @@ public class RebootAffector : ScriptablePermanentAffector<IPlayer> {
     [SerializeField] bool _takeDamage;
 
     public override void Apply(IPlayer player) {
-        player.Owner.Reboot(_takeDamage);
+        player.Owner.RebootFromParentBoard(_takeDamage);
     }
 }

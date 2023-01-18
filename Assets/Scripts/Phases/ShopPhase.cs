@@ -28,20 +28,22 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
     protected override void Awake() {
         base.Awake();
         _shopCards = new UpgradeCardData[GameSettings.Instance.ShopSlots];
-        if (IsServer) RefreshAvailableUpgrades();
     }
 
     public IEnumerator DoPhase() {
         UIManager.Instance.ChangeState(UIState.Shop);
         OnPhaseStarted?.Invoke();
+
+        _restockTrigger = false;
+        RestockCards();
         
-        yield return RestockRoutine();
+        yield return new WaitUntil(() => _restockTrigger);
 
         var orderedPlayers = PlayerSystem.GetOrderedPlayers();
 
         _skippedPlayers = 0;
         foreach (var player in orderedPlayers) {
-            //Debug.Log($"Shop phase for {player}");
+            Debug.Log($"Shop phase for {player}");
             CurrentPlayer = player;
             OnNewPlayer?.Invoke(player);
             _currentPlayerReady = false;
@@ -49,97 +51,104 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
             yield return new WaitUntil(() => _currentPlayerReady);
         }
         CurrentPlayer = null;
-        
-        if (_skippedPlayers == PlayerSystem.Players.Count) {
-            for (var i = 0; i < _shopCards.Length; i++){
-                _shopCards[i] = null;
-            }
-            yield return RestockRoutine();
+
+        if (_skippedPlayers != PlayerSystem.Players.Count) yield break;
+        for (var i = 0; i < _shopCards.Length; i++) {
+            _shopCards[i] = null;
         }
+        RestockCards();
     }
 
-    [ClientRpc]
-    void RestockCardClientRpc(byte[] slots, byte[] cardIds) {
-        for (var i = 0; i < slots.Length; i++) {
-            _restockQueue.Enqueue((slots[i], UpgradeCardData.GetById(cardIds[i])));
-        }
-    }
-
-    static readonly Queue<(int Slot, UpgradeCardData Card)> _restockQueue = new();
-    static void RefreshAvailableUpgrades() => _availableCards = UpgradeCardData.GetAll().ToList();
+    static bool _restockTrigger;
     
-    IEnumerator RestockRoutine() {
-        if (IsServer) {
-            // Randomize shop and send to clients
-            var slots = new List<byte>();
-            var cardIds = new List<byte>();
+    [ClientRpc]
+    void RestockClientRpc(byte[] slots, byte[] cardIds) {
+        StartCoroutine(RestockRoutine(
+            slots.Select(x => (int)x).ToArray(),
+            cardIds.Select(x => UpgradeCardData.GetById(x)).ToArray()
+            ));
+    }
 
-            for (var i = 0; i < _shopCards.Length; i++) {
-                var card = _shopCards[i];
-                if (card != null) continue;
-                
-                if (_availableCards.Count == 0) {
-                    RefreshAvailableUpgrades();
-                }
-                
-                var randomIndex = Random.Range(0, _availableCards.Count);
-                var newCard = _availableCards[randomIndex];
-                _shopCards[i] = newCard;
-                _availableCards.RemoveAt(randomIndex);
-                
-                slots.Add((byte) i);
-                cardIds.Add((byte) newCard.GetLookupId());
-            }
-
-            // Might be a problem if server is not host as local _restockQueue will not be updated
-            RestockCardClientRpc(slots.ToArray(), cardIds.ToArray());
-        } else {
-            yield return new WaitUntil(() => _restockQueue.Count > 0);   
-        }
-
-        foreach (var (index, card) in _restockQueue) {
-            _shopCards[index] = card;
-            OnRestock?.Invoke(index, card);
+    static IEnumerator RestockRoutine(IReadOnlyCollection<int> slots, IReadOnlyList<UpgradeCardData> cards) {
+        for (var i = 0; i < slots.Count; i++) {
+            _shopCards[i] = cards[i];
+            OnRestock?.Invoke(i, cards[i]);
             yield return CoroutineUtils.Wait(RestockDelay);   
         }
+        _restockTrigger = true;
+    }
+
+    void RestockCards() {
+        if (NetworkManager != null && !IsServer) return;
         
-        yield return TaskScheduler.WaitUntilClear();
+        // Randomize shop and send to clients
+        var slots = new List<byte>();
+        var cardIds = new List<byte>();
+
+        for (var i = 0; i < _shopCards.Length; i++) {
+            Debug.Log($"Restocking slot {i}");
+            var card = _shopCards[i];
+            if (card != null) continue;
+                
+            if (_availableCards == null || _availableCards.Count == 0) {
+                _availableCards = UpgradeCardData.GetAll().ToList();
+            }
+            
+            var randomIndex = Random.Range(0, _availableCards!.Count);
+            var newCard = _availableCards[randomIndex];
+            _availableCards.RemoveAt(randomIndex);
+                
+            slots.Add((byte) i);
+            cardIds.Add((byte) newCard.GetLookupId());
+
+            if (IsClient) continue;
+            _shopCards[i] = newCard;
+            OnRestock?.Invoke(i, newCard);
+        }
+            
+        RestockClientRpc(slots.ToArray(), cardIds.ToArray());
     }
 
     public void MakeDecision(bool skipped, UpgradeCardData upgrade, int index) {
-        var id = upgrade == null ? 0 : upgrade.GetLookupId();
-        Action<byte, bool, byte, byte> action = NetworkManager.Singleton == null ? SetReady : MakeDecisionServerRpc;
-        action (
-            (byte) PlayerSystem.Players.IndexOf(PlayerSystem.LocalPlayer),
-            skipped,
-            (byte) id,
-            (byte) index
-            );
+        var id = skipped ? 0 : upgrade.GetLookupId();
+
+        if (NetworkManager == null) {
+            SetReady(
+                PlayerSystem.LocalPlayer,
+                skipped,
+                upgrade,
+                index
+);
+        } else {
+            MakeDecisionServerRpc (
+                (byte) PlayerSystem.Players.IndexOf(PlayerSystem.LocalPlayer),
+                skipped,
+                (byte) id,
+                (byte) index
+            );   
+        }
     }
     
     [ServerRpc(RequireOwnership = false)]
     void MakeDecisionServerRpc(byte playerIndex, bool skipped, byte upgradeID, byte index) {
-        SetReady(playerIndex, skipped, upgradeID, index);
+        SetReady(PlayerSystem.Players[playerIndex], skipped, UpgradeCardData.GetById(upgradeID), index);
         MakeDecisionClientRpc(playerIndex, skipped, upgradeID, index);
     }
     
     [ClientRpc]
     void MakeDecisionClientRpc(byte playerIndex, bool skipped, byte upgradeID, byte index) {
         if (IsServer) return;
-        SetReady(playerIndex, skipped, upgradeID, index);
+        SetReady(PlayerSystem.Players[playerIndex], skipped, UpgradeCardData.GetById(upgradeID), index);
     }
     
-    static void SetReady(byte playerIndex, bool skipped, byte upgradeID, byte index) {
-        var player = PlayerSystem.Players[playerIndex];
-
-        if (skipped){
+    static void SetReady(Player player, bool skipped, UpgradeCardData upgrade, int playerUpgradeIndex) {
+        if (skipped) {
             _skippedPlayers++;
             
             OnPlayerDecision?.Invoke(player, true, null);
-        } else{
-            var upgrade = UpgradeCardData.GetById(upgradeID);
+        } else {
             player.Energy.Value -= upgrade.Cost;
-            player.AddUpgrade(upgrade, index);
+            player.AddUpgrade(upgrade, playerUpgradeIndex);
             _shopCards[_shopCards.IndexOf(upgrade)] = null;
             
             OnPlayerDecision?.Invoke(player, false, upgrade);

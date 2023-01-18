@@ -1,51 +1,80 @@
 using System;
-using UnityEngine.EventSystems;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using TMPro;
+using UnityEngine;
 
 public abstract class Choice<T> : Overlay {
-    protected T[] Options;
+    [SerializeField] TMP_Text _timerText;
 
-    protected abstract int MaxOptions { get; }
-    protected abstract int MinOptions { get; }
+    protected IReadOnlyList<T> Options;
+    protected IReadOnlyList<bool> AvailableOptions;
 
-    bool _isOptional;
+    Action<T> _callback;
+
+    protected abstract void OnInit();
     
-    Action<ChoiceResult> _callback;
-
-    protected void Init(T[] options, Action<ChoiceResult> callback, bool isOptional = false) {
-        if (options.Length > MaxOptions || options.Length < MinOptions) {
-            throw new ArgumentOutOfRangeException($"Options must be between {MinOptions} and {MaxOptions}.");
-        }
-
+    public void Init(IReadOnlyList<T> options, IReadOnlyList<bool> availableArray, Action<T> callback = null) {
         Options = options;
+        AvailableOptions = availableArray;
         _callback = callback;
-        _isOptional = isOptional;
+        
+        ChoiceSystem.Instance.StartChoice(availableArray, options.Count);
+        
+        OnInit();
     }
 
-    protected override void OnOverlayClick() {
-        if (!_isOptional) return;
-        base.OnOverlayClick();
-        Cancel();
+    protected override void OnEnable() {
+        base.OnEnable();
+        ChoiceSystem.TimeLeft.OnValueChanged += OnTimeLeftChanged;
+    }
+
+    protected override void OnDisable() {
+        base.OnDisable();
+        ChoiceSystem.TimeLeft.OnValueChanged -= OnTimeLeftChanged;
+    }
+
+    public class ChoiceResult {
+        public bool ChoiceMade;
+        public int Index;
+        public T Value;
+    }
+    
+    public static IEnumerator Create(
+        Player player,
+        OverlayData<Choice<T>> overlayData,
+        IReadOnlyList<T> options, 
+        IReadOnlyList<bool> availableArray,
+        ChoiceResult result,
+        float maxTime = 10f,
+        Action<T> callback = null) 
+    {
+        if (PlayerSystem.IsLocal(player)) {
+            var overlay = OverlaySystem.Instance.PushAndShowOverlay(overlayData);
+            overlay.Init(options, availableArray, callback);
+            
+            ChoiceSystem.Instance.StartChoice(availableArray, options.Count, maxTime);
+        } 
+        
+        ChoiceSystem.OnChoiceMade += OnChoiceMade;
+        void OnChoiceMade(int index) {
+            result.ChoiceMade = true;
+            result.Index = index;
+            result.Value = options[index];
+            ChoiceSystem.OnChoiceMade -= OnChoiceMade;
+        }
+
+        yield return new WaitUntil(() => result.ChoiceMade);
+    }
+
+    void OnTimeLeftChanged(float _, float timeLeft) {
+        _timerText.text = timeLeft.ToString(CultureInfo.InvariantCulture);
     }
 
     protected void OnOptionChoose(T choice) {
-        _callback?.Invoke(new ChoiceResult {
-            Choice = choice,
-            WasCanceled = false
-        });
+        ChoiceSystem.Instance.EndChoice(Options.IndexOf(choice));
         OverlaySystem.Instance.DestroyCurrentOverlay();
-    }
-
-    protected void Cancel() {
-        if (!_isOptional) return;
-        _callback?.Invoke(new ChoiceResult {
-            Choice = default,
-            WasCanceled = true
-        });
-        OverlaySystem.Instance.DestroyCurrentOverlay();
-    }
-
-    public struct ChoiceResult {
-        public T Choice;
-        public bool WasCanceled;
+        _callback?.Invoke(choice);
     }
 }

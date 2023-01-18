@@ -9,7 +9,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
     public static bool IsStressed { get; private set; }
     public static bool LocalPlayerLockedIn { get; private set; }
     
-    public static readonly ObservableField<int> StressTimer = new(0);
+    public static readonly ObservableField<int> StressTimer = new();
     
     static int _playersLockedIn;
 
@@ -31,7 +31,6 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
         }
 
         _playersLockedIn = 0;
-        Debug.Log(PlayerSystem.Players.Count);
         yield return new WaitUntil(() => _playersLockedIn >= PlayerSystem.Players.Count);
     }
 

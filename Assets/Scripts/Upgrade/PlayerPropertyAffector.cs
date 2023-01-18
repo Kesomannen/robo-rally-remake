@@ -5,10 +5,11 @@ using UnityEngine;
 public class PlayerPropertyAffector : ScriptableAffector<IPlayer> {
     [SerializeField] int _value;
     [SerializeField] Target _target;
+    [SerializeField] bool _remove = true;
 
     public override void Apply(IPlayer target) {
         var player = target.Owner;
-        switch (_target){
+        switch (_target) {
             case Target.CardsPerTurn: player.CardsPerTurn += _value; break;
             case Target.Energy: player.Energy.Value += _value; break;
             case Target.Priority: player.BonusPriority += _value; break;
@@ -17,8 +18,10 @@ public class PlayerPropertyAffector : ScriptableAffector<IPlayer> {
     }
     
     public override void Remove(IPlayer target) {
+        if (!_remove) return;
+        
         var player = target.Owner;
-        switch (_target){
+        switch (_target) {
             case Target.CardsPerTurn: player.CardsPerTurn -= _value; break;
             case Target.Energy: player.Energy.Value -= _value; break;
             case Target.Priority: player.BonusPriority -= _value; break;

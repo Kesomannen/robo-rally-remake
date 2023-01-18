@@ -23,7 +23,7 @@ public class PhysicsTooltipTrigger : TooltipTrigger, IPointerMoveHandler {
         Show();
     }
 
-    void LateUpdate() {
+    void Update() {
         if (_active && !_movedThisFrame) {
             _active = false;
             

@@ -61,8 +61,9 @@ public class HandController : Singleton<HandController> {
     IEnumerator DrawCardRoutine(CardAction a) {
         var cardObject = CreateCard(a.Card, a.Index);
         cardObject.transform.position = _drawPile.position;
-        LeanTween.move(cardObject.gameObject, GetOrigin(a.Index).Origin, _cardMoveDuration)
-                             .setEase(_easingType);
+        LeanTween
+            .move(cardObject.gameObject, GetOriginAndOffset(a.Index).Origin, _cardMoveDuration)
+            .setEase(_easingType);
         yield return CoroutineUtils.Wait(_cardMoveDuration);
 
         cardObject.enabled = true;
@@ -166,12 +167,12 @@ public class HandController : Singleton<HandController> {
 
     void UpdateCards() {
         for (var i = 0; i < _cardObjects.Count; i++) {
-            var (origin, offset) = GetOrigin(i);
+            var (origin, offset) = GetOriginAndOffset(i);
             _cardObjects[i].SetOrigin(origin, i, offset);
         }
     }
 
-    (Vector2 Origin, float VerticalOffset) GetOrigin(int index) {
+    (Vector2 Origin, float VerticalOffset) GetOriginAndOffset(int index) {
         var centeredIndex = index - _cardObjects.Count / 2f + 0.5f;
         var xPos = CardSpacing * centeredIndex;
         var yPos = -Mathf.Abs(centeredIndex) * _cardVerticalOffset;
