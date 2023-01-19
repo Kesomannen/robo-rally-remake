@@ -48,9 +48,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2263180237216716452}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bacf8029707990e428d2b1ac4ac94b15, type: 3}
+  m_Script: {fileID: 11500000, guid: 93034f047f734a559f0f2217df407545, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _timerText: {fileID: 0}
   _choiceContainer: {fileID: 7513480536698273474}
   _choicePrefab: {fileID: 1629457721209216054, guid: f75198c2fd0ea3f4184ee50a2a500c30, type: 3}
 --- !u!114 &4765233023463762201

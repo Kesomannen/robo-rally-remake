@@ -661,6 +661,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _upgradeParent: {fileID: 772788830}
+  _overrideOverlay:
+    Header: Chose a card to override
+    Subtitle: 
+    Prefab: {fileID: 0}
+    CanPreview: 0
   _shopCardPrefab: {fileID: -3931275337680322805, guid: 26adbe8b95cd2874ead727820fa407bc, type: 3}
 --- !u!1 &244314945
 GameObject:
@@ -943,6 +948,7 @@ GameObject:
   - component: {fileID: 349215626}
   - component: {fileID: 349215627}
   - component: {fileID: 349215620}
+  - component: {fileID: 349215628}
   m_Layer: 0
   m_Name: NetworkingSystem
   m_TagString: Untagged
@@ -1039,6 +1045,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4ca1e5bf0c84169acfefb72b5cd6c0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &349215628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 349215619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a04ac486759743e080f2ec879103143d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &409865900

@@ -1,32 +1,33 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-public class ProgramCardChoice : Choice<ProgramCardData> {
+public class ContainerChoice<T> : Choice<T> {
     [Header("References")]
     [SerializeField] Transform _choiceContainer;
     
     [Header("Prefabs")]
-    [SerializeField] ProgramCardChoiceItem _choicePrefab;
+    [SerializeField] ChoiceItem<T> _choicePrefab;
 
     protected override void OnInit() {
-        CreateCards();
+        CreateContainers();
     }
-    void CreateCards() {
+    
+    void CreateContainers() {
         for (var i = 0; i < Options.Count; i++) {
             var card = Instantiate(_choicePrefab, _choiceContainer);
-            card.SetContent(Options[i]);
+            card.Container.SetContent(Options[i]);
             card.SetAvailable(AvailableOptions[i]);
         }
     }
     
     protected override void OnEnable() {
-        ProgramCardChoiceItem.OnCardSelected += OnCardSelected;    
+        ChoiceItem<T>.OnCardSelected += OnCardSelected;    
     }
 
     protected override void OnDisable() {
-        ProgramCardChoiceItem.OnCardSelected -= OnCardSelected;
+        ChoiceItem<T>.OnCardSelected -= OnCardSelected;
     }
 
-    void OnCardSelected(ProgramCardData card) {
+    void OnCardSelected(T card) {
         OnOptionChoose(card);
     }
 }

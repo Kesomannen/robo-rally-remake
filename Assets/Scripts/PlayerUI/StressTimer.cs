@@ -34,16 +34,19 @@ public class StressTimer : MonoBehaviour, ITooltipable {
     }
 
     void OnStressValueChanged(int prev, int next) {
+        if (!ProgrammingPhase.IsStressed) {
+            _text.text = "---";
+            return;
+        }
         _text.text = next.ToString();
-        if (!ProgrammingPhase.IsStressed) return;
 
-        if (_isStressed){
+        if (_isStressed) {
             if (LeanTween.isTweening(_hourglass)) return;
             LeanTween.rotateAround(_hourglass, Vector3.forward, 180, 0.75f).setEase(LeanTweenType.easeSpring);
-        } else{
+        } else {
             _isStressed = true;
 
-            // Hourglass animation
+            // Jump animation
             var source = _hourglass.transform.position.y;
             var target = source + _jumpHeight * CanvasUtils.CanvasScale.y;
 

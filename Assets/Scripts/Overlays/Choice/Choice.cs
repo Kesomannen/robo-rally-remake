@@ -48,14 +48,12 @@ public abstract class Choice<T> : Overlay {
         IReadOnlyList<bool> availableArray,
         ChoiceResult result,
         float maxTime = 10f,
-        Action<T> callback = null) 
+        Action<T> callback = null)
     {
         if (PlayerSystem.IsLocal(player)) {
-            var overlay = OverlaySystem.Instance.PushAndShowOverlay(overlayData);
-            overlay.Init(options, availableArray, callback);
-            
+            OverlaySystem.Instance.PushAndShowOverlay(overlayData).Init(options, availableArray, callback);
             ChoiceSystem.Instance.StartChoice(availableArray, options.Count, maxTime);
-        } 
+        }
         
         ChoiceSystem.OnChoiceMade += OnChoiceMade;
         void OnChoiceMade(int index) {

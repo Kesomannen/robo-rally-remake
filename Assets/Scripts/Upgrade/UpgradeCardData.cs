@@ -36,7 +36,7 @@ public class UpgradeCardData : Lookup<UpgradeCardData>, IAffector<IPlayer> {
             Phase.Execution => ExecutionPhase.CurrentSubPhase == ExecutionSubPhase.Registers 
                 ? CanUseIn(PlayerSystem.IsLocal(ExecutionPhase.CurrentPlayer) ? UseContext.OwnRegister : UseContext.OtherRegisters) 
                 : CanUseIn(UseContext.BoardElements),
-            Phase.Shop => CanUseIn(UseContext.Shop),
+            Phase.Shop => false,
             _ => throw new Exception("Unknown phase")
         };
 
@@ -83,8 +83,7 @@ public enum UseContext {
     AfterLockIn = 2,
     OwnRegister = 4,
     OtherRegisters = 8,
-    BoardElements = 16,
-    Shop = 32
+    BoardElements = 16
 }
 
 public enum UpgradeType {

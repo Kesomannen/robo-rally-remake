@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
-using UnityEngine.UI;
 
 public class CardCollectionDisplay : MonoBehaviour, IPointerClickHandler {
     [SerializeField] Pile _targetPile;

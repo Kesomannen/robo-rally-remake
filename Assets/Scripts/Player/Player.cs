@@ -190,13 +190,6 @@ public class Player : IPlayer {
 
     #region Upgrades
     
-    public int GetOpenUpgradeSlot() {
-        for (var i = 0; i < _upgrades.Length; i++){
-            if (_upgrades[i] == null) return i;
-        }
-        return -1;
-    }
-
     public void AddUpgrade(UpgradeCardData upgrade, int index) {
         RemoveUpgrade(index);
         _upgrades[index] = upgrade;

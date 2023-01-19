@@ -1,16 +1,17 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class UIManager : Singleton<UIManager> {
     [SerializeField] UITransition _transition;
     [SerializeField] Transform _playerUIParent, _executionUIParent, _shopUIParent;
 
-    public void ChangeState(UIState newState) {
-        if (_currentState == newState) return;
+    public IEnumerator ChangeState(UIState newState) {
+        if (_currentState == newState) yield break;
         
         Exit(_currentState);
         _currentState = newState;
-        Enter(_currentState);
+        yield return Enter(_currentState);
         
         OnStateChange?.Invoke(_currentState);
     }
@@ -19,19 +20,19 @@ public class UIManager : Singleton<UIManager> {
 
     public static event Action<UIState> OnStateChange;
 
-    void Enter(UIState state) {
-        Action action = state switch {
-            UIState.Programming => Programming,
-            UIState.Execution => Execution,
-            UIState.Shop => Shop,
-            UIState.None => () => { },
+    IEnumerator Enter(UIState state) {
+        yield return state switch {
+            UIState.Programming => Programming(),
+            UIState.Execution => Execution(),
+            UIState.Shop => Shop(),
+            UIState.None => None(),
             _ => throw new ArgumentOutOfRangeException()
         };
 
-        action();
-
-        void Programming() {
-            _transition.DoTransition("Programming Phase", () => {
+        IEnumerator None() { yield break; }
+        
+        IEnumerator Programming() {
+            yield return _transition.DoTransition("Programming Phase", () => {
                 _playerUIParent.gameObject.SetActive(true);
                 UIMap.Instance.gameObject.SetActive(true);
 
@@ -40,8 +41,8 @@ public class UIManager : Singleton<UIManager> {
             });
         }
 
-        void Execution() {
-            _transition.DoTransition("Execution Phase", () => {
+        IEnumerator Execution() {
+            yield return _transition.DoTransition("Execution Phase", () => {
                 _executionUIParent.gameObject.SetActive(true);
                 UIMap.Instance.gameObject.SetActive(true);
 
@@ -50,8 +51,8 @@ public class UIManager : Singleton<UIManager> {
             });
         }
 
-        void Shop() {
-            _transition.DoTransition("Shop Phase", () => {
+        IEnumerator Shop() {
+            yield return _transition.DoTransition("Shop Phase", () => {
                 _shopUIParent.gameObject.SetActive(true); 
             });
         }

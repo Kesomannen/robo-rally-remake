@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-[RequireComponent(typeof(UpgradeCardData))]
+[RequireComponent(typeof(Container<UpgradeCardData>))]
 public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
     [SerializeField] LeanTweenType _tweenType;
     [SerializeField] float _tweenDuration;
     [SerializeField] float _highlightScale;
 
-    Container<UpgradeCardData> _upgradeCard;
+    Container<UpgradeCardData> _container;
     Transform _highlightParent;
     Transform _originalParent;
     Vector3 _originalSize;
@@ -17,7 +17,7 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
     public Transform HighlightParent { set => _highlightParent = value; }
     
     void Awake() {
-        _upgradeCard = GetComponent<Container<UpgradeCardData>>();
+        _container = GetComponent<Container<UpgradeCardData>>();
         
         var t = transform;
         _originalParent = t.parent;
@@ -51,8 +51,9 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
     public void OnPointerClick(PointerEventData eventData) {
         if (eventData.button != PointerEventData.InputButton.Left) return;
         
-        var upgrade = _upgradeCard.Content;
+        var upgrade = _container.Content;
         if (!upgrade.CanUse(Owner)) return;
+        Owner.Energy.Value -= upgrade.UseCost;
         Owner.UseUpgrade(Owner.Upgrades.IndexOf(upgrade));
     }
 }

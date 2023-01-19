@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -8,16 +9,25 @@ public class UITransition : MonoBehaviour {
     [SerializeField] TMP_Text _text;
     
     Action _onMiddle;
+    bool _isPlaying;
 
-    public void DoTransition(string text, Action onMiddle) {
+    public IEnumerator DoTransition(string text, Action onMiddle) {
         gameObject.SetActive(true);
-        if (!string.IsNullOrEmpty(text)) _text.text = text;
+        _isPlaying = true;
+        
+        if (!string.IsNullOrEmpty(text)) {
+            _text.text = text;
+        }
+        
         _animator.SetTrigger(_triggerName);
         _onMiddle = onMiddle;
+
+        yield return new WaitUntil(() => _isPlaying);
     }
     
     public void OnTransitionEnd() {
         gameObject.SetActive(false);
+        _isPlaying = false;
     }
     
     public void OnTransitionMiddle() {

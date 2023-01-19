@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using Unity.Netcode;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -16,7 +15,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
     
     static List<UpgradeCardData> _availableCards;
 
-    [CanBeNull] public static Player CurrentPlayer { get; private set; }
+    public static Player CurrentPlayer { get; private set; }
 
     const float RestockDelay = 0.5f;
 
@@ -31,7 +30,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
     }
 
     public IEnumerator DoPhase() {
-        UIManager.Instance.ChangeState(UIState.Shop);
+        yield return UIManager.Instance.ChangeState(UIState.Shop);
         OnPhaseStarted?.Invoke();
 
         _restockTrigger = false;
@@ -86,15 +85,15 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
         var cardIds = new List<byte>();
 
         for (var i = 0; i < _shopCards.Length; i++) {
-            Debug.Log($"Restocking slot {i}");
             var card = _shopCards[i];
             if (card != null) continue;
+            Debug.Log($"Restocking slot {i}");
                 
             if (_availableCards == null || _availableCards.Count == 0) {
                 _availableCards = UpgradeCardData.GetAll().ToList();
             }
             
-            var randomIndex = Random.Range(0, _availableCards!.Count);
+            var randomIndex = Random.Range(0, _availableCards.Count);
             var newCard = _availableCards[randomIndex];
             _availableCards.RemoveAt(randomIndex);
                 
@@ -112,46 +111,36 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
     public void MakeDecision(bool skipped, UpgradeCardData upgrade, int index) {
         var id = skipped ? 0 : upgrade.GetLookupId();
 
-        if (NetworkManager == null) {
-            SetReady(
-                PlayerSystem.LocalPlayer,
-                skipped,
-                upgrade,
-                index
-);
-        } else {
-            MakeDecisionServerRpc (
-                (byte) PlayerSystem.Players.IndexOf(PlayerSystem.LocalPlayer),
-                skipped,
-                (byte) id,
-                (byte) index
-            );   
-        }
+        MakeDecisionServerRpc (
+            skipped,
+            (byte) id,
+            (byte) index
+        );  
     }
     
     [ServerRpc(RequireOwnership = false)]
-    void MakeDecisionServerRpc(byte playerIndex, bool skipped, byte upgradeID, byte index) {
-        SetReady(PlayerSystem.Players[playerIndex], skipped, UpgradeCardData.GetById(upgradeID), index);
-        MakeDecisionClientRpc(playerIndex, skipped, upgradeID, index);
+    void MakeDecisionServerRpc(bool skipped, byte upgradeID, byte index) {
+        SetReady(skipped, UpgradeCardData.GetById(upgradeID), index);
+        MakeDecisionClientRpc(skipped, upgradeID, index);
     }
     
     [ClientRpc]
-    void MakeDecisionClientRpc(byte playerIndex, bool skipped, byte upgradeID, byte index) {
+    void MakeDecisionClientRpc(bool skipped, byte upgradeID, byte index) {
         if (IsServer) return;
-        SetReady(PlayerSystem.Players[playerIndex], skipped, UpgradeCardData.GetById(upgradeID), index);
+        SetReady(skipped, UpgradeCardData.GetById(upgradeID), index);
     }
     
-    static void SetReady(Player player, bool skipped, UpgradeCardData upgrade, int playerUpgradeIndex) {
+    static void SetReady(bool skipped, UpgradeCardData upgrade, int playerUpgradeIndex) {
         if (skipped) {
             _skippedPlayers++;
             
-            OnPlayerDecision?.Invoke(player, true, null);
+            OnPlayerDecision?.Invoke(CurrentPlayer, true, null);
         } else {
-            player.Energy.Value -= upgrade.Cost;
-            player.AddUpgrade(upgrade, playerUpgradeIndex);
+            CurrentPlayer.Energy.Value -= upgrade.Cost;
+            CurrentPlayer.AddUpgrade(upgrade, playerUpgradeIndex);
             _shopCards[_shopCards.IndexOf(upgrade)] = null;
             
-            OnPlayerDecision?.Invoke(player, false, upgrade);
+            OnPlayerDecision?.Invoke(CurrentPlayer, false, upgrade);
         }
         _currentPlayerReady = true;
     }

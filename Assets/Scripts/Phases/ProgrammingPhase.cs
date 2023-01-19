@@ -16,8 +16,8 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
     public static event Action OnPhaseStarted;
     public static event Action<Player> OnPlayerLockedIn, OnStressStarted;
 
-    public IEnumerator DoPhase() {
-        UIManager.Instance.ChangeState(UIState.Programming);
+    public static IEnumerator DoPhase() {
+        yield return UIManager.Instance.ChangeState(UIState.Programming);
 
         IsStressed = false;
         PlayerRegisterUI.Locked = false;

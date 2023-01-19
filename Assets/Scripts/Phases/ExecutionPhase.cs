@@ -18,9 +18,9 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
     public static event Action<IReadOnlyList<Player>> OnPlayersOrdered;
     public static event Action<int> OnNewRegister; 
 
-    public IEnumerator DoPhase() {
+    public static IEnumerator DoPhase() {
         OnPhaseStart?.Invoke();
-        UIManager.Instance.ChangeState(UIState.Execution);
+        yield return UIManager.Instance.ChangeState(UIState.Execution);
         
         TaskScheduler.PushSequence(
             delay: StepDelay,

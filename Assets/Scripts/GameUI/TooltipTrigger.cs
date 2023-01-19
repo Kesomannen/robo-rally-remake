@@ -7,7 +7,7 @@ public abstract class TooltipTrigger : MonoBehaviour {
     ITooltipable _tooltipable;
     bool _isTooltipActive;
 
-    protected virtual void Awake(){
+    protected virtual void Awake() {
         var item = GetTooltipable();
         if (item == null){
             Debug.LogError($"No tooltipable found on {gameObject.name}");

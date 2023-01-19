@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -11,8 +12,8 @@ public class LockInButton : MonoBehaviour, IPointerClickHandler {
     [SerializeField] float _shakeMagnitude;
 
     bool _canClick = true;
-    
-    public bool CanClick {
+
+    bool CanClick {
         get => _canClick;
         set {
             _canClick = value;
@@ -21,6 +22,18 @@ public class LockInButton : MonoBehaviour, IPointerClickHandler {
     }
     
     static Player Owner => PlayerSystem.LocalPlayer;
+
+    void Awake() {
+        ProgrammingPhase.OnPhaseStarted += OnProgrammingStarted;
+    }
+    
+    void OnDestroy() {
+        ProgrammingPhase.OnPhaseStarted -= OnProgrammingStarted;
+    }
+    
+    void OnProgrammingStarted() {
+        CanClick = true;
+    }
 
     public void OnPointerClick(PointerEventData e) {
         if (!CanClick) return;
