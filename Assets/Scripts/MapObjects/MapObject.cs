@@ -5,9 +5,7 @@ using UnityEngine.EventSystems;
 
 public abstract class MapObject : MonoBehaviour, IMapObject {
     public MapObject Object => this;
-    public IRotator Rotator => _rotator;
-
-    TransformRotator _rotator;
+    public TransformRotator Rotator { get; private set; }
 
     #if UNITY_EDITOR
     [ReadOnly] 
@@ -24,14 +22,14 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
     }
 
     protected virtual void Awake(){
-        _rotator = new TransformRotator(transform.eulerAngles);
+        Rotator = new TransformRotator(transform.eulerAngles);
     }
 
     public void RotateInstant(int steps) {
         if (steps == 0 || !CanRotate) return;
 
-        _rotator.RotZ += steps;
-        transform.eulerAngles = new Vector3(0, 0, _rotator.RotZ * 90f);
+        Rotator.RotZ += steps;
+        transform.eulerAngles = new Vector3(0, 0, Rotator.RotZ * 90f);
         OnRotationChanged?.Invoke(steps);
     }
 
@@ -41,11 +39,11 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
     public IEnumerator RotateRoutine(int steps, float speed = DefaultRotSpeed, LeanTweenType easeType = DefaultRotEaseType) {
         if (steps == 0 || !CanRotate) yield break;
         
-        _rotator.RotZ += steps;
+        Rotator.RotZ += steps;
         OnRotationChanged?.Invoke(steps);
         
         var duration = Math.Abs(steps) * speed;
-        LeanTween.rotateZ(gameObject, _rotator.RotZ * 90f, duration).setEase(easeType);
+        LeanTween.rotateZ(gameObject, Rotator.RotZ * 90f, duration).setEase(easeType);
         yield return CoroutineUtils.Wait(duration);
     }
 }

@@ -146,7 +146,9 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
             RobotId = GetRobotId()
         };
         
-        SendLobbyUpdates();
+        foreach (var (id, data) in _playersInLobby) {
+            UpdatePlayerClientRpc(id, data);
+        }
         OnPlayerUpdatedOrAdded?.Invoke(player, _playersInLobby[player]);
 
         byte GetRobotId() {
@@ -162,12 +164,6 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
             while (occupiedIds.Contains(id));
             
             return id;
-        }
-    }
-
-    void SendLobbyUpdates() {
-        foreach (var player in _playersInLobby) {
-            UpdatePlayerClientRpc(player.Key, player.Value);
         }
     }
 
@@ -202,6 +198,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         if (!IsServer) yield break;
         while (NetworkManager != null) {
             yield return CoroutineUtils.Wait(LobbyUpdateInterval);
+            if (Matchmaking.CurrentMapID == LobbyMapId) continue;
             var task = Matchmaking.UpdateLobbyAsync(new UpdateLobbyDataOptions {
                 MapID = (byte?)LobbyMapId
             });

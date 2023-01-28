@@ -20,6 +20,8 @@ public class Checkpoint : BoardElement<Checkpoint, IPlayer>, ITooltipable {
 
     protected override void Activate(IPlayer[] targets) {
         foreach (var playerModel in targets) {
+            AddActivation();
+            
             var player = playerModel.Owner;
             var current = player.CurrentCheckpoint;
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
     public static int CurrentRegister { get; private set; }
@@ -16,7 +17,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
     public static event Action<ProgramCardData, int, Player> OnPlayerRegister;
     public static event Action<ExecutionSubPhase> OnNewSubPhase;
     public static event Action<IReadOnlyList<Player>> OnPlayersOrdered;
-    public static event Action<int> OnNewRegister; 
+    public static event Action<int> OnNewRegister;
 
     public static IEnumerator DoPhase() {
         OnPhaseStart?.Invoke();
@@ -35,11 +36,15 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
             player.DiscardProgram();
         }
         
+        yield return TaskScheduler.WaitUntilClear();
+        
         OnPhaseEnd?.Invoke();
     }
 
     // ReSharper disable Unity.PerformanceAnalysis
     static IEnumerator DoRegister(int register) {
+        Debug.Log($"Starting register {register}");
+        
         CurrentRegister = register;
         OnNewRegister?.Invoke(register);
 
@@ -59,7 +64,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
             delay: SubPhaseDelay,
             DoSubPhase(ExecutionSubPhase.Registers, () => {
                 TaskScheduler.PushSequence(routines: registerRoutines);
-                return players.Any(p => !p.IsRebooted.Value);
+                return true;
             }),
             DoSubPhase(ExecutionSubPhase.Conveyor, Conveyor.ActivateElement),
             DoSubPhase(ExecutionSubPhase.PushPanel, PushPanel.ActivateElement),
@@ -79,14 +84,16 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
         );
 
         IEnumerator DoSubPhase(ExecutionSubPhase subPhase, Func<bool> execute) {
-            CurrentSubPhase = subPhase;
-            OnNewSubPhase?.Invoke(subPhase);
             if (execute()) {
+                CurrentSubPhase = subPhase;
+                OnNewSubPhase?.Invoke(subPhase);
                 yield return CoroutineUtils.Wait(SubPhaseDelay);
             }
         }
 
         IEnumerator DoPlayerRegister(Player player) {
+            Debug.Log($"Starting player {player} register {register}");
+            
             CurrentPlayer = player;
             var card = player.Program[register];
             if (card == null) yield break;

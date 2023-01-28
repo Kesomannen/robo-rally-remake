@@ -18,14 +18,17 @@ public class ExecutionUI : MonoBehaviour {
     [SerializeField] Sprite _playerLaserSprite;
     [SerializeField] Sprite _energySpaceSprite;
     [SerializeField] Sprite _checkpointSprite;
-
-    [FormerlySerializedAs("_playerSlicePrefab")]
+    
     [Header("References")]
+    [FormerlySerializedAs("_playerSlicePrefab")]
     [SerializeField] ExecutionPlayerPanel _executionPlayerPanelPrefab;
     [SerializeField] Transform _playerSliceParent;
+    [SerializeField] Transform _highlightParent;
+    [SerializeField] ProgramCard _previewProgramCard;
 
     Dictionary<Player, ExecutionPlayerPanel> _playerSlices;
     PlayerModel _currentPlayer;
+    int _currentPlayerIndex;
 
     void OnEnable() {
         ExecutionPhase.OnNewSubPhase += OnNewSubPhase;
@@ -38,21 +41,42 @@ public class ExecutionUI : MonoBehaviour {
         ExecutionPhase.OnPlayerRegister -= OnPlayerRegister;
         ExecutionPhase.OnPlayersOrdered -= OnPlayersOrdered;
     }
+
+    void Highlight(ProgramCardData card, int index, Player player) {
+        player.Model.Highlight(true);
+        
+        _playerSlices[player].Show(index);
+        _playerSlices[player].transform.SetParent(_highlightParent);
+        
+        _currentPlayer = player.Model;
+        _currentPlayerIndex = index;
+        
+        _previewProgramCard.SetActive(true);
+        _previewProgramCard.SetContent(card);
+    }
+    
+    void Unhighlight(int index, Player player) {
+        player.Model.Highlight(false);
+
+        var slice = _playerSlices[player];
+        slice.Hide(index);
+            
+        slice.transform.SetParent(_playerSliceParent);
+        slice.transform.SetSiblingIndex(_currentPlayerIndex);
+        
+        _previewProgramCard.SetActive(false);
+    }
     
     void OnPlayerRegister(ProgramCardData card, int index, Player player) {
         if (_currentPlayer != null) {
-            _currentPlayer.Highlight(false);
-            _playerSlices[player].Hide(index);
+            Unhighlight(index, _currentPlayer.Owner);
         }
-        player.Model.Highlight(true);
-        _playerSlices[player].Show(index);
-        _currentPlayer = player.Model;
+        Highlight(card, index, player);
     }
 
     void OnNewSubPhase(ExecutionSubPhase subPhase) {
         if ((int)subPhase == 1) {
-            _currentPlayer.Highlight(false);
-            _playerSlices[_currentPlayer.Owner].Hide(ExecutionPhase.CurrentRegister);
+            Unhighlight(_currentPlayerIndex, _currentPlayer.Owner);
         }
         _subPhaseImage.sprite = GetSubPhaseSprite(subPhase);
         _subPhaseText.text = subPhase.ToString();

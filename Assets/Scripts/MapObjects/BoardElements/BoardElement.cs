@@ -9,10 +9,14 @@ public abstract class BoardElement<T, THandler> : MapObject, IOnEnterExitHandler
 
     protected abstract void Activate(THandler[] targets);
 
+    static int _activations;
+    protected void AddActivation() => _activations++;
+
     public static bool ActivateElement() {
         if (ActiveElements == 0) return false;
+        _activations = 0;
         OnActivateEvent?.Invoke();
-        return true;
+        return _activations > 0;
     }
     
     public virtual void OnEnter(MapObject mapObject) {

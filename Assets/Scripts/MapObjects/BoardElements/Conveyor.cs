@@ -22,17 +22,19 @@ public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
     protected override void Awake() {
         base.Awake();
         _direction = Rotator.Rotate(_direction);
-        _rotation = _rotation.Select(r => new ConveyorRotation {
-            _rotation = r._rotation,
-            _relativeDirection = Rotator.Rotate(r._relativeDirection)
+        _rotation = _rotation.Select(r => {
+            var rot = r._rotation;
+            if (Rotator.FlipX) rot *= -1;
+            if (Rotator.FlipY) rot *= -1;
+            
+            return new ConveyorRotation {
+                _rotation = rot,
+                _relativeDirection = Rotator.Rotate(r._relativeDirection)
+            };
         }).ToArray();
 
-        OnRotationChanged += s => {
-            _direction = _direction.Transform(s);
-            _rotation = _rotation.Select(r => new ConveyorRotation {
-                _rotation = r._rotation,
-                _relativeDirection = r._relativeDirection.Transform(s)
-            }).ToArray();
+        OnRotationChanged += _ => {
+            Debug.LogWarning("Conveyor rotation is not supported!", this);
         };
     }
     
@@ -79,7 +81,7 @@ public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
             // If there's no conveyor, this is a final move
             // We are also assuming adjacent conveyors are accessible from each other
             
-            if (Interaction.SoftMove(movable[0].Object, _direction, out var mapEvent)){
+            if (Interaction.SoftMove(movable[0].Object, _direction, out var mapEvent)) {
                 // Add remaining objects to the map event
                 mapEvent.MapObjects.AddRange(movable.Skip(1).Select(o => o.Object));
                 _moves.Add((targetPos, true, mapEvent));

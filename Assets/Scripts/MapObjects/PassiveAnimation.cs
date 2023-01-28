@@ -18,7 +18,7 @@ public class PassiveAnimation : MonoBehaviour {
 
     IEnumerator AnimationRoutine() {
         var i = 0;
-        while (true) {
+        while (enabled) {
             _renderer.sprite = _sprites[i];
             if (i++ >= _sprites.Length - 1) i = 0;
             yield return CoroutineUtils.Wait(_frameTime);

@@ -31,7 +31,7 @@ public class UpgradeCardData : Lookup<UpgradeCardData>, IAffector<IPlayer> {
         if (_type == UpgradeType.Permanent
             || _type == UpgradeType.Action && player.Owner.Energy.Value < UseCost) return false;
 
-        return PhaseSystem.CurrentPhase switch {
+        return PhaseSystem.Current.Value switch {
             Phase.Programming => CanUseIn(ProgrammingPhase.LocalPlayerLockedIn ? UseContext.AfterLockIn : UseContext.DuringProgramming),
             Phase.Execution => ExecutionPhase.CurrentSubPhase == ExecutionSubPhase.Registers 
                 ? CanUseIn(PlayerSystem.IsLocal(ExecutionPhase.CurrentPlayer) ? UseContext.OwnRegister : UseContext.OtherRegisters) 

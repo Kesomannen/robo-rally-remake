@@ -8,10 +8,21 @@ public class RobotSelection : MonoBehaviour {
     [SerializeField] Transform _robotPanelParent;
 
     readonly List<RobotPanel> _panels = new();
-    Dictionary<ulong, RobotData> _playerRobots;
+    readonly Dictionary<ulong, RobotData> _playerRobots = new();
 
+    void Awake() {
+        foreach (var robotData in RobotData.GetAll()) {
+            var newPanel = Instantiate(_robotPanelPrefab, _robotPanelParent);
+            newPanel.SetContent(robotData);
+            _panels.Add(newPanel);
+        }
+    }
+    
     void OnEnable() {
-        _playerRobots = LobbySystem.PlayersInLobby.ToDictionary(p => p.Key, p => RobotData.GetById(p.Value.RobotId));
+        _playerRobots.Clear();
+        foreach (var (id, data) in LobbySystem.PlayersInLobby) {
+            _playerRobots.Add(id, RobotData.GetById(data.RobotId));
+        }
         _panels.ForEach(UpdatePanel);
         
         LobbySystem.OnPlayerUpdatedOrAdded += OnPlayerUpdatedOrAdded;
@@ -29,18 +40,11 @@ public class RobotSelection : MonoBehaviour {
     }
     
     void OnPlayerUpdatedOrAdded(ulong id, LobbyPlayerData data) {
-        var prev =  _playerRobots[id];
-        _playerRobots[id] = RobotData.GetById(data.RobotId);
-        UpdatePanel(prev);
-        UpdatePanel(_playerRobots[id]);
-    }
+        var isUpdate = _playerRobots.TryGetValue(id, out var prev);
 
-    void Start() {
-        foreach (var robotData in RobotData.GetAll()) {
-            var newPanel = Instantiate(_robotPanelPrefab, _robotPanelParent);
-            newPanel.SetContent(robotData);
-            _panels.Add(newPanel);
-        }
+        _playerRobots[id] = RobotData.GetById(data.RobotId);
+        if (isUpdate) UpdatePanel(prev);
+        UpdatePanel(_playerRobots[id]);
     }
 
     void UpdatePanel(RobotData robotData) => UpdatePanel(_panels.First(p => p.Content == robotData));
@@ -53,7 +57,7 @@ public class RobotSelection : MonoBehaviour {
         } else if (_playerRobots.Any(player => player.Value == panel.Content)) {
             panel.SetState(RobotPanel.State.Unavailable);
         } else {
-            panel.SetState(RobotPanel.State.Available);   
+            panel.SetState(RobotPanel.State.Available);
         }
     }
 }

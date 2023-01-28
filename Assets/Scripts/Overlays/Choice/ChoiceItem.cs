@@ -8,16 +8,13 @@ public class ChoiceItem<T> : MonoBehaviour, IPointerClickHandler {
     [Header("References")]
     [SerializeField] Selectable _selectable;
     [SerializeField] GameObject _unavailableOverlay;
+    [SerializeField] Container<T> _container;
 
-    public Container<T> Container { get; private set; }
+    public Container<T> Container => _container;
 
     public static Action<T> OnCardSelected;
 
     bool _isAvailable;
-
-    void Awake() {
-        Container = GetComponent<Container<T>>();
-    }
 
     public void OnPointerClick(PointerEventData e) {
         if (!_isAvailable) return;

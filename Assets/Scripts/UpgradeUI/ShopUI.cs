@@ -17,25 +17,37 @@ public class ShopUI : MonoBehaviour {
         gameObject.SetActive(false);
         ShopPhase.OnRestock += OnRestock;
         ShopPhase.OnPlayerDecision += OnPlayerDecision;
+        ShopPhase.OnNewPlayer += OnNewPlayer;
     }
 
     void OnDestroy() {
         ShopPhase.OnRestock -= OnRestock;
         ShopPhase.OnPlayerDecision -= OnPlayerDecision;
+        ShopPhase.OnNewPlayer -= OnNewPlayer;
+    }
+    
+    void OnNewPlayer(Player player) {
+        
     }
 
     void OnRestock(int index, UpgradeCardData card) {
-        var shopCard = _shopCards[index];
-        if (shopCard != null) {
-            shopCard.OnCardClicked -= OnCardClicked;
-            shopCard.Remove();
-        }
-        var newCard = Instantiate(_shopCardPrefab, _upgradeParent);
-        newCard.transform.SetSiblingIndex(index);
-        _shopCards[index] = newCard;
+        TaskScheduler.PushRoutine(Wrapper());
         
-        newCard.SetContent(card);
-        newCard.OnCardClicked += OnCardClicked;
+        IEnumerator Wrapper() {
+            var shopCard = _shopCards[index];
+            if (shopCard != null) {
+                shopCard.OnCardClicked -= OnCardClicked;
+                yield return shopCard.DisappearAnimation();
+            }
+            var newCard = Instantiate(_shopCardPrefab, _upgradeParent);
+            newCard.transform.SetSiblingIndex(index);
+            _shopCards[index] = newCard;
+        
+            newCard.SetContent(card);
+            newCard.OnCardClicked += OnCardClicked;
+
+            yield return newCard.RestockAnimation();
+        }
     }
     
     void OnCardClicked(ShopCard shopCard) {
@@ -59,24 +71,31 @@ public class ShopUI : MonoBehaviour {
                 _overrideOverlay,
                 localPlayer.Upgrades,
                 Enumerable.Repeat(true, localPlayer.Upgrades.Count).ToArray(),
-                result,
-                5.0f);
+                result);
             ShopPhase.Instance.MakeDecision(false, card, result.Index);
         }
     }
     
     void OnPlayerDecision(Player player, bool skipped, UpgradeCardData card) {
-        if (skipped) return;
-        for (var i = 0; i < _shopCards.Length; i++){
-            var shopCard = _shopCards[i];
-            if (shopCard == null || shopCard.Content != card) continue;
+        TaskScheduler.PushRoutine(Wrapper());
+        
+        IEnumerator Wrapper() {
+            if (skipped) {
+                
+            } else {
+                for (var i = 0; i < _shopCards.Length; i++){
+                    var shopCard = _shopCards[i];
+                    if (shopCard == null || shopCard.Content != card) continue;
 
-            shopCard.OnBuy();
-            _shopCards[i] = null;
-            break;
+                    yield return shopCard.BuyAnimation();
+                    _shopCards[i] = null;
+                    yield break;
+                }   
+            }
         }
     }
 
+    // Used in button UnityEvent
     public void Skip() {
         ShopPhase.Instance.MakeDecision(true, null, -1);
     }

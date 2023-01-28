@@ -9,19 +9,22 @@ public class PlayerPanel : Container<Player>, IPointerClickHandler {
     [SerializeField] Image _robotIcon;
     [SerializeField] OverlayData<PlayerOverlay> _overlayData;
 
-    [Header("Indicator")]
+    [Header("Indicators")]
     [SerializeField] UIPassiveAnimation _indicatorAnimator;
     [SerializeField] Sprite[] _doneAnim, _inProgressAnim, _waitingAnim;
+    [SerializeField] Image _actionIndicator;
+    [SerializeField] UpgradeCard _upgradeIndicator;
+    [SerializeField] [Min(0)] float _actionIndicatorDuration;
 
     Player _player;
     bool _programLockedIn;
 
     protected override void Serialize(Player player) {
-        if (_player != null){
-            _player.Energy.OnValueChanged -= OnEnergyChanged;
+        if (_player != null) {
+            _player.OnUpgradeUsed -= OnUpgradeUsed;
         }
         _player = player;
-        player.Energy.OnValueChanged += OnEnergyChanged;
+        _player.OnUpgradeUsed += OnUpgradeUsed;
         
         _nameText.text = player.ToString();
         _robotIcon.sprite = player.RobotData.Icon;
@@ -37,6 +40,15 @@ public class PlayerPanel : Container<Player>, IPointerClickHandler {
         OnPhaseStarted();
     }
     
+    void OnUpgradeUsed(UpgradeCardData upgrade) {
+        _upgradeIndicator.SetContent(upgrade);
+        _actionIndicator.SetActive(true);
+        
+        LeanTween.delayedCall(_actionIndicatorDuration, () => {
+            _actionIndicator.SetActive(false);
+        });
+    }
+
     void OnPlayerDecision(Player player, bool skipped, UpgradeCardData card) {
         if (_player != player) return;
         SetIndicatorState(IndicatorState.Done);
@@ -63,10 +75,6 @@ public class PlayerPanel : Container<Player>, IPointerClickHandler {
         SetIndicatorState(IndicatorState.InProgress);
     }
 
-    void OnEnergyChanged(int prev, int next) {
-        
-    }
-    
     public void OnPointerClick(PointerEventData e) {
         OverlaySystem.Instance.PushAndShowOverlay(_overlayData).Init(_player);
     }

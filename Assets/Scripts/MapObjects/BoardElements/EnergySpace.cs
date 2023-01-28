@@ -23,6 +23,8 @@ public class EnergySpace : BoardElement<EnergySpace, IPlayer>, ITooltipable {
 
     protected override void Activate(IPlayer[] targets) {
         foreach (var playerModel in targets) {
+            AddActivation();
+            
             var player = playerModel.Owner;
 
             if (_hasEnergyCube) {

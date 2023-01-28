@@ -51,6 +51,8 @@ public class PushPanel : BoardElement<PushPanel, ICanEnterHandler>, ITooltipable
         if (!_activeRegisters.Contains(ExecutionPhase.CurrentRegister) ||
             !Interaction.Push(pushable[0].Object, _direction, out var action)) return;
         
+        AddActivation();
+        
         action.MapObjects.AddRange(pushable.Skip(1).Select(o => o.Object));
         TaskScheduler.PushRoutine(Interaction.EaseEvent(action, _pushEaseType, _pushSpeed));
     }

@@ -33,29 +33,37 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
         yield return UIManager.Instance.ChangeState(UIState.Shop);
         OnPhaseStarted?.Invoke();
 
+        yield return CoroutineUtils.Wait(1);
+
         _restockTrigger = false;
         RestockCards();
-        
         yield return new WaitUntil(() => _restockTrigger);
 
-        var orderedPlayers = PlayerSystem.GetOrderedPlayers();
-
         _skippedPlayers = 0;
-        foreach (var player in orderedPlayers) {
-            Debug.Log($"Shop phase for {player}");
-            CurrentPlayer = player;
-            OnNewPlayer?.Invoke(player);
-            _currentPlayerReady = false;
-            
-            yield return new WaitUntil(() => _currentPlayerReady);
-        }
-        CurrentPlayer = null;
+        var orderedPlayers = PlayerSystem.GetOrderedPlayers();
+        TaskScheduler.PushSequence(routines: orderedPlayers.Select(DoPlayerTurn).ToArray());
 
+        yield return TaskScheduler.WaitUntilClear();
+        
+        CurrentPlayer = null;
         if (_skippedPlayers != PlayerSystem.Players.Count) yield break;
         for (var i = 0; i < _shopCards.Length; i++) {
             _shopCards[i] = null;
         }
+
+        _restockTrigger = false;
         RestockCards();
+        yield return new WaitUntil(() => _restockTrigger);
+    }
+
+    static IEnumerator DoPlayerTurn(Player player) {
+        Debug.Log($"{player} is buying");
+        
+        CurrentPlayer = player;
+        OnNewPlayer?.Invoke(player);
+        _currentPlayerReady = false;
+            
+        yield return new WaitUntil(() => _currentPlayerReady);
     }
 
     static bool _restockTrigger;
@@ -72,6 +80,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
         for (var i = 0; i < slots.Count; i++) {
             _shopCards[i] = cards[i];
             OnRestock?.Invoke(i, cards[i]);
+            yield return TaskScheduler.WaitUntilClear();
             yield return CoroutineUtils.Wait(RestockDelay);   
         }
         _restockTrigger = true;

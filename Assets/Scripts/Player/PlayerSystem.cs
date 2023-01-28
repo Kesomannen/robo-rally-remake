@@ -72,7 +72,7 @@ public class PlayerSystem : Singleton<PlayerSystem> {
         }
 
         return players
-            .OrderBy(x => x.Value)
+            .OrderByDescending(x => x.Value)
             .Select(x => x.Key);
     }
 

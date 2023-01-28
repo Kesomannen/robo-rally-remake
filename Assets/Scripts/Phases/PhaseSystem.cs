@@ -4,7 +4,7 @@ using Unity.Netcode;
 public class PhaseSystem : Singleton<PhaseSystem> {
     static bool _isRunning;
 
-    public static Phase CurrentPhase { get; private set; }
+    public static ObservableField<Phase> Current { get; } = new();
 
     public static void StartPhaseSystem() {
         Instance.StartCoroutine(PhaseSystemRoutine());
@@ -28,7 +28,7 @@ public class PhaseSystem : Singleton<PhaseSystem> {
         }
         
         IEnumerator DoPhaseRoutine(IEnumerator routine, Phase phase) {
-            CurrentPhase = phase;
+            Current.Value = phase;
             yield return routine;
             yield return TaskScheduler.WaitUntilClear();
         }

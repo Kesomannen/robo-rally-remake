@@ -32,4 +32,24 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
     public static void ReturnToLobby() {
         SceneManager.LoadScene(LobbySceneIndex);
     }
+
+    public void BroadcastUpgrade(int index) {
+        UseUpgradeServerRpc(
+            (byte) PlayerSystem.Players.IndexOf(PlayerSystem.LocalPlayer),
+            (byte) index
+            );
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void UseUpgradeServerRpc(byte playerIndex, byte upgradeIndex) {
+        UseUpgradeClientRpc(playerIndex, upgradeIndex);
+        if (PlayerSystem.Players.IndexOf(PlayerSystem.LocalPlayer) == playerIndex) return;
+        PlayerSystem.Players[playerIndex].UseUpgrade(upgradeIndex);
+    }
+    
+    [ClientRpc]
+    void UseUpgradeClientRpc(byte playerIndex, byte upgradeIndex) {
+        if (IsServer || PlayerSystem.Players.IndexOf(PlayerSystem.LocalPlayer) == playerIndex) return;
+        PlayerSystem.Players[playerIndex].UseUpgrade(upgradeIndex);
+    }
 }

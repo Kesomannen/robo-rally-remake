@@ -24,6 +24,8 @@ public class HandProgramCard : ProgramCard, IDragHandler, IBeginDragHandler, IEn
     Transform _highlightParent;
     RectTransform _rectTransform;
     int _scaleTweenId;
+    
+    bool IsProgramming => PhaseSystem.Current.Value == Phase.Programming;
 
     void SetHighlighted(bool value) {
         if (_isHighlighted == value) return;
@@ -90,7 +92,7 @@ public class HandProgramCard : ProgramCard, IDragHandler, IBeginDragHandler, IEn
     }
 
     public void OnPointerClick(PointerEventData e) {
-        if (_isDragging) return;
+        if (_isDragging || !IsProgramming) return;
 
         for (var i = 0; i < ExecutionPhase.RegisterCount; i++) {
             var register = PlayerRegisterUI.GetRegister(i);
@@ -101,7 +103,7 @@ public class HandProgramCard : ProgramCard, IDragHandler, IBeginDragHandler, IEn
     }
 
     public void OnBeginDrag(PointerEventData e) {
-        if (e.button != PointerEventData.InputButton.Left) return;
+        if (e.button != PointerEventData.InputButton.Left || !IsProgramming) return;
 
         _isDragging = true;
         Drag(e);

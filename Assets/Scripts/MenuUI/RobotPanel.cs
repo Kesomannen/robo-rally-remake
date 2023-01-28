@@ -15,7 +15,7 @@ public class RobotPanel : Container<RobotData>, IPointerEnterHandler, IPointerEx
     [SerializeField] Sprite _highlightedSprite;
     [SerializeField] Sprite _selectedSprite;
     [Space]
-    [SerializeField] Color _grayColor = Color.gray;
+    [SerializeField] Color _grayColor, _unavailableColor;
     [SerializeField] float _hoverScale;
     [SerializeField] float _tweenDuration;
     [SerializeField] LeanTweenType _tweenType;
@@ -45,8 +45,8 @@ public class RobotPanel : Container<RobotData>, IPointerEnterHandler, IPointerEx
             
             case State.Unavailable:
                 _backgroundImage.sprite = _defaultSprite;
-                FadeIconTo(_grayColor);
-                ScaleElementsTo(1);
+                FadeIconTo(_unavailableColor);
+                ScaleElementsTo(0.8f);
                 break;
             
             case State.Selected:

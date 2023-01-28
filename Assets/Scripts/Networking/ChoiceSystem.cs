@@ -42,14 +42,22 @@ public class ChoiceSystem : NetworkSingleton<ChoiceSystem> {
         }
         
         OnTimeUp += RandomizeChoice;
-        StartChoiceServerRpc(new ChoiceData {
+
+        _current = new ChoiceData {
             AvailableChoices = choiceArray,
-            Choices = (byte) choices,
-            MaxTime = (short) maxTime
-        });
+            Choices = (byte)choices,
+            MaxTime = (byte)maxTime
+        };
+        StartChoiceServerRpc(_current);
     }
     
     public void EndChoice(int choice) {
+        if (NetworkManager.Singleton == null) {
+            IsActive = false;
+            OnChoiceMade?.Invoke(choice);
+            return;
+        }
+        
         if (!IsActive) {
             Debug.LogError("Choice is not active");
             return;
@@ -100,7 +108,7 @@ public class ChoiceSystem : NetworkSingleton<ChoiceSystem> {
     }
 
     struct ChoiceData : INetworkSerializable {
-        public short MaxTime;
+        public byte MaxTime;
         public byte Choices;
         public bool[] AvailableChoices;
         

@@ -115,7 +115,8 @@ MonoBehaviour:
   _defaultSprite: {fileID: -1956483367, guid: 96da1b9dabbaed347b16033c20a4d6d9, type: 3}
   _highlightedSprite: {fileID: 349665090, guid: 96da1b9dabbaed347b16033c20a4d6d9, type: 3}
   _selectedSprite: {fileID: 349665090, guid: 96da1b9dabbaed347b16033c20a4d6d9, type: 3}
-  _grayColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  _grayColor: {r: 0.6981132, g: 0.6981132, b: 0.6981132, a: 1}
+  _unavailableColor: {r: 0.2830189, g: 0.2830189, b: 0.2830189, a: 1}
   _hoverScale: 1.15
   _tweenDuration: 0.2
   _tweenType: 18
@@ -332,7 +333,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.43137255, g: 0.43137255, b: 0.43137255, a: 1}
+  m_Color: {r: 0.69803923, g: 0.69803923, b: 0.69803923, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Energy Routine
   _description: Add an additional Energize card onto your discard pile.
-  _icon: {fileID: 21300000, guid: 580fab44ef70f4948a8a1ff8eb51662b, type: 3}
+  _icon: {fileID: 21300000, guid: d8fbfa9b60214864ab9653a5e7e0c49e, type: 3}
   _cost: 3
   _useCost: 0
   _type: 0

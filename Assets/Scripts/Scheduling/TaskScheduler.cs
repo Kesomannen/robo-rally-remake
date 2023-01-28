@@ -11,15 +11,23 @@ public class TaskScheduler : Singleton<TaskScheduler> {
     
     public static void PushRoutine(IEnumerator routine, float delay = DefaultTaskDelay, Action onComplete = null) {
         _tasks.Push((routine, onComplete, delay));
-        if (!_isRunning) Instance.StartCoroutine(RunTasks());
+        Debug.Log($"Pushed routine. {_tasks.Count} tasks in queue.");
+        if (_isRunning) return;
+        
+        _isRunning = true;
+        Instance.StartCoroutine(RunTasks());
     }
     
     public static void PushSequence(float delay = DefaultTaskDelay, params IEnumerator[] routines) {
         for (var i = routines.Length - 1; i >= 0; i--){
             _tasks.Push((routines[i], () => {}, delay));
         }
+        Debug.Log($"Pushed sequence. {_tasks.Count} tasks in queue.");
         
-        if (!_isRunning) Instance.StartCoroutine(RunTasks());
+        if (_isRunning) return;
+        
+        _isRunning = true;
+        Instance.StartCoroutine(RunTasks());
     }
     
     public static void PushSequence(float delay = DefaultTaskDelay, params Action[] actions) {
@@ -27,7 +35,10 @@ public class TaskScheduler : Singleton<TaskScheduler> {
             _tasks.Push((WrapAction(actions[i]), () => {}, delay));
         }
         
-        if (!_isRunning) Instance.StartCoroutine(RunTasks());
+        if (_isRunning) return;
+        
+        _isRunning = true;
+        Instance.StartCoroutine(RunTasks());
 
         IEnumerator WrapAction(Action action) {
             action();
@@ -36,7 +47,6 @@ public class TaskScheduler : Singleton<TaskScheduler> {
     }
 
     static IEnumerator RunTasks() {
-        _isRunning = true;
         while (_tasks.Count > 0){
             var task = _tasks.Pop();
             yield return task.Routine;
@@ -47,6 +57,6 @@ public class TaskScheduler : Singleton<TaskScheduler> {
     }
     
     public static IEnumerator WaitUntilClear() {
-        yield return new WaitWhile(() => _tasks.Count > 0);
+        yield return new WaitWhile(() => _isRunning);
     }
 }

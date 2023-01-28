@@ -1,11 +1,22 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class Laser : MapObject, IOnEnterExitHandler {
-    public event Action<Laser, MapObject> OnObstructed, OnUnobstructed;
+    [SerializeField] PassiveAnimation _inactivatedAnimation;
+    [SerializeField] PassiveAnimation _activeAnimation;
+    [SerializeField] Light2D _light;
     
-    public void OnEnter(MapObject mapObject){
+    public event Action<Laser, MapObject> OnObstructed, OnUnobstructed;
+
+    public void SetActiveVisual(bool active) {
+        _inactivatedAnimation.enabled = !active;
+        _activeAnimation.enabled = active;
+        _light.enabled = active;
+    }
+    
+    public void OnEnter(MapObject mapObject) {
         OnObstructed?.Invoke(this, mapObject);
     }
 
@@ -18,7 +29,7 @@ public class Laser : MapObject, IOnEnterExitHandler {
         Vector2Int pos;
         var lasers = new List<Laser>();
         
-        do{
+        do {
             pos = source.GridPos + dir * i;
             var onMap = MapSystem.Instance.TryGetBoard(pos, out var board);
             if (!onMap) break;

@@ -7,6 +7,8 @@ using UnityEngine;
 public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipable {
     [Header("Prefabs")]
     [SerializeField] Laser _laserPrefab;
+    [SerializeField] ParticleSystem _hitParticle;
+    [SerializeField] ParticleSystem _moveParticle;
 
     Highlight _highlight;
     
@@ -37,7 +39,11 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
 
     public IEnumerator FireLaser(Vector2Int dir) {
         var lasers = Laser.ShootLaser(_laserPrefab, this, dir);
-        if (lasers.Count == 0) yield break;
+        lasers.ForEach(l => l.SetActiveVisual(true));
+        if (lasers.Count == 0) {
+            lasers.ForEach(l => MapSystem.Instance.DestroyObject(l, false));
+            yield break;
+        }
         
         // We check one step ahead of last laser
         var targetTileFilled = MapSystem.TryGetTile(lasers.Last().GridPos + dir, out var hitTile);
@@ -45,10 +51,12 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
             var hits = hitTile.OfType<IPlayer>().ToArray();
             foreach (var hit in hits){
                 Owner.LaserAffector.Apply(hit.Owner);
+                _hitParticle.transform.position = hit.Owner.Model.transform.position;
+                yield return CoroutineUtils.Wait(_hitParticle.main.duration);
             }   
         }
 
-        yield return CoroutineUtils.Wait(1f);
+        yield return CoroutineUtils.Wait(0.5f);
         lasers.ForEach(l => MapSystem.Instance.DestroyObject(l, false));
     }
 
@@ -56,9 +64,10 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
         if (Owner.IsRebooted.Value) yield break;
         
         var moveVector = relative ? Rotator.Rotate(dir) : dir;
-        if (Interaction.Push(this, moveVector, out var mapEvent)){
-            yield return Interaction.EaseEvent(mapEvent);
-        }
+        if (!Interaction.Push(this, moveVector, out var mapEvent)) yield break;
+        
+        _moveParticle.Play();
+        yield return Interaction.EaseEvent(mapEvent);
     }
 
     public void Highlight(bool highlight) {
