@@ -25,7 +25,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -3548210113330695675, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
       propertyPath: _rotation.Array.data[0]._rotation
-      value: 1
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: -3548210113330695675, guid: 2a8da6dedbe7e57449630215d34672c3, type: 3}
       propertyPath: _rotation.Array.data[0].RelativeDirection.y

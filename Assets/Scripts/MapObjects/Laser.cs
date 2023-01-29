@@ -4,16 +4,21 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
 public class Laser : MapObject, IOnEnterExitHandler {
-    [SerializeField] PassiveAnimation _inactivatedAnimation;
-    [SerializeField] PassiveAnimation _activeAnimation;
-    [SerializeField] Light2D _light;
+    [SerializeField] PassiveAnimation[] _inactivatedAnimations;
+    [SerializeField] PassiveAnimation[] _activeAnimations;
+    [SerializeField] Light2D[] _lights;
+    [SerializeField] SpriteRenderer[] _renderers;
+    [SerializeField] Color _activeColor, _inactiveColor;
     
     public event Action<Laser, MapObject> OnObstructed, OnUnobstructed;
 
     public void SetActiveVisual(bool active) {
-        _inactivatedAnimation.enabled = !active;
-        _activeAnimation.enabled = active;
-        _light.enabled = active;
+        for (var i = 0; i < _lights.Length; i++) {
+            _inactivatedAnimations[i].enabled = !active;
+            _activeAnimations[i].enabled = active;
+            _lights[i].enabled = active;
+            _renderers[i].color = active ? _activeColor : _inactiveColor;
+        }
     }
     
     public void OnEnter(MapObject mapObject) {
@@ -24,17 +29,17 @@ public class Laser : MapObject, IOnEnterExitHandler {
         OnUnobstructed?.Invoke(this, mapObject);
     }
 
-    public static List<Laser> ShootLaser(Laser prefab, MapObject source, Vector2Int dir, int maxDistance = 20, bool ignoreSource = true) {
+    public static List<T> ShootLaser<T>(T prefab, MapObject source, Vector2Int dir, int maxDistance = 20, bool ignoreSource = true) where T : Laser {
         var i = 0;
         Vector2Int pos;
-        var lasers = new List<Laser>();
+        var lasers = new List<T>();
         
         do {
             pos = source.GridPos + dir * i;
             var onMap = MapSystem.Instance.TryGetBoard(pos, out var board);
             if (!onMap) break;
 
-            if (i > 0 || !ignoreSource){
+            if (i > 0 || !ignoreSource) {
                 var laser = MapSystem.Instance.CreateObject(prefab, pos, board, false);
                 laser.transform.rotation = source.transform.rotation;
                 lasers.Add(laser);

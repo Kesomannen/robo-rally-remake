@@ -70,15 +70,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
             DoSubPhase(ExecutionSubPhase.PushPanel, PushPanel.ActivateElement),
             DoSubPhase(ExecutionSubPhase.Gear, Gear.ActivateElement),
             DoSubPhase(ExecutionSubPhase.BoardLaser, BoardLaser.ActivateElement),
-            DoSubPhase(ExecutionSubPhase.PlayerLaser, () => {
-                TaskScheduler.PushSequence(
-                    routines: players
-                        .Where(p => !p.IsRebooted.Value)
-                        .Select(p => p.Model.FireLaser(p.Model.Rotator.Identity))
-                        .ToArray()
-                );
-                return players.Any(p => !p.IsRebooted.Value);
-            }),
+            DoSubPhase(ExecutionSubPhase.PlayerLaser, PlayerModel.ShootLasers),
             DoSubPhase(ExecutionSubPhase.EnergySpace, EnergySpace.ActivateElement),
             DoSubPhase(ExecutionSubPhase.Checkpoint, Checkpoint.ActivateElement)
         );

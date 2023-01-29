@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -37,27 +36,49 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
         GetComponent<SpriteRenderer>().sprite = owner.RobotData.Sprite;
     }
 
-    public IEnumerator FireLaser(Vector2Int dir) {
-        var lasers = Laser.ShootLaser(_laserPrefab, this, dir);
-        lasers.ForEach(l => l.SetActiveVisual(true));
-        if (lasers.Count == 0) {
-            lasers.ForEach(l => MapSystem.Instance.DestroyObject(l, false));
-            yield break;
+    static int _hits;
+    
+    public static bool ShootLasers() {
+        _hits = 0;
+        foreach (var model in PlayerSystem.Players.Where(p => !p.IsRebooted.Value).Select(p => p.Model)) {
+            model.ShootLaser(model.Rotator.Identity);
         }
-        
-        // We check one step ahead of last laser
-        var targetTileFilled = MapSystem.TryGetTile(lasers.Last().GridPos + dir, out var hitTile);
-        if (targetTileFilled) {
-            var hits = hitTile.OfType<IPlayer>().ToArray();
-            foreach (var hit in hits){
-                Owner.LaserAffector.Apply(hit.Owner);
-                _hitParticle.transform.position = hit.Owner.Model.transform.position;
-                yield return CoroutineUtils.Wait(_hitParticle.main.duration);
-            }   
+        return _hits > 0;
+    }
+    
+    void ShootLaser(Vector2Int dir, int maxDistance = 20) {
+        var pos = GridPos;
+        for (var i = 0; i < maxDistance; i++) {
+            if (!Interaction.CanMove(pos, dir, this)) {
+                break;
+            }
+            pos += dir;
         }
 
-        yield return CoroutineUtils.Wait(0.5f);
-        lasers.ForEach(l => MapSystem.Instance.DestroyObject(l, false));
+        var targetFilled = MapSystem.TryGetTile(pos, out var tile);
+        if (!targetFilled) return;
+        
+        var hits = tile.OfType<IPlayer>().Where(p => p.Owner.Model != this).ToArray();
+        if (hits.Length == 0) return;
+        _hits += hits.Length;
+
+        var lasers = Laser.ShootLaser(_laserPrefab, this, dir, maxDistance);
+        lasers.ForEach(l => l.SetActiveVisual(true));
+        for (var i = 0; i < hits.Length; i++) {
+            TaskScheduler.PushRoutine(DamagePlayer(hits[i], i == hits.Length - 1));
+        }
+
+        IEnumerator DamagePlayer(IPlayer player, bool destroyLasers) {
+            Owner.LaserAffector.Apply(player.Owner);
+            _hitParticle.transform.position = player.Owner.Model.transform.position;
+            _hitParticle.Play();
+            yield return CoroutineUtils.Wait(_hitParticle.main.duration);
+            
+            if (destroyLasers) {
+                yield return CoroutineUtils.Wait(0.5f);
+                lasers.ForEach(l => MapSystem.Instance.DestroyObject(l, false));
+            }
+        }
     }
 
     public IEnumerator Move(Vector2Int dir, bool relative) {

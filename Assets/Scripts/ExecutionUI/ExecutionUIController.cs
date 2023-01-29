@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -7,7 +8,13 @@ using UnityEngine.UI;
 public class ExecutionUIController : MonoBehaviour {
     [Header("References")]
     [SerializeField] TMP_Text _subPhaseText;
-    [SerializeField] Image _subPhaseImage;
+    [SerializeField] Image _phaseIcon1;
+    [SerializeField] Image _phaseIcon2;
+    [SerializeField] float _phaseMoveTime;
+    [SerializeField] float _phaseDistance;
+
+    Vector3 _iconPosition;
+    Image _currentSubPhaseImage;
     
     [SerializeField] SubPhaseInfo 
         _orderPlayers,
@@ -54,23 +61,53 @@ public class ExecutionUIController : MonoBehaviour {
     UISubPhase _currentSubPhase = UISubPhase.OrderPlayers;
 
     void Start() {
+        var pos = _phaseIcon1.transform.position;
+        _iconPosition = pos;
+        _phaseIcon2.transform.position = pos + Vector3.up * _phaseDistance;
+        _currentSubPhaseImage = _phaseIcon2;
+
         gameObject.SetActive(false);
     }
 
-    void SetSubPhaseUI(UISubPhase uiSubPhase) {
+    void ChangeSubPhase(UISubPhase uiSubPhase) {
         if (_currentSubPhase == uiSubPhase) return;
         _currentSubPhase = uiSubPhase;
         
         var info = GetInfo(uiSubPhase);
-        _subPhaseText.text = info.Name;
-        _subPhaseImage.sprite = uiSubPhase switch {
+
+        var current = _currentSubPhaseImage;
+        var next = current == _phaseIcon1 ? _phaseIcon2 : _phaseIcon1;
+        
+        next.sprite = uiSubPhase switch {
             UISubPhase.PlayerRegisters => info.Icons[ExecutionPhase.CurrentRegister],
             UISubPhase.EnergySpace => ExecutionPhase.CurrentRegister == 4 ? info.Icons[1] : info.Icons[0],
             _ => info.Icons[0]
         };
+
+        StartCoroutine(Animation());
+        
+        IEnumerator Animation() {
+            LeanTween
+                .move(current.gameObject, _iconPosition - Vector3.up * _phaseDistance, _phaseMoveTime)
+                .setEaseOutCubic();
+            
+            LeanTween
+                .move(next.gameObject, _iconPosition, _phaseMoveTime)
+                .setEaseOutCubic();
+            
+            yield return CoroutineUtils.Wait(_phaseMoveTime / 2);
+            _subPhaseText.text = info.Name;
+            yield return CoroutineUtils.Wait(_phaseMoveTime / 2);
+
+            current.transform.position = _iconPosition + Vector3.up * _phaseDistance;
+            _currentSubPhaseImage = next;
+            
+        }
     }
 
     void Awake() {
+        _phaseDistance *= CanvasUtils.CanvasScale.x;
+        
         ExecutionPhase.OnNewRegister += OnNewRegister;
         ExecutionPhase.OnNewSubPhase += OnNewSubPhase;
         ExecutionPhase.OnPlayerRegister += OnPlayerRegister;
@@ -85,7 +122,7 @@ public class ExecutionUIController : MonoBehaviour {
     }
 
     void OnPlayersOrdered(IReadOnlyList<Player> orderedPlayers) {
-        SetSubPhaseUI(UISubPhase.OrderPlayers);
+        ChangeSubPhase(UISubPhase.OrderPlayers);
     }
     
     void OnPlayerRegister(ProgramCardData card, int index, Player player) {
@@ -97,7 +134,7 @@ public class ExecutionUIController : MonoBehaviour {
     }
 
     void OnNewSubPhase(ExecutionSubPhase executionSubPhase) {
-        SetSubPhaseUI(Remap(executionSubPhase));
+        ChangeSubPhase(Remap(executionSubPhase));
     }
 
     [Serializable]

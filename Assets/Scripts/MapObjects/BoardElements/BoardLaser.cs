@@ -7,8 +7,8 @@ public class BoardLaser : MapObject, ITooltipable {
     [SerializeField] Vector2Int _direction;
     [SerializeField] Laser _laserPrefab;
     [SerializeField] CardAffector _affector;
-    [SerializeField] Optional<ParticleSystem> _damageParticles;
-    [SerializeField] Optional<SoundEffect> _damageSound;
+    [SerializeField] ParticleSystem _damageParticles;
+    [SerializeField] SoundEffect _damageSound, _laserSound;
     
     List<Laser> _lasers;
     readonly List<MapObject> _targets = new();
@@ -64,20 +64,12 @@ public class BoardLaser : MapObject, ITooltipable {
         IEnumerator Damage(IPlayer target) {
             _lasers.ForEach(l => l.SetActiveVisual(true));
 
-            if (_damageSound.Enabled) {
-                _damageSound.Value.Play();
-                yield return CoroutineUtils.Wait(_damageSound.Value.Clip.length + 0.5f);   
-            } else {
-                yield return CoroutineUtils.Wait(1f);
-            }
-
-            if (_damageParticles.Enabled) {
-                _damageParticles.Value.transform.position = target.Owner.Model.transform.position;
-                _damageParticles.Value.Play();
-                yield return CoroutineUtils.Wait(_damageParticles.Value.main.duration);
-            } else {
-                yield return CoroutineUtils.Wait(0.5f);
-            }
+            _damageSound.Play();
+            var pos = _damageParticles.transform.position;
+            _damageParticles.transform.position = target.Owner.Model.transform.position;
+            Debug.Log($"Moved particles from {pos} to {_damageParticles.transform.position}, target pos: {target.Owner.Model.transform.position}");
+            _damageParticles.Play();
+            yield return CoroutineUtils.Wait(Mathf.Max(_damageSound.Clip.length, _damageParticles.main.duration) + 0.5f);
 
             _lasers.ForEach(l => l.SetActiveVisual(false));
             _affector.Apply(target);

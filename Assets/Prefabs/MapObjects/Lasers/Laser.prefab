@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7732760877852018473}
   - component: {fileID: 860758886290622766}
   m_Layer: 0
-  m_Name: BoardLaser
+  m_Name: Laser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -77,7 +77,7 @@ SpriteRenderer:
   m_SortingLayer: -1
   m_SortingOrder: -1
   m_Sprite: {fileID: 1837316398, guid: a1967b4c72d09f84fb9bd7f18b253ca0, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.43137255}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -244,6 +244,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GridPos: {x: 0, y: 0}
-  _inactivatedAnimation: {fileID: 7732760877852018473}
-  _activeAnimation: {fileID: 860758886290622766}
-  _light: {fileID: 3114284969176534146}
+  _inactivatedAnimations:
+  - {fileID: 7732760877852018473}
+  _activeAnimations:
+  - {fileID: 860758886290622766}
+  _lights:
+  - {fileID: 3114284969176534146}
+  _renderers:
+  - {fileID: 8587320814272260003}
+  _activeColor: {r: 1, g: 1, b: 1, a: 1}
+  _inactiveColor: {r: 1, g: 1, b: 1, a: 0.43137255}
