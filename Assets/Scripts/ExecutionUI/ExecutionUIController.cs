@@ -6,12 +6,16 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ExecutionUIController : MonoBehaviour {
-    [Header("References")]
+    [Header("Player Panels")]
+    [SerializeField] PlayerExecutionPanels _panelsController;
+    
+    [Header("SubPhase")]
     [SerializeField] TMP_Text _subPhaseText;
     [SerializeField] Image _phaseIcon1;
     [SerializeField] Image _phaseIcon2;
     [SerializeField] float _phaseMoveTime;
     [SerializeField] float _phaseDistance;
+    [SerializeField] LeanTweenType _phaseTweenType;
 
     Vector3 _iconPosition;
     Image _currentSubPhaseImage;
@@ -66,6 +70,10 @@ public class ExecutionUIController : MonoBehaviour {
         _phaseIcon2.transform.position = pos + Vector3.up * _phaseDistance;
         _currentSubPhaseImage = _phaseIcon2;
 
+        foreach (var player in PlayerSystem.Players) {
+            _panelsController.CreatePanel(player);
+        }
+        
         gameObject.SetActive(false);
     }
 
@@ -89,11 +97,11 @@ public class ExecutionUIController : MonoBehaviour {
         IEnumerator Animation() {
             LeanTween
                 .move(current.gameObject, _iconPosition - Vector3.up * _phaseDistance, _phaseMoveTime)
-                .setEaseOutCubic();
+                .setEase(_phaseTweenType);
             
             LeanTween
                 .move(next.gameObject, _iconPosition, _phaseMoveTime)
-                .setEaseOutCubic();
+                .setEase(_phaseTweenType);
             
             yield return CoroutineUtils.Wait(_phaseMoveTime / 2);
             _subPhaseText.text = info.Name;
@@ -101,7 +109,6 @@ public class ExecutionUIController : MonoBehaviour {
 
             current.transform.position = _iconPosition + Vector3.up * _phaseDistance;
             _currentSubPhaseImage = next;
-            
         }
     }
 

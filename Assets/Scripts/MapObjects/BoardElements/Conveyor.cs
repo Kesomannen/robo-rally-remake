@@ -57,7 +57,9 @@ public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
         return true;
     }
 
-    protected override void Activate(IMapObject[] targets){
+    protected override void Activate(IMapObject[] targets) {
+        if (targets.Length == 0) return;
+        
         // Get objects to move with enough progress
         var movable = targets
             .Where(t => _progress.EnforceKey(t.Object, StartProgress) >= _cost)
@@ -73,7 +75,8 @@ public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
         // If another non-pushable object is ending on the same tile, neither object moves
         if (CheckForObstruction()) return;
         
-        MapSystem.TryGetTile(targetPos, out var targetTile);
+        var targetTileFilled = MapSystem.TryGetTile(targetPos, out var targetTile);
+        if (!targetTileFilled) return;
         
         // Check if there is a conveyor at the target position
         var conveyor = targetTile.FirstOrDefault(t => t is Conveyor);
