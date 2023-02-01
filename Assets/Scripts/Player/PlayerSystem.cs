@@ -51,8 +51,8 @@ public class PlayerSystem : Singleton<PlayerSystem> {
         var newPlayer = new Player(playerArgs);
         _players.Add(newPlayer);
     
-        var singleton = NetworkManager.Singleton;
-        if (singleton == null || singleton.LocalClientId == id) {
+        var networkManager = NetworkManager.Singleton;
+        if (networkManager == null || networkManager.LocalClientId == id) {
             LocalPlayer = newPlayer;
         }
 

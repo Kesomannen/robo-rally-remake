@@ -89,6 +89,7 @@ GameObject:
   - component: {fileID: 5857354281705458504}
   - component: {fileID: 6030691950316599123}
   - component: {fileID: 1539061926896569820}
+  - component: {fileID: 6672935169920436401}
   m_Layer: 5
   m_Name: PlayerExecutionRegister
   m_TagString: Untagged
@@ -211,7 +212,22 @@ MonoBehaviour:
   _programCardImage: {fileID: 560759503838840597}
   _backgroundImage: {fileID: 5857354281705458504}
   _selectable: {fileID: 6030691950316599123}
-  _hiddenUnselected: {fileID: -1420428109, guid: 2b03e5b88f4faa04eb08eeaa9e0e1f50, type: 3}
-  _hiddenSelected: {fileID: -855858575, guid: 2b03e5b88f4faa04eb08eeaa9e0e1f50, type: 3}
-  _visibleUnselected: {fileID: 1927117822, guid: 2b03e5b88f4faa04eb08eeaa9e0e1f50, type: 3}
-  _visibleSelected: {fileID: 927851249, guid: 2b03e5b88f4faa04eb08eeaa9e0e1f50, type: 3}
+  _tweenTime: 0.3
+  _tweenType: 6
+  _sprite0: {fileID: -1420428109, guid: 2b03e5b88f4faa04eb08eeaa9e0e1f50, type: 3}
+  _sprite10: {fileID: -855858575, guid: 2b03e5b88f4faa04eb08eeaa9e0e1f50, type: 3}
+  _sprite1: {fileID: 1927117822, guid: 2b03e5b88f4faa04eb08eeaa9e0e1f50, type: 3}
+  _sprite11: {fileID: 927851249, guid: 2b03e5b88f4faa04eb08eeaa9e0e1f50, type: 3}
+--- !u!114 &6672935169920436401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7899411261213284642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24c4b39c147e4fb4888acd7a908a2e52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tooltipableLocation: 0

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,7 +20,7 @@ public class ExecutionUIController : MonoBehaviour {
     [SerializeField] LeanTweenType _phaseTweenType;
 
     Vector3 _iconPosition;
-    Image _currentSubPhaseImage;
+    [ReadOnly] [SerializeField] Image _currentSubPhaseImage;
     
     [SerializeField] SubPhaseInfo 
         _orderPlayers,
@@ -32,6 +34,7 @@ public class ExecutionUIController : MonoBehaviour {
         _checkpoint;
 
     enum UISubPhase {
+        None,
         OrderPlayers,
         PlayerRegisters,
         Conveyor,
@@ -44,7 +47,7 @@ public class ExecutionUIController : MonoBehaviour {
     }
 
     static UISubPhase Remap(ExecutionSubPhase x) {
-        return (UISubPhase)((int)x + 1);
+        return (UISubPhase)((int)x + 2);
     }
 
     SubPhaseInfo GetInfo(UISubPhase uiSubPhase) {
@@ -62,14 +65,16 @@ public class ExecutionUIController : MonoBehaviour {
         };
     }
 
-    UISubPhase _currentSubPhase = UISubPhase.OrderPlayers;
+    UISubPhase _currentSubPhase = UISubPhase.None;
+    Player[] _currentPlayerOrder;
 
     void Start() {
         var pos = _phaseIcon1.transform.position;
         _iconPosition = pos;
         _phaseIcon2.transform.position = pos + Vector3.up * _phaseDistance;
-        _currentSubPhaseImage = _phaseIcon2;
+        _currentSubPhaseImage = _phaseIcon1;
 
+        _currentPlayerOrder = PlayerSystem.Players.ToArray();
         foreach (var player in PlayerSystem.Players) {
             _panelsController.CreatePanel(player);
         }
@@ -80,21 +85,21 @@ public class ExecutionUIController : MonoBehaviour {
     void ChangeSubPhase(UISubPhase uiSubPhase) {
         if (_currentSubPhase == uiSubPhase) return;
         _currentSubPhase = uiSubPhase;
-        
-        var info = GetInfo(uiSubPhase);
 
-        var current = _currentSubPhaseImage;
-        var next = current == _phaseIcon1 ? _phaseIcon2 : _phaseIcon1;
-        
-        next.sprite = uiSubPhase switch {
-            UISubPhase.PlayerRegisters => info.Icons[ExecutionPhase.CurrentRegister],
-            UISubPhase.EnergySpace => ExecutionPhase.CurrentRegister == 4 ? info.Icons[1] : info.Icons[0],
-            _ => info.Icons[0]
-        };
-
-        StartCoroutine(Animation());
+        TaskScheduler.PushRoutine(Animation());
         
         IEnumerator Animation() {
+            var info = GetInfo(uiSubPhase);
+
+            var current = _currentSubPhaseImage;
+            var next = current == _phaseIcon1 ? _phaseIcon2 : _phaseIcon1;
+            
+            next.sprite = uiSubPhase switch {
+                UISubPhase.PlayerRegisters => info.Icons[ExecutionPhase.CurrentRegister],
+                UISubPhase.EnergySpace => ExecutionPhase.CurrentRegister == 4 ? info.Icons[1] : info.Icons[0],
+                _ => info.Icons[0]
+            };
+            
             LeanTween
                 .move(current.gameObject, _iconPosition - Vector3.up * _phaseDistance, _phaseMoveTime)
                 .setEase(_phaseTweenType);
@@ -128,7 +133,23 @@ public class ExecutionUIController : MonoBehaviour {
         ExecutionPhase.OnPlayersOrdered -= OnPlayersOrdered;
     }
 
-    void OnPlayersOrdered(IReadOnlyList<Player> orderedPlayers) {
+    void OnPlayersOrdered(IReadOnlyList<Player> nextPlayerOrder) {
+        var swaps = new List<(int first, int second)>();
+
+        for (var current = 0; current < _currentPlayerOrder.Length; current++) {
+            var player = _currentPlayerOrder[current];
+            var target = nextPlayerOrder.IndexOf(player);
+            if (current == target || swaps.Any(
+                    swap => (swap.first == current && swap.second == target) 
+                         || (swap.second == target && swap.second == current))
+                ) continue;
+            swaps.Add((current, target));
+        }
+        
+        TaskScheduler.PushSequence(routines: swaps.Select(swap => _panelsController.Swap(swap.first, swap.second)).ToArray());
+
+        _currentPlayerOrder = nextPlayerOrder.ToArray();
+        
         ChangeSubPhase(UISubPhase.OrderPlayers);
     }
     

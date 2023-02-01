@@ -31,6 +31,10 @@ public static class TweenHelper {
     public static IEnumerator DoUITween(DynamicUITween dynamicTween, params GameObject[] objects) {
         yield return DoUITween(dynamicTween.ToTween(objects));
     }
+
+    public static int TweenValue(float start, float end, float time, LeanTweenType type, Action<float> setter) {
+        return LeanTween.value(start, end, time).setEase(type).setOnUpdate(setter).uniqueId;
+    }
 }
 
 [Serializable]
