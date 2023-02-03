@@ -133,21 +133,20 @@ public class ExecutionUIController : MonoBehaviour {
 
     void OnPlayersOrdered(IReadOnlyList<Player> nextPlayerOrder) {
         var swaps = new List<(int first, int second)>();
-
-        for (var current = 0; current < _currentPlayerOrder.Length; current++) {
-            var player = _currentPlayerOrder[current];
-            var target = nextPlayerOrder.IndexOf(player);
-            if (current == target || swaps.Any(
-                    swap => (swap.first == current && swap.second == target) 
-                         || (swap.second == target && swap.second == current))
-                ) continue;
-            swaps.Add((current, target));
-        }
-        
-        TaskScheduler.PushSequence(routines: swaps.Select(swap => _panelsController.Swap(swap.first, swap.second)).ToArray());
-
+        var order = _currentPlayerOrder.Copy();
         _currentPlayerOrder = nextPlayerOrder.ToArray();
-        
+
+        for (var i = 0; i < nextPlayerOrder.Count; i++) {
+            var player = nextPlayerOrder[i];
+            var current = order.IndexOf(player);
+            if (i == current) continue;
+            
+            swaps.Add((i, current));
+            (order[i], order[current]) = (order[current], order[i]);
+        }
+
+        TaskScheduler.PushSequence(routines: swaps.Select(swap => _panelsController.Swap(swap.first, swap.second)).ToArray());
+    
         ChangeSubPhase(UISubPhase.OrderPlayers);
     }
 
