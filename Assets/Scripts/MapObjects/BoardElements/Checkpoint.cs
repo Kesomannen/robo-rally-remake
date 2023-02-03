@@ -1,8 +1,10 @@
 using System;
+using TMPro;
 using UnityEngine;
 
 public class Checkpoint : BoardElement<Checkpoint, IPlayer>, ITooltipable {
     [SerializeField] int _index;
+    [SerializeField] TMP_Text _indexText;
 
     public event Action<Player> OnPlayerReached;
 
@@ -16,6 +18,11 @@ public class Checkpoint : BoardElement<Checkpoint, IPlayer>, ITooltipable {
             return current > _index ? "You have already passed this checkpoint." 
                 : "You have not yet reached this checkpoint.";
         }
+    }
+
+    protected override void Awake() {
+        base.Awake();
+        _indexText.text = _index.ToString();
     }
 
     protected override void Activate(IPlayer[] targets) {

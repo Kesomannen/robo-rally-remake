@@ -80,9 +80,9 @@ public class PlayerExecutionRegister : Container<ProgramCardData>, ITooltipable 
     void Awake() {
         _rectTransform = GetComponent<RectTransform>();
         _programCardTransform = _programCardImage.GetComponent<RectTransform>();
-         Visible = false;
         _baseSize = _rectTransform.sizeDelta;
         _programCardBaseSize = _programCardTransform.sizeDelta;
+        Visible = false;
     }
 
     protected override void Serialize(ProgramCardData card) {

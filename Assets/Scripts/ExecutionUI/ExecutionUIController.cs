@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -71,7 +70,7 @@ public class ExecutionUIController : MonoBehaviour {
     void Start() {
         var pos = _phaseIcon1.transform.position;
         _iconPosition = pos;
-        _phaseIcon2.transform.position = pos + Vector3.up * _phaseDistance;
+        _phaseIcon2.transform.position = pos + Vector3.up * _phaseDistance * CanvasUtils.CanvasScale.x;
         _currentSubPhaseImage = _phaseIcon1;
 
         _currentPlayerOrder = PlayerSystem.Players.ToArray();
@@ -90,6 +89,7 @@ public class ExecutionUIController : MonoBehaviour {
         
         IEnumerator Animation() {
             var info = GetInfo(uiSubPhase);
+            var distance = CanvasUtils.CanvasScale.x * _phaseDistance;
 
             var current = _currentSubPhaseImage;
             var next = current == _phaseIcon1 ? _phaseIcon2 : _phaseIcon1;
@@ -101,7 +101,7 @@ public class ExecutionUIController : MonoBehaviour {
             };
             
             LeanTween
-                .move(current.gameObject, _iconPosition - Vector3.up * _phaseDistance, _phaseMoveTime)
+                .move(current.gameObject, _iconPosition - Vector3.up * distance, _phaseMoveTime)
                 .setEase(_phaseTweenType);
             
             LeanTween
@@ -112,14 +112,12 @@ public class ExecutionUIController : MonoBehaviour {
             _subPhaseText.text = info.Name;
             yield return CoroutineUtils.Wait(_phaseMoveTime / 2);
 
-            current.transform.position = _iconPosition + Vector3.up * _phaseDistance;
+            current.transform.position = _iconPosition + Vector3.up * distance;
             _currentSubPhaseImage = next;
         }
     }
 
     void Awake() {
-        _phaseDistance *= CanvasUtils.CanvasScale.x;
-        
         ExecutionPhase.OnNewRegister += OnNewRegister;
         ExecutionPhase.OnNewSubPhase += OnNewSubPhase;
         ExecutionPhase.OnPlayerRegister += OnPlayerRegister;
@@ -152,9 +150,28 @@ public class ExecutionUIController : MonoBehaviour {
         
         ChangeSubPhase(UISubPhase.OrderPlayers);
     }
+
+    static void BalanceScale(PlayerExecutionPanel panel, PlayerExecutionRegister target, float scale) {
+        var registerCount = panel.Registers.Count;
+        var balancedScale = (registerCount - scale) / (registerCount - 1);
+        foreach (var register in panel.Registers) {
+            register.Scale = register == target ? scale : balancedScale;
+        }
+    }
     
     void OnPlayerRegister(ProgramCardData card, int index, Player player) {
+        var playerIndex = _currentPlayerOrder.IndexOf(player);
+        var panel = _panelsController.Panels[playerIndex];
+        var register = panel.Registers[index];
         
+        register.Visible = true;
+        BalanceScale(panel, register, register.Scale + 0.2f);
+
+        if (playerIndex <= 0) return;
+        
+        var prevPanel = _panelsController.Panels[playerIndex - 1];
+        var prevRegister = prevPanel.Registers[index];
+        BalanceScale(prevPanel, prevRegister, prevRegister.Scale - 0.2f);
     }
 
     void OnNewRegister(int register) {
@@ -162,6 +179,16 @@ public class ExecutionUIController : MonoBehaviour {
     }
 
     void OnNewSubPhase(ExecutionSubPhase executionSubPhase) {
+        if ((int)executionSubPhase == 0) {
+            foreach (var playerPanel in _panelsController.Panels) {
+                BalanceScale(playerPanel, playerPanel.Registers[ExecutionPhase.CurrentRegister], 1.05f);
+            }
+        } else {
+            foreach (var playerPanel in _panelsController.Panels) {
+                BalanceScale(playerPanel, playerPanel.Registers[ExecutionPhase.CurrentRegister], 1);
+            }
+        }
+        
         ChangeSubPhase(Remap(executionSubPhase));
     }
 

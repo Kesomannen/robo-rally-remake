@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using UnityEngine;
 
 public abstract class Container<T> : MonoBehaviour {
@@ -5,7 +6,7 @@ public abstract class Container<T> : MonoBehaviour {
 
     protected abstract void Serialize(T data);
 
-    public Container<T> SetContent(T data) {
+    public Container<T> SetContent([NotNull] T data) {
         if (data.Equals(Content)) return this;
         Content = data;
         Serialize(Content);

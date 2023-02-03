@@ -2933,7 +2933,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -169.29999, y: 0.79999924}
+  m_AnchoredPosition: {x: -169.29999, y: 0.80000305}
   m_SizeDelta: {x: 64, y: 64}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &943613233
@@ -3635,7 +3635,7 @@ MonoBehaviour:
   _phaseIcon1: {fileID: 943613233}
   _phaseIcon2: {fileID: 1069192122}
   _phaseMoveTime: 0.5
-  _phaseDistance: 50
+  _phaseDistance: 70
   _phaseTweenType: 6
   _currentSubPhaseImage: {fileID: 0}
   _orderPlayers:
@@ -5590,7 +5590,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -245.96991, y: -119.49997}
+  m_AnchoredPosition: {x: -245.96991, y: -119.50001}
   m_SizeDelta: {x: 429.94, y: -119.5}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1539960399
@@ -5606,9 +5606,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _panelPrefab: {fileID: 1064393264757202019, guid: 5a995090c672c954ebf8ac7fb3493668, type: 3}
-  _panelSpacing: 100
+  _panelSpacing: 144
   _tweenType: 16
-  _tweenTime: 0.5
+  _tweenTime: 0.1
 --- !u!1 &1582344546
 GameObject:
   m_ObjectHideFlags: 0
@@ -6716,7 +6716,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 81.82001, y: -120.00003}
+  m_AnchoredPosition: {x: 81.82001, y: -120.00007}
   m_SizeDelta: {x: 254.25, y: -285}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &1984671240

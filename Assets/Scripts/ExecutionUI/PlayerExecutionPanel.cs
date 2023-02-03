@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -6,6 +7,8 @@ public class PlayerExecutionPanel : Container<Player> {
     [SerializeField] PlayerExecutionRegister[] _registers;
     [SerializeField] TMP_Text _nameText;
     [SerializeField] TMP_Text _energyText;
+    
+    public IReadOnlyList<PlayerExecutionRegister> Registers => _registers;
 
     void Awake() {
         ExecutionPhase.OnPhaseStart += OnExecutionStart;

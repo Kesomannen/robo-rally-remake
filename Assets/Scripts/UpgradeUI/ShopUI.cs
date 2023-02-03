@@ -14,6 +14,12 @@ public class ShopUI : MonoBehaviour {
 
     void Awake() {
         _shopCards = new ShopCard[GameSettings.Instance.ShopSlots];
+        for (var i = 0; i < _shopCards.Length; i++) {
+            var card = Instantiate(_shopCardPrefab, _upgradeParent);
+            card.OnCardClicked += OnCardClicked;
+            _shopCards[i] = card;
+        }
+        
         gameObject.SetActive(false);
         ShopPhase.OnRestock += OnRestock;
         ShopPhase.OnPlayerDecision += OnPlayerDecision;
@@ -31,23 +37,9 @@ public class ShopUI : MonoBehaviour {
     }
 
     void OnRestock(int index, UpgradeCardData card) {
-        TaskScheduler.PushRoutine(Wrapper());
-        
-        IEnumerator Wrapper() {
-            var shopCard = _shopCards[index];
-            if (shopCard != null) {
-                shopCard.OnCardClicked -= OnCardClicked;
-                yield return shopCard.DisappearAnimation();
-            }
-            var newCard = Instantiate(_shopCardPrefab, _upgradeParent);
-            newCard.transform.SetSiblingIndex(index);
-            _shopCards[index] = newCard;
-        
-            newCard.SetContent(card);
-            newCard.OnCardClicked += OnCardClicked;
-
-            yield return newCard.RestockAnimation();
-        }
+        var shopCard = _shopCards[index]; 
+        shopCard.SetContent(card);
+        TaskScheduler.PushRoutine(shopCard.RestockAnimation());
     }
     
     void OnCardClicked(ShopCard shopCard) {
@@ -77,21 +69,10 @@ public class ShopUI : MonoBehaviour {
     }
     
     void OnPlayerDecision(Player player, bool skipped, UpgradeCardData card) {
-        TaskScheduler.PushRoutine(Wrapper());
-        
-        IEnumerator Wrapper() {
-            if (skipped) {
-                
-            } else {
-                for (var i = 0; i < _shopCards.Length; i++){
-                    var shopCard = _shopCards[i];
-                    if (shopCard == null || shopCard.Content != card) continue;
-
-                    yield return shopCard.BuyAnimation();
-                    _shopCards[i] = null;
-                    yield break;
-                }   
-            }
+        if (skipped) {
+            
+        } else {
+            TaskScheduler.PushRoutine(_shopCards.First(c => c.Content == card).BuyAnimation());
         }
     }
 
