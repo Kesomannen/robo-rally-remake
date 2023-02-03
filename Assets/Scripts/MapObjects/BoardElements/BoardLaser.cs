@@ -72,7 +72,7 @@ public class BoardLaser : MapObject, ITooltipable {
             yield return CoroutineUtils.Wait(Mathf.Max(_damageSound.Clip.length, _damageParticles.main.duration) + 0.5f);
 
             _lasers.ForEach(l => l.SetActiveVisual(false));
-            _affector.Apply(target);
+            target.Owner.ApplyCardAffector(_affector);
         }
     }
 

@@ -44,6 +44,7 @@ public class Player : IPlayer {
     
     // Events
     public event Action OnShuffleDeck;
+    public event Action<CardAffector> OnDamaged; 
     public event Action<ProgramCardData> OnDraw, OnDiscard;
     public event Action<UpgradeCardData, int> OnUpgradeAdded, OnUpgradeRemoved;
     public event Action<UpgradeCardData> OnUpgradeUsed;
@@ -222,7 +223,7 @@ public class Player : IPlayer {
         IsRebooted.Value = true;
 
         board.Respawn(Model);
-        if (takeDamage) RebootAffector.Apply(this);
+        if (takeDamage) ApplyCardAffector(RebootAffector);
         
         DiscardHand();
         DiscardProgram();
@@ -230,6 +231,11 @@ public class Player : IPlayer {
     
     public void RebootFromParentBoard(bool takeDamage = true) {
         Reboot(MapSystem.GetParentBoard(Model), takeDamage);
+    }
+
+    public void ApplyCardAffector(CardAffector affector) {
+        affector.Apply(this);
+        OnDamaged?.Invoke(affector);
     }
     
     public void SerializeRegisters(out byte playerIndex, out byte[] registers) {

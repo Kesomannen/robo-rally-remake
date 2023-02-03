@@ -69,7 +69,7 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
         }
 
         IEnumerator DamagePlayer(IPlayer player, bool destroyLasers) {
-            Owner.LaserAffector.Apply(player.Owner);
+            player.Owner.ApplyCardAffector(Owner.LaserAffector);
             _hitParticle.transform.position = player.Owner.Model.transform.position;
             _hitParticle.Play();
             yield return CoroutineUtils.Wait(_hitParticle.main.duration);

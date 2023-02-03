@@ -118,14 +118,31 @@ public class ExecutionUIController : MonoBehaviour {
     }
 
     void Awake() {
-        ExecutionPhase.OnNewRegister += OnNewRegister;
+        ExecutionPhase.OnPlayerRegistersComplete += OnPlayerRegistersComplete;
         ExecutionPhase.OnNewSubPhase += OnNewSubPhase;
         ExecutionPhase.OnPlayerRegister += OnPlayerRegister;
         ExecutionPhase.OnPlayersOrdered += OnPlayersOrdered;
+
+        foreach (var player in PlayerSystem.Players) {
+            player.IsRebooted.OnValueChanged += (_, n) => OnRebooted(player, n);
+        }
+    }
+    
+    void OnRebooted(Player player, bool rebooted) {
+        var panel = _panelsController.Panels.First(p => p.Content == player);
+        if (rebooted) {
+            foreach (var register in panel.Registers) {
+                register.Color = Color.gray;
+            }
+        } else {
+            foreach (var register in panel.Registers) {
+                register.Color = Color.white;
+            }
+        }
     }
 
     void OnDestroy() {
-        ExecutionPhase.OnNewRegister -= OnNewRegister;
+        ExecutionPhase.OnPlayerRegistersComplete -= OnPlayerRegistersComplete;
         ExecutionPhase.OnNewSubPhase -= OnNewSubPhase;
         ExecutionPhase.OnPlayerRegister -= OnPlayerRegister;
         ExecutionPhase.OnPlayersOrdered -= OnPlayersOrdered;
@@ -134,6 +151,18 @@ public class ExecutionUIController : MonoBehaviour {
     void OnPlayersOrdered(IReadOnlyList<Player> nextPlayerOrder) {
         var swaps = new List<(int first, int second)>();
         var order = _currentPlayerOrder.Copy();
+
+        // Move rebooted players to the end
+        if (PlayerSystem.Players.Any(p => p.IsRebooted.Value)) {
+            var rebootIndex = order.Length - 1;
+            for (var i = 0; i < order.Length; i++) {
+                var player = order[i];
+                if (!player.IsRebooted.Value) continue;
+                swaps.Add((i, rebootIndex));
+                (order[i], order[rebootIndex]) = (order[rebootIndex], order[i]);
+                rebootIndex--;
+            }   
+        }
         _currentPlayerOrder = nextPlayerOrder.ToArray();
 
         for (var i = 0; i < nextPlayerOrder.Count; i++) {
@@ -159,6 +188,8 @@ public class ExecutionUIController : MonoBehaviour {
     }
     
     void OnPlayerRegister(ProgramCardData card, int index, Player player) {
+        player.Model.Highlight(true);
+        
         var playerIndex = _currentPlayerOrder.IndexOf(player);
         var panel = _panelsController.Panels[playerIndex];
         var register = panel.Registers[index];
@@ -168,13 +199,19 @@ public class ExecutionUIController : MonoBehaviour {
 
         if (playerIndex <= 0) return;
         
+        var prevPlayer = _currentPlayerOrder[playerIndex - 1];
+        prevPlayer.Model.Highlight(false);
+        
         var prevPanel = _panelsController.Panels[playerIndex - 1];
         var prevRegister = prevPanel.Registers[index];
         BalanceScale(prevPanel, prevRegister, prevRegister.Scale - 0.2f);
     }
 
-    void OnNewRegister(int register) {
-        
+    void OnPlayerRegistersComplete() {
+        foreach (var playerPanel in _panelsController.Panels) {
+            BalanceScale(playerPanel, playerPanel.Registers[ExecutionPhase.CurrentRegister], 1);
+            playerPanel.Content.Model.Highlight(false);
+        }
     }
 
     void OnNewSubPhase(ExecutionSubPhase executionSubPhase) {
@@ -182,12 +219,8 @@ public class ExecutionUIController : MonoBehaviour {
             foreach (var playerPanel in _panelsController.Panels) {
                 BalanceScale(playerPanel, playerPanel.Registers[ExecutionPhase.CurrentRegister], 1.05f);
             }
-        } else {
-            foreach (var playerPanel in _panelsController.Panels) {
-                BalanceScale(playerPanel, playerPanel.Registers[ExecutionPhase.CurrentRegister], 1);
-            }
         }
-        
+
         ChangeSubPhase(Remap(executionSubPhase));
     }
 

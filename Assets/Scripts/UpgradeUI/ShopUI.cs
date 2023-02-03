@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 public class ShopUI : MonoBehaviour {
     [Header("References")]
+    [SerializeField] TMP_Text _currentPlayerText;
     [SerializeField] Transform _upgradeParent;
     [SerializeField] OverlayData<Choice<UpgradeCardData>> _overrideOverlay;
     
@@ -33,7 +35,7 @@ public class ShopUI : MonoBehaviour {
     }
     
     void OnNewPlayer(Player player) {
-        
+        _currentPlayerText.text = $"{player} is buying...";
     }
 
     void OnRestock(int index, UpgradeCardData card) {

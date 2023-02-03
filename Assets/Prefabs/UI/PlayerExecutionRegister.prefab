@@ -213,7 +213,7 @@ MonoBehaviour:
   _backgroundImage: {fileID: 5857354281705458504}
   _selectable: {fileID: 6030691950316599123}
   _tweenTime: 0.3
-  _tweenType: 6
+  _tweenType: 27
   _sprite0: {fileID: -1420428109, guid: 2b03e5b88f4faa04eb08eeaa9e0e1f50, type: 3}
   _sprite10: {fileID: -855858575, guid: 2b03e5b88f4faa04eb08eeaa9e0e1f50, type: 3}
   _sprite1: {fileID: 1927117822, guid: 2b03e5b88f4faa04eb08eeaa9e0e1f50, type: 3}

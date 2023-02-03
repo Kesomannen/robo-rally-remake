@@ -13,7 +13,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
     const float SubPhaseDelay = 0;
     const float StepDelay = 1f;
 
-    public static event Action OnPhaseStart, OnPhaseEnd, OnExecutionComplete;
+    public static event Action OnPhaseStart, OnPhaseEnd, OnExecutionComplete, OnPlayerRegistersComplete;
     public static event Action<ProgramCardData, int, Player> OnPlayerRegister;
     public static event Action<ExecutionSubPhase> OnNewSubPhase;
     public static event Action<IReadOnlyList<Player>> OnPlayersOrdered;
@@ -64,8 +64,9 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
             delay: SubPhaseDelay,
             DoSubPhase(ExecutionSubPhase.Registers, () => {
                 TaskScheduler.PushSequence(routines: registerRoutines);
-                return true;
+                return PlayerSystem.Players.Any(p => !p.IsRebooted.Value);
             }),
+            CompletePlayerRegisters(),
             DoSubPhase(ExecutionSubPhase.Conveyor, Conveyor.ActivateElement),
             DoSubPhase(ExecutionSubPhase.PushPanel, PushPanel.ActivateElement),
             DoSubPhase(ExecutionSubPhase.Gear, Gear.ActivateElement),
@@ -75,6 +76,11 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
             DoSubPhase(ExecutionSubPhase.Checkpoint, Checkpoint.ActivateElement)
         );
 
+        IEnumerator CompletePlayerRegisters() {
+            OnPlayerRegistersComplete?.Invoke();
+            yield break;
+        }
+        
         IEnumerator DoSubPhase(ExecutionSubPhase subPhase, Func<bool> execute) {
             if (execute()) {
                 CurrentSubPhase = subPhase;

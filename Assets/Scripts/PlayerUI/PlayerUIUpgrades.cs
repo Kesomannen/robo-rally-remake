@@ -28,6 +28,11 @@ public class PlayerUIUpgrades : MonoBehaviour {
         Owner.OnUpgradeRemoved += RemovePanel;
     }
 
+    void OnDestroy() {
+        Owner.OnUpgradeAdded -= CreatePanel;
+        Owner.OnUpgradeRemoved -= RemovePanel;
+    }
+
     void CreatePanel(UpgradeCardData data, int index) {
         var newPanel = Instantiate(_upgradePanelPrefab, _upgradePanelParent);
         newPanel.SetContent(data);
@@ -39,7 +44,7 @@ public class PlayerUIUpgrades : MonoBehaviour {
     }
     
     void RemovePanel(UpgradeCardData data, int index) {
-        var panel = _panels[index];
+        var panel = _panels.Find(p => p.Content == data);
         _panels.RemoveAt(index);
         Destroy(panel.gameObject);
         UpdatePositions();
