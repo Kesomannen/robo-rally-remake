@@ -1,0 +1,68 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+
+public class ProgramCardViewer : MonoBehaviour {
+    [Header("References")]
+    [SerializeField] ProgramCard _programCardPrefab;
+    [SerializeField] TMP_Text _headerText;
+
+    [Header("Layout")]
+    [SerializeField] Vector2 _cardSize;
+    [SerializeField] float _cardSpacing;
+    
+    [Header("Tween")]
+    [SerializeField] LeanTweenType _tweenType;
+    [SerializeField] float _tweenTime;
+    
+    Vector3 SpacedSize => (_cardSize + Vector2.one * _cardSpacing) * CanvasUtils.CanvasScale;
+    
+    readonly List<ProgramCard> _cards = new();
+    Player _lastPlayer;
+    
+    void Start() {
+        foreach (var player in PlayerSystem.Players) {
+            player.OnProgramCardPlayed += card => OnProgramCardPlayed(player, card);
+        }
+    }
+    
+    void OnProgramCardPlayed(Player player, ProgramCardData card) {
+        _headerText.text = $"{player} playing {card}";
+        StartCoroutine(AddCard(card, _lastPlayer != player));
+        _lastPlayer = player;
+    }
+
+    public IEnumerator AddCard(ProgramCardData data, bool replace = false) {
+        if (replace) {
+            yield return ClearCards();
+        }
+        
+        var t = transform;
+        
+        var targetPos = t.position + _cards.Count * SpacedSize.x * Vector3.right;
+        var startPos = _cards.Count > 0 ? targetPos + SpacedSize.y * Vector3.down : targetPos + SpacedSize.x * Vector3.left;
+        
+        var newCard = Instantiate(_programCardPrefab, t);
+        newCard.SetContent(data);
+        newCard.transform.position = startPos;
+        _cards.Add(newCard);
+        
+        LeanTween.move(newCard.gameObject, targetPos, _tweenTime).setEase(_tweenType);
+        yield return CoroutineUtils.Wait(_tweenTime);
+    }
+
+    public IEnumerator ClearCards() {
+        foreach (var card in _cards) {
+            var pos = card.transform.position + SpacedSize.y * Vector3.down;
+            LeanTween.move(card.gameObject, pos, _tweenTime).setEase(_tweenType);
+            yield return CoroutineUtils.Wait(0.1f);
+        }
+        yield return CoroutineUtils.Wait(_tweenTime);
+        foreach (var card in _cards) {
+            Destroy(card.gameObject);
+        }
+        _cards.Clear();
+    }
+}

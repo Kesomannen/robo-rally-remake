@@ -8,6 +8,10 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
     [SerializeField] Laser _laserPrefab;
     [SerializeField] ParticleSystem _hitParticle;
     [SerializeField] ParticleSystem _moveParticle;
+    
+    [Header("Tween")]
+    [SerializeField] LeanTweenType _moveTweenType;
+    [SerializeField] float _moveTweenSpeed;
 
     Highlight _highlight;
     
@@ -88,7 +92,7 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
         if (!Interaction.Push(this, moveVector, out var mapEvent)) yield break;
         
         _moveParticle.Play();
-        yield return Interaction.EaseEvent(mapEvent);
+        yield return Interaction.EaseEvent(mapEvent, _moveTweenType, _moveTweenSpeed);
     }
 
     public void Highlight(bool highlight) {

@@ -10,6 +10,7 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
     [SerializeField] Image _costImage;
     [SerializeField] Image _artworkImage;
     [SerializeField] Image _backgroundImage;
+    [SerializeField] Image _unavailableOverlay;
     [SerializeField] Selectable _selectable;
     
     [Header("Sprites")]
@@ -27,6 +28,16 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
     public string Description => Content.Description;
     
     public event Action<UpgradeCard> OnClick;
+
+    void Awake() {
+        ProgrammingPhase.OnPlayerLockedIn += OnPlayerLockedIn;
+        ProgrammingPhase.OnPhaseStarted += UpdateAvailability;
+    }
+
+    void OnDestroy() {
+        ProgrammingPhase.OnPlayerLockedIn += OnPlayerLockedIn;
+        ProgrammingPhase.OnPhaseStarted += UpdateAvailability;
+    }
 
     protected override void Serialize(UpgradeCardData card) {
         _nameText.text = card.Name;
@@ -46,6 +57,8 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
         spriteState.pressedSprite = cardSprite.Selected;
         spriteState.selectedSprite = cardSprite.Selected;
         _selectable.spriteState = spriteState;
+        
+        UpdateAvailability();
     }
     
     public void OnPointerClick(PointerEventData e) {
@@ -54,11 +67,19 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
 
         if (!_showOverlayOnClick || e.button != PointerEventData.InputButton.Right) return;
         var overlay = new OverlayData<UpgradeCardOverlay> {
-            Header = "Upgrade Card",
-            Subtitle = Content.Name,
-            CanPreview = false,
-            Prefab = _overlay
+            _header = "Upgrade Card",
+            _subtitle = Content.Name,
+            _canPreview = false,
+            _prefab = _overlay
         };
         OverlaySystem.Instance.PushAndShowOverlay(overlay).Init(Content);
+    }
+
+    void OnPlayerLockedIn(Player player) => UpdateAvailability();
+    
+    void UpdateAvailability() {
+        var available = Content.CanUse(PlayerSystem.LocalPlayer);
+        _unavailableOverlay.gameObject.SetActive(!available);
+        _selectable.interactable = available;
     }
 }

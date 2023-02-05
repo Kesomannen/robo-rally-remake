@@ -7,14 +7,13 @@ public class RepeatProgram : ProgramCardData {
     [SerializeField] int _relativeRepeatIndex;
 
     public override bool CanPlace(Player player, int positionInRegister) {
-        var posToRepeat = positionInRegister + _relativeRepeatIndex;
-        return posToRepeat >= 0 && posToRepeat < ExecutionPhase.RegisterCount;
+        return positionInRegister + _relativeRepeatIndex is >= 0 and < ExecutionPhase.RegisterCount;
     }
 
     public override IEnumerator ExecuteRoutine(Player player, int positionInRegister)  {
         var posToRepeat = positionInRegister + _relativeRepeatIndex;
+        var card = player.Program[posToRepeat];
         for (var i = 0; i < _repeatCount; i++) {
-            var card = player.Program[posToRepeat];
             yield return card.ExecuteRoutine(player, posToRepeat);
         }
     }

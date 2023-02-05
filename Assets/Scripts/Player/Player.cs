@@ -39,8 +39,8 @@ public class Player : IPlayer {
     // Implementations
     public Player Owner => this;
     public MapObject Object => Model;
-    
-    public override string ToString() => $"Player {_clientId}";
+
+    public override string ToString() => _clientId.ToString();
     
     // Events
     public event Action OnShuffleDeck;
@@ -48,6 +48,7 @@ public class Player : IPlayer {
     public event Action<ProgramCardData> OnDraw, OnDiscard;
     public event Action<UpgradeCardData, int> OnUpgradeAdded, OnUpgradeRemoved;
     public event Action<UpgradeCardData> OnUpgradeUsed;
+    public event Action<ProgramCardData> OnProgramCardPlayed;
 
     public Player(PlayerArgs args) {
         _clientId = args.OwnerId;
@@ -187,6 +188,10 @@ public class Player : IPlayer {
             Program.SetCard(i, null);
         }
     }
+
+    public void RegisterPlay(ProgramCardData card) {
+        OnProgramCardPlayed?.Invoke(card);
+    }
     #endregion
 
     #region Upgrades
@@ -220,13 +225,13 @@ public class Player : IPlayer {
     #endregion
 
     public void Reboot(IBoard board, bool takeDamage = true) {
-        IsRebooted.Value = true;
-
         board.Respawn(Model);
         if (takeDamage) ApplyCardAffector(RebootAffector);
         
         DiscardHand();
         DiscardProgram();
+        
+        IsRebooted.Value = true;
     }
     
     public void RebootFromParentBoard(bool takeDamage = true) {
@@ -237,7 +242,7 @@ public class Player : IPlayer {
         affector.Apply(this);
         OnDamaged?.Invoke(affector);
     }
-    
+
     public void SerializeRegisters(out byte playerIndex, out byte[] registers) {
         playerIndex = (byte) PlayerSystem.Players.IndexOf(this);
         registers = Program.Cards.Select(c => (byte) c.GetLookupId()).ToArray();

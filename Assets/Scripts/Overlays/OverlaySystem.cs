@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
     [Header("Input")]
@@ -13,8 +14,8 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
     [SerializeField] RectTransform _overlayParent;
     [SerializeField] TMP_Text _headerText, _subtitleText;
     
-    readonly Stack<(OverlayData Data, Overlay Overlay)> _overlayStack = new();
-    Overlay _currentOverlay;
+    readonly Stack<(OverlayData Data, MonoBehaviour Overlay)> _overlayStack = new();
+    MonoBehaviour _currentOverlay;
 
     bool IsOverlayActive => _overlayStack.Count > 0;
 
@@ -45,7 +46,7 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
     }
 
     public T PushAndShowOverlay<T>(OverlayData<T> data) where T : Overlay {
-        var newOverlay = Instantiate(data.Prefab, _overlayParent);
+        var newOverlay = Instantiate(data._prefab, _overlayParent);
         _overlayStack.Push((data, newOverlay));
         
         ShowTopOverlay();
@@ -65,8 +66,8 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
         _currentOverlay = overlay;
         overlay.SetActive(true);
         
-        SetText(data.Header, _headerText);
-        SetText(data.Subtitle, _subtitleText);
+        SetText(data._header, _headerText);
+        SetText(data._subtitle, _subtitleText);
 
         OnOverlayShown?.Invoke(data);
 
@@ -104,23 +105,31 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
 
 [Serializable]
 public struct OverlayData {
-    public string Header;
-    public string Subtitle;
-    public Overlay Prefab;
-    public bool CanPreview;
+    [FormerlySerializedAs("Header")]
+    public string _header;
+    [FormerlySerializedAs("Subtitle")] 
+    public string _subtitle;
+    [FormerlySerializedAs("Prefab")] 
+    public Overlay _prefab;
+    [FormerlySerializedAs("CanPreview")] 
+    public bool _canPreview;
 }
 
 [Serializable]
 public struct OverlayData<T> where T : Overlay {
-    public string Header;
-    public string Subtitle;
-    public T Prefab;
-    public bool CanPreview;
+    [FormerlySerializedAs("Header")]
+    public string _header;
+    [FormerlySerializedAs("Subtitle")]
+    public string _subtitle;
+    [FormerlySerializedAs("Prefab")]
+    public T _prefab;
+    [FormerlySerializedAs("CanPreview")]
+    public bool _canPreview;
 
     public static implicit operator OverlayData(OverlayData<T> data) => new() {
-        Header = data.Header,
-        Subtitle = data.Subtitle,
-        Prefab = data.Prefab,
-        CanPreview = data.CanPreview
+        _header = data._header,
+        _subtitle = data._subtitle,
+        _prefab = data._prefab,
+        _canPreview = data._canPreview
     };
 }

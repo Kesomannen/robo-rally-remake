@@ -33,7 +33,7 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
         OnRotationChanged?.Invoke(steps);
     }
 
-    const float DefaultRotSpeed = 0.5f;
+    const float DefaultRotSpeed = 1.5f;
     const LeanTweenType DefaultRotEaseType = LeanTweenType.easeInOutSine;
 
     public IEnumerator RotateRoutine(int steps, float speed = DefaultRotSpeed, LeanTweenType easeType = DefaultRotEaseType) {
@@ -42,7 +42,7 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
         Rotator.RotZ += steps;
         OnRotationChanged?.Invoke(steps);
         
-        var duration = Math.Abs(steps) * speed;
+        var duration = Math.Abs(steps) / speed;
         LeanTween.rotateZ(gameObject, Rotator.RotZ * 90f, duration).setEase(easeType);
         yield return CoroutineUtils.Wait(duration);
     }

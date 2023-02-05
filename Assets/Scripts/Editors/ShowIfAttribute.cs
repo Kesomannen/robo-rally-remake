@@ -14,12 +14,12 @@ public enum ShowIfComparer {
 public class ShowIfAttribute : PropertyAttribute {
     public readonly string ConditionalSourceField;
     public readonly ShowIfComparer Comparer;
-    public readonly decimal CompareValue;
+    public readonly int CompareValue;
     
     public ShowIfAttribute(
         string conditionalSourceField, 
         ShowIfComparer comparer = ShowIfComparer.True,
-        decimal value = 0
+        int value = 0
         ) {
         ConditionalSourceField = conditionalSourceField;
         Comparer = comparer;

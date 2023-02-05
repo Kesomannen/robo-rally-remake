@@ -4920,6 +4920,8 @@ MonoBehaviour:
   _laserPrefab: {fileID: 7356243174931234761, guid: ac3e6873540355d4faa9585b0340f4f1, type: 3}
   _hitParticle: {fileID: 0}
   _moveParticle: {fileID: 6280196981448488247}
+  _moveTweenType: 16
+  _moveTweenSpeed: 2
 --- !u!61 &7333179668210094071
 BoxCollider2D:
   m_ObjectHideFlags: 0

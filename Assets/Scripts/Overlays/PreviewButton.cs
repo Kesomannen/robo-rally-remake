@@ -14,7 +14,7 @@ public class PreviewButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     }
 
     void OnOverlayShown(OverlayData data) {
-        if (data.CanPreview) {
+        if (data._canPreview) {
             gameObject.SetActive(true);
         }
     }

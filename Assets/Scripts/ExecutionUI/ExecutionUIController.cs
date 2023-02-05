@@ -7,8 +7,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ExecutionUIController : MonoBehaviour {
-    [Header("Player Panels")]
+    [Header("References")]
     [SerializeField] PlayerExecutionPanels _panelsController;
+    [SerializeField] ProgramCardViewer _programCardViewer;
     
     [Header("SubPhase")]
     [SerializeField] TMP_Text _subPhaseText;
@@ -19,7 +20,7 @@ public class ExecutionUIController : MonoBehaviour {
     [SerializeField] LeanTweenType _phaseTweenType;
 
     Vector3 _iconPosition;
-    [ReadOnly] [SerializeField] Image _currentSubPhaseImage;
+    Image _currentSubPhaseImage;
     
     [SerializeField] SubPhaseInfo 
         _orderPlayers,
@@ -122,23 +123,6 @@ public class ExecutionUIController : MonoBehaviour {
         ExecutionPhase.OnNewSubPhase += OnNewSubPhase;
         ExecutionPhase.OnPlayerRegister += OnPlayerRegister;
         ExecutionPhase.OnPlayersOrdered += OnPlayersOrdered;
-
-        foreach (var player in PlayerSystem.Players) {
-            player.IsRebooted.OnValueChanged += (_, n) => OnRebooted(player, n);
-        }
-    }
-    
-    void OnRebooted(Player player, bool rebooted) {
-        var panel = _panelsController.Panels.First(p => p.Content == player);
-        if (rebooted) {
-            foreach (var register in panel.Registers) {
-                register.Color = Color.gray;
-            }
-        } else {
-            foreach (var register in panel.Registers) {
-                register.Color = Color.white;
-            }
-        }
     }
 
     void OnDestroy() {
@@ -208,6 +192,7 @@ public class ExecutionUIController : MonoBehaviour {
     }
 
     void OnPlayerRegistersComplete() {
+        StartCoroutine(_programCardViewer.ClearCards());
         foreach (var playerPanel in _panelsController.Panels) {
             BalanceScale(playerPanel, playerPanel.Registers[ExecutionPhase.CurrentRegister], 1);
             playerPanel.Content.Model.Highlight(false);
