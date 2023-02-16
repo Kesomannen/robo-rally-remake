@@ -29,15 +29,7 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
     
     public event Action<UpgradeCard> OnClick;
 
-    void Awake() {
-        ProgrammingPhase.OnPlayerLockedIn += OnPlayerLockedIn;
-        ProgrammingPhase.OnPhaseStarted += UpdateAvailability;
-    }
 
-    void OnDestroy() {
-        ProgrammingPhase.OnPlayerLockedIn += OnPlayerLockedIn;
-        ProgrammingPhase.OnPhaseStarted += UpdateAvailability;
-    }
 
     protected override void Serialize(UpgradeCardData card) {
         _nameText.text = card.Name;
@@ -57,8 +49,6 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
         spriteState.pressedSprite = cardSprite.Selected;
         spriteState.selectedSprite = cardSprite.Selected;
         _selectable.spriteState = spriteState;
-        
-        UpdateAvailability();
     }
     
     public void OnPointerClick(PointerEventData e) {
@@ -73,13 +63,5 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
             _prefab = _overlay
         };
         OverlaySystem.Instance.PushAndShowOverlay(overlay).Init(Content);
-    }
-
-    void OnPlayerLockedIn(Player player) => UpdateAvailability();
-    
-    void UpdateAvailability() {
-        var available = Content.CanUse(PlayerSystem.LocalPlayer);
-        _unavailableOverlay.gameObject.SetActive(!available);
-        _selectable.interactable = available;
     }
 }

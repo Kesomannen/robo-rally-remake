@@ -1,11 +1,15 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Container<UpgradeCardData>))]
 public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
     [SerializeField] LeanTweenType _tweenType;
     [SerializeField] float _tweenDuration;
     [SerializeField] float _highlightScale;
+    [SerializeField] GameObject _unavailableOverlay;
+    [SerializeField] Selectable _selectable;
 
     Container<UpgradeCardData> _container;
     Transform _highlightParent;
@@ -16,12 +20,32 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public Transform HighlightParent { set => _highlightParent = value; }
     
+    void OnDestroy() {
+        ProgrammingPhase.OnPlayerLockedIn -= OnPlayerLockedIn;
+        ProgrammingPhase.OnPhaseStarted -= UpdateAvailability;
+    }
+    
     void Awake() {
         _container = GetComponent<Container<UpgradeCardData>>();
+        
+        ProgrammingPhase.OnPlayerLockedIn += OnPlayerLockedIn;
+        ProgrammingPhase.OnPhaseStarted += UpdateAvailability;
         
         var t = transform;
         _originalParent = t.parent;
         _originalSize = t.localScale;
+    }
+
+    void Start() {
+        UpdateAvailability();
+    }
+
+    void OnPlayerLockedIn(Player player) => UpdateAvailability();
+    
+    void UpdateAvailability() {
+        var available = _container.Content != null && _container.Content.CanUse(PlayerSystem.LocalPlayer);
+        _unavailableOverlay.gameObject.SetActive(!available);
+        _selectable.interactable = available;
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
@@ -49,6 +73,7 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
     }
     
     public void OnPointerClick(PointerEventData eventData) {
+        UpdateAvailability();
         if (eventData.button != PointerEventData.InputButton.Left) return;
         
         var upgrade = _container.Content;

@@ -31,6 +31,7 @@ public class PhaseSystem : Singleton<PhaseSystem> {
             Current.Value = phase;
             yield return routine;
             yield return TaskScheduler.WaitUntilClear();
+            yield return NetworkSystem.Instance.SyncPlayers();
         }
     }
 }

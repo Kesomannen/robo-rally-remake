@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
@@ -51,5 +53,25 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
     void UseUpgradeClientRpc(byte playerIndex, byte upgradeIndex) {
         if (IsServer || PlayerSystem.Players.IndexOf(PlayerSystem.LocalPlayer) == playerIndex) return;
         PlayerSystem.Players[playerIndex].UseUpgrade(upgradeIndex);
+    }
+    
+    readonly List<ulong> _playersReady = new();
+
+    public IEnumerator SyncPlayers() {
+        PlayerReadyServerRpc(NetworkManager.LocalClientId);
+        yield return new WaitUntil(() => _playersReady.Count >= PlayerSystem.Players.Count);
+        _playersReady.Clear();
+    }
+    
+    [ServerRpc(RequireOwnership = false)]
+    void PlayerReadyServerRpc(ulong id) {
+        _playersReady.Add(id);
+        PlayerReadyClientRpc(id);
+    }
+    
+    [ClientRpc]
+    void PlayerReadyClientRpc(ulong id) {
+        if (IsServer) return;
+        _playersReady.Add(id);
     }
 }
