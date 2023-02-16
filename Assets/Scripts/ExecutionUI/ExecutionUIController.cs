@@ -145,7 +145,7 @@ public class ExecutionUIController : MonoBehaviour {
                 swaps.Add((i, rebootIndex));
                 (order[i], order[rebootIndex]) = (order[rebootIndex], order[i]);
                 rebootIndex--;
-            }   
+            }
         }
         _currentPlayerOrder = nextPlayerOrder.ToArray();
 
@@ -158,7 +158,7 @@ public class ExecutionUIController : MonoBehaviour {
             (order[i], order[current]) = (order[current], order[i]);
         }
 
-        TaskScheduler.PushSequence(routines: swaps.Select(swap => _panelsController.Swap(swap.first, swap.second)).ToArray());
+        StartCoroutine(swaps.Select(swap => _panelsController.Swap(swap.first, swap.second)).GetEnumerator());
     
         ChangeSubPhase(UISubPhase.OrderPlayers);
     }
@@ -180,9 +180,10 @@ public class ExecutionUIController : MonoBehaviour {
         
         register.Visible = true;
         BalanceScale(panel, register, register.Scale + 0.2f);
-
+        
         if (playerIndex <= 0) return;
         
+        // Unhighlight previous player
         var prevPlayer = _currentPlayerOrder[playerIndex - 1];
         prevPlayer.Model.Highlight(false);
         

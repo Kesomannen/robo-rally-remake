@@ -96,6 +96,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
             var card = player.Program[register];
             if (card == null) yield break;
             
+            player.RegisterPlay(card);
             OnPlayerRegister?.Invoke(card, register, player);
             yield return card.ExecuteRoutine(player, register);
         }

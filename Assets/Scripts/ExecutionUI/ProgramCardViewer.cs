@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -29,7 +28,7 @@ public class ProgramCardViewer : MonoBehaviour {
     }
     
     void OnProgramCardPlayed(Player player, ProgramCardData card) {
-        _headerText.text = $"{player} playing {card}";
+        //_headerText.text = $"{player} playing {card}";
         StartCoroutine(AddCard(card, _lastPlayer != player));
         _lastPlayer = player;
     }
@@ -41,7 +40,7 @@ public class ProgramCardViewer : MonoBehaviour {
         
         var t = transform;
         
-        var targetPos = t.position + _cards.Count * SpacedSize.x * Vector3.right;
+        var targetPos = t.position + _cards.Count * Vector3.right;
         var startPos = _cards.Count > 0 ? targetPos + SpacedSize.y * Vector3.down : targetPos + SpacedSize.x * Vector3.left;
         
         var newCard = Instantiate(_programCardPrefab, t);

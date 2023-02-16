@@ -43,7 +43,7 @@ public class PlayerExecutionPanels : MonoBehaviour {
     int GetYPosition(int index) => -_panelSpacing * index;
     
     IEnumerator LerpPanel(PlayerExecutionPanel panel, int targetY) {
-        var current = (int)panel.transform.localPosition.y / CanvasUtils.CanvasScale.y;
+        var current = (int)panel.transform.localPosition.y * CanvasUtils.CanvasScale.y;
         var distance = Mathf.Abs(targetY - current);
 
         LeanTween.cancel(panel.gameObject);

@@ -10,7 +10,6 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
     [SerializeField] Image _costImage;
     [SerializeField] Image _artworkImage;
     [SerializeField] Image _backgroundImage;
-    [SerializeField] Image _unavailableOverlay;
     [SerializeField] Selectable _selectable;
     
     [Header("Sprites")]
@@ -28,8 +27,6 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
     public string Description => Content.Description;
     
     public event Action<UpgradeCard> OnClick;
-
-
 
     protected override void Serialize(UpgradeCardData card) {
         _nameText.text = card.Name;

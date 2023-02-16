@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
@@ -8,6 +9,9 @@ using UnityEngine.SceneManagement;
 #pragma warning disable 4014
 
 public class NetworkSystem : NetworkSingleton<NetworkSystem> {
+    [SerializeField] GameObject _waitingOverlay;
+    [SerializeField] TMP_Text _waitingText;
+    
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
         
@@ -58,8 +62,15 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
     readonly List<ulong> _playersReady = new();
 
     public IEnumerator SyncPlayers() {
+        if (NetworkManager == null) yield break;
+        
+        _waitingOverlay.SetActive(true);
         PlayerReadyServerRpc(NetworkManager.LocalClientId);
-        yield return new WaitUntil(() => _playersReady.Count >= PlayerSystem.Players.Count);
+        while (_playersReady.Count < PlayerSystem.Players.Count) {
+            _waitingText.text = $"Waiting for players... ({_playersReady.Count}/{PlayerSystem.Players.Count})";
+            yield return null;
+        }
+        _waitingOverlay.SetActive(false);
         _playersReady.Clear();
     }
     

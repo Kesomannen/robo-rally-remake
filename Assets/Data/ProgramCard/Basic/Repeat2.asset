@@ -18,3 +18,4 @@ MonoBehaviour:
   _type: 0
   _repeatCount: 2
   _relativeRepeatIndex: -1
+  _timeBetweenRepeats: 0.5
