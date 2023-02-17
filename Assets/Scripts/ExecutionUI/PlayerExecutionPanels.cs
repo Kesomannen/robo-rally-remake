@@ -43,12 +43,12 @@ public class PlayerExecutionPanels : MonoBehaviour {
     int GetYPosition(int index) => -_panelSpacing * index;
     
     IEnumerator LerpPanel(PlayerExecutionPanel panel, int targetY) {
-        var current = (int)panel.transform.localPosition.y * CanvasUtils.CanvasScale.y;
+        var current = (int)panel.transform.localPosition.y;
         var distance = Mathf.Abs(targetY - current);
 
         LeanTween.cancel(panel.gameObject);
         var duration = _tweenTime * distance / _panelSpacing;
-        LeanTween.moveLocalY(panel.gameObject, targetY * CanvasUtils.CanvasScale.y, duration).setEase(_tweenType);
+        LeanTween.moveLocalY(panel.gameObject, targetY, duration).setEase(_tweenType);
         yield return CoroutineUtils.Wait(duration);
     }
 }

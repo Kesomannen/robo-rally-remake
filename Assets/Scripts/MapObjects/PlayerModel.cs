@@ -59,10 +59,10 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
             pos += dir;
         }
 
-        var targetFilled = MapSystem.TryGetTile(pos, out var tile);
+        var targetFilled = MapSystem.TryGetTile(pos + dir, out var tile);
         if (!targetFilled) return;
         
-        var hits = tile.OfType<IPlayer>().Where(p => p.Owner.Model != this).ToArray();
+        var hits = tile.OfType<IPlayer>().Where(p => p.Owner != Owner).ToArray();
         if (hits.Length == 0) return;
         _hits += hits.Length;
 

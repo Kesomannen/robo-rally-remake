@@ -2130,7 +2130,7 @@ MonoBehaviour:
   m_Intensity: 0.7
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: 5f1ae68700000000ab84f43ae1134fbd
+  m_ApplyToSortingLayers: 5f1ae68700000000ab84f43abbbf6893e1134fbd
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -2452,9 +2452,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ad5597ae79c4fa47973471e5c5d4293, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mapToLoad: {fileID: 11400000, guid: ecd6b40d9b330dd4e8c947187a002b2f, type: 2}
+  _mapToLoad: {fileID: 11400000, guid: ee6058072b906024f90f5c10f1ceb3de, type: 2}
   _robotToLoad: {fileID: 11400000, guid: cef402b3b1958fb4a82076337d20b84a, type: 2}
   _upgradesToLoad: []
+  _panelsController: {fileID: 1539960399}
 --- !u!114 &761913675
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -71,7 +71,7 @@ public class ExecutionUIController : MonoBehaviour {
     void Start() {
         var pos = _phaseIcon1.transform.position;
         _iconPosition = pos;
-        _phaseIcon2.transform.position = pos + Vector3.up * _phaseDistance * CanvasUtils.CanvasScale.x;
+        _phaseIcon2.transform.position = pos + Vector3.up * _phaseDistance * CanvasUtils.CanvasScale.y;
         _currentSubPhaseImage = _phaseIcon1;
 
         _currentPlayerOrder = PlayerSystem.Players.ToArray();
@@ -147,7 +147,6 @@ public class ExecutionUIController : MonoBehaviour {
                 rebootIndex--;
             }
         }
-        _currentPlayerOrder = nextPlayerOrder.ToArray();
 
         for (var i = 0; i < nextPlayerOrder.Count; i++) {
             var player = nextPlayerOrder[i];
@@ -157,10 +156,16 @@ public class ExecutionUIController : MonoBehaviour {
             swaps.Add((i, current));
             (order[i], order[current]) = (order[current], order[i]);
         }
-
-        StartCoroutine(swaps.Select(swap => _panelsController.Swap(swap.first, swap.second)).GetEnumerator());
-    
+        
+        TaskScheduler.PushRoutine(swaps.Select(swap => DoSwap(swap.first, swap.second)).GetEnumerator());
+        
         ChangeSubPhase(UISubPhase.OrderPlayers);
+        _currentPlayerOrder = nextPlayerOrder.ToArray();
+        
+        IEnumerator DoSwap(int first, int second) {
+            yield return Antenna.Instance.BeamAnimation(nextPlayerOrder[first]);
+            yield return _panelsController.Swap(first, second);
+        }
     }
 
     static void BalanceScale(PlayerExecutionPanel panel, PlayerExecutionRegister target, float scale) {

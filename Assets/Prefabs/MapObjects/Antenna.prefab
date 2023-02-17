@@ -103,6 +103,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GridPos: {x: 0, y: 0}
+  _beamPrefab: {fileID: 5088111728540691026, guid: 4786f590575ce6f41808e6986c32fde1, type: 3}
+  _beamSpeed: 10
+  _beamTweenType: 15
 --- !u!114 &6515729263213682735
 MonoBehaviour:
   m_ObjectHideFlags: 0

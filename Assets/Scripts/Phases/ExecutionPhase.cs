@@ -98,7 +98,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
             
             player.RegisterPlay(card);
             OnPlayerRegister?.Invoke(card, register, player);
-            yield return card.ExecuteRoutine(player, register);
+            TaskScheduler.PushRoutine(card.ExecuteRoutine(player, register));
         }
     }
 }
