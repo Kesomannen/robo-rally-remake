@@ -11,7 +11,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
 
     public const int RegisterCount = 5;
     const float SubPhaseDelay = 0;
-    const float StepDelay = 1f;
+    const float StepDelay = 0.5f;
 
     public static event Action OnPhaseStart, OnPhaseEnd, OnExecutionComplete, OnPlayerRegistersComplete;
     public static event Action<ProgramCardData, int, Player> OnPlayerRegister;

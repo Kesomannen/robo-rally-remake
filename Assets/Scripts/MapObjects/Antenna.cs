@@ -20,7 +20,7 @@ public class Antenna : MapObject, ICanEnterHandler, ITooltipable {
         if (_instance == null) {
             _instance = this;
         } else {
-            Debug.LogWarning($"Duplicate antenna found!", this);
+            Debug.LogWarning("Duplicate antenna found!", this);
         }
     }
 

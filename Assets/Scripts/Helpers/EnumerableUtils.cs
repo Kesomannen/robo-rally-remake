@@ -13,4 +13,12 @@ public static class EnumerableUtils {
         Array.Copy(array, newArray, array.Length);
         return newArray;
     }
+    
+    public static IEnumerable<T> Drop<T>(this IEnumerable<T> source, T element) {
+        return source.Where(e => !e.Equals(element));
+    }
+    
+    public static IEnumerable<T> Drop<T>(this IEnumerable<T> source, IEnumerable<T> elements) {
+        return source.Where(e => !elements.Contains(e));
+    }
 }

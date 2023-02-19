@@ -5,13 +5,9 @@ using UnityEngine.EventSystems;
 
 public abstract class MapObject : MonoBehaviour, IMapObject {
     public MapObject Object => this;
-    public TransformRotator Rotator { get; private set; }
-
-    #if UNITY_EDITOR
-    [ReadOnly] 
-    #endif
+    protected TransformRotator Rotator { get; private set; }
     
-    public Vector2Int GridPos;
+    [ReadOnly] public Vector2Int GridPos;
 
     protected virtual bool CanRotate => false;
 

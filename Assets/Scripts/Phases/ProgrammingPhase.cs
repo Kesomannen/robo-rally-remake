@@ -13,8 +13,8 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
     
     static int _playersLockedIn;
 
-    public static event Action OnPhaseStarted;
-    public static event Action<Player> OnPlayerLockedIn, OnStressStarted;
+    public static event Action OnPhaseStarted, OnStressStarted;
+    public static event Action<Player> OnPlayerLockedIn;
 
     public static IEnumerator DoPhase() {
         yield return UIManager.Instance.ChangeState(UIState.Programming);
@@ -69,7 +69,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
          }
 
          if (IsStressed) return;
-         OnStressStarted?.Invoke(player);
+         OnStressStarted?.Invoke();
      }
 
     IEnumerator StressRoutine() {

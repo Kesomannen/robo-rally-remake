@@ -43,7 +43,10 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
     void OnPlayerLockedIn(Player player) => UpdateAvailability();
     
     void UpdateAvailability() {
-        var available = _container.Content != null && _container.Content.CanUse(PlayerSystem.LocalPlayer);
+        var available = _container.Content != null 
+            && _container.Content.CanUse(PlayerSystem.LocalPlayer) 
+            || _container.Content.Type == UpgradeType.Permanent;
+        
         _unavailableOverlay.gameObject.SetActive(!available);
         _selectable.interactable = available;
     }

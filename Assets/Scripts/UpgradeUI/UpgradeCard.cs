@@ -2,6 +2,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITooltipable {
@@ -20,7 +21,13 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
 
     [Serializable]
     struct CardSprite {
-        public Sprite Default, Selected;
+        [FormerlySerializedAs("Default")] 
+        [SerializeField] Sprite _default;
+        [FormerlySerializedAs("Selected")] 
+        [SerializeField] Sprite _selected;
+        
+        public Sprite Default => _default;
+        public Sprite Selected => _selected;
     }
     
     public string Header => $"{Content.Name} ({Content.Cost})";

@@ -8,6 +8,11 @@ using UnityEngine.Tilemaps;
 
 public class MapSystem : Singleton<MapSystem> {
     [SerializeField] Grid _grid;
+    [SerializeField] Camera _mapCamera;
+    [SerializeField] float _cameraScaleFactor;
+    [SerializeField] [ReadOnly] Vector2 _mapMax;
+    [SerializeField] [ReadOnly] Vector2 _mapMin;
+    [SerializeField] [ReadOnly] Vector2 _mapCenter;
 
     static Dictionary<Vector2Int, List<MapObject>> _tiles;
     static Dictionary<Tilemap, IBoard> _boards;
@@ -40,16 +45,41 @@ public class MapSystem : Singleton<MapSystem> {
         Debug.Log($"Registered {_tiles.Count} tiles.");
 
         // Call OnEnter handlers
-        foreach (var handler in onEnterHandlers){
-            foreach (var obj in _tiles[handler.Object.GridPos]
-                         .Where(obj => obj != handler.Object)) {
+        foreach (var handler in onEnterHandlers) {
+            foreach (var obj in _tiles[handler.Object.GridPos].Drop(handler.Object)) {
                 handler.OnEnter(obj);
             }
         }
         Debug.Log($"Called OnEnter for {onEnterHandlers.Count} objects.");
         
+        PositionCamera(tilemaps);
+        
         OnMapLoaded?.Invoke();
         Debug.Log($"Map {mapData} loaded.");
+    }
+
+    void OnDrawGizmos() {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(_mapCenter, (_mapMax - _mapMin));
+    }
+
+    void PositionCamera(IEnumerable<Tilemap> tilemaps) {
+        var t = _mapCamera.transform;
+        _mapMax = Vector2.negativeInfinity;
+        _mapMin = Vector2.positiveInfinity;
+
+        foreach (var tilemap in tilemaps) {
+            tilemap.CompressBounds();
+            var bounds = tilemap.cellBounds;
+            _mapMax = Vector2.Max(_mapMax, tilemap.CellToWorld(bounds.max));
+            _mapMin = Vector2.Min(_mapMin, tilemap.CellToWorld(bounds.min));
+        }
+        
+        var size = (_mapMax - _mapMin).magnitude * _cameraScaleFactor;
+        _mapCamera.orthographicSize = size;
+        
+        _mapCenter = (_mapMax + _mapMin) / 2;
+        t.position = new Vector3(_mapCenter.x, _mapCenter.y, t.position.z);
     }
 
     void RegisterMapObject(MapObject mapObject) {

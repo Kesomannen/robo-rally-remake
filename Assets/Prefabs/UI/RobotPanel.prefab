@@ -173,8 +173,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -12.468933, y: -19.141342}
-  m_SizeDelta: {x: -20.6367, y: 23.4479}
+  m_AnchoredPosition: {x: -10.101, y: -19.141342}
+  m_SizeDelta: {x: -18.268, y: 23.4479}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &2583341919420171568
 CanvasRenderer:
@@ -206,8 +206,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Rotatorbot
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: ec704bad89a93ce4ab83fcf7dfa417ea, type: 2}
-  m_sharedMaterial: {fileID: -421896237966252023, guid: ec704bad89a93ce4ab83fcf7dfa417ea, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ac28fee2560dc15458f9441d2d7e061a, type: 2}
+  m_sharedMaterial: {fileID: 8742821361592885639, guid: ac28fee2560dc15458f9441d2d7e061a, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -231,13 +231,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 18
+  m_fontSizeBase: 18
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 15
   m_fontSizeMax: 25
-  m_fontStyle: 0
+  m_fontStyle: 16
   m_HorizontalAlignment: 4
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -267,7 +267,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 1.9214859, w: 0}
+  m_margin: {x: 0, y: 0, z: 1.1099472, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -401,7 +401,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -10.1006, y: -30.865}
-  m_SizeDelta: {x: 70.0197, y: -43.2777}
+  m_SizeDelta: {x: 105.5832, y: -43.2777}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &6009202488517789845
 CanvasRenderer:
@@ -433,8 +433,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Start with a gyroscope in your deck
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9ee573b94b4ec2e47bba068b277096a4, type: 2}
-  m_sharedMaterial: {fileID: -4734279123820091039, guid: 9ee573b94b4ec2e47bba068b277096a4, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: bdd5f255ba26bb4489aa17cba3e86b6b, type: 2}
+  m_sharedMaterial: {fileID: -1875436656544777217, guid: bdd5f255ba26bb4489aa17cba3e86b6b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -458,8 +458,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 11
-  m_fontSizeBase: 11
+  m_fontSize: 12
+  m_fontSizeBase: 12
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 10
@@ -470,7 +470,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: -25
+  m_lineSpacing: 0
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0

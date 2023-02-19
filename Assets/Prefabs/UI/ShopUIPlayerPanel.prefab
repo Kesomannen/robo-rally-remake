@@ -389,6 +389,17 @@ MonoBehaviour:
   _energyIcon: {fileID: 1035966604}
   _tweenDuration: 0.75
   _tweenType: 3
+  _upgradeCardPrefab: {fileID: 0}
+  _upgradeCardDuration: 0
+  _upgradeCardTweenType: 0
+  _upgradeCardStart: {fileID: 0}
+  _upgradeCardEnd: {fileID: 0}
+  _energyPrefab: {fileID: 0}
+  _programCardPrefab: {fileID: 0}
+  _indicatorDuration: 0
+  _indicatorInterval: 0
+  _indicatorTweenType: 0
+  _indicatorScale: 0
 --- !u!1 &754211565241749947
 GameObject:
   m_ObjectHideFlags: 0
@@ -533,8 +544,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Kesomannen
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: dc36b4b77fe26524c8dd6982a3c3f416, type: 2}
-  m_sharedMaterial: {fileID: 3231958733206975079, guid: dc36b4b77fe26524c8dd6982a3c3f416, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: bdd5f255ba26bb4489aa17cba3e86b6b, type: 2}
+  m_sharedMaterial: {fileID: -1875436656544777217, guid: bdd5f255ba26bb4489aa17cba3e86b6b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -558,13 +569,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18.5
+  m_fontSize: 12
   m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 15
-  m_fontSizeMax: 25
-  m_fontStyle: 16
+  m_fontSizeMin: 10
+  m_fontSizeMax: 12
+  m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535

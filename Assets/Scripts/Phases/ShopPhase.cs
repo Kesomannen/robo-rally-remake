@@ -33,8 +33,6 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
         yield return UIManager.Instance.ChangeState(UIState.Shop);
         OnPhaseStarted?.Invoke();
 
-        yield return CoroutineUtils.Wait(1);
-
         _restockTrigger = false;
         RestockCards();
         yield return new WaitUntil(() => _restockTrigger);

@@ -1,5 +1,6 @@
 ﻿#if UNITY_EDITOR
 using UnityEditor;
+# endif
 using UnityEngine;
 
 public enum ShowIfComparer {
@@ -27,6 +28,7 @@ public class ShowIfAttribute : PropertyAttribute {
     }
 }
 
+# if UNITY_EDITOR
 [CustomPropertyDrawer(typeof(ShowIfAttribute))]
 public class ShowIfDrawer : PropertyDrawer {
     bool GetEnabled(SerializedObject obj) {

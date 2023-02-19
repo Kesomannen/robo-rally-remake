@@ -1,66 +1,60 @@
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class PlayerUIUpgrades : MonoBehaviour {
-    [FormerlySerializedAs("_playerPanelPrefab")] 
-    [SerializeField] Container<UpgradeCardData> _upgradePanelPrefab;
-    
-    [FormerlySerializedAs("_playerPanelParent")] 
-    [SerializeField] Transform _upgradePanelParent;
-
-    [FormerlySerializedAs("_playerPanelSize")] 
-    [SerializeField] Vector2 _upgradePanelSize;
-    
+    [SerializeField] Container<UpgradeCardData> _cardPrefab;
+    [SerializeField] Transform _cardParent;
+    [SerializeField] Vector2 _cardSize;
     [SerializeField] Transform _highlightParent;
 
-    readonly Dictionary<Container<UpgradeCardData>, int> _cards = new();
+    Container<UpgradeCardData>[] _cards;
 
     static Player Owner => PlayerSystem.LocalPlayer;
 
     void Awake() {
+        _cards = new Container<UpgradeCardData>[Owner.Upgrades.Count];
         for (var i = 0; i < Owner.Upgrades.Count; i++) {
             var upgrade = Owner.Upgrades[i];
             if (upgrade == null) continue;
-            CreatePanel(upgrade, i);
+            CreateCard(upgrade, i);
         }
-        Owner.OnUpgradeAdded += CreatePanel;
-        Owner.OnUpgradeRemoved += RemovePanel;
+        Owner.OnUpgradeAdded += CreateCard;
+        Owner.OnUpgradeRemoved += RemoveCard;
     }
 
     void OnDestroy() {
-        Owner.OnUpgradeAdded -= CreatePanel;
-        Owner.OnUpgradeRemoved -= RemovePanel;
+        Owner.OnUpgradeAdded -= CreateCard;
+        Owner.OnUpgradeRemoved -= RemoveCard;
     }
 
-    void CreatePanel(UpgradeCardData data, int index) {
-        var newPanel = Instantiate(_upgradePanelPrefab, _upgradePanelParent);
-        newPanel.SetContent(data);
-        newPanel.GetComponent<HandUpgradeCard>().HighlightParent = _highlightParent;
-        _cards.Add(newPanel, index);
+    void CreateCard(UpgradeCardData data, int index) {
+        var newCard = Instantiate(_cardPrefab, _cardParent);
+        newCard.SetContent(data);
+        newCard.GetComponent<HandUpgradeCard>().HighlightParent = _highlightParent;
+        _cards[index] = newCard;
         
-        newPanel.transform.SetSiblingIndex(index);
+        newCard.transform.SetSiblingIndex(index);
         UpdatePositions();
     }
     
-    void RemovePanel(UpgradeCardData data, int index) {
-        var panel = _cards.FirstOrDefault(c => c.Value == index).Key;
-        Destroy(panel.gameObject);
+    void RemoveCard(UpgradeCardData data, int index) {
+        Destroy(_cards[index].gameObject);
+        _cards[index] = null;
         UpdatePositions();
     }
     
     void UpdatePositions() {
-        var rows = Mathf.CeilToInt(_cards.Count / 3f);
-        var columns = Mathf.CeilToInt(_cards.Count / (float)rows);
+        var cards = _cards.Where(c => c != null).ToArray();
+        var rows = Mathf.CeilToInt(cards.Length / 3f);
+        var columns = Mathf.CeilToInt(cards.Length / (float)rows);
         
         var i = 0;
         for (var row = 0; row < rows; row++) {
             for (var column = 0; column < columns; column++) {
-                if (i >= _cards.Count) return;
+                if (i >= cards.Length) return;
                 
-                var panel = _cards.ElementAt(i).Key;
-                var position = new Vector2(column * _upgradePanelSize.x, -row * _upgradePanelSize.y);
+                var panel = cards[i];
+                var position = new Vector2(column * _cardSize.x, -row * _cardSize.y);
                 panel.transform.localPosition = position;
                 panel.transform.SetSiblingIndex(i);
                 i++;

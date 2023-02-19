@@ -21,7 +21,7 @@ public class PushPanel : BoardElement<PushPanel, ICanEnterHandler>, ITooltipable
         get {
             var registers = _activeRegisters.Select(r => (r + 1).ToString()).ToArray();
             var str = new StringBuilder("Pushes objects one space in the direction of the panel. Activates on ");
-            str.Append(registers.Length == 1 ? "register " : $"registers ");
+            str.Append(registers.Length == 1 ? "register " : "registers ");
             str.Append(registers[0]);
             
             for (var i = 1; i < registers.Length; i++) {

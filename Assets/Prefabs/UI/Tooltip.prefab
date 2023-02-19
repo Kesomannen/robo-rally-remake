@@ -68,8 +68,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: You draw program cards from here
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 79a862f5529a82e4f90cb7164dd74e07, type: 2}
-  m_sharedMaterial: {fileID: -7298025711866890315, guid: 79a862f5529a82e4f90cb7164dd74e07, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: bdd5f255ba26bb4489aa17cba3e86b6b, type: 2}
+  m_sharedMaterial: {fileID: -1875436656544777217, guid: bdd5f255ba26bb4489aa17cba3e86b6b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -93,8 +93,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 13
-  m_fontSizeBase: 13
+  m_fontSize: 16
+  m_fontSizeBase: 16
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -103,7 +103,7 @@ MonoBehaviour:
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
-  m_characterSpacing: -0.25
+  m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -235,7 +235,7 @@ MonoBehaviour:
     m_Top: 10
     m_Bottom: 10
   m_ChildAlignment: 0
-  m_Spacing: 0
+  m_Spacing: 3
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
@@ -291,7 +291,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _characterWrapLimit: 40
   _fadeInSpeed: 7.5
-  _popupDuration: 0.25
+  _popupDuration: 0.3
   _background: {fileID: 2602325722009559281}
   _headerText: {fileID: 2602325722040696173}
   _descriptionText: {fileID: 2602325720826837955}
@@ -364,8 +364,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Draw pile
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c87f036a1a6bc53468807a229be61f45, type: 2}
-  m_sharedMaterial: {fileID: -7100628907401325203, guid: c87f036a1a6bc53468807a229be61f45, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ac28fee2560dc15458f9441d2d7e061a, type: 2}
+  m_sharedMaterial: {fileID: 8742821361592885639, guid: ac28fee2560dc15458f9441d2d7e061a, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
