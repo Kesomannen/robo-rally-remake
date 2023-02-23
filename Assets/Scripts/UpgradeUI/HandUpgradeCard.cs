@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -78,13 +79,16 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
     public void OnPointerClick(PointerEventData eventData) {
         UpdateAvailability();
         if (eventData.button != PointerEventData.InputButton.Left) return;
+        TaskScheduler.PushRoutine(UseUpgrade());
+
+        IEnumerator UseUpgrade() {
+            var upgrade = _container.Content;
+            if (!upgrade.CanUse(Owner)) yield break;
+            Owner.Energy.Value -= upgrade.UseCost;
         
-        var upgrade = _container.Content;
-        if (!upgrade.CanUse(Owner)) return;
-        Owner.Energy.Value -= upgrade.UseCost;
-        
-        var index = Owner.Upgrades.IndexOf(upgrade);
-        Owner.UseUpgrade(index);
-        NetworkSystem.Instance.BroadcastUpgrade(index);
+            var index = Owner.Upgrades.IndexOf(upgrade);
+            Owner.UseUpgrade(index);
+            NetworkSystem.Instance.BroadcastUpgrade(index);
+        }
     }
 }
