@@ -8,6 +8,8 @@ public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T> {
             return null;
         }
     }
+    
+    public static bool HasInstance => _instanceExists;
 
     static T _instance;
     static bool _instanceExists;

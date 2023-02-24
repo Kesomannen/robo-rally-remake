@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerUIPlayerPanel : PlayerPanel {
@@ -36,6 +37,7 @@ public class PlayerUIPlayerPanel : PlayerPanel {
     void OnCardGet(ProgramCardData card, int index) {
         if (!enabled) return;
         
+        Debug.Log(_programCardPrefab);
         var obj = Instantiate(_programCardPrefab, _upgradeCardStart);
         obj.SetContent(card);
         var t = obj.transform;
@@ -45,9 +47,9 @@ public class PlayerUIPlayerPanel : PlayerPanel {
         TaskScheduler.PushRoutine(DoIndicatorAnimation(new [] { t }));
     }
 
-    IEnumerator DoIndicatorAnimation(Transform[] targets) {
-        var totalDuration = (_indicatorDuration + _indicatorInterval) * (1 + Mathf.Log10(targets.Length));
-        var perTargetDuration = totalDuration / targets.Length;
+    IEnumerator DoIndicatorAnimation(IReadOnlyCollection<Transform> targets) {
+        var totalDuration = (_indicatorDuration + _indicatorInterval) * (1 + Mathf.Log10(targets.Count));
+        var perTargetDuration = totalDuration / targets.Count;
         
         foreach (var target in targets) {
             LeanTween

@@ -196,13 +196,14 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
     
     IEnumerator UpdateLobbyRoutine() {
         if (!IsServer) yield break;
+        
         while (NetworkManager != null) {
-            yield return CoroutineUtils.Wait(LobbyUpdateInterval);
             if (Matchmaking.CurrentMapID == LobbyMapId) continue;
             var task = Matchmaking.UpdateLobbyAsync(new UpdateLobbyDataOptions {
                 MapID = (byte?)LobbyMapId
             });
             yield return new WaitUntil(() => task.IsCompleted);
+            yield return CoroutineUtils.Wait(LobbyUpdateInterval);
         }
     }
 }

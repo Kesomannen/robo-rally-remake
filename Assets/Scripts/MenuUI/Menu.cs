@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class Menu : MonoBehaviour { 
+public class Menu : MonoBehaviour { 
     public virtual void Hide() {
         gameObject.SetActive(false);
     }

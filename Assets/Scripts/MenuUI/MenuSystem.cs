@@ -8,6 +8,7 @@ public class MenuSystem : Singleton<MenuSystem> {
     [SerializeField] CreateGameMenu _createGameMenu;
     [SerializeField] JoinGameMenu _joinGameMenu;
     [SerializeField] RoomMenu _roomMenu;
+    [SerializeField] Menu _aboutMenu;
 
     readonly Stack<Menu> _menuStack = new();
 
@@ -38,6 +39,7 @@ public class MenuSystem : Singleton<MenuSystem> {
         MenuState.CreateGame => _createGameMenu,
         MenuState.JoinGame => _joinGameMenu,
         MenuState.Room => _roomMenu,
+        MenuState.About => _aboutMenu,
         _ => throw new ArgumentOutOfRangeException(nameof(state), state, null)
     };
 }
@@ -49,4 +51,5 @@ public enum MenuState {
     CreateGame,
     JoinGame,
     Room,
+    About,
 }

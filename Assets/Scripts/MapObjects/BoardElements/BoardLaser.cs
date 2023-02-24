@@ -37,6 +37,8 @@ public class BoardLaser : MapObject, ITooltipable {
     }
     
     void Start() {
+        if (!MapSystem.HasInstance) return;
+        
         _lasers = Laser.ShootLaser(_laserPrefab, this, _direction, ignoreSource: false);
         _lasers.ForEach(l => {
             l.SetActiveVisual(false);
