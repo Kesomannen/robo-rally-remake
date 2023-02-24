@@ -5,7 +5,6 @@ using UnityEngine;
 public class MenuSystem : Singleton<MenuSystem> {
     [SerializeField] MainMenu _mainMenu;
     [SerializeField] OptionsMenu _optionsMenu;
-    [SerializeField] CreateGameMenu _createGameMenu;
     [SerializeField] JoinGameMenu _joinGameMenu;
     [SerializeField] RoomMenu _roomMenu;
     [SerializeField] Menu _aboutMenu;
@@ -36,7 +35,6 @@ public class MenuSystem : Singleton<MenuSystem> {
     Menu GetMenu(MenuState state) => state switch {
         MenuState.Main => _mainMenu,
         MenuState.Options => _optionsMenu,
-        MenuState.CreateGame => _createGameMenu,
         MenuState.JoinGame => _joinGameMenu,
         MenuState.Room => _roomMenu,
         MenuState.About => _aboutMenu,
@@ -45,11 +43,9 @@ public class MenuSystem : Singleton<MenuSystem> {
 }
 
 public enum MenuState {
-    None,
     Main,
     Options,
-    CreateGame,
     JoinGame,
     Room,
-    About,
+    About
 }

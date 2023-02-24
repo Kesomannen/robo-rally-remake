@@ -84,7 +84,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         UpdatePlayerServerRpc(id, playerData);
     }
 
-    public async void StartGame() {
+    public async Task StartGame() {
         Debug.Log("Starting game");
         await Matchmaking.LockLobbyAsync();
         NetworkManager.SceneManager.LoadScene("Game", LoadSceneMode.Single);

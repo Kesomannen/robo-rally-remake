@@ -8,7 +8,10 @@ public class MainMenu : Menu {
             IsPrivate = false
         };
 
-        await LobbySystem.Instance.CreateLobby(lobbyData);
+
+        using (new LoadScreen("Creating lobby...")) {
+            await LobbySystem.Instance.CreateLobby(lobbyData);
+        }
         MenuSystem.Instance.PushMenu(MenuState.Room);
     }
 

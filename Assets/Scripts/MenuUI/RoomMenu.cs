@@ -47,7 +47,9 @@ public class RoomMenu : Menu {
         LobbySystem.OnPlayerUpdatedOrAdded -= UpdatePanel;
         LobbySystem.OnPlayerRemoved -= RemovePanel;
     
-        await LobbySystem.Instance.LeaveLobby();
+        using (new LoadScreen("Leaving Lobby...")) {
+            await LobbySystem.Instance.LeaveLobby();
+        }
     }
 
     void UpdatePanel(ulong playerId, LobbyPlayerData playerData) {
@@ -73,8 +75,10 @@ public class RoomMenu : Menu {
         Destroy(playerPanel.gameObject);
     }
 
-    public void StartGame() {
-        LobbySystem.Instance.StartGame();
+    public async void StartGame() {
+        using (new LoadScreen("Staring Game...")) {
+            await LobbySystem.Instance.StartGame();   
+        }
     }
 
     public void Ready() {
