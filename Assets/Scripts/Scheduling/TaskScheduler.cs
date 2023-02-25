@@ -7,7 +7,7 @@ public class TaskScheduler : Singleton<TaskScheduler> {
     static readonly Stack<(IEnumerator Routine, Action Callback, float Delay)> _tasks = new();
     static bool _isRunning;
 
-    const float DefaultTaskDelay = 0.5f;
+    const float DefaultTaskDelay = 0f;
     
     public static void PushRoutine(IEnumerator routine, float delay = DefaultTaskDelay, Action onComplete = null) {
         _tasks.Push((routine, onComplete, delay));

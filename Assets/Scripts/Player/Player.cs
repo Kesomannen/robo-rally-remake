@@ -7,8 +7,7 @@ using Random = UnityEngine.Random;
 
 public class Player : IPlayer {
     # region Fields, Properties & Constructor
-    // Networking
-    readonly ulong _clientId;
+    readonly string _name;
     
     // Robot
     public readonly PlayerModel Model;
@@ -40,7 +39,7 @@ public class Player : IPlayer {
     public Player Owner => this;
     public MapObject Object => Model;
 
-    public override string ToString() => _clientId.ToString();
+    public override string ToString() => _name;
     
     // Events
     public event Action OnShuffleDeck;
@@ -51,7 +50,7 @@ public class Player : IPlayer {
     public event Action<ProgramCardData> OnProgramCardPlayed;
 
     public Player(PlayerArgs args) {
-        _clientId = args.OwnerId;
+        _name = args.Name;
         RobotData = args.RobotData;
 
         // Cards
@@ -201,6 +200,8 @@ public class Player : IPlayer {
         _upgrades[index] = upgrade;
         upgrade.OnBuy(this);
         OnUpgradeAdded?.Invoke(upgrade, index);
+        
+        Log.Instance.BuyUpgradeMessage(this, upgrade);
     }
 
     public void UseUpgrade(int index) {
@@ -211,6 +212,8 @@ public class Player : IPlayer {
         if (upgrade.Type == UpgradeType.Temporary) {
             RemoveUpgrade(index);   
         }
+        
+        Log.Instance.UseUpgradeMessage(this, upgrade);
     }
     
     public void RemoveUpgrade(int index) {
@@ -232,6 +235,8 @@ public class Player : IPlayer {
         DiscardProgram();
         
         IsRebooted.Value = true;
+        
+        Log.Instance.RebootMessage(this);
     }
     
     public void RebootFromParentBoard(bool takeDamage = true) {
@@ -266,4 +271,5 @@ public struct PlayerArgs {
     public int RegisterCount;
     public CardAffector RebootAffector;
     public int UpgradeSlots;
+    public string Name;
 }

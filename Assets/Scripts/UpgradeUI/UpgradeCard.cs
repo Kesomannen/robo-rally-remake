@@ -25,7 +25,7 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
         [SerializeField] Sprite _default;
         [FormerlySerializedAs("Selected")] 
         [SerializeField] Sprite _selected;
-        
+
         public Sprite Default => _default;
         public Sprite Selected => _selected;
     }
@@ -52,6 +52,7 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
         spriteState.highlightedSprite = cardSprite.Selected;
         spriteState.pressedSprite = cardSprite.Selected;
         spriteState.selectedSprite = cardSprite.Selected;
+        spriteState.disabledSprite = cardSprite.Default;
         _selectable.spriteState = spriteState;
     }
     

@@ -89,7 +89,7 @@ public static class Matchmaking {
         };
 
         CurrentLobby = await Lobbies.Instance.CreateLobbyAsync(
-            $"Lobby {Random.Range(1000, 9999)}",
+            $"Lobby {Random.Range(1000, 10000)}",
             lobbyData.MaxPlayers,
             options
         );

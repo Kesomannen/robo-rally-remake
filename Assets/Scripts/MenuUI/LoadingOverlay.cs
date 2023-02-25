@@ -20,7 +20,7 @@ public class LoadingOverlay : Singleton<LoadingOverlay> {
     }
 }
 
-public struct LoadScreen : IDisposable {
+public class LoadScreen : IDisposable {
     public LoadScreen(string message) {
         LoadingOverlay.Instance.Show(message);
     }

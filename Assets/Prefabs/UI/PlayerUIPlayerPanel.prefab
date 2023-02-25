@@ -251,7 +251,8 @@ MonoBehaviour:
   _tweenDuration: 0.75
   _tweenType: 3
   _upgradeCardPrefab: {fileID: 5616511996089484015, guid: c74c614e9f3a9034e935ded9359f8dce, type: 3}
-  _upgradeCardDuration: 1.5
+  _upgradeTweenDuration: 1.5
+  _upgradeCardTime: 2
   _upgradeCardTweenType: 13
   _upgradeCardStart: {fileID: 1961230678}
   _upgradeCardEnd: {fileID: 1506957432}

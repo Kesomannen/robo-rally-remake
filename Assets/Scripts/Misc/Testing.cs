@@ -14,19 +14,17 @@ public class Testing : MonoBehaviour {
         if (NetworkManager.Singleton != null) return;
 
         MapSystem.Instance.LoadMap(_mapToLoad);
-        var player = PlayerSystem.Instance.CreatePlayer(0, new LobbyPlayerData {
-            RobotId = (byte)_robotToLoad.GetLookupId()
+        PlayerSystem.Instance.CreatePlayer(0, "Kesomannen", new LobbyPlayerData {
+            RobotId = (byte)_robotToLoad.GetLookupId(),
         });
-        for (var i = 0; i < _upgradesToLoad.Length; i++) {
-            player.AddUpgrade(_upgradesToLoad[i], i);
-        }
-        _panelsController.CreatePanel(player);
-        _panelsController.CreatePanel(player);
     }
 
     void Start() {
         if (NetworkManager.Singleton != null) return;
 
+        for (var i = 0; i < _upgradesToLoad.Length; i++) {
+            PlayerSystem.Players[0].AddUpgrade(_upgradesToLoad[i], i);
+        }
         PhaseSystem.StartPhaseSystem();
     }
 

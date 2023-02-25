@@ -8,6 +8,8 @@ public class RobotData : Lookup<RobotData>, ITooltipable {
     [SerializeField] [TextArea] string _description;
     [SerializeField] Sprite _icon;
     [SerializeField] Sprite _sprite;
+    [SerializeField] Color _color;
+    
     [Header("Stats")]
     [SerializeField] ProgramCardData[] _startingDeck;
     [SerializeField] ScriptableCardAffector _laserDamage;
@@ -19,6 +21,7 @@ public class RobotData : Lookup<RobotData>, ITooltipable {
     public string Description => _description;
     public Sprite Icon => _icon;
     public Sprite Sprite => _sprite;
+    public Color Color => _color;
     public IEnumerable<ProgramCardData> StartingDeck => _startingDeck;
 
     public CardAffector GetLaserDamage() => _laserDamage.ToInstance();

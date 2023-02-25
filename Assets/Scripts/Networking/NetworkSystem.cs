@@ -19,7 +19,7 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
         MapSystem.Instance.LoadMap(MapData.GetById(LobbySystem.LobbyMapId));
         
         foreach (var (id, data) in LobbySystem.PlayersInLobby) {
-            PlayerSystem.Instance.CreatePlayer(id, data);
+            PlayerSystem.Instance.CreatePlayer(id, $"Player {id}", data);
         }
         PhaseSystem.StartPhaseSystem();
     }

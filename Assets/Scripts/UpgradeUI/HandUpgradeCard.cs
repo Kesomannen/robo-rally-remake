@@ -16,16 +16,12 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
     Transform _highlightParent;
     Transform _originalParent;
     Vector3 _originalSize;
+    bool _clickable = true;
 
     static Player Owner => PlayerSystem.LocalPlayer;
 
     public Transform HighlightParent { set => _highlightParent = value; }
-    
-    void OnDestroy() {
-        ProgrammingPhase.OnPlayerLockedIn -= OnPlayerLockedIn;
-        ProgrammingPhase.OnPhaseStarted -= UpdateAvailability;
-    }
-    
+
     void Awake() {
         _container = GetComponent<Container<UpgradeCardData>>();
         
@@ -35,6 +31,11 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
         var t = transform;
         _originalParent = t.parent;
         _originalSize = t.localScale;
+    }
+    
+    void OnDestroy() {
+        ProgrammingPhase.OnPlayerLockedIn -= OnPlayerLockedIn;
+        ProgrammingPhase.OnPhaseStarted -= UpdateAvailability;
     }
 
     void Start() {
@@ -78,17 +79,24 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
     
     public void OnPointerClick(PointerEventData eventData) {
         UpdateAvailability();
+        if (!_clickable || !_selectable.interactable) return;
         if (eventData.button != PointerEventData.InputButton.Left) return;
+        
+        var upgrade = _container.Content;
+        if (!upgrade.CanUse(Owner)) return;
+        
+        _clickable = false;
         TaskScheduler.PushRoutine(UseUpgrade());
 
         IEnumerator UseUpgrade() {
-            var upgrade = _container.Content;
-            if (!upgrade.CanUse(Owner)) yield break;
-            Owner.Energy.Value -= upgrade.UseCost;
-        
             var index = Owner.Upgrades.IndexOf(upgrade);
-            Owner.UseUpgrade(index);
             NetworkSystem.Instance.BroadcastUpgrade(index);
+            Owner.Energy.Value -= upgrade.UseCost;
+            Owner.UseUpgrade(index);
+            
+            _clickable = true;
+            
+            yield break;
         }
     }
 }

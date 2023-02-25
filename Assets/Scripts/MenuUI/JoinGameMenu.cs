@@ -35,9 +35,10 @@ public class JoinGameMenu : Menu {
             return;
         }
 
-        using (new LoadScreen("Joining lobby...")) {
-            await LobbySystem.Instance.JoinLobby(_codeInputField.text);   
-        }
+        LoadingOverlay.Instance.Show("Joining lobby...");
+        await LobbySystem.Instance.JoinLobby(_codeInputField.text);  
+        LoadingOverlay.Instance.Hide();
+        
         MenuSystem.Instance.PushMenu(MenuState.Room);
     }
 }

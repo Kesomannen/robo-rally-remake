@@ -3163,6 +3163,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2602325722040696173, guid: 665534397b6183f4ba37032f7421233f, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: ac28fee2560dc15458f9441d2d7e061a, type: 2}
+    - target: {fileID: 2602325722040696173, guid: 665534397b6183f4ba37032f7421233f, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 4187043476227626560, guid: ac28fee2560dc15458f9441d2d7e061a, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 665534397b6183f4ba37032f7421233f, type: 3}
 --- !u!224 &1331458946 stripped

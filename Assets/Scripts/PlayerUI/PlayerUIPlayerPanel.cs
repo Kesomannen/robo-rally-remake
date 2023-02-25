@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerUIPlayerPanel : PlayerPanel {
     [Header("Upgrade Card")]
     [SerializeField] UpgradeCard _upgradeCardPrefab;
-    [SerializeField] float _upgradeCardDuration;
+    [FormerlySerializedAs("_upgradeCardDuration")] 
+    [SerializeField] float _upgradeTweenDuration;
+    [SerializeField] float _upgradeCardTime;
     [SerializeField] LeanTweenType _upgradeCardTweenType;
     [SerializeField] Transform _upgradeCardStart;
     [SerializeField] Transform _upgradeCardEnd;
@@ -90,14 +93,17 @@ public class PlayerUIPlayerPanel : PlayerPanel {
         var t = obj.transform;
         t.localPosition = Vector3.zero;
         t.localScale = Vector3.zero;
-
-        LeanTween.moveLocalX(obj.gameObject, _upgradeCardEnd.localPosition.x, 2 * _upgradeCardDuration / 3).setEase(_upgradeCardTweenType);
-        LeanTween.scale(obj.gameObject, Vector3.one, 2 * _upgradeCardDuration / 3).setEase(_upgradeCardTweenType);
-        TaskScheduler.PushRoutine(HideAnimation());
         
-        IEnumerator HideAnimation() {
-            LeanTween.scale(obj.gameObject, Vector3.zero, _upgradeCardDuration / 3).setEase(_upgradeCardTweenType);
-            yield return CoroutineUtils.Wait(_upgradeCardDuration / 3);
+        TaskScheduler.PushRoutine(Animation());
+        
+        IEnumerator Animation() {
+            LeanTween.moveLocalX(obj.gameObject, _upgradeCardEnd.localPosition.x, 2 * _upgradeTweenDuration / 3).setEase(_upgradeCardTweenType);
+            LeanTween.scale(obj.gameObject, Vector3.one, 2 * _upgradeTweenDuration / 3).setEase(_upgradeCardTweenType);
+            
+            yield return CoroutineUtils.Wait(2 * _upgradeTweenDuration / 3 + _upgradeCardTime);
+            
+            LeanTween.scale(obj.gameObject, Vector3.zero, _upgradeTweenDuration / 3).setEase(_upgradeCardTweenType);
+            yield return CoroutineUtils.Wait(_upgradeTweenDuration / 3);
             Destroy(obj.gameObject);
         }
     }

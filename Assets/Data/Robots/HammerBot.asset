@@ -16,6 +16,7 @@ MonoBehaviour:
   _description: Deal a Spam card to any robot you push.
   _icon: {fileID: 21300000, guid: 32f7012d99d2f8e4bb5dc5f1fd8c770c, type: 3}
   _sprite: {fileID: 21300000, guid: 32f7012d99d2f8e4bb5dc5f1fd8c770c, type: 3}
+  _color: {r: 0.18431373, g: 0.28235295, b: 0.36078432, a: 1}
   _startingDeck:
   - {fileID: 11400000, guid: 7d66565cef5302d4c98375131e02105f, type: 2}
   - {fileID: 11400000, guid: 7d66565cef5302d4c98375131e02105f, type: 2}

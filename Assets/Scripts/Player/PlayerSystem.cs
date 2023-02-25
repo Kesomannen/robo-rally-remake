@@ -28,7 +28,7 @@ public class PlayerSystem : Singleton<PlayerSystem> {
         _spawnPoints = MapSystem.GetByType<RebootToken>().Where(x => x.IsSpawnPoint).ToArray();
     }
 
-    public Player CreatePlayer(ulong id, LobbyPlayerData data) {
+    public Player CreatePlayer(ulong id, string playerName, LobbyPlayerData data) {
         var index = _players.Count;
         var settings = GameSettings.Instance;
 
@@ -46,6 +46,7 @@ public class PlayerSystem : Singleton<PlayerSystem> {
             RegisterCount = ExecutionPhase.RegisterCount,
             RebootAffector = settings.RebootAffector.ToInstance(),
             UpgradeSlots = settings.UpgradeSlots,
+            Name = playerName
         };
 
         var newPlayer = new Player(playerArgs);

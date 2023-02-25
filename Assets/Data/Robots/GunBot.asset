@@ -16,6 +16,7 @@ MonoBehaviour:
   _description: Deal a Hull Damage card instead of a Spam to robots you shoot.
   _icon: {fileID: 21300000, guid: 2824c472c382a1f4693079c1ee2e3803, type: 3}
   _sprite: {fileID: 21300000, guid: 2824c472c382a1f4693079c1ee2e3803, type: 3}
+  _color: {r: 0.58431375, g: 0.22352943, b: 0.17254902, a: 1}
   _startingDeck:
   - {fileID: 11400000, guid: 2cb459cf240aad04daea347bb26fee55, type: 2}
   - {fileID: 11400000, guid: 7d66565cef5302d4c98375131e02105f, type: 2}

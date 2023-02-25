@@ -7,11 +7,8 @@ public class MainMenu : Menu {
             MaxPlayers = (byte) GameSettings.Instance.MaxPlayers,
             IsPrivate = false
         };
-
-
-        using (new LoadScreen("Creating lobby...")) {
-            await LobbySystem.Instance.CreateLobby(lobbyData);
-        }
+        
+        await LobbySystem.Instance.CreateLobby(lobbyData);
         MenuSystem.Instance.PushMenu(MenuState.Room);
     }
 

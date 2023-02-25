@@ -35,6 +35,8 @@ public class Checkpoint : BoardElement<Checkpoint, IPlayer>, ITooltipable {
             if (current.Value != _index - 1) continue;
             current.Value = _index;
             OnPlayerReached?.Invoke(player);
+            
+            Log.Instance.CheckpointMessage(player, _index);
         }
     }
 }
