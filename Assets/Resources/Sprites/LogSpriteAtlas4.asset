@@ -43,8 +43,8 @@ MonoBehaviour:
     m_Unicode: 65534
     m_GlyphIndex: 0
     m_Scale: 1.5
-    m_Name: Log_Player_Gun Bot
-    m_HashCode: 70611730
+    m_Name: Log_Player_Gunbot
+    m_HashCode: -2080202190
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 1
@@ -61,8 +61,8 @@ MonoBehaviour:
     m_Unicode: 65534
     m_GlyphIndex: 3
     m_Scale: 1.5
-    m_Name: Log_Player_Sensor Bot
-    m_HashCode: 309488504
+    m_Name: Log_Player_Sensorbot
+    m_HashCode: -250849320
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 4

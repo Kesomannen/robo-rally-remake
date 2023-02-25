@@ -14,8 +14,8 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
     [SerializeField] RectTransform _overlayParent;
     [SerializeField] TMP_Text _headerText, _subtitleText;
     
-    readonly Stack<(OverlayData Data, MonoBehaviour Overlay)> _overlayStack = new();
-    MonoBehaviour _currentOverlay;
+    readonly Stack<(OverlayData Data, Overlay Overlay)> _overlayStack = new();
+    Overlay _currentOverlay;
 
     bool IsOverlayActive => _overlayStack.Count > 0;
 

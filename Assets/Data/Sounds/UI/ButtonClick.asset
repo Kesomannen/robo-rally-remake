@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cf116d7b888f4cd8877912ea6d0e0447, type: 3}
-  m_Name: CardPutDown
+  m_Name: ButtonClick
   m_EditorClassIdentifier: 
   _clips:
-  - {fileID: 8300000, guid: 40d76059a72a412488a55a14fa222af1, type: 3}
-  _volume: 0.5
+  - {fileID: 8300000, guid: c6dcbf24f0fee3f45b63b3d95feb75e9, type: 3}
+  _volume: 0.7
   _volumeVariance: 0.1
   _pitch: 1
   _pitchVariance: 0.1

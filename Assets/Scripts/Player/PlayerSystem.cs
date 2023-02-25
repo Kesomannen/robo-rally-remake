@@ -28,7 +28,7 @@ public class PlayerSystem : Singleton<PlayerSystem> {
         _spawnPoints = MapSystem.GetByType<RebootToken>().Where(x => x.IsSpawnPoint).ToArray();
     }
 
-    public Player CreatePlayer(ulong id, string playerName, LobbyPlayerData data) {
+    public void CreatePlayer(ulong id, string playerName, LobbyPlayerData data) {
         var index = _players.Count;
         var settings = GameSettings.Instance;
 
@@ -58,8 +58,6 @@ public class PlayerSystem : Singleton<PlayerSystem> {
         }
 
         Debug.Log($"Created player for client {id}");
-        
-        return newPlayer;
     }
 
     public static IEnumerable<Player> GetOrderedPlayers() {

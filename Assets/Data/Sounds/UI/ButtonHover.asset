@@ -10,18 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cf116d7b888f4cd8877912ea6d0e0447, type: 3}
-  m_Name: CardHover
+  m_Name: ButtonHover
   m_EditorClassIdentifier: 
   _clips:
-  - {fileID: 8300000, guid: a6f0ec9816a002341bd7fef2c5a213ad, type: 3}
-  - {fileID: 8300000, guid: 718c776e8b36c0f44b35a843b0e5f6ca, type: 3}
-  - {fileID: 8300000, guid: 0ffa464f69aed9149b297350d1ff4cf3, type: 3}
-  - {fileID: 8300000, guid: a2504e15d582c0b49a6016c82849ebe9, type: 3}
-  - {fileID: 8300000, guid: 5bfc49541db861645bacee623fabc81a, type: 3}
-  _volume: 0.2
+  - {fileID: 8300000, guid: 849f8316d0e6bec4d83544007408697c, type: 3}
+  _volume: 0.3
   _volumeVariance: 0.1
   _pitch: 1
-  _pitchVariance: 0.1
+  _pitchVariance: 0.3
   _loopTime:
     _enabled: 0
     _value: 0

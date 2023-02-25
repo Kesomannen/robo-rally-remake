@@ -407,7 +407,7 @@ MonoBehaviour:
   m_text: Kesomannen
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bdd5f255ba26bb4489aa17cba3e86b6b, type: 2}
-  m_sharedMaterial: {fileID: -1875436656544777217, guid: bdd5f255ba26bb4489aa17cba3e86b6b, type: 2}
+  m_sharedMaterial: {fileID: -4955273148413520470, guid: bdd5f255ba26bb4489aa17cba3e86b6b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -435,7 +435,7 @@ MonoBehaviour:
   m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 13
+  m_fontSizeMin: 11
   m_fontSizeMax: 16
   m_fontStyle: 0
   m_HorizontalAlignment: 1

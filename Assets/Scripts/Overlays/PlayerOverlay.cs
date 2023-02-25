@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public interface IPlayerOverlay {
-    void Init(Player player);
-}
-
-public class PlayerOverlay : Overlay, IPlayerOverlay {
+public class PlayerOverlay : Overlay {
     [Header("References")]
     [SerializeField] TMP_Text _nameText;
     [SerializeField] TMP_Text _robotNameText;

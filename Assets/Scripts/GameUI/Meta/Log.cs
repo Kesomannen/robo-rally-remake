@@ -16,6 +16,8 @@ public class Log : NetworkSingleton<Log> {
     const string PlayerSpritePrefix = "Log_Player_";
     const string IconSpritePrefix = "Log_Icon_";
 
+    public static event Action<string> OnMessageSent;
+    
     public void UseUpgradeMessage(Player player, UpgradeCardData upgrade) => Publish(LogMessageType.UseUpgrade, args: new[] { IndexOf(player), upgrade.GetLookupId() });
     public void BuyUpgradeMessage(Player player, UpgradeCardData upgrade) => Publish(LogMessageType.BuyUpgrade, args: new[] { IndexOf(player), upgrade.GetLookupId() });
     public void CheckpointMessage(Player player, int checkpoint) => Publish(LogMessageType.Checkpoint, args: new[] { IndexOf(player), checkpoint });
@@ -60,6 +62,8 @@ public class Log : NetworkSingleton<Log> {
         _messages.Add(message);
         var obj = Instantiate(_messagePrefab, _messageParent);
         obj.GetComponentInChildren<TMP_Text>().text = message;
+        
+        OnMessageSent?.Invoke(message);
     }
 
     static string PlayerString(byte playerIndex) {
