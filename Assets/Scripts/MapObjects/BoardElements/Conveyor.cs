@@ -52,7 +52,7 @@ public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
             var (_, _, mapEvent) = _moves[i];
             
             var routine = Interaction.EaseEvent(mapEvent, EaseType, MoveSpeed);
-            TaskScheduler.PushRoutine(routine);
+            TaskScheduler.PushRoutine(routine, delay: 0);
         }
         return true;
     }

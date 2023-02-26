@@ -16,7 +16,7 @@ MonoBehaviour:
   _description: Gain one bonus priority at all times.
   _icon: {fileID: 21300000, guid: 281d3e1135fd2a04480b1b64f7c91eff, type: 3}
   _sprite: {fileID: 21300000, guid: 281d3e1135fd2a04480b1b64f7c91eff, type: 3}
-  _color: {r: 0.63529414, g: 0.40000004, b: 0.23529413, a: 1}
+  _color: {r: 0.7830189, g: 0.5244749, b: 0.34349412, a: 1}
   _startingDeck:
   - {fileID: 11400000, guid: 2cb459cf240aad04daea347bb26fee55, type: 2}
   - {fileID: 11400000, guid: 2cb459cf240aad04daea347bb26fee55, type: 2}

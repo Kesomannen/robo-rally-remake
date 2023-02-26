@@ -257,7 +257,7 @@ MonoBehaviour:
   _upgradeCardStart: {fileID: 1961230678}
   _upgradeCardEnd: {fileID: 1506957432}
   _energyPrefab: {fileID: 6184858209262287360, guid: fdae6ce89e4e6ab41aac9fa481b5949c, type: 3}
-  _programCardPrefab: {fileID: -4837892012670907284, guid: 852a4f1b39d0eff43b4ad4b129005922, type: 3}
+  _programCardPrefab: {fileID: 8197752021562342102, guid: 852a4f1b39d0eff43b4ad4b129005922, type: 3}
   _indicatorDuration: 2
   _indicatorInterval: 0.6
   _indicatorTweenType: 13
@@ -373,8 +373,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 55.199997, y: 1.2699}
-  m_SizeDelta: {x: 125.8, y: 48}
+  m_AnchoredPosition: {x: 55.199997, y: 1.2699008}
+  m_SizeDelta: {x: 125.8, y: 29.8807}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &5038097160529528933
 CanvasRenderer:

@@ -12,8 +12,6 @@ public class RoomMenu : Menu {
     [SerializeField] Transform _playerPanelParent;
     [SerializeField] TMP_Text _lobbyCodeText;
 
-    public static bool LocalPlayerReady { get; private set; }
-    
     readonly List<LobbyPlayerPanel> _playerPanels = new();
     
     public static event Action OnLocalPlayerReady; 
@@ -22,8 +20,7 @@ public class RoomMenu : Menu {
         base.Show();
 
         _lobbyCodeText.text = LobbySystem.LobbyJoinCode;
-        LocalPlayerReady = false;
-        
+
         foreach (var lobbyPlayerPanel in _playerPanels) {
             Destroy(lobbyPlayerPanel.gameObject);
         }
@@ -34,11 +31,6 @@ public class RoomMenu : Menu {
 
         LobbySystem.OnPlayerUpdatedOrAdded += UpdatePanel;
         LobbySystem.OnPlayerRemoved += RemovePanel;
-
-        // Do initial population of player panels
-        foreach (var player in LobbySystem.PlayersInLobby) {
-            UpdatePanel(player.Key, player.Value);
-        }
     }
 
     public override async void Hide() {
@@ -58,7 +50,7 @@ public class RoomMenu : Menu {
             playerPanel = Instantiate(_playerPanelPrefab, _playerPanelParent);
             _playerPanels.Add(playerPanel);
         }
-        playerPanel.SetData(playerId, playerData);
+        playerPanel.SetContent(playerId, playerData);
 
         _startGameButton.SetActive(
             NetworkManager.Singleton.IsHost &&
@@ -83,7 +75,6 @@ public class RoomMenu : Menu {
 
     public void Ready() {
         LobbySystem.Instance.UpdatePlayerData(ready: true);
-        LocalPlayerReady = true;
         OnLocalPlayerReady?.Invoke();
         _readyButton.SetActive(false);
     }

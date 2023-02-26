@@ -13,12 +13,12 @@ public class LobbyPlayerPanel : MonoBehaviour {
     public ulong PlayerId { get; private set; }
     public LobbyPlayerData PlayerData { get; private set; }
 
-    public void SetData(ulong playerID, LobbyPlayerData playerData) {
+    public void SetContent(ulong playerID, LobbyPlayerData playerData) {
         PlayerId = playerID;
         PlayerData = playerData;
 
         var isLocalPlayer = playerID == NetworkManager.Singleton.LocalClientId;
-        _nameText.text = isLocalPlayer ? $"<b>{playerID} (You)" : playerID.ToString();
+        _nameText.text = isLocalPlayer ? $"{playerData.Name} (You)" : playerID.ToString();
 
         _readyImage.sprite = playerData.IsReady ? _readySprite : _notReadySprite;
         _robotIcon.sprite = RobotData.GetById(playerData.RobotId).Icon;

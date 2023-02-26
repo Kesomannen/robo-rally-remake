@@ -10,7 +10,6 @@ using Unity.Services.Lobbies.Models;
 using Unity.Services.Relay;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using Random = UnityEngine.Random;
 
 #if UNITY_EDITOR
 using ParrelSync;
@@ -89,7 +88,7 @@ public static class Matchmaking {
         };
 
         CurrentLobby = await Lobbies.Instance.CreateLobbyAsync(
-            $"Lobby {Random.Range(1000, 10000)}",
+            $"Lobby for map {lobbyData.MapID}",
             lobbyData.MaxPlayers,
             options
         );

@@ -700,8 +700,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u200B"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: bdd5f255ba26bb4489aa17cba3e86b6b, type: 2}
-  m_sharedMaterial: {fileID: -4955273148413520470, guid: bdd5f255ba26bb4489aa17cba3e86b6b, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 9ee573b94b4ec2e47bba068b277096a4, type: 2}
+  m_sharedMaterial: {fileID: -4734279123820091039, guid: 9ee573b94b4ec2e47bba068b277096a4, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3224,7 +3224,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mapToLoad: {fileID: 11400000, guid: b0f5e608bc8120e45863f455a917919f, type: 2}
-  _robotToLoad: {fileID: 11400000, guid: 320533cde685f6c4fb5fbdfadf60086b, type: 2}
+  _robotToLoad: {fileID: 11400000, guid: f5662703ca885694093898b0567926b5, type: 2}
   _upgradesToLoad:
   - {fileID: 11400000, guid: f163d00e473d029438d9eabe3e85f8be, type: 2}
   - {fileID: 11400000, guid: 6cf189455e8fd7742bce07f7f996c528, type: 2}
@@ -7457,15 +7457,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: Enter message...
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: bdd5f255ba26bb4489aa17cba3e86b6b, type: 2}
-  m_sharedMaterial: {fileID: -4955273148413520470, guid: bdd5f255ba26bb4489aa17cba3e86b6b, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 79a862f5529a82e4f90cb7164dd74e07, type: 2}
+  m_sharedMaterial: {fileID: -7298025711866890315, guid: 79a862f5529a82e4f90cb7164dd74e07, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 3036676095
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.7058824}
+    rgba: 2533359615
+  m_fontColor: {r: 1, g: 1, b: 1, a: 0.5882353}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -7488,7 +7488,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 2
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -8565,7 +8565,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0.0000076293945, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: -270.7398}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1891774300
 MonoBehaviour:
@@ -9313,7 +9313,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccd561e5d7347844782af2a6a4a10578, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerPanelPrefab: {fileID: 5322179771953748086, guid: 24ff9176b24f5b646bbee196227f3204, type: 3}
+  _playerPanelPrefab: {fileID: -1306541351591827944, guid: 24ff9176b24f5b646bbee196227f3204, type: 3}
   _playerPanelParent: {fileID: 2041582471}
   _showLocalPlayer: 1
 --- !u!114 &2041582473

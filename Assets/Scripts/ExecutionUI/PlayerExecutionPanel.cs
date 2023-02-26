@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class PlayerExecutionPanel : Container<Player> {
+public class PlayerExecutionPanel : Container<Player>, IPointerClickHandler {
     [Header("References")]
     [SerializeField] PlayerExecutionRegister[] _registers;
     [SerializeField] TMP_Text _nameText;
     [SerializeField] TMP_Text _energyText;
     [SerializeField] GameObject _rebootedOverlay;
-    
+    [SerializeField] OverlayData<PlayerOverlay> _onClickedOverlay;
+
     [Header("Prefabs")]
     [SerializeField] ProgramCard _programCardPrefab;
     [SerializeField] GameObject _energyPrefab;
@@ -83,21 +85,25 @@ public class PlayerExecutionPanel : Container<Player> {
         }
 
         var distance = _tweenDistance * CanvasUtils.CanvasScale.x;
-        for (var i = 0; i < objects.Count; i++) {
+        foreach (var obj in objects) {
             LeanTween
                 .sequence()
-                .append(_spawnDelay * i)
-                .append(LeanTween.moveLocalX(objects[i].gameObject, -distance, _tweenTime).setEase(_tweenType))
-                .append(LeanTween.moveLocalX(objects[i].gameObject, 0, _tweenTime).setEase(_tweenType));
+                .append(LeanTween.moveLocalX(obj.gameObject, -distance, _tweenTime / 2).setEase(_tweenType))
+                .append(LeanTween.moveLocalX(obj.gameObject, 0, _tweenTime / 2).setEase(_tweenType));
             LeanTween
                 .sequence()
-                .append(_spawnDelay * i)
-                .append(LeanTween.scale(objects[i].gameObject, Vector3.one, _tweenTime).setEase(_tweenType))
-                .append(LeanTween.scale(objects[i].gameObject, Vector3.zero, _tweenTime).setEase(_tweenType));
+                .append(LeanTween.scale(obj.gameObject, Vector3.one, _tweenTime / 2).setEase(_tweenType))
+                .append(LeanTween.scale(obj.gameObject, Vector3.zero, _tweenTime / 2).setEase(_tweenType));
+            yield return CoroutineUtils.Wait(_spawnDelay);
         }
-        yield return CoroutineUtils.Wait(_tweenTime * 2 + _spawnDelay * objects.Count);
+        yield return CoroutineUtils.Wait(_tweenTime);
         foreach (var obj in objects) {
             Destroy(obj.gameObject);
         }
+    }
+    
+    public void OnPointerClick(PointerEventData eventData) {
+        if (eventData.button != PointerEventData.InputButton.Right) return;
+        OverlaySystem.Instance.PushAndShowOverlay(_onClickedOverlay).Init(Content);
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
@@ -11,6 +10,11 @@ public class JoinGameMenu : Menu {
         _codeInputField.text = "";
         _submitButton.interactable = false;
         _codeInputField.onValueChanged.AddListener(OnCodeChanged);
+
+        var clipboard = GUIUtility.systemCopyBuffer;
+        if (clipboard.Length == 6) {
+            _codeInputField.text = clipboard;
+        }
     }
     
     void OnDisable() {
@@ -35,10 +39,10 @@ public class JoinGameMenu : Menu {
             return;
         }
 
-        LoadingOverlay.Instance.Show("Joining lobby...");
-        await LobbySystem.Instance.JoinLobby(_codeInputField.text);  
-        LoadingOverlay.Instance.Hide();
-        
+        using (new LoadScreen($"Joining lobby {_codeInputField.text}")) {
+            await LobbySystem.Instance.JoinLobby(_codeInputField.text);
+        }
+
         MenuSystem.Instance.PushMenu(MenuState.Room);
     }
 }

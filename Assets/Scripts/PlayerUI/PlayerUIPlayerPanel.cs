@@ -15,7 +15,8 @@ public class PlayerUIPlayerPanel : PlayerPanel {
     
     [Header("Other Indicators")]
     [SerializeField] GameObject _energyPrefab;
-    [SerializeField] ProgramCard _programCardPrefab;
+    [SerializeField] GameObject _programCardPrefab;
+    
     [SerializeField] float _indicatorDuration;
     [SerializeField] float _indicatorInterval;
     [SerializeField] LeanTweenType _indicatorTweenType;
@@ -28,7 +29,6 @@ public class PlayerUIPlayerPanel : PlayerPanel {
         
         Content.OnUpgradeUsed += OnUpgradeUsed;
         Content.Energy.OnValueChanged += OnEnergyChanged;
-        Content.DrawPile.OnAdd += OnCardGet;
         Content.DiscardPile.OnAdd += OnCardGet;
 
         ProgrammingPhase.OnPhaseStarted += OnPhaseStarted;
@@ -39,10 +39,11 @@ public class PlayerUIPlayerPanel : PlayerPanel {
     
     void OnCardGet(ProgramCardData card, int index) {
         if (!enabled) return;
+        if (PhaseSystem.Current.Value != Phase.Programming) return;
         
-        Debug.Log(_programCardPrefab);
+        Debug.Log(_programCardPrefab, this);
         var obj = Instantiate(_programCardPrefab, _upgradeCardStart);
-        obj.SetContent(card);
+        obj.GetComponent<Container<ProgramCardData>>().SetContent(card);
         var t = obj.transform;
         t.localPosition = Vector3.zero;
         t.localScale = Vector3.zero;
@@ -82,7 +83,7 @@ public class PlayerUIPlayerPanel : PlayerPanel {
             objects[i] = obj.transform;
         }
         
-        TaskScheduler.PushRoutine(DoIndicatorAnimation(objects));
+        TaskScheduler.PushRoutine(DoIndicatorAnimation(objects), delay: 0);
     }
 
     void OnUpgradeUsed(UpgradeCardData upgrade) {

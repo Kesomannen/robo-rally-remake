@@ -37,7 +37,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
         }
         
         yield return TaskScheduler.WaitUntilClear();
-        
+
         OnPhaseEnd?.Invoke();
     }
 

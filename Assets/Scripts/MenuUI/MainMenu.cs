@@ -1,15 +1,27 @@
+using System.Collections;
 using UnityEngine;
 
 public class MainMenu : Menu {
-    public async void CreateGame() {
+    public void CreateGame() {
         var lobbyData = new LobbyData {
             MapID = 0,
             MaxPlayers = (byte) GameSettings.Instance.MaxPlayers,
             IsPrivate = false
         };
         
-        await LobbySystem.Instance.CreateLobby(lobbyData);
-        MenuSystem.Instance.PushMenu(MenuState.Room);
+        StartCoroutine(CreateGameRoutine());
+
+        IEnumerator CreateGameRoutine() {
+            var task = LobbySystem.Instance.CreateLobby(lobbyData);
+            using (new LoadScreen("Creating lobby...")) {
+                while (!task.IsCompleted) yield return null;
+            }
+            
+            if (task.IsFaulted) {
+                Debug.LogError(task.Exception);
+            }
+            MenuSystem.Instance.PushMenu(MenuState.Room);
+        }
     }
 
     public void JoinGame() {

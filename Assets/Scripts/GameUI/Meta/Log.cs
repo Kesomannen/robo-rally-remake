@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -25,7 +26,9 @@ public class Log : NetworkSingleton<Log> {
 
     static int IndexOf(Player player) => PlayerSystem.Players.IndexOf(player);
 
-    void Publish(LogMessageType type, IEnumerable<int> args) {
+    async void Publish(LogMessageType type, IEnumerable<int> args) {
+        await Task.Delay(1000);
+        
         var typeByte = (byte)type;
         var argsBytes = args.Select(i => (byte)i).ToArray();
 

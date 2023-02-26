@@ -30,7 +30,7 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
         public Sprite Selected => _selected;
     }
     
-    public string Header => $"{Content.Name} ({Content.Cost})";
+    public string Header => Content == null ? "???" : $"{Content.Name} ({Content.Cost})";
     public string Description => Content.Description;
     
     public event Action<UpgradeCard> OnClick;

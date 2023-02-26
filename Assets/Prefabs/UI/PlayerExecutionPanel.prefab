@@ -73,10 +73,15 @@ MonoBehaviour:
   _nameText: {fileID: 7089434335686199887}
   _energyText: {fileID: 3248534338407896757}
   _rebootedOverlay: {fileID: 1500274868888515007}
+  _onClickedOverlay:
+    _header: 
+    _subtitle: 
+    _prefab: {fileID: 8736746822111478708, guid: 32ad063e5f2d1e643b3e505da88bfc06, type: 3}
+    _canPreview: 0
   _programCardPrefab: {fileID: -4837892012670907284, guid: 852a4f1b39d0eff43b4ad4b129005922, type: 3}
   _energyPrefab: {fileID: 2710287208323790788}
   _tweenStart: {fileID: 1394537608663239969}
-  _tweenTime: 1.25
+  _tweenTime: 2
   _tweenDistance: 8000
   _tweenType: 10
   _spawnDelay: 0.5

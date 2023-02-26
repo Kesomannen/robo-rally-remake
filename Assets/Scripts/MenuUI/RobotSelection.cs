@@ -20,10 +20,6 @@ public class RobotSelection : MonoBehaviour {
     
     void OnEnable() {
         _playerRobots.Clear();
-        foreach (var (id, data) in LobbySystem.PlayersInLobby) {
-            _playerRobots.Add(id, RobotData.GetById(data.RobotId));
-        }
-        _panels.ForEach(UpdatePanel);
         
         LobbySystem.OnPlayerUpdatedOrAdded += OnPlayerUpdatedOrAdded;
         LobbySystem.OnPlayerRemoved += OnPlayerRemoved;

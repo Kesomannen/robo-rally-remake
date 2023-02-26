@@ -46,7 +46,7 @@ public class PlayerSystem : Singleton<PlayerSystem> {
             RegisterCount = ExecutionPhase.RegisterCount,
             RebootAffector = settings.RebootAffector.ToInstance(),
             UpgradeSlots = settings.UpgradeSlots,
-            Name = playerName
+            Name = data.Name
         };
 
         var newPlayer = new Player(playerArgs);

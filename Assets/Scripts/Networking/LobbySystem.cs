@@ -73,6 +73,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
 
     public void UpdatePlayerData(bool? ready = null, byte? robotId = null) {
         Debug.Log($"Updating player data: ready: {ready}, robotId: {robotId}");
+        
         var id = NetworkManager.LocalClientId;
         var playerData = _playersInLobby[id];
         if (ready.HasValue) {
@@ -128,42 +129,47 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
             NetworkManager.OnClientConnectedCallback += OnClientConnected;
 
             var id = NetworkManager.LocalClientId;
-            _playersInLobby.Add(id, new LobbyPlayerData { IsHost = true });
+            _playersInLobby.Add(id, new LobbyPlayerData {
+                IsHost = true,
+                RobotId = GetRandomRobot(),
+                Name = $"Player {id}"
+            });
             OnPlayerUpdatedOrAdded?.Invoke(id, _playersInLobby[id]);
 
-            StartCoroutine(UpdateLobbyRoutine());
+            //StartCoroutine(UpdateLobbyRoutine());
         }
 
         // Client uses this in case the host disconnects
         NetworkManager.OnClientDisconnectCallback += OnClientDisconnected;
     }
 
+    static byte GetRandomRobot() {
+        var occupiedIds = new HashSet<byte>();
+        foreach (var (_, data) in _playersInLobby) {
+            occupiedIds.Add(data.RobotId);
+        }
+
+        byte id;
+        var idCount = RobotData.GetAll().Count();
+            
+        do { id = (byte)Random.Range(0, idCount); } 
+        while (occupiedIds.Contains(id));
+            
+        return id;
+    }
+    
     void OnClientConnected(ulong player) {
         if (!IsServer) return;
         
         _playersInLobby[player] = new LobbyPlayerData {
             IsReady = false,
-            RobotId = GetRobotId()
+            RobotId = GetRandomRobot(),
+            Name = $"Player {player}"
         };
+        Debug.Log($"{_playersInLobby[player].Name} joined lobby");
         
         foreach (var (id, data) in _playersInLobby) {
             UpdatePlayerClientRpc(id, data);
-        }
-        OnPlayerUpdatedOrAdded?.Invoke(player, _playersInLobby[player]);
-
-        byte GetRobotId() {
-            var occupiedIds = new HashSet<byte>();
-            foreach (var (_, data) in _playersInLobby) {
-                occupiedIds.Add(data.RobotId);
-            }
-
-            byte id;
-            var idCount = RobotData.GetAll().Count();
-            
-            do { id = (byte)Random.Range(0, idCount); } 
-            while (occupiedIds.Contains(id));
-            
-            return id;
         }
     }
 
@@ -212,10 +218,12 @@ public struct LobbyPlayerData : INetworkSerializable {
     public bool IsReady;
     public bool IsHost;
     public byte RobotId;
+    public string Name;
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter {
         serializer.SerializeValue(ref IsReady);
         serializer.SerializeValue(ref IsHost);
         serializer.SerializeValue(ref RobotId);
+        serializer.SerializeValue(ref Name);
     }
 }

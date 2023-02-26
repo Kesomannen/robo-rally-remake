@@ -10,7 +10,11 @@ public class Chat : NetworkSingleton<Chat> {
     [SerializeField] TMP_InputField _inputField;
 
     public static event Action<string> OnMessageSent;
-    
+
+    void OnEnable() {
+        _inputField.onSubmit.AddListener(_ => Send());
+    }
+
     public void Send() {
         var text = _inputField.text.Trim();
         if (string.IsNullOrWhiteSpace(text)) return;

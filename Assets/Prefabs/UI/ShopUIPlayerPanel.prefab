@@ -68,8 +68,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 5
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: dc36b4b77fe26524c8dd6982a3c3f416, type: 2}
-  m_sharedMaterial: {fileID: 3231958733206975079, guid: dc36b4b77fe26524c8dd6982a3c3f416, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: bdd5f255ba26bb4489aa17cba3e86b6b, type: 2}
+  m_sharedMaterial: {fileID: -4955273148413520470, guid: bdd5f255ba26bb4489aa17cba3e86b6b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -93,12 +93,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 15
-  m_fontSizeMax: 40
+  m_fontSizeMax: 15
   m_fontStyle: 16
   m_HorizontalAlignment: 4
   m_VerticalAlignment: 512
@@ -223,7 +223,7 @@ GameObject:
   - component: {fileID: 544137459909915772}
   - component: {fileID: 544137459909915773}
   - component: {fileID: 4940258784436138181}
-  - component: {fileID: 5322179771953748086}
+  - component: {fileID: -1306541351591827944}
   m_Layer: 5
   m_Name: ShopUIPlayerPanel
   m_TagString: Untagged
@@ -335,7 +335,7 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 544137459909915773}
---- !u!114 &5322179771953748086
+--- !u!114 &-1306541351591827944
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -344,7 +344,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 544137459909915775}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0a1cce746973914abe7b901809859d1, type: 3}
+  m_Script: {fileID: 11500000, guid: 75a230dd5b304dc3ae676766668498e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _nameText:
@@ -388,18 +388,7 @@ MonoBehaviour:
   - {fileID: -917770850, guid: 7670b59647c0d9546bf4a3df0213bc35, type: 3}
   _energyIcon: {fileID: 1035966604}
   _tweenDuration: 0.75
-  _tweenType: 3
-  _upgradeCardPrefab: {fileID: 0}
-  _upgradeCardDuration: 0
-  _upgradeCardTweenType: 0
-  _upgradeCardStart: {fileID: 0}
-  _upgradeCardEnd: {fileID: 0}
-  _energyPrefab: {fileID: 0}
-  _programCardPrefab: {fileID: 0}
-  _indicatorDuration: 0
-  _indicatorInterval: 0
-  _indicatorTweenType: 0
-  _indicatorScale: 0
+  _tweenType: 9
 --- !u!1 &754211565241749947
 GameObject:
   m_ObjectHideFlags: 0
@@ -511,8 +500,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 55.199997, y: 1.2699}
-  m_SizeDelta: {x: 114.27, y: 48}
+  m_AnchoredPosition: {x: 55.199997, y: -0.0000015646}
+  m_SizeDelta: {x: 115.8, y: 19.7557}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &5038097160529528933
 CanvasRenderer:
@@ -542,7 +531,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Kesomannen
+  m_text: Kesomannen (You)
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bdd5f255ba26bb4489aa17cba3e86b6b, type: 2}
   m_sharedMaterial: {fileID: -4955273148413520470, guid: bdd5f255ba26bb4489aa17cba3e86b6b, type: 2}
@@ -569,7 +558,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14.8
+  m_fontSize: 10.2
   m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 1
