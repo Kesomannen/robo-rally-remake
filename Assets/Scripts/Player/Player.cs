@@ -200,8 +200,6 @@ public class Player : IPlayer {
         _upgrades[index] = upgrade;
         upgrade.OnBuy(this);
         OnUpgradeAdded?.Invoke(upgrade, index);
-        
-        Log.Instance.BuyUpgradeMessage(this, upgrade);
     }
 
     public void UseUpgrade(int index) {

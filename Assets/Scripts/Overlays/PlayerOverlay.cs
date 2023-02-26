@@ -12,7 +12,6 @@ public class PlayerOverlay : Overlay {
     [Space]
     [SerializeField] TMP_Text _energyText;
     [SerializeField] TMP_Text _checkpointText;
-    [SerializeField] TMP_Text _drawPile, _hand, _discardPile;
     [SerializeField] Transform _upgradeParent;
 
     [Header("Prefabs")]
@@ -37,18 +36,11 @@ public class PlayerOverlay : Overlay {
         _iconImage.sprite = _player.RobotData.Icon;
         _robotNameText.text = _player.RobotData.Name;
         _checkpointText.text = _player.CurrentCheckpoint.ToString();
-        _drawPile.text = Count(_player.DrawPile);
-        _hand.text = Count(_player.Hand);
-        _discardPile.text = Count(_player.DiscardPile);
 
         _upgradeCards = new List<Container<UpgradeCardData>>();
         foreach (var upgrade in _player.Upgrades) {
             if (upgrade == null) continue;
             _upgradeCards.Add(Instantiate(_upgradeCardPrefab, _upgradeParent).SetContent(upgrade));
-        }
-        
-        string Count(CardCollection collection){
-            return collection.Cards.Count.ToString();
         }
     }
 }

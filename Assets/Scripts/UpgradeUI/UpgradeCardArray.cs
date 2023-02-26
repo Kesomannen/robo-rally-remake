@@ -1,11 +1,12 @@
 using System.Linq;
 using UnityEngine;
 
-public class PlayerUIUpgrades : MonoBehaviour {
+public class UpgradeCardArray : MonoBehaviour {
     [SerializeField] Container<UpgradeCardData> _cardPrefab;
     [SerializeField] Transform _cardParent;
     [SerializeField] Vector2 _cardSize;
     [SerializeField] Transform _highlightParent;
+    [SerializeField] int _cardsPerRow;
 
     Container<UpgradeCardData>[] _cards;
 
@@ -45,7 +46,7 @@ public class PlayerUIUpgrades : MonoBehaviour {
     
     void UpdatePositions() {
         var cards = _cards.Where(c => c != null).ToArray();
-        var rows = Mathf.CeilToInt(cards.Length / 3f);
+        var rows = Mathf.CeilToInt(cards.Length / (float)_cardsPerRow);
         var columns = Mathf.CeilToInt(cards.Length / (float)rows);
         
         var i = 0;

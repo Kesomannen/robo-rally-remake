@@ -54,6 +54,8 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
+        UpdateAvailability();
+    
         var t = transform;
         t.SetParent(_highlightParent, true);
         t.SetAsLastSibling();
@@ -78,7 +80,6 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
     }
     
     public void OnPointerClick(PointerEventData eventData) {
-        UpdateAvailability();
         if (!_clickable || !_selectable.interactable) return;
         if (eventData.button != PointerEventData.InputButton.Left) return;
         

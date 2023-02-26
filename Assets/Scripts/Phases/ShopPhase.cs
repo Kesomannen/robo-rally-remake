@@ -142,12 +142,14 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
             _skippedPlayers++;
             
             OnPlayerDecision?.Invoke(CurrentPlayer, true, null);
+            Log.Instance.SkipMessage(CurrentPlayer);
         } else {
             CurrentPlayer.Energy.Value -= upgrade.Cost;
             CurrentPlayer.AddUpgrade(upgrade, playerUpgradeIndex);
             _shopCards[_shopCards.IndexOf(upgrade)] = null;
             
             OnPlayerDecision?.Invoke(CurrentPlayer, false, upgrade);
+            Log.Instance.BuyUpgradeMessage(CurrentPlayer, upgrade);
         }
         _currentPlayerReady = true;
     }

@@ -17,7 +17,7 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
     readonly Stack<(OverlayData Data, Overlay Overlay)> _overlayStack = new();
     Overlay _currentOverlay;
 
-    bool IsOverlayActive => _overlayStack.Count > 0;
+    public bool IsOverlayActive => _overlayStack.Count > 0;
 
     public static event Action OnClick;
     public static event Action<OverlayData> OnOverlayShown, OnOverlayHidden;
@@ -28,15 +28,23 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
     }
 
     void OnEnable() {
+        PhaseSystem.Current.OnValueChanged += OnPhaseChanged;
         _exitAction.performed += OnExitAction;
         _exitAction.Enable();
     }
     
     void OnDisable() {
+        PhaseSystem.Current.OnValueChanged -= OnPhaseChanged;
         _exitAction.performed -= OnExitAction;
         _exitAction.Disable();
     }
     
+    void OnPhaseChanged(Phase prev, Phase next) {
+        if (IsOverlayActive) {
+            DestroyCurrentOverlay();
+        }
+    }
+
     public void OnPointerClick(PointerEventData e) {
         OnExitAction();
     }

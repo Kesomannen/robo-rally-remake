@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TMPro;
-using Unity.Netcode;
 using UnityEngine;
 
 public class Log : NetworkSingleton<Log> {
@@ -11,6 +8,7 @@ public class Log : NetworkSingleton<Log> {
     [SerializeField] Transform _messageParent;
     [SerializeField] Color _upgradeColor;
     [SerializeField] Color _checkpointColor;
+    [SerializeField] Color _rebootColor;
     [SerializeField] Color _defaultTextColor;
     [SerializeField] [ReadOnly] List<string> _messages = new();
 
@@ -23,58 +21,34 @@ public class Log : NetworkSingleton<Log> {
     public void BuyUpgradeMessage(Player player, UpgradeCardData upgrade) => Publish(LogMessageType.BuyUpgrade, args: new[] { IndexOf(player), upgrade.GetLookupId() });
     public void CheckpointMessage(Player player, int checkpoint) => Publish(LogMessageType.Checkpoint, args: new[] { IndexOf(player), checkpoint });
     public void RebootMessage(Player player) => Publish(LogMessageType.Rebooted, args: new[] { IndexOf(player) });
+    public void SkipMessage(Player player) => Publish(LogMessageType.Skip, args: new[] { IndexOf(player) });
 
     static int IndexOf(Player player) => PlayerSystem.Players.IndexOf(player);
 
-    async void Publish(LogMessageType type, IEnumerable<int> args) {
-        await Task.Delay(1000);
-        
-        var typeByte = (byte)type;
-        var argsBytes = args.Select(i => (byte)i).ToArray();
-
-        if (NetworkManager.Singleton == null) {
-            CreateMessage(typeByte, argsBytes);
-        } else {
-            PublishMessageServerRpc(typeByte, argsBytes);
-        }
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    void PublishMessageServerRpc(byte messageType, byte[] args) {
-        CreateMessage(messageType, args);
-        PublishMessageClientRpc(messageType, args);
-    }
-
-    [ClientRpc]
-    void PublishMessageClientRpc(byte messageType, byte[] args) {
-        if (IsServer) return;
-        CreateMessage(messageType, args);
-    }
-
-    void CreateMessage(byte messageType, IReadOnlyList<byte> args) {
-        var type = (LogMessageType)messageType;
-
-        var message = type switch {
+    void Publish(LogMessageType type, IReadOnlyList<int> args, string message = null) {
+        var text = type switch {
             LogMessageType.UseUpgrade => $"{PlayerString(args[0])}{ResetColor()} used {UpgradeString(args[1])}",
             LogMessageType.BuyUpgrade => $"{PlayerString(args[0])}{ResetColor()} bought {UpgradeString(args[1])}",
             LogMessageType.Checkpoint => $"{PlayerString(args[0])}{ResetColor()} reached {CheckpointString(args[1])}",
-            LogMessageType.Rebooted => $"{PlayerString(args[0])}{RebootString()} rebooted",
+            LogMessageType.Rebooted => $"{PlayerString(args[0])} {RebootString()}{SetColor(_rebootColor)}rebooted",
+            LogMessageType.Skip => $"{PlayerString(args[0])}{ResetColor()} skipped buying an upgrade",
             _ => throw new ArgumentOutOfRangeException()
         };
-        
-        _messages.Add(message);
+        text += $"{message}";
+
+        _messages.Add(text);
         var obj = Instantiate(_messagePrefab, _messageParent);
-        obj.GetComponentInChildren<TMP_Text>().text = message;
+        obj.GetComponentInChildren<TMP_Text>().text = text;
         
-        OnMessageSent?.Invoke(message);
+        OnMessageSent?.Invoke(text);
     }
 
-    static string PlayerString(byte playerIndex) {
+    static string PlayerString(int playerIndex) {
         var player = PlayerSystem.Players[playerIndex];
         return $"{Sprite(PlayerSpritePrefix + player.RobotData.Name)}{SetColor(player.RobotData.Color)}{player}";
     }
 
-    string UpgradeString(byte upgradeId) {
+    string UpgradeString(int upgradeId) {
         return $"{Sprite(IconSpritePrefix + "Card")}{SetColor(_upgradeColor)}{UpgradeCardData.GetById(upgradeId).Name}";
     }
 
@@ -102,6 +76,7 @@ public class Log : NetworkSingleton<Log> {
         UseUpgrade,
         BuyUpgrade,
         Checkpoint,
-        Rebooted
+        Rebooted,
+        Skip
     }
 }

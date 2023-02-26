@@ -136,18 +136,6 @@ public class ExecutionUIController : MonoBehaviour {
         var swaps = new List<(int first, int second)>();
         var order = _currentPlayerOrder.Copy();
 
-        // Move rebooted players to the end
-        if (PlayerSystem.Players.Any(p => p.IsRebooted.Value)) {
-            var rebootIndex = order.Length - 1;
-            for (var i = 0; i < order.Length; i++) {
-                var player = order[i];
-                if (!player.IsRebooted.Value) continue;
-                swaps.Add((i, rebootIndex));
-                (order[i], order[rebootIndex]) = (order[rebootIndex], order[i]);
-                rebootIndex--;
-            }
-        }
-
         for (var i = 0; i < nextPlayerOrder.Count; i++) {
             var player = nextPlayerOrder[i];
             var current = order.IndexOf(player);

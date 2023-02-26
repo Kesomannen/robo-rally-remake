@@ -3,8 +3,15 @@
 public class AudioSystem : Singleton<AudioSystem> {
     [SerializeField] AudioChannel _musicChannel, _uiChannel, _sfxChannel;
 
+    public float MusicVolume { get; set; } = 0.5f;
+    public float SfxVolume { get; set; } = 0.5f;
+
     public void Play(SoundEffect sound, AudioTrack audioTrack) {
-        sound.Play(GetChannel(audioTrack).Source);
+        var channel = GetChannel(audioTrack);
+        channel.Source.pitch = sound.Pitch;
+        channel.Source.volume = sound.Volume * (audioTrack == AudioTrack.Music ? MusicVolume : SfxVolume);
+        channel.Source.clip = sound.Clip;
+        channel.Source.Play();
     }
 
     AudioChannel GetChannel(AudioTrack audioTrack) {

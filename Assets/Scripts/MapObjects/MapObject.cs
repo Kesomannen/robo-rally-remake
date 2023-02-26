@@ -29,7 +29,7 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
         OnRotationChanged?.Invoke(steps);
     }
 
-    const float DefaultRotSpeed = 1.5f;
+    const float DefaultRotSpeed = 2f;
     const LeanTweenType DefaultRotEaseType = LeanTweenType.easeInOutSine;
 
     public IEnumerator RotateRoutine(int steps, float speed = DefaultRotSpeed, LeanTweenType easeType = DefaultRotEaseType) {

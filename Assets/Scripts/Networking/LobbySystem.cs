@@ -6,27 +6,48 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
+using TMPro;
 using Unity.Services.Lobbies;
 using Random = UnityEngine.Random;
 
 #pragma warning disable 4014
 
 public class LobbySystem : NetworkSingleton<LobbySystem> {
+    [SerializeField] TMP_InputField _inputField;
+    [SerializeField] GameObject _enterNameMenu;
+    
+    static string _playerName;
+    
     static Dictionary<ulong, LobbyPlayerData> _playersInLobby;
     public static IReadOnlyDictionary<ulong, LobbyPlayerData> PlayersInLobby => _playersInLobby;
 
     public static int LobbyMapId { get; private set; }
-    
+
     public static event Action<ulong, LobbyPlayerData> OnPlayerUpdatedOrAdded;
     public static event Action<ulong> OnPlayerRemoved;
     public static event Action<int> OnLobbyMapChanged;
 
     public static string LobbyJoinCode => Matchmaking.CurrentLobby.LobbyCode;
     
+    const string PlayerPrefsNameKey = "PlayerName";
+    
     void Start() {
         NetworkObject.DestroyWithScene = true;
 
-        Matchmaking.InitializeAsync();
+        using (new LoadScreen("Signing in...")) {
+            Matchmaking.InitializeAsync();
+        }
+        
+        if (PlayerPrefs.HasKey(PlayerPrefsNameKey)) {
+            _playerName = PlayerPrefs.GetString(PlayerPrefsNameKey);
+        } else {
+            _enterNameMenu.SetActive(true);
+            _inputField.onSubmit.AddListener(s => {
+                _playerName = s;
+                PlayerPrefs.SetString(PlayerPrefsNameKey, s);
+                _enterNameMenu.SetActive(false);
+            });
+        }
     }
 
     public override void OnDestroy() {
@@ -132,11 +153,15 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
             _playersInLobby.Add(id, new LobbyPlayerData {
                 IsHost = true,
                 RobotId = GetRandomRobot(),
-                Name = $"Player {id}"
+                Name = _playerName
             });
             OnPlayerUpdatedOrAdded?.Invoke(id, _playersInLobby[id]);
 
             //StartCoroutine(UpdateLobbyRoutine());
+        } else {
+            UpdatePlayerServerRpc(NetworkManager.LocalClientId, new LobbyPlayerData {
+                Name = _playerName
+            });
         }
 
         // Client uses this in case the host disconnects
