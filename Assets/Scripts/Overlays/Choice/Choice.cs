@@ -75,4 +75,6 @@ public abstract class Choice<T> : Overlay {
         OverlaySystem.Instance.DestroyCurrentOverlay();
         _callback?.Invoke(choice);
     }
+    
+    protected override void OnOverlayClick() { }
 }

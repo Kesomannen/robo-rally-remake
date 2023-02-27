@@ -9,7 +9,6 @@ using UnityEngine.Tilemaps;
 public class MapSystem : Singleton<MapSystem> {
     [SerializeField] Grid _grid;
     [SerializeField] Camera _mapCamera;
-    [SerializeField] float _cameraScaleFactor;
     [SerializeField] [ReadOnly] Vector2 _mapMax;
     [SerializeField] [ReadOnly] Vector2 _mapMin;
     [SerializeField] [ReadOnly] Vector2 _mapCenter;
@@ -52,7 +51,7 @@ public class MapSystem : Singleton<MapSystem> {
         }
         Debug.Log($"Called OnEnter for {onEnterHandlers.Count} objects.");
         
-        PositionCamera(tilemaps);
+        PositionCamera();
         
         OnMapLoaded?.Invoke();
         Debug.Log($"Map {mapData} loaded.");
@@ -63,21 +62,27 @@ public class MapSystem : Singleton<MapSystem> {
         Gizmos.DrawWireCube(_mapCenter, (_mapMax - _mapMin));
     }
 
-    void PositionCamera(IEnumerable<Tilemap> tilemaps) {
+    void PositionCamera() {
         var t = _mapCamera.transform;
         _mapMax = Vector2.negativeInfinity;
         _mapMin = Vector2.positiveInfinity;
 
-        foreach (var tilemap in tilemaps) {
+        foreach (var tilemap in _boards.Keys) {
             tilemap.CompressBounds();
             var bounds = tilemap.cellBounds;
             _mapMax = Vector2.Max(_mapMax, tilemap.CellToWorld(bounds.max));
             _mapMin = Vector2.Min(_mapMin, tilemap.CellToWorld(bounds.min));
         }
         
-        var size = (_mapMax - _mapMin).magnitude * _cameraScaleFactor;
-        _mapCamera.orthographicSize = size;
+        var verticalMin = (_mapMax.y - _mapMin.y) / 2;
+        var horizontalMin = (_mapMax.x - _mapMin.x) / 2;
         
+        if (verticalMin * _mapCamera.aspect < horizontalMin) {
+            _mapCamera.orthographicSize = horizontalMin / _mapCamera.aspect;
+        } else {
+            _mapCamera.orthographicSize = verticalMin;
+        }
+
         _mapCenter = (_mapMax + _mapMin) / 2;
         t.position = new Vector3(_mapCenter.x, _mapCenter.y, t.position.z);
     }
@@ -115,8 +120,11 @@ public class MapSystem : Singleton<MapSystem> {
     }
 
     static void CallHandlers<T>(IEnumerable<MapObject> tile, Action<T> action, MapObject except = null) where T : IMapObject {
-        var handlers = except == null ? tile.OfType<T>() : tile.Where(x => x != except).OfType<T>();
-        foreach (var handler in handlers) action(handler);
+        var handlers = except == null ? tile.OfType<T>().ToArray() : tile.Where(x => x != except).OfType<T>().ToArray();
+        for (var i = 0; i < handlers.Length; i++) {
+            var handler = handlers[i];
+            action(handler);
+        }
     }
 
     public void MoveObjectInstant(MapObject mapObject, Vector2Int gridPos) {

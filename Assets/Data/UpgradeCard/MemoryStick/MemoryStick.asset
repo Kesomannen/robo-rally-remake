@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Memory Stick
   _description: Draw an additional programming card at the start of each round.
-  _icon: {fileID: 21300000, guid: 30fc70d2d652da84cb00f5d3d68187f3, type: 3}
+  _icon: {fileID: 21300000, guid: 4174af3e33809bd41b3f01195e994bea, type: 3}
   _cost: 3
   _useCost: 0
   _type: 1

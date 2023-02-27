@@ -15,7 +15,7 @@ MonoBehaviour:
   _name: Trojan Needler
   _description: When you shoot or push an adjacent robot, deal a Trojan Horse damage
     card instead of a Spam.
-  _icon: {fileID: 21300000, guid: 30fc70d2d652da84cb00f5d3d68187f3, type: 3}
+  _icon: {fileID: 21300000, guid: e7ef9049423d0e4488f49eec80b79f54, type: 3}
   _cost: 3
   _useCost: 0
   _type: 1

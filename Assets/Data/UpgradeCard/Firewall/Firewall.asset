@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Firewall
   _description: Recieve no damage cards when rebooting.
-  _icon: {fileID: 21300000, guid: 30fc70d2d652da84cb00f5d3d68187f3, type: 3}
+  _icon: {fileID: 21300000, guid: 924c80bf2c9791540aa8122155bb04d3, type: 3}
   _cost: 3
   _useCost: 0
   _type: 1

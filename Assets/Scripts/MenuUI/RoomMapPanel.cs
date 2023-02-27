@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class RoomMapPanel : Container<MapData> {
     [SerializeField] Selectable _nextButton, _prevButton;
     [Space]
-    [SerializeField] Image _mapImage;
+    [SerializeField] RawImage _mapImage;
     [SerializeField] TMP_Text _mapNameText;
     [Space]
     [SerializeField] Image _difficultyImage;
@@ -52,7 +52,7 @@ public class RoomMapPanel : Container<MapData> {
     void Serialize(int id) => Serialize(MapData.GetById(id));
 
     protected override void Serialize(MapData data) {
-        // TODO: Map thumbnail
+        _mapImage.texture = data.Thumbnail;
         _mapNameText.text = data.Name;
         
         _difficultyImage.sprite = _difficultySprites[(int) data.Difficulty];

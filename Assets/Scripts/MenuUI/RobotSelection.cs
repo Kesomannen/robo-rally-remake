@@ -20,7 +20,7 @@ public class RobotSelection : MonoBehaviour {
     
     void OnEnable() {
         _playerRobots.Clear();
-        
+
         LobbySystem.OnPlayerUpdatedOrAdded += OnPlayerUpdatedOrAdded;
         LobbySystem.OnPlayerRemoved += OnPlayerRemoved;
     }

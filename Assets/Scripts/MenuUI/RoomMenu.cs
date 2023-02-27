@@ -18,14 +18,14 @@ public class RoomMenu : Menu {
 
     public override void Show() {
         base.Show();
-
+        
         _lobbyCodeText.text = LobbySystem.LobbyJoinCode;
 
-        foreach (var lobbyPlayerPanel in _playerPanels) {
+        foreach (var lobbyPlayerPanel in _playerPanels.Where(lobbyPlayerPanel => lobbyPlayerPanel != null)) {
             Destroy(lobbyPlayerPanel.gameObject);
         }
         _playerPanels.Clear();
-    
+
         _readyButton.gameObject.SetActive(true);
         _startGameButton.gameObject.SetActive(false);
 

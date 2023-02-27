@@ -6,6 +6,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using TMPro;
 using Unity.Services.Lobbies;
 using Random = UnityEngine.Random;
@@ -92,7 +93,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         }
     }
 
-    public void UpdatePlayerData(bool? ready = null, byte? robotId = null) {
+    public void UpdatePlayerData(bool? ready = null, byte? robotId = null, [CanBeNull] string name = null) {
         Debug.Log($"Updating player data: ready: {ready}, robotId: {robotId}");
         
         var id = NetworkManager.LocalClientId;
@@ -102,6 +103,9 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         }
         if (robotId.HasValue) {
             playerData.RobotId = robotId.Value;
+        }
+        if (name != null) {
+            playerData.Name = name;
         }
         UpdatePlayerServerRpc(id, playerData);
     }
@@ -158,10 +162,6 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
             OnPlayerUpdatedOrAdded?.Invoke(id, _playersInLobby[id]);
 
             //StartCoroutine(UpdateLobbyRoutine());
-        } else {
-            UpdatePlayerServerRpc(NetworkManager.LocalClientId, new LobbyPlayerData {
-                Name = _playerName
-            });
         }
 
         // Client uses this in case the host disconnects
@@ -199,10 +199,11 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
     }
 
     [ClientRpc]
-    void UpdatePlayerClientRpc(ulong player, LobbyPlayerData data) {
+    void UpdatePlayerClientRpc(ulong playerId, LobbyPlayerData data) {
         if (IsServer) return;
-        _playersInLobby[player] = data;
-        OnPlayerUpdatedOrAdded?.Invoke(player, data);
+        _playersInLobby[playerId] = data;
+        OnPlayerUpdatedOrAdded?.Invoke(playerId, data);
+        Debug.Log($"Updated player {playerId} data: {data}");
     }
 
     void OnClientDisconnected(ulong player) {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class Log : NetworkSingleton<Log> {
+public class Log : Singleton<Log> {
     [SerializeField] GameObject _messagePrefab;
     [SerializeField] Transform _messageParent;
     [SerializeField] Color _upgradeColor;

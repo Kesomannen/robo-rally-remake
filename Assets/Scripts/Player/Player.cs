@@ -204,14 +204,13 @@ public class Player : IPlayer {
 
     public void UseUpgrade(int index) {
         var upgrade = _upgrades[index];
+        Log.Instance.UseUpgradeMessage(this, upgrade);
         upgrade.Apply(this);
         OnUpgradeUsed?.Invoke(upgrade);
 
         if (upgrade.Type == UpgradeType.Temporary) {
             RemoveUpgrade(index);   
         }
-        
-        Log.Instance.UseUpgradeMessage(this, upgrade);
     }
     
     public void RemoveUpgrade(int index) {

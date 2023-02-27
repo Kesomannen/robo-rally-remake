@@ -9,6 +9,7 @@ public class PlayerExecutionPanel : Container<Player>, IPointerClickHandler {
     [SerializeField] PlayerExecutionRegister[] _registers;
     [SerializeField] TMP_Text _nameText;
     [SerializeField] TMP_Text _energyText;
+    [SerializeField] TMP_Text _checkpointText;
     [SerializeField] GameObject _rebootedOverlay;
     [SerializeField] OverlayData<PlayerOverlay> _onClickedOverlay;
 
@@ -44,17 +45,15 @@ public class PlayerExecutionPanel : Container<Player>, IPointerClickHandler {
     protected override void Serialize(Player player) {
         _nameText.text = PlayerSystem.IsLocal(player) ? player + " (You)" : player.ToString();
         _energyText.text = player.Energy.ToString();
+        _checkpointText.text = player.CurrentCheckpoint.ToString();
         _rebootedOverlay.SetActive(player.IsRebooted.Value);
 
         player.Energy.OnValueChanged += OnEnergyChanged;
-        player.IsRebooted.OnValueChanged += OnIsRebootedChanged;
+        player.IsRebooted.OnValueChanged += (_, next) => _rebootedOverlay.SetActive(next);
+        player.CurrentCheckpoint.OnValueChanged += (_, next) => _checkpointText.text = next.ToString();
         player.OnDamaged += OnDamaged;
     }
 
-    void OnIsRebootedChanged(bool prev, bool next) {
-        _rebootedOverlay.SetActive(next);
-    }
-    
     void OnDamaged(CardAffector affector) {
         var objects = new Transform[affector.Cards.Count];
         for (var i = 0; i < affector.Cards.Count; i++) {

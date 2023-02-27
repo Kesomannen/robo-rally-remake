@@ -14,6 +14,7 @@ public class MapData : Lookup<MapData> {
     public MapDifficulty Difficulty => _difficulty;
     public MapLength Length => _length;
     public GameObject Prefab => _prefab;
+    public Texture2D Thumbnail => null; 
 
     public override string ToString() => _name;
 }

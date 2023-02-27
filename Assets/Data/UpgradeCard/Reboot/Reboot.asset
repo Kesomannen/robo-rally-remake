@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Reboot
   _description: Reboot your robot, but take no damage.
-  _icon: {fileID: 21300000, guid: 30fc70d2d652da84cb00f5d3d68187f3, type: 3}
+  _icon: {fileID: 21300000, guid: 6c7c5536db180474fa1bbde3d0fca37e, type: 3}
   _cost: 1
   _useCost: 0
   _type: 0
