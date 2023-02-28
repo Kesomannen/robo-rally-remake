@@ -95,7 +95,7 @@ public class HandProgramCard : ProgramCard, IDragHandler, IBeginDragHandler, IEn
         if (_isDragging || !IsProgramming) return;
 
         for (var i = 0; i < ExecutionPhase.RegisterCount; i++) {
-            var register = PlayerRegisterUI.GetRegister(i);
+            var register = PlayerUIRegister.GetRegister(i);
             if (register.IsEmpty && TryPlace(register)) {
                 break;
             }
@@ -125,7 +125,7 @@ public class HandProgramCard : ProgramCard, IDragHandler, IBeginDragHandler, IEn
         _graphicRaycaster.Raycast(e, results);
 
         foreach (var hit in results){
-            if (!hit.gameObject.TryGetComponent(out PlayerRegisterUI register)) continue;
+            if (!hit.gameObject.TryGetComponent(out PlayerUIRegister register)) continue;
             TryPlace(register);
             return;
         }
@@ -133,8 +133,8 @@ public class HandProgramCard : ProgramCard, IDragHandler, IBeginDragHandler, IEn
         LerpTo(_origin);
     }
 
-    bool TryPlace(PlayerRegisterUI playerRegisterUI){
-        if (!playerRegisterUI.Place(this)) return false;
+    bool TryPlace(PlayerUIRegister playerUIRegister){
+        if (!playerUIRegister.Place(this)) return false;
         Owner.Hand.RemoveCard(_index);
         return true;
     }

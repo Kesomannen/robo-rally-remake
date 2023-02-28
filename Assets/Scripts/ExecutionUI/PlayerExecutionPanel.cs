@@ -51,10 +51,12 @@ public class PlayerExecutionPanel : Container<Player>, IPointerClickHandler {
         player.Energy.OnValueChanged += OnEnergyChanged;
         player.IsRebooted.OnValueChanged += (_, next) => _rebootedOverlay.SetActive(next);
         player.CurrentCheckpoint.OnValueChanged += (_, next) => _checkpointText.text = next.ToString();
-        player.OnDamaged += OnDamaged;
+        player.OnCardAffectorApplied += OnCardAffectorApplied;
     }
 
-    void OnDamaged(CardAffector affector) {
+    void OnCardAffectorApplied(CardAffector affector) {
+        if (!gameObject.activeInHierarchy) return;
+        
         var objects = new Transform[affector.Cards.Count];
         for (var i = 0; i < affector.Cards.Count; i++) {
             var card = Instantiate(_programCardPrefab);
@@ -65,6 +67,8 @@ public class PlayerExecutionPanel : Container<Player>, IPointerClickHandler {
     }
 
     void OnEnergyChanged(int prev, int next) {
+        if (!gameObject.activeInHierarchy) return;
+        
         if (next > prev) {
             var objects = new Transform[next - prev];
             for (var i = 0; i < objects.Length; i++) {
@@ -77,6 +81,8 @@ public class PlayerExecutionPanel : Container<Player>, IPointerClickHandler {
     }
 
     IEnumerator DoAnimation(IReadOnlyList<Transform> objects) {
+        Debug.Log($"Doing animation for {objects.Count} object(s)");
+        
         foreach (var obj in objects) {
             obj.SetParent(_tweenStart, true);
             obj.localPosition = Vector3.zero;

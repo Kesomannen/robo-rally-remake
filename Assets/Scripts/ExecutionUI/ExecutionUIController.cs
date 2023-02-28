@@ -34,7 +34,6 @@ public class ExecutionUIController : MonoBehaviour {
         _checkpoint;
 
     enum UISubPhase {
-        None,
         OrderPlayers,
         PlayerRegisters,
         Conveyor,
@@ -47,7 +46,7 @@ public class ExecutionUIController : MonoBehaviour {
     }
 
     static UISubPhase Remap(ExecutionSubPhase x) {
-        return (UISubPhase)((int)x + 2);
+        return (UISubPhase)((int)x + 1);
     }
 
     SubPhaseInfo GetInfo(UISubPhase uiSubPhase) {
@@ -65,7 +64,6 @@ public class ExecutionUIController : MonoBehaviour {
         };
     }
 
-    UISubPhase _currentSubPhase = UISubPhase.None;
     Player[] _currentPlayerOrder;
 
     void Start() {
@@ -82,40 +80,33 @@ public class ExecutionUIController : MonoBehaviour {
         gameObject.SetActive(false);
     }
 
-    void ChangeSubPhase(UISubPhase uiSubPhase) {
-        if (_currentSubPhase == uiSubPhase) return;
-        _currentSubPhase = uiSubPhase;
+    IEnumerator ChangeSubPhase(UISubPhase uiSubPhase) {
+        var info = GetInfo(uiSubPhase);
+        var distance = CanvasUtils.CanvasScale.x * _phaseDistance;
 
-        TaskScheduler.PushRoutine(Animation());
-        
-        IEnumerator Animation() {
-            var info = GetInfo(uiSubPhase);
-            var distance = CanvasUtils.CanvasScale.x * _phaseDistance;
+        var current = _currentSubPhaseImage;
+        var next = current == _phaseIcon1 ? _phaseIcon2 : _phaseIcon1;
+            
+        next.sprite = uiSubPhase switch {
+            UISubPhase.PlayerRegisters => info.Icons[ExecutionPhase.CurrentRegister],
+            UISubPhase.EnergySpace => ExecutionPhase.CurrentRegister == 4 ? info.Icons[1] : info.Icons[0],
+            _ => info.Icons[0]
+        };
+            
+        LeanTween
+            .move(current.gameObject, _iconPosition - Vector3.up * distance, _phaseMoveTime)
+            .setEase(_phaseTweenType);
+            
+        LeanTween
+            .move(next.gameObject, _iconPosition, _phaseMoveTime)
+            .setEase(_phaseTweenType);
+            
+        yield return CoroutineUtils.Wait(_phaseMoveTime / 2);
+        _subPhaseText.text = info.Name;
+        yield return CoroutineUtils.Wait(_phaseMoveTime / 2);
 
-            var current = _currentSubPhaseImage;
-            var next = current == _phaseIcon1 ? _phaseIcon2 : _phaseIcon1;
-            
-            next.sprite = uiSubPhase switch {
-                UISubPhase.PlayerRegisters => info.Icons[ExecutionPhase.CurrentRegister],
-                UISubPhase.EnergySpace => ExecutionPhase.CurrentRegister == 4 ? info.Icons[1] : info.Icons[0],
-                _ => info.Icons[0]
-            };
-            
-            LeanTween
-                .move(current.gameObject, _iconPosition - Vector3.up * distance, _phaseMoveTime)
-                .setEase(_phaseTweenType);
-            
-            LeanTween
-                .move(next.gameObject, _iconPosition, _phaseMoveTime)
-                .setEase(_phaseTweenType);
-            
-            yield return CoroutineUtils.Wait(_phaseMoveTime / 2);
-            _subPhaseText.text = info.Name;
-            yield return CoroutineUtils.Wait(_phaseMoveTime / 2);
-
-            current.transform.position = _iconPosition + Vector3.up * distance;
-            _currentSubPhaseImage = next;
-        }
+        current.transform.position = _iconPosition + Vector3.up * distance;
+        _currentSubPhaseImage = next;
     }
 
     void Awake() {
@@ -146,8 +137,8 @@ public class ExecutionUIController : MonoBehaviour {
         }
         
         TaskScheduler.PushRoutine(swaps.Select(swap => DoSwap(swap.first, swap.second)).GetEnumerator());
+        TaskScheduler.PushRoutine(ChangeSubPhase(UISubPhase.OrderPlayers));
         
-        ChangeSubPhase(UISubPhase.OrderPlayers);
         _currentPlayerOrder = nextPlayerOrder.ToArray();
         
         IEnumerator DoSwap(int first, int second) {
@@ -167,7 +158,7 @@ public class ExecutionUIController : MonoBehaviour {
     void OnPlayerRegister(ProgramCardData card, int index, Player player) {
         player.Model.Highlight(true);
         
-        var playerIndex = _currentPlayerOrder.IndexOf(player);
+        var playerIndex = _panelsController.Panels.IndexOf(panel => panel.Content == player);
         var panel = _panelsController.Panels[playerIndex];
         var register = panel.Registers[index];
         
@@ -200,7 +191,7 @@ public class ExecutionUIController : MonoBehaviour {
             }
         }
 
-        ChangeSubPhase(Remap(executionSubPhase));
+        TaskScheduler.PushRoutine(ChangeSubPhase(Remap(executionSubPhase)));
     }
 
     [Serializable]

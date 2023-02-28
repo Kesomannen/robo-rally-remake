@@ -41,7 +41,7 @@ public class StressTimer : MonoBehaviour, ITooltipable {
             _text.text = "---";
             return;
         }
-        _clockSound.Play();
+        _clockSound?.Play();
         _text.text = next.ToString();
 
         if (_isStressed) {

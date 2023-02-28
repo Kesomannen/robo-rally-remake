@@ -22,6 +22,15 @@ public static class Extensions {
         return -1;
     }
     
+    public static int IndexOf<T>(this IReadOnlyList<T> list, Func<T, bool> predicate) {
+        for (var i = 0; i < list.Count; i++) {
+            if (list[i] != null && predicate(list[i])) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    
     public static T GetRandom<T>(this IReadOnlyList<T> list) => list[Random.Range(0, list.Count)];
 
     public static TValue EnforceKey<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue) {

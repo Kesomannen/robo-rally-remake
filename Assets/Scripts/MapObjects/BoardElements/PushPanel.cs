@@ -20,7 +20,7 @@ public class PushPanel : BoardElement<PushPanel, ICanEnterHandler>, ITooltipable
     public string Description {
         get {
             var registers = _activeRegisters.Select(r => (r + 1).ToString()).ToArray();
-            var str = new StringBuilder("Pushes objects one space in the direction of the panel. Activates on ");
+            var str = new StringBuilder("Pushes objects one tile on ");
             str.Append(registers.Length == 1 ? "register " : "registers ");
             str.Append(registers[0]);
             

@@ -12,11 +12,6 @@ public class PlayerExecutionPanels : MonoBehaviour {
     
     public IReadOnlyList<PlayerExecutionPanel> Panels => _panels;
 
-    public IEnumerator Swap(Player first, Player second) {
-        yield return Swap(FindIndex(first), FindIndex(second));
-        int FindIndex(Player player) => _panels.FindIndex(p => p.Content == player);
-    }
-    
     public IEnumerator Swap(int first, int second) {
         if (first == second) yield break;
         

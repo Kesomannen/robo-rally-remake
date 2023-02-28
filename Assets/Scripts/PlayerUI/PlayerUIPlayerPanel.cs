@@ -29,7 +29,7 @@ public class PlayerUIPlayerPanel : PlayerPanel {
         
         Content.OnUpgradeUsed += OnUpgradeUsed;
         Content.Energy.OnValueChanged += OnEnergyChanged;
-        Content.OnCardDealt += OnCardDealt;
+        Content.OnCardAffectorApplied += OnCardGet;
 
         ProgrammingPhase.OnPhaseStarted += OnPhaseStarted;
         ProgrammingPhase.OnPlayerLockedIn += OnPlayerProgramDone;
@@ -37,18 +37,23 @@ public class PlayerUIPlayerPanel : PlayerPanel {
         OnPhaseStarted();
     }
     
-    void OnCardDealt(ProgramCardData card, Pile pile) {
-        if (!enabled) return;
+    void OnCardGet(CardAffector affector) {
+        if (!gameObject.activeInHierarchy) return;
         if (PhaseSystem.Current.Value != Phase.Programming) return;
         
-        Debug.Log(_programCardPrefab, this);
-        var obj = Instantiate(_programCardPrefab, _upgradeCardStart);
-        obj.GetComponent<Container<ProgramCardData>>().SetContent(card);
-        var t = obj.transform;
-        t.localPosition = Vector3.zero;
-        t.localScale = Vector3.zero;
+        var objects = new Transform[affector.Cards.Count];
+        for (var i = 0; i < objects.Length; i++) {
+            var obj = Instantiate(_programCardPrefab, _upgradeCardStart);
+            obj.GetComponent<Container<ProgramCardData>>().SetContent(affector.Cards[i]);
+        
+            var t = obj.transform;
+            t.localPosition = Vector3.zero;
+            t.localScale = Vector3.zero;
+            
+            objects[i] = t;
+        }
 
-        TaskScheduler.PushRoutine(DoIndicatorAnimation(new [] { t }));
+        TaskScheduler.PushRoutine(DoIndicatorAnimation(objects));
     }
 
     IEnumerator DoIndicatorAnimation(IReadOnlyCollection<Transform> targets) {
@@ -70,7 +75,7 @@ public class PlayerUIPlayerPanel : PlayerPanel {
     }
     
     void OnEnergyChanged(int prev, int next) {
-        if (!enabled) return;
+        if (!gameObject.activeInHierarchy) return;
         
         var delta = next - prev;
         if (delta < 0) return;

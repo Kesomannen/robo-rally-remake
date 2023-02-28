@@ -6,8 +6,9 @@ public class ScriptableCardAffector : ScriptablePermanentAffector<IPlayer> {
     [SerializeField] Pile _destination;
     [SerializeField] CardPlacement _placement;
     
-    public override void Apply(IPlayer player) =>
-        CardAffector.Apply(player.Owner, _cards, _destination, _placement);
-    
+    public override void Apply(IPlayer player) {
+        ToInstance().Apply(player);
+    }
+
     public CardAffector ToInstance() => new(_cards, _destination, _placement);
 }

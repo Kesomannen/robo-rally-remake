@@ -410,7 +410,7 @@ RectTransform:
   m_GameObject: {fileID: 28818514}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_LocalScale: {x: 1.33, y: 1.33, z: 1.33}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1111941189}
@@ -6638,7 +6638,7 @@ MonoBehaviour:
   _panelPrefab: {fileID: 1064393264757202019, guid: 5a995090c672c954ebf8ac7fb3493668, type: 3}
   _panelSpacing: 144
   _tweenType: 16
-  _tweenTime: 0.1
+  _tweenTime: 0.3
 --- !u!1 &1582344546
 GameObject:
   m_ObjectHideFlags: 0

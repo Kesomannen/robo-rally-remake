@@ -42,12 +42,11 @@ public class Player : IPlayer {
     public override string ToString() => _name;
     
     // Events
-    public event Action<CardAffector> OnDamaged; 
+    public event Action<CardAffector> OnCardAffectorApplied; 
     public event Action<ProgramCardData> OnDraw, OnDiscard;
     public event Action<UpgradeCardData, int> OnUpgradeAdded, OnUpgradeRemoved;
     public event Action<UpgradeCardData> OnUpgradeUsed;
     public event Action<ProgramCardData> OnProgramCardPlayed;
-    public event Action<ProgramCardData, Pile> OnCardDealt; 
 
     public Player(PlayerArgs args) {
         _name = args.Name;
@@ -93,11 +92,6 @@ public class Player : IPlayer {
 
     # region Card Management
 
-    public void DealCard(ProgramCardData card, Pile pile, CardPlacement placement) {
-        GetCollection(pile).AddCard(card, placement);
-        OnCardDealt?.Invoke(card, pile);
-    }
-    
     public CardCollection GetCollection(Pile target) {
         return target switch {
             Pile.Hand => Hand,
@@ -107,7 +101,7 @@ public class Player : IPlayer {
         };
     }
 
-    void ShuffleDeck() {
+    public void ShuffleDeck() {
         DrawPile.AddRange(DiscardPile.Cards, CardPlacement.Top);
         DiscardPile.Clear();
         DrawPile.Shuffle();
@@ -247,8 +241,11 @@ public class Player : IPlayer {
     }
 
     public void ApplyCardAffector(CardAffector affector) {
-        affector.Apply(this);
-        OnDamaged?.Invoke(affector);
+        var pile = GetCollection(affector.Destination);
+        foreach (var card in affector.Cards) {
+            pile.AddCard(card, affector.Placement);
+        }
+        OnCardAffectorApplied?.Invoke(affector);
     }
 
     public void SerializeRegisters(out byte playerIndex, out byte[] registers) {

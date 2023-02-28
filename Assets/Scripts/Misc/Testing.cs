@@ -14,7 +14,7 @@ public class Testing : MonoBehaviour {
         PlayerSystem.Instance.CreatePlayer(0, new LobbyPlayerData {
             RobotId = (byte)_robotToLoad.GetLookupId(),
             Name = "Test Player"
-        });
+        }, true);
     }
 
     void Start() {

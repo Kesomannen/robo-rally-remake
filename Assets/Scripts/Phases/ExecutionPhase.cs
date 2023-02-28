@@ -41,6 +41,8 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
         OnPhaseEnd?.Invoke();
     }
 
+    static Player[] _previousPlayerOrder;
+    
     // ReSharper disable Unity.PerformanceAnalysis
     static IEnumerator DoRegister(int register) {
         Debug.Log($"Starting register {register}");
@@ -50,14 +52,16 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
 
         yield return CoroutineUtils.Wait(StepDelay);
 
-        var players = PlayerSystem.GetOrderedPlayers().ToArray();
-        OnPlayersOrdered?.Invoke(players);
+        var orderedPlayers = PlayerSystem.GetOrderedPlayers().ToArray();
+        if (_previousPlayerOrder != null && !_previousPlayerOrder.SequenceEqual(orderedPlayers)) {
+            OnPlayersOrdered?.Invoke(orderedPlayers);
+            yield return CoroutineUtils.Wait(StepDelay);
+        }
+        _previousPlayerOrder = orderedPlayers;
         
-        yield return CoroutineUtils.Wait(StepDelay);
-
-        var registerRoutines = new IEnumerator[players.Length];
-        for (var i = 0; i < players.Length; i++) {
-            registerRoutines[i] = DoPlayerRegister(players[i]);
+        var registerRoutines = new IEnumerator[orderedPlayers.Length];
+        for (var i = 0; i < orderedPlayers.Length; i++) {
+            registerRoutines[i] = DoPlayerRegister(orderedPlayers[i]);
         }
 
         TaskScheduler.PushSequence(

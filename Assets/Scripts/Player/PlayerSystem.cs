@@ -31,14 +31,21 @@ public class PlayerSystem : Singleton<PlayerSystem> {
             .ToList();
     }
 
-    public void CreatePlayer(ulong id, LobbyPlayerData data) {
+    public void CreatePlayer(ulong id, LobbyPlayerData data, bool randomizeSpawn) {
         var settings = GameSettings.Instance;
 
         var robotData = RobotData.GetById(data.RobotId);
-        var randomIndex = Random.Range(0, _unoccupiedSpawnPoints.Count);
-        var spawnPoint = _unoccupiedSpawnPoints[randomIndex];
-        _unoccupiedSpawnPoints.RemoveAt(randomIndex);
-
+        
+        RebootToken spawnPoint;
+        if (randomizeSpawn) {
+            var randomIndex = Random.Range(0, _unoccupiedSpawnPoints.Count);
+            spawnPoint = _unoccupiedSpawnPoints[randomIndex];
+            _unoccupiedSpawnPoints.RemoveAt(randomIndex);
+        } else {
+            spawnPoint = _unoccupiedSpawnPoints[0];
+            _unoccupiedSpawnPoints.RemoveAt(0);
+        }
+        
         var playerArgs = new PlayerArgs {
             OwnerId = id,
             RobotData = robotData,

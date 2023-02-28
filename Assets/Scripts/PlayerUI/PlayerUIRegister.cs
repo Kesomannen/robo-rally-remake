@@ -1,15 +1,15 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class PlayerRegisterUI : MonoBehaviour, IPointerClickHandler {
+public class PlayerUIRegister : MonoBehaviour, IPointerClickHandler {
     [SerializeField] int _index;
     [SerializeField] Container<ProgramCardData> _cardContainer;
     [SerializeField] SoundEffect _onPlaceSound, _onRemoveSound;
 
     static Player Owner => PlayerSystem.LocalPlayer;
 
-    static readonly PlayerRegisterUI[] _registers = new PlayerRegisterUI[ExecutionPhase.RegisterCount];
-    public static PlayerRegisterUI GetRegister(int index) => _registers[index];
+    static readonly PlayerUIRegister[] _registers = new PlayerUIRegister[ExecutionPhase.RegisterCount];
+    public static PlayerUIRegister GetRegister(int index) => _registers[index];
     
     public static bool Locked { get; set; }
 
@@ -56,7 +56,7 @@ public class PlayerRegisterUI : MonoBehaviour, IPointerClickHandler {
         return true;
     }
 
-    public void Remove() {
+    void Remove() {
         if (Locked || IsEmpty || !Owner.Hand.AddCard(_cardContainer.Content, CardPlacement.Top)) return;
 
         _cardContainer.gameObject.SetActive(false);
