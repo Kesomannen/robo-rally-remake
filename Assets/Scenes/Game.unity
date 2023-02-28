@@ -761,7 +761,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000061035156}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &173976344
@@ -2952,7 +2952,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ad5597ae79c4fa47973471e5c5d4293, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mapToLoad: {fileID: 11400000, guid: a7673799179269a4b830050a4d777784, type: 2}
+  _mapToLoad: {fileID: 11400000, guid: ee6058072b906024f90f5c10f1ceb3de, type: 2}
   _robotToLoad: {fileID: 11400000, guid: 15f17d4ffc1e55b4fbfd3d6c4a1863d8, type: 2}
   _upgradesToLoad:
   - {fileID: 11400000, guid: bfbd67667ecba924aa56d51adea9b5da, type: 2}
@@ -2960,7 +2960,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1b9b6a9682c952e47b72ef19675de50f, type: 2}
   - {fileID: 11400000, guid: f2b33da2af1a08d4caf4f0f70ae87171, type: 2}
   - {fileID: 11400000, guid: 38eb07b4610911246872e87356ff76ed, type: 2}
-  _panelsController: {fileID: 1539960399}
 --- !u!114 &761913675
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4394,6 +4393,7 @@ MonoBehaviour:
   _mapCamera: {fileID: 519420031}
   _uiCamera: {fileID: 319742022}
   _lerpType: 10
+  _inFullscreen: 0
 --- !u!1 &1110755991
 GameObject:
   m_ObjectHideFlags: 0
@@ -6000,6 +6000,7 @@ MonoBehaviour:
   _jumpHeight: 60
   _jumpDuration: 1.2
   _text: {fileID: 808849313}
+  _clockSound: {fileID: 0}
 --- !u!114 &1438937435
 MonoBehaviour:
   m_ObjectHideFlags: 0

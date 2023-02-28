@@ -14,7 +14,7 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
     public event Action<int> OnRotationChanged;
 
     public virtual void Fall(IBoard board) {
-        MapSystem.Instance.DestroyObject(this);
+        MapSystem.DestroyObject(this);
     }
 
     protected virtual void Awake(){

@@ -83,7 +83,7 @@ public class RobotPanel : Container<RobotData>, IPointerEnterHandler, IPointerEx
     
     public void OnPointerClick(PointerEventData e) {
         if (_state != State.Available) return;
-        LobbySystem.Instance.UpdatePlayerData(robotId: (byte) Content.GetLookupId());
+        LobbySystem.Instance.UpdatePlayer(robot: Content);
     }
     
     int[] _scaleTweenIds;

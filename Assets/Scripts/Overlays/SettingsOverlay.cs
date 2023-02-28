@@ -25,6 +25,6 @@ public class SettingsOverlay : Overlay {
     }
 
     public void LeaveGame() {
-        SceneManager.LoadScene(0);
+        NetworkSystem.ReturnToLobby();
     }
 }

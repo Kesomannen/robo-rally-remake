@@ -26,6 +26,10 @@ public class RobotSelection : MonoBehaviour {
     }
 
     void OnDisable() {
+        foreach (var panel in _panels) {
+            panel.SetState(RobotPanel.State.Available);
+        }        
+        
         LobbySystem.OnPlayerUpdatedOrAdded -= OnPlayerUpdatedOrAdded;
         LobbySystem.OnPlayerRemoved -= OnPlayerRemoved;
     }

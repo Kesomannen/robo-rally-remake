@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class MenuSystem : Singleton<MenuSystem> {
     [SerializeField] MainMenu _mainMenu;
-    [SerializeField] OptionsMenu _optionsMenu;
     [SerializeField] JoinGameMenu _joinGameMenu;
     [SerializeField] RoomMenu _roomMenu;
     [SerializeField] Menu _aboutMenu;
 
     readonly Stack<Menu> _menuStack = new();
 
+    public static event Action OnMenuChanged;
+    
     void Start() {
         PushMenu(MenuState.Main);
     }
@@ -22,6 +23,8 @@ public class MenuSystem : Singleton<MenuSystem> {
         var newMenu = GetMenu(newState);
         newMenu.Show();
         _menuStack.Push(newMenu);
+        
+        OnMenuChanged?.Invoke();
     }
 
     public void GoBack() {
@@ -30,11 +33,12 @@ public class MenuSystem : Singleton<MenuSystem> {
         
         oldMenu.Hide();
         newMenu.Show();
+        
+        OnMenuChanged?.Invoke();
     }
 
     Menu GetMenu(MenuState state) => state switch {
         MenuState.Main => _mainMenu,
-        MenuState.Options => _optionsMenu,
         MenuState.JoinGame => _joinGameMenu,
         MenuState.Room => _roomMenu,
         MenuState.About => _aboutMenu,
@@ -44,7 +48,6 @@ public class MenuSystem : Singleton<MenuSystem> {
 
 public enum MenuState {
     Main,
-    Options,
     JoinGame,
     Room,
     About

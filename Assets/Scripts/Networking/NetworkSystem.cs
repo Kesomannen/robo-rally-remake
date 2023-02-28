@@ -11,15 +11,18 @@ using UnityEngine.SceneManagement;
 public class NetworkSystem : NetworkSingleton<NetworkSystem> {
     [SerializeField] GameObject _waitingOverlay;
     [SerializeField] TMP_Text _waitingText;
-    
+
+    void Start() {
+        NetworkObject.DestroyWithScene = true;
+    }
+
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
         
-        Debug.Log("NetworkSystem spawned, loading map...");
-        MapSystem.Instance.LoadMap(MapData.GetById(LobbySystem.LobbyMapId));
+        MapSystem.Instance.LoadMap(MapData.GetById(LobbySystem.LobbyMap.Value));
         
         foreach (var (id, data) in LobbySystem.PlayersInLobby) {
-            PlayerSystem.Instance.CreatePlayer(id, $"Player {id}", data);
+            PlayerSystem.Instance.CreatePlayer(id, data);
         }
         PhaseSystem.StartPhaseSystem();
     }

@@ -29,7 +29,7 @@ public class PlayerUIPlayerPanel : PlayerPanel {
         
         Content.OnUpgradeUsed += OnUpgradeUsed;
         Content.Energy.OnValueChanged += OnEnergyChanged;
-        Content.DiscardPile.OnAdd += OnCardGet;
+        Content.OnCardDealt += OnCardDealt;
 
         ProgrammingPhase.OnPhaseStarted += OnPhaseStarted;
         ProgrammingPhase.OnPlayerLockedIn += OnPlayerProgramDone;
@@ -37,7 +37,7 @@ public class PlayerUIPlayerPanel : PlayerPanel {
         OnPhaseStarted();
     }
     
-    void OnCardGet(ProgramCardData card, int index) {
+    void OnCardDealt(ProgramCardData card, Pile pile) {
         if (!enabled) return;
         if (PhaseSystem.Current.Value != Phase.Programming) return;
         

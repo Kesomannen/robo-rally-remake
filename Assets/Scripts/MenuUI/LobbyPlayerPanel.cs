@@ -18,7 +18,7 @@ public class LobbyPlayerPanel : MonoBehaviour {
         PlayerData = playerData;
 
         var isLocalPlayer = playerID == NetworkManager.Singleton.LocalClientId;
-        _nameText.text = isLocalPlayer ? $"{playerData.Name} (You)" : playerID.ToString();
+        _nameText.text = isLocalPlayer ? $"{playerData.Name} (You)" : playerData.Name;
 
         _readyImage.sprite = playerData.IsReady ? _readySprite : _notReadySprite;
         _robotIcon.sprite = RobotData.GetById(playerData.RobotId).Icon;

@@ -39,10 +39,15 @@ public class JoinGameMenu : Menu {
             return;
         }
 
-        using (new LoadScreen($"Joining lobby {_codeInputField.text}")) {
-            await LobbySystem.Instance.JoinLobby(_codeInputField.text);
+        bool successful;
+        using (new LoadingScreen($"Joining lobby {_codeInputField.text}")) {
+            successful = await LobbySystem.Instance.JoinLobby(_codeInputField.text);
         }
 
-        MenuSystem.Instance.PushMenu(MenuState.Room);
+        if (successful) {
+            MenuSystem.Instance.PushMenu(MenuState.Room);   
+        } else {
+            MenuUtils.Instance.ShowError("Failed to join lobby");
+        }
     }
 }

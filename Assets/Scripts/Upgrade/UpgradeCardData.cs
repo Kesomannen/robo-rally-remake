@@ -30,6 +30,7 @@ public class UpgradeCardData : Lookup<UpgradeCardData>, IAffector<IPlayer> {
     public bool CanUse(IPlayer player) {
         if (_type == UpgradeType.Permanent
             || _type == UpgradeType.Action && player.Owner.Energy.Value < UseCost) return false;
+        if (player.Owner.IsRebooted.Value) return false;
 
         return PhaseSystem.Current.Value switch {
             Phase.Programming => CanUseIn(ProgrammingPhase.LocalPlayerLockedIn ? UseContext.AfterLockIn : UseContext.DuringProgramming),

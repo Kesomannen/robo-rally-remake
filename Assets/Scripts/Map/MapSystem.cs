@@ -17,6 +17,7 @@ public class MapSystem : Singleton<MapSystem> {
     static Dictionary<Tilemap, IBoard> _boards;
     
     GameObject _currentMap;
+    (Vector2 Min, Vector2 Max)[] _tilemapBounds;
 
     public static Action OnMapLoaded;
 
@@ -58,22 +59,44 @@ public class MapSystem : Singleton<MapSystem> {
     }
 
     void OnDrawGizmos() {
+        if (!Application.isPlaying) return;
+        
         Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(_mapCenter, (_mapMax - _mapMin));
+        Gizmos.DrawWireCube(_mapCenter, (_mapMax - _mapMin) + 0.5f * Vector2.one);
+
+        Gizmos.color = Color.green;
+        foreach (var (min, max) in _tilemapBounds) {
+            Gizmos.DrawWireCube((max + min) / 2, max - min);
+        }
     }
 
     void PositionCamera() {
         var t = _mapCamera.transform;
         _mapMax = Vector2.negativeInfinity;
         _mapMin = Vector2.positiveInfinity;
+        
+        _tilemapBounds = new (Vector2 Min, Vector2 Max)[_boards.Count];
 
-        foreach (var tilemap in _boards.Keys) {
+        var tilemaps = _boards.Keys.ToArray();
+        
+        for (var i = 0; i < tilemaps.Length; i++) {
+            var tilemap = tilemaps[i];
+            
             tilemap.CompressBounds();
             var bounds = tilemap.cellBounds;
-            _mapMax = Vector2.Max(_mapMax, tilemap.CellToWorld(bounds.max));
-            _mapMin = Vector2.Min(_mapMin, tilemap.CellToWorld(bounds.min));
+            var boundsMax = (Vector2)tilemap.CellToWorld(bounds.max);
+            var boundsMin = (Vector2)tilemap.CellToWorld(bounds.min);
+            
+            // Correcting bounds for tilemap
+            var max = Vector2.Max(boundsMax, boundsMin);
+            var min = Vector2.Min(boundsMax, boundsMin);
+            _tilemapBounds[i] = (min, max);
+
+            Debug.Log($"Tilemap {tilemap.name} bounds: {min} - {max}", tilemap);
+            _mapMax = Vector2.Max(_mapMax, max);
+            _mapMin = Vector2.Min(_mapMin, min);
         }
-        
+
         var verticalMin = (_mapMax.y - _mapMin.y) / 2;
         var horizontalMin = (_mapMax.x - _mapMin.x) / 2;
         
@@ -137,8 +160,8 @@ public class MapSystem : Singleton<MapSystem> {
         AddObject(mapObject, gridPos);
     }
 
-    public T CreateObject<T>(T prefab, Vector2Int gridPos, bool callOnEnter = true) where T : MapObject {
-        var obj = Instantiate(prefab);
+    public T CreateObject<T>(T prefab, Vector2Int gridPos, Quaternion rotation, bool callOnEnter = true) where T : MapObject {
+        var obj = Instantiate(prefab, position: Vector3.zero, rotation: rotation);
         
         var onMap = TryGetBoard(gridPos, out var board);
         if (!onMap) Debug.LogWarning($"Object {obj} was created off the map at {gridPos}.");
@@ -149,7 +172,7 @@ public class MapSystem : Singleton<MapSystem> {
 
         return obj;
     }
-    
+
     public T CreateObject<T>(T prefab, Vector2Int gridPos, IBoard parent, bool callOnEnter = true) where T : MapObject {
         var obj = Instantiate(prefab);
         parent.Parent(obj.transform);
@@ -160,7 +183,7 @@ public class MapSystem : Singleton<MapSystem> {
         return obj;
     }
 
-    public void DestroyObject(MapObject obj, bool callOnExit = true) {
+    public static void DestroyObject(MapObject obj, bool callOnExit = true) {
         RemoveObject(obj, callOnExit);
         Destroy(obj.gameObject);
     }
@@ -175,7 +198,7 @@ public class MapSystem : Singleton<MapSystem> {
         return TryGetTile(gridPos, out var result) ? result : null;
     }
 
-    Vector2Int WorldToGrid(Vector3 worldPos) {
+    Vector2Int WorldToGrid(Vector2 worldPos) {
         return _grid.WorldToCell(worldPos).ToVec2Int();
     }
     
@@ -190,6 +213,7 @@ public class MapSystem : Singleton<MapSystem> {
     public bool TryGetBoard(Vector2Int gridPos, out IBoard board) {
         foreach (var (tilemap, b) in _boards) {
             var pos = tilemap.WorldToCell(GridToWorld(gridPos));
+            pos.z = 0;
             if (!tilemap.HasTile(pos)) continue;
             
             board = b;

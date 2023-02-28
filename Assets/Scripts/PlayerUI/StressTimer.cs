@@ -6,6 +6,7 @@ public class StressTimer : MonoBehaviour, ITooltipable {
     [SerializeField] float _jumpHeight;
     [SerializeField] float _jumpDuration;
     [SerializeField] TMP_Text _text;
+    [SerializeField] SoundEffect _clockSound;
 
     bool _isStressed;
 
@@ -19,6 +20,8 @@ public class StressTimer : MonoBehaviour, ITooltipable {
     }
     
     void Awake() {
+        _text.text = "---";
+        
         ProgrammingPhase.StressTimer.OnValueChanged += OnStressValueChanged;
         ProgrammingPhase.OnPhaseStarted += OnPhaseStarted;
     }
@@ -38,6 +41,7 @@ public class StressTimer : MonoBehaviour, ITooltipable {
             _text.text = "---";
             return;
         }
+        _clockSound.Play();
         _text.text = next.ToString();
 
         if (_isStressed) {

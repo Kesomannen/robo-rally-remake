@@ -16,6 +16,7 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
     Highlight _highlight;
     
     public Player Owner { get; private set; }
+    public RebootToken Spawn { get; private set; }
 
     public bool Pushable => true;
     protected override bool CanRotate => true;
@@ -35,8 +36,9 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
         _highlight = GetComponent<Highlight>();
     }
 
-    public void Init(Player owner) {
+    public void Init(Player owner, RebootToken spawnPoint) {
         Owner = owner;
+        Spawn = spawnPoint;
         GetComponent<SpriteRenderer>().sprite = owner.RobotData.Sprite;
     }
 
@@ -80,7 +82,7 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
             
             if (destroyLasers) {
                 yield return CoroutineUtils.Wait(0.5f);
-                lasers.ForEach(l => MapSystem.Instance.DestroyObject(l, false));
+                lasers.ForEach(l => MapSystem.DestroyObject(l, false));
             }
         }
     }

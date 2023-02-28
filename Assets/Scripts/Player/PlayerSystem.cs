@@ -10,7 +10,7 @@ public class PlayerSystem : Singleton<PlayerSystem> {
     public static IReadOnlyList<Player> Players => _players;
     public static Player LocalPlayer { get; private set; }
 
-    static RebootToken[] _spawnPoints;
+    static List<RebootToken> _unoccupiedSpawnPoints;
 
     public static bool IsLocal(Player player) => player == LocalPlayer;
     
@@ -25,15 +25,19 @@ public class PlayerSystem : Singleton<PlayerSystem> {
     }
 
     static void OnMapLoaded() {
-        _spawnPoints = MapSystem.GetByType<RebootToken>().Where(x => x.IsSpawnPoint).ToArray();
+        _unoccupiedSpawnPoints = MapSystem
+            .GetByType<RebootToken>()
+            .Where(x => x.IsSpawnPoint)
+            .ToList();
     }
 
-    public void CreatePlayer(ulong id, string playerName, LobbyPlayerData data) {
-        var index = _players.Count;
+    public void CreatePlayer(ulong id, LobbyPlayerData data) {
         var settings = GameSettings.Instance;
 
         var robotData = RobotData.GetById(data.RobotId);
-        var spawnPoint = _spawnPoints[index];
+        var randomIndex = Random.Range(0, _unoccupiedSpawnPoints.Count);
+        var spawnPoint = _unoccupiedSpawnPoints[randomIndex];
+        _unoccupiedSpawnPoints.RemoveAt(randomIndex);
 
         var playerArgs = new PlayerArgs {
             OwnerId = id,
@@ -73,9 +77,5 @@ public class PlayerSystem : Singleton<PlayerSystem> {
         return players
             .OrderByDescending(x => x.Value)
             .Select(x => x.Key);
-    }
-
-    public static RebootToken GetSpawnPoint(Player owner) {
-        return _spawnPoints[_players.IndexOf(owner)];
     }
 }

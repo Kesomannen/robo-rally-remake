@@ -20,14 +20,23 @@ public class RoomMapPanel : Container<MapData> {
 
     MapData[] _maps;
 
-    static int MapID => LobbySystem.LobbyMapId;
+    static int MapID => LobbySystem.LobbyMap.Value;
 
-    void OnEnable() {
-        LobbySystem.OnLobbyMapChanged += Serialize;
+    void Awake() {
+        LobbySystem.LobbyMap.OnValueChanged += OnMapChanged;
+        RoomMenu.OnLocalPlayerReady += OnLocalPlayerReady;
+    }
+    
+    void OnDestroy() {
+        LobbySystem.LobbyMap.OnValueChanged -= OnMapChanged;
+        RoomMenu.OnLocalPlayerReady -= OnLocalPlayerReady;
     }
 
-    void OnDisable() {
-        LobbySystem.OnLobbyMapChanged -= Serialize;
+    void OnMapChanged(int _, int next) => Serialize(next);
+
+    void OnLocalPlayerReady() {
+        _nextButton.interactable = false;
+        _prevButton.interactable = false;
     }
 
     void Start() {
@@ -39,15 +48,8 @@ public class RoomMapPanel : Container<MapData> {
         _prevButton.interactable = isServer;
     }
 
-    public void GoNext() {
-        var next = MapID + 1;
-        if (next >= _maps.Length) next = 0;
-        LobbySystem.Instance.SetLobbyMap(next);
-    }
-    
-    public void GoPrevious() {
-        LobbySystem.Instance.SetLobbyMap(MapID == 0 ? _maps.Length - 1 : MapID - 1);
-    }
+    public void GoNext() => LobbySystem.Instance.SetLobbyMap(MapID + 1 >= _maps.Length ? 0 : MapID + 1);
+    public void GoPrevious() => LobbySystem.Instance.SetLobbyMap(MapID == 0 ? _maps.Length - 1 : MapID - 1);
 
     void Serialize(int id) => Serialize(MapData.GetById(id));
 

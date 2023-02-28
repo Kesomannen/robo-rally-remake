@@ -25,6 +25,10 @@ public class RoomMenu : Menu {
             Destroy(lobbyPlayerPanel.gameObject);
         }
         _playerPanels.Clear();
+        
+        foreach (var (id, data) in LobbySystem.PlayersInLobby) {
+            UpdatePanel(id, data);
+        }
 
         _readyButton.gameObject.SetActive(true);
         _startGameButton.gameObject.SetActive(false);
@@ -39,7 +43,7 @@ public class RoomMenu : Menu {
         LobbySystem.OnPlayerUpdatedOrAdded -= UpdatePanel;
         LobbySystem.OnPlayerRemoved -= RemovePanel;
     
-        using (new LoadScreen("Leaving Lobby...")) {
+        using (new LoadingScreen("Leaving Lobby...")) {
             await LobbySystem.Instance.LeaveLobby();
         }
     }
@@ -68,13 +72,13 @@ public class RoomMenu : Menu {
     }
 
     public async void StartGame() {
-        using (new LoadScreen("Staring Game...")) {
+        using (new LoadingScreen("Staring Game...")) {
             await LobbySystem.Instance.StartGame();   
         }
     }
 
     public void Ready() {
-        LobbySystem.Instance.UpdatePlayerData(ready: true);
+        LobbySystem.Instance.UpdatePlayer(ready: true);
         OnLocalPlayerReady?.Invoke();
         _readyButton.SetActive(false);
     }

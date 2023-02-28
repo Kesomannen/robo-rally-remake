@@ -10,11 +10,8 @@ public class PlayerPanel : Container<Player>, IPointerClickHandler {
     [SerializeField] Optional<Image> _robotIcon;
     [SerializeField] Optional<TMP_Text> _energyText;
     [SerializeField] bool _showOverlayOnClick;
-
-    #if UNITY_EDITOR
-    [ShowIf("_showOverlayOnClick")]
-    #endif
     
+    [ShowIf("_showOverlayOnClick")]
     [SerializeField] OverlayData<PlayerOverlay> _overlayData;
 
     [Header("Indicator")]
@@ -22,10 +19,7 @@ public class PlayerPanel : Container<Player>, IPointerClickHandler {
     [SerializeField] Sprite[] _doneAnim, _inProgressAnim, _waitingAnim;
 
     [Header("Tween")]
-    #if UNITY_EDITOR
     [ShowIf("_energyText.Enabled")]
-    #endif
-    
     [SerializeField] Image _energyIcon;
     [SerializeField] [Min(0)] float _tweenDuration;
     [SerializeField] LeanTweenType _tweenType;

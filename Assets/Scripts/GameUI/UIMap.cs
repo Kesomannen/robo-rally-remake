@@ -12,13 +12,14 @@ public class UIMap : Singleton<UIMap>, IPointerEnterHandler, IPointerExitHandler
     [Space]
     [SerializeField] float _fullScreenSize;
     [SerializeField] Transform _fullScreenPosition;
+    
     [Header("References")]
     [SerializeField] Camera _mapCamera;
     [SerializeField] Camera _uiCamera;
     [SerializeField] LeanTweenType _lerpType;
+    [SerializeField] [ReadOnly] bool _inFullscreen;
 
     public bool CanFocus { get; set; } = true;
-    public bool InFullscreen { get; private set; }
 
     RectTransform _rectTransform;
     Physics2DRaycaster _raycaster;
@@ -44,8 +45,8 @@ public class UIMap : Singleton<UIMap>, IPointerEnterHandler, IPointerExitHandler
     }
 
     public void ZoomToFullscreen() {
-        if (InFullscreen) return;
-        InFullscreen = true;
+        if (_inFullscreen) return;
+        _inFullscreen = true;
 
         var t = transform;
         t.localScale = _fullScreenSize * Vector3.one;
@@ -53,8 +54,8 @@ public class UIMap : Singleton<UIMap>, IPointerEnterHandler, IPointerExitHandler
     }
 
     public void ZoomToDefault() {
-        if (!InFullscreen) return;
-        InFullscreen = false;
+        if (!_inFullscreen) return;
+        _inFullscreen = false;
 
         var t = transform;
         t.localScale = Vector3.one;

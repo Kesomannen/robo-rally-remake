@@ -5,9 +5,8 @@ public class Antenna : MapObject, ICanEnterHandler, ITooltipable {
     [SerializeField] Transform _beamPrefab;
     [SerializeField] float _beamSpeed;
     [SerializeField] LeanTweenType _beamTweenType;
-    
-    static Antenna _instance;
-    public static Antenna Instance => _instance;
+
+    public static Antenna Instance { get; private set; }
 
     public bool Pushable => false;
 
@@ -17,15 +16,12 @@ public class Antenna : MapObject, ICanEnterHandler, ITooltipable {
     public string Description => "Priority is decided depending on distance to this antenna.";
 
     protected override void Awake() {
-        if (_instance == null) {
-            _instance = this;
-        } else {
-            Debug.LogWarning("Duplicate antenna found!", this);
-        }
+        base.Awake();
+        Instance = this;
     }
 
     public static float GetDistance(Vector2Int pos) {
-        return Vector2Int.Distance(_instance.GridPos, pos);
+        return Vector2Int.Distance(Instance.GridPos, pos);
     }
 
     public IEnumerator BeamAnimation(Player player) {
