@@ -15,7 +15,7 @@ public class Program {
 
     public event Action<int, ProgramCardData, ProgramCardData> OnRegisterChanged;
 
-    public void SetCard(int index, ProgramCardData card) {
+    public void SetRegister(int index, ProgramCardData card) {
         var oldCard = _registers[index];
         _registers[index] = card;
         OnRegisterChanged?.Invoke(index, oldCard, card);

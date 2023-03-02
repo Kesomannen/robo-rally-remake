@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3046940b504f79c4ab36f87e3b3ff8ef, type: 3}
+  m_Name: CorruptionWave
+  m_EditorClassIdentifier: 
+  _name: Corruption Wave
+  _description: Damage cards you deal to other players are dealt on top their draw
+    pile instead of the discard pile.
+  _icon: {fileID: 21300000, guid: b271adb9f3a14c54fa5b8f42e5814f44, type: 3}
+  _cost: 4
+  _useCost: 0
+  _type: 1
+  _useContext: 0
+  _temporaryAffectors:
+  - {fileID: 11400000, guid: 10dffad34ed594f4badc640800fb2b90, type: 2}
+  - {fileID: 11400000, guid: a85ea09bc7a1f604aaf0a165a4d84350, type: 2}
+  _permanentAffectors: []
+  _tooltips:
+  - _type: 3
+    _header: 
+    _description: 
+    _programCard: {fileID: 0}
+    _upgradeCard: {fileID: 0}
+    _mechanic: 0

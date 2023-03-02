@@ -12,6 +12,12 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
     [Header("Tween")]
     [SerializeField] LeanTweenType _moveTweenType;
     [SerializeField] float _moveTweenSpeed;
+    
+    [Header("Audio")]
+    [SerializeField] SoundEffect _moveSound;
+    [SerializeField] SoundEffect _rotateSound;
+    [SerializeField] SoundEffect _laserSound;
+    [SerializeField] SoundEffect _rebootSound;
 
     Highlight _highlight;
     
@@ -28,12 +34,14 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
     public string Description => null;
 
     public override void Fall(IBoard board) {
+        _rebootSound.Play();
         Owner.Reboot(board);
     }
 
     protected override void Awake() {
         base.Awake();
         _highlight = GetComponent<Highlight>();
+        OnRotationChanged += _ => _rotateSound.Play();
     }
 
     public void Init(Player owner, RebootToken spawnPoint) {
@@ -68,22 +76,21 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
         if (hits.Length == 0) return;
         _hits += hits.Length;
 
-        var lasers = Laser.ShootLaser(_laserPrefab, this, dir, maxDistance);
-        lasers.ForEach(l => l.SetActiveVisual(true));
-        for (var i = 0; i < hits.Length; i++) {
-            TaskScheduler.PushRoutine(DamagePlayer(hits[i], i == hits.Length - 1));
-        }
+        TaskScheduler.PushRoutine(Fire());
 
-        IEnumerator DamagePlayer(IPlayer player, bool destroyLasers) {
-            player.Owner.ApplyCardAffector(Owner.LaserAffector);
-            _hitParticle.transform.position = player.Owner.Model.transform.position;
-            _hitParticle.Play();
-            yield return CoroutineUtils.Wait(_hitParticle.main.duration);
+        IEnumerator Fire() {
+            var lasers = Laser.ShootLaser(_laserPrefab, this, dir, maxDistance);
+            lasers.ForEach(l => l.SetActiveVisual(true));
+            _laserSound.Play();
             
-            if (destroyLasers) {
-                yield return CoroutineUtils.Wait(0.5f);
-                lasers.ForEach(l => MapSystem.DestroyObject(l, false));
+            foreach (var player in hits) {
+                player.Owner.ApplyCardAffector(Owner.LaserAffector);
+                _hitParticle.transform.position = player.Owner.Model.transform.position;
+                _hitParticle.Play();
+                yield return CoroutineUtils.Wait(_hitParticle.main.duration);
             }
+            
+            lasers.ForEach(l => MapSystem.DestroyObject(l, false));
         }
     }
 
@@ -94,6 +101,13 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
         if (!Interaction.Push(this, moveVector, out var mapEvent)) yield break;
         
         _moveParticle.Play();
+        _moveSound.Play();
+        
+        if (Owner.PushAffector.Cards.Count > 0) {
+            foreach (var player in mapEvent.MapObjects.OfType<IPlayer>().Select(m => m.Owner).Where(p => p != Owner)) {
+                player.ApplyCardAffector(Owner.PushAffector);
+            }
+        }
         yield return Interaction.EaseEvent(mapEvent, _moveTweenType, _moveTweenSpeed);
     }
 

@@ -22,7 +22,7 @@ public class CheckpointSystem : Singleton<CheckpointSystem> {
             Debug.LogError("No checkpoints found in the scene!");
             return;
         }
-        _checkpoints.Last().OnPlayerReached += p => Instance.StartCoroutine(OnPlayerReachedLast(p));
+        _checkpoints.OrderBy(c => c.Index).Last().OnPlayerReached += p => TaskScheduler.PushRoutine(OnPlayerReachedLast(p));
     }
 
     static IEnumerator OnPlayerReachedLast(Player player) {

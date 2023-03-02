@@ -45,24 +45,26 @@ public class PlayerUIRegister : MonoBehaviour, IPointerClickHandler {
 
 
     public bool Place(Container<ProgramCardData> item) {
-        if (Locked || !IsEmpty || !item.Content.CanPlace(Owner, _index)) return false;
+        if (Locked || !item.Content.CanPlace(Owner, _index)) return false;
+        if (!IsEmpty && !Remove()) return false;
 
-        _cardContainer.SetContent(item.Content);
+            _cardContainer.SetContent(item.Content);
         _cardContainer.gameObject.SetActive(true);
-        Owner.Program.SetCard(_index, item.Content);
+        Owner.Program.SetRegister(_index, item.Content);
         
         _onPlaceSound.Play();
         
         return true;
     }
 
-    void Remove() {
-        if (Locked || IsEmpty || !Owner.Hand.AddCard(_cardContainer.Content, CardPlacement.Top)) return;
+    bool Remove() {
+        if (Locked || IsEmpty || !Owner.Hand.AddCard(_cardContainer.Content, CardPlacement.Top)) return false;
 
         _cardContainer.gameObject.SetActive(false);
-        Owner.Program.SetCard(_index, null);
+        Owner.Program.SetRegister(_index, null);
         
         _onRemoveSound.Play();
+        return true;
     }
 
     public void OnPointerClick(PointerEventData e) {

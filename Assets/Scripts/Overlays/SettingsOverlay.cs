@@ -12,16 +12,16 @@ public class SettingsOverlay : Overlay {
 
     protected override void OnEnable() {
         base.OnEnable();
-        _musicSlider.value = AudioSystem.Instance.MusicVolume;
-        _sfxSlider.value = AudioSystem.Instance.SfxVolume;
+        _musicSlider.value = AudioSystem.MusicVolume;
+        _sfxSlider.value = AudioSystem.SfxVolume;
     }
 
     static void OnSfxVolumeChanged(float value) {
-        AudioSystem.Instance.SfxVolume = value;
+        AudioSystem.SfxVolume = value;
     }
 
     static void OnMusicVolumeChanged(float value) {
-        AudioSystem.Instance.MusicVolume = value;
+        AudioSystem.MusicVolume = value;
     }
 
     public void LeaveGame() {

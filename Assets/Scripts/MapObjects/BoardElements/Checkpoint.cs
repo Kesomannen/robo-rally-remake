@@ -8,6 +8,8 @@ public class Checkpoint : BoardElement<Checkpoint, IPlayer>, ITooltipable {
 
     public event Action<Player> OnPlayerReached;
 
+    public int Index => _index;
+    
     public string Header => $"Checkpoint {_index}";
     public string Description {
         get {
@@ -27,12 +29,11 @@ public class Checkpoint : BoardElement<Checkpoint, IPlayer>, ITooltipable {
 
     protected override void Activate(IPlayer[] targets) {
         foreach (var playerModel in targets) {
-            AddActivation();
-            
             var player = playerModel.Owner;
             var current = player.CurrentCheckpoint;
 
             if (current.Value != _index - 1) continue;
+            AddActivation();
             current.Value = _index;
             OnPlayerReached?.Invoke(player);
             

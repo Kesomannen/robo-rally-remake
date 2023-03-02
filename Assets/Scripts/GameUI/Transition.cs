@@ -3,7 +3,7 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 
-public class UITransition : MonoBehaviour {
+public class Transition : MonoBehaviour {
     [SerializeField] Animator _animator;
     [SerializeField] string _triggerName;
     [SerializeField] TMP_Text _text;

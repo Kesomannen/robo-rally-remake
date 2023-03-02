@@ -12,8 +12,8 @@ public static class Interaction {
     static MapSystem _mapSystem;
     const float DefaultMoveSpeed = 2.5f;
     const LeanTweenType DefaultEaseType = LeanTweenType.easeInOutQuad;
-        
-    public static IEnumerator EaseMove(MapObject mapObject, Vector2Int gridPosition, LeanTweenType easeType, float speed) {
+
+    static IEnumerator EaseMove(MapObject mapObject, Vector2Int gridPosition, LeanTweenType easeType, float speed) {
         var prev = mapObject.transform.position;
         var target = MapSystem.GridToWorld(gridPosition);
         var duration = Vector2.Distance(prev, target) / speed;
@@ -42,18 +42,11 @@ public static class Interaction {
     public static IEnumerator EaseEvent(MapEvent mapEvent, bool staggered = false)
         => EaseEvent(mapEvent, DefaultEaseType, DefaultMoveSpeed, staggered);
 
-    public static void ExecuteEvent(MapEvent mapEvent) {
-        foreach (var obj in mapEvent.MapObjects) {
-            MapSystem.MoveObjectInstant(obj, obj.GridPos + mapEvent.Direction);
-            obj.RotateInstant(mapEvent.Rotation);
-        }
-    }
-
-    public static bool CheckTile<T>(IEnumerable<MapObject> tile, Func<T, bool> predicate, MapObject exclude) where T : IMapObject{
+    static bool CheckTile<T>(IEnumerable<MapObject> tile, Func<T, bool> predicate, MapObject exclude) where T : IMapObject{
         return exclude == null ? CheckTile(tile, predicate) : tile.Where(o => o != exclude).OfType<T>().All(predicate);
     }
 
-    public static bool CheckTile<T>(IEnumerable<MapObject> tile, Func<T, bool> predicate) where T : IMapObject {
+    static bool CheckTile<T>(IEnumerable<MapObject> tile, Func<T, bool> predicate) where T : IMapObject {
         return tile.OfType<T>().All(predicate);
     }
 

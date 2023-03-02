@@ -76,11 +76,9 @@ public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
         if (CheckForObstruction()) return;
         
         var targetTileFilled = MapSystem.TryGetTile(targetPos, out var targetTile);
-        if (!targetTileFilled) return;
         
         // Check if there is a conveyor at the target position
-        var conveyor = targetTile.FirstOrDefault(t => t is Conveyor);
-        if (conveyor == null) {
+        if (!targetTileFilled || targetTile.FirstOrDefault(t => t is Conveyor) == null) {
             // If there's no conveyor, this is a final move
             // We are also assuming adjacent conveyors are accessible from each other
             
@@ -91,7 +89,7 @@ public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
             }
         } else {
             // If there is a conveyor, recursively activate it
-            var next = (Conveyor)conveyor;
+            var next = (Conveyor)targetTile.First(t => t is Conveyor);
             var rot = next.GetRotation(-_direction);
                 
             _moves.Add((targetPos, false, new MapEvent(movable, _direction, rot)));

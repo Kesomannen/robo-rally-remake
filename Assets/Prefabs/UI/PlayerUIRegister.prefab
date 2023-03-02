@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8197752021562342096}
   - component: {fileID: 8814376696449798963}
   m_Layer: 5
-  m_Name: PlayerRegister
+  m_Name: PlayerUIRegister
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -92,8 +92,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _index: 0
   _cardContainer: {fileID: 4040616585236498420}
-  _onPlaceSound: {fileID: 11400000, guid: ba93fa178869d8d4ba287294cfe48088, type: 2}
-  _onRemoveSound: {fileID: 11400000, guid: aa510a7a76ae1eb4f9727aa2497c2179, type: 2}
+  _onPlaceSound: {fileID: 11400000, guid: 5b37f73706f9e894cacbe75abd70315b, type: 2}
+  _onRemoveSound: {fileID: 11400000, guid: eeacfb8e18f923b43b08334404c1a55b, type: 2}
 --- !u!1001 &346633927967886232
 PrefabInstance:
   m_ObjectHideFlags: 0

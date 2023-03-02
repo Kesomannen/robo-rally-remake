@@ -1,29 +1,33 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ContainerChoice<T> : Choice<T> {
-    [Header("References")]
-    [SerializeField] Transform _choiceContainer;
-    
-    [Header("Prefabs")]
+    [FormerlySerializedAs("_choiceContainer")]
+    [SerializeField] Transform _choiceParent;
     [SerializeField] ChoiceItem<T> _choicePrefab;
 
     protected override void OnInit() {
         for (var i = 0; i < Options.Count; i++) {
-            var card = Instantiate(_choicePrefab, _choiceContainer);
-            card.Container.SetContent(Options[i]);
-            card.SetAvailable(AvailableOptions[i]);
+            var option = Options[i];
+            
+            var item = Instantiate(_choicePrefab, _choiceParent);
+            item.Container.SetContent(option);
+            item.SetAvailable(AvailablePredicate(option));
+            item.OptionIndex = i;
         }
     }
 
     protected override void OnEnable() {
-        ChoiceItem<T>.OnCardSelected += OnCardSelected;    
+        base.OnEnable();
+        ChoiceItem<T>.OnItemClicked += OnItemClicked;    
     }
 
     protected override void OnDisable() {
-        ChoiceItem<T>.OnCardSelected -= OnCardSelected;
+        base.OnDisable();
+        ChoiceItem<T>.OnItemClicked -= OnItemClicked;
     }
 
-    void OnCardSelected(T card) {
-        OnOptionChoose(card);
+    void OnItemClicked(int option) {
+        Toggle(option);
     }
 }

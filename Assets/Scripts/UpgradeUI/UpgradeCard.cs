@@ -33,6 +33,8 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
     public string Header => Content == null ? "???" : $"{Content.Name} ({Content.Cost})";
     public string Description => Content.Description;
     
+    protected Selectable Selectable => _selectable;
+    
     public event Action<UpgradeCard> OnClick;
 
     protected override void Serialize(UpgradeCardData card) {

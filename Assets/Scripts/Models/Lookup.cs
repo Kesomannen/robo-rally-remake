@@ -13,6 +13,9 @@ public abstract class Lookup<T> : ScriptableObject where T : Lookup<T> {
             if (_table == null) {
                 Debug.LogError($"Lookup table not found at {TablePath}");
             }
+            if (_table.Type != typeof(T)) {
+                Debug.LogError($"Lookup table {TablePath} contains values of type {_table.Type}, but should contain values of type {typeof(T)}.", _table);
+            }
             return _table;
         }
     }

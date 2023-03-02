@@ -1,51 +1,67 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
+using UnityEngine.UI;
 
-public class ShopCard : UpgradeCard, IPointerClickHandler {
-    [FormerlySerializedAs("_onEnableTween")]
-    [SerializeField] DynamicUITween _onRestockTween;
-    [FormerlySerializedAs("_onDisappearTween")]
-    [SerializeField] DynamicUITween _onBoughtTween;
-    [FormerlySerializedAs("_onEnableParticles")] 
-    [SerializeField] ParticleSystem _onRestockParticles;
-    [SerializeField] GameObject _hiddenOverlay;
+public class ShopCard : UpgradeCard, IPointerClickHandler, IPointerEnterHandler {
+    [SerializeField] GameObject _unavailableOverlay;
+    [SerializeField] float _buyTweenDuration = 0.5f;
+    [SerializeField] LeanTweenType _buyTweenType;
+    [SerializeField] LayoutElement _layoutElement;
 
-    bool _hidden;
+    public bool Available {
+        get {
+            var localPlayer = PlayerSystem.LocalPlayer;
+
+            return gameObject.activeInHierarchy
+                   && ShopPhase.CurrentPlayer == localPlayer
+                   && Content.Cost <= localPlayer.Energy.Value
+                   && !localPlayer.Upgrades.Contains(Content);
+        }
+    }
 
     public event Action<ShopCard> OnCardClicked;
 
-    void Awake() {
-        Hide();
+    void Start() {
+        gameObject.SetActive(false);
     }
 
-    protected override void Serialize(UpgradeCardData card) {
-        base.Serialize(card);
-        _hiddenOverlay.SetActive(false);
-        _hidden = false;
+    void OnEnable() {
+        UpdateAvailability();
     }
 
-    void Hide() {
-        _hiddenOverlay.SetActive(true);
-        _hidden = true;
+    public void UpdateAvailability() {
+        _unavailableOverlay.SetActive(!Available);
+        Selectable.interactable = Available;
     }
 
     public IEnumerator RestockAnimation() {
-        _onRestockParticles.Play();
-        yield return TweenHelper.DoUITween(_onRestockTween, gameObject);
+        gameObject.SetActive(true);
+        yield break;
     }
 
-    public IEnumerator BuyAnimation() {
-        yield return TweenHelper.DoUITween(_onBoughtTween, gameObject);
-        Hide();
+    public IEnumerator BuyAnimation(Transform target) {
+        _layoutElement.ignoreLayout = true;
+        LeanTween
+            .value(gameObject, 0, 1, _buyTweenDuration)
+            .setEase(_buyTweenType)
+            .setOnUpdate(value => transform.position = Vector3.Slerp(transform.position, target.position, value));
+        LeanTween.scale(gameObject, Vector3.zero, _buyTweenDuration).setEase(_buyTweenType);
+        yield return CoroutineUtils.Wait(_buyTweenDuration);
+        gameObject.SetActive(false);
+        transform.localScale = Vector3.one;
+        _layoutElement.ignoreLayout = false;
     }
 
     public new void OnPointerClick(PointerEventData e) {
         base.OnPointerClick(e);
-        if (e.button == PointerEventData.InputButton.Left && !_hidden) {
-            OnCardClicked?.Invoke(this);
-        }
+        if (e.button != PointerEventData.InputButton.Left) return;
+        OnCardClicked?.Invoke(this);
+    }
+    
+    public void OnPointerEnter(PointerEventData eventData) {
+        UpdateAvailability();
     }
 }

@@ -4923,6 +4923,10 @@ MonoBehaviour:
   _moveParticle: {fileID: 6280196981448488247}
   _moveTweenType: 16
   _moveTweenSpeed: 2
+  _moveSound: {fileID: 11400000, guid: 47a9cb90251471c4987ed5e2327b77eb, type: 2}
+  _rotateSound: {fileID: 11400000, guid: 47a9cb90251471c4987ed5e2327b77eb, type: 2}
+  _laserSound: {fileID: 11400000, guid: 06441e7e6075c0847b8896a3f0671180, type: 2}
+  _rebootSound: {fileID: 11400000, guid: 47a9cb90251471c4987ed5e2327b77eb, type: 2}
 --- !u!61 &7333179668210094071
 BoxCollider2D:
   m_ObjectHideFlags: 0

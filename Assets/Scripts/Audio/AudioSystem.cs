@@ -1,17 +1,47 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class AudioSystem : Singleton<AudioSystem> {
     [SerializeField] AudioChannel _musicChannel, _uiChannel, _sfxChannel;
 
-    public float MusicVolume { get; set; } = 0.5f;
-    public float SfxVolume { get; set; } = 0.5f;
+    public static float MusicVolume { get; set; } = 0.5f;
+    public static float SfxVolume { get; set; } = 0.5f;
+
+    int _uiPriority;
+    int _sfxPriority;
+
+    const string MusicVolumePrefKey = "MusicVolume";
+    const string SfxVolumePrefKey = "SfxVolume";
+
+    protected override void Awake() {
+        base.Awake();
+        MusicVolume = PlayerPrefs.GetFloat(MusicVolumePrefKey, MusicVolume);
+        SfxVolume = PlayerPrefs.GetFloat(SfxVolumePrefKey, SfxVolume);
+    }
+
+    protected override void OnDestroy() {
+        base.OnDestroy();
+        PlayerPrefs.SetFloat(MusicVolumePrefKey, MusicVolume);
+        PlayerPrefs.SetFloat(SfxVolumePrefKey, SfxVolume);
+    }
 
     public void Play(SoundEffect sound, AudioTrack audioTrack) {
         var channel = GetChannel(audioTrack);
+        var currentPriority = audioTrack == AudioTrack.UI ? _uiPriority : _sfxPriority;
+        if (channel.Source.isPlaying && currentPriority > sound.Priority) {
+            return;
+        }
+        
         channel.Source.pitch = sound.Pitch;
         channel.Source.volume = sound.Volume * (audioTrack == AudioTrack.Music ? MusicVolume : SfxVolume);
         channel.Source.clip = sound.Clip;
         channel.Source.Play();
+
+        if (audioTrack == AudioTrack.UI) {
+            _uiPriority = sound.Priority;
+        } else if (audioTrack == AudioTrack.Sfx) {
+            _sfxPriority = sound.Priority;
+        }
     }
 
     AudioChannel GetChannel(AudioTrack audioTrack) {

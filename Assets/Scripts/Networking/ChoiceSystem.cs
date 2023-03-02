@@ -3,121 +3,114 @@ using Unity.Netcode;
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using TMPro;
 using Random = UnityEngine.Random;
 
 public class ChoiceSystem : NetworkSingleton<ChoiceSystem> {
-    public static bool IsActive { get; private set; }
-    public static readonly ObservableField<float> TimeLeft = new();
-
-    static ChoiceData _current;
+    [SerializeField] GameObject _timerPanel;
+    [SerializeField] TMP_Text _timerText;
+    [SerializeField] TMP_Text _messageText;
     
-    const float DefaultTime = 10f;
-    
-    public static event Action OnTimeUp;
-    public static event Action<int> OnChoiceMade;
+    static float _timeLeft;
+    static readonly Queue<byte[]> _receivedResults = new();
 
-    void RandomizeChoice() {
-        int randomChoice;
-        do { randomChoice = Random.Range(0, _current.Choices); }
-        while (_current.AvailableChoices[randomChoice]);
+    const float DefaultTime = 20f;
 
-        EndChoice(randomChoice);
+    public static IEnumerator DoChoice<T>(ChoiceData<T> data) {
+        yield return Instance.DoChoiceInternal(data);
     }
     
-    public void StartChoice(IEnumerable<bool> availableChoices, int choices, float maxTime = DefaultTime) {
-        if (IsActive) {
-            Debug.LogError("Choice is already active");
-            return;
+    IEnumerator DoChoiceInternal<T>(ChoiceData<T> data) {
+        data.AvailablePredicate ??= _ => true;
+        if (data.Time <= 0) {
+            data.Time = DefaultTime;
         }
         
-        var choiceArray = availableChoices.ToArray();
-        if (choiceArray.Length != choices) {
-            Debug.LogError("Unavailable choices array length does not match choices");
-            return;
-        }
-        if (choiceArray.All(x => !x)) {
-            Debug.LogError("All choices are unavailable");
-            return;
-        }
+        var isLocal = PlayerSystem.IsLocal(data.Player);
+        Coroutine countdown = null;
+        Choice<T> overlay = null;
         
-        OnTimeUp += RandomizeChoice;
-
-        _current = new ChoiceData {
-            AvailableChoices = choiceArray,
-            Choices = (byte)choices,
-            MaxTime = (byte)maxTime
-        };
-        StartChoiceServerRpc(_current);
-    }
-    
-    public void EndChoice(int choice) {
-        if (NetworkManager.Singleton == null) {
-            IsActive = false;
-            OnChoiceMade?.Invoke(choice);
-            return;
+        if (isLocal) {
+            overlay = OverlaySystem.Instance.PushAndShowOverlay(data.Overlay);
+            overlay.OnSubmit += SubmitResult;
+            overlay.Init(data.Options, false, data.MinChoices, data.MaxChoices, data.AvailablePredicate);
+            
+            _timerPanel.SetActive(true);
+            countdown = StartCoroutine(Countdown());
+        } else {
+            _messageText.gameObject.SetActive(true);
+            _messageText.text = $"{data.Player} is {data.Message}";
         }
+        yield return new WaitUntil(() => _receivedResults.Count > 0);
         
-        if (!IsActive) {
-            Debug.LogError("Choice is not active");
-            return;
+        var result = _receivedResults.Dequeue();
+        for (var i = 0; i < data.OutputArray.Length; i++) {
+            data.OutputArray[i] = data.Options[result[i]];
         }
-        OnTimeUp -= RandomizeChoice;
-        EndChoiceServerRpc((byte) choice);
-    }
-    
-    static IEnumerator DoTimer(float time) {
-        TimeLeft.Value = time;
-        while (TimeLeft.Value > 0) {
-            yield return CoroutineUtils.Wait(1);
-            TimeLeft.Value--;
-        }
-        OnTimeUp?.Invoke();
-    }
-    
-    [ServerRpc(RequireOwnership = false)]
-    void StartChoiceServerRpc(ChoiceData data) {
-        _current = data;
-        IsActive = true;
-        StartCoroutine(DoTimer(data.MaxTime));
-        
-        StartChoiceClientRpc(data);
-    }
-
-    [ClientRpc]
-    void StartChoiceClientRpc(ChoiceData data) {
-        if (IsServer) return;
-        
-        _current = data;
-        IsActive = true;
-        StartCoroutine(DoTimer(data.MaxTime));
-    }
-    
-    [ServerRpc(RequireOwnership = false)]
-    void EndChoiceServerRpc(byte choice) {
-        IsActive = false;
-        OnChoiceMade?.Invoke(choice);
-        EndChoiceClientRpc(choice);
-    }
-    
-    [ClientRpc]
-    void EndChoiceClientRpc(byte choice) {
-        if (IsServer) return;
-        IsActive = false;
-        OnChoiceMade?.Invoke(choice);
-    }
-
-    struct ChoiceData : INetworkSerializable {
-        public byte MaxTime;
-        public byte Choices;
-        public bool[] AvailableChoices;
-        
-        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter {
-            serializer.SerializeValue(ref MaxTime);
-            serializer.SerializeValue(ref Choices);
-            if (AvailableChoices is not null && AvailableChoices.Length > 0) {
-                serializer.SerializeValue(ref AvailableChoices);
+        if (isLocal) {
+            while (overlay != null && OverlaySystem.Instance.CurrentOverlay != overlay) {
+                OverlaySystem.Instance.DestroyCurrentOverlay();
             }
+
+            StopCoroutine(countdown);
+            _timerPanel.SetActive(false);
+        } else {
+            _messageText.gameObject.SetActive(false);
+        }
+
+        IEnumerator Countdown() {
+            _timeLeft = data.Time;
+            while (_timeLeft > 0) {
+                _timeLeft -= Time.deltaTime;
+                _timerText.text = _timeLeft.ToString("F1", CultureInfo.InvariantCulture);
+                yield return null;
+            }
+            var randomChoices = new int[Mathf.Min(data.MaxChoices, data.AvailableChoices.Count())];
+            
+            for (var i = 0; i < randomChoices.Length; i++) {
+                int choice;
+                do {
+                    choice = Random.Range(0, data.Options.Count);
+                } while (!data.AvailablePredicate(data.Options[choice]) || randomChoices.Contains(choice));
+                randomChoices[i] = choice;
+            }
+            SubmitResult(randomChoices);
         }
     }
+
+    void SubmitResult(IEnumerable<int> pickedChoices) {
+        var result = pickedChoices.Select(x => (byte) x).ToArray();
+        if (NetworkManager == null) {
+            _receivedResults.Enqueue(result);
+        } else {
+            SubmitResultServerRpc(result);
+        }
+    }
+    
+    [ServerRpc(RequireOwnership = false)]
+    void SubmitResultServerRpc(byte[] result) {
+        _receivedResults.Enqueue(result);
+        SubmitResultClientRpc(result);
+    }
+    
+    [ClientRpc]
+    void SubmitResultClientRpc(byte[] result) {
+        if (IsServer) return;
+        _receivedResults.Enqueue(result);
+    }
+}
+
+public struct ChoiceData<T> {
+    public OverlayData<Choice<T>> Overlay;
+    public Player Player;
+    public IReadOnlyList<T> Options;
+    public string Message;
+    public T[] OutputArray;
+    public Func<T, bool> AvailablePredicate;
+    public float Time;
+    public int MinChoices;
+    public int MaxChoices => OutputArray.Length;
+    public IEnumerable<T> AvailableChoices => Options.Where(AvailablePredicate);
 }

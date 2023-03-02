@@ -363,6 +363,10 @@ MonoBehaviour:
   _selectable: {fileID: 3516582545278983425}
   _unavailableOverlay: {fileID: 5233367202742818788}
   _container: {fileID: 4449980306863040474}
+  _optionIndex: 0
+  _selectedSize: 1.15
+  _selectDuration: 0.2
+  _selectTweenType: 27
 --- !u!224 &8131705821474427233 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8197752021562342103, guid: 852a4f1b39d0eff43b4ad4b129005922, type: 3}

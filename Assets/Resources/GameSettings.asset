@@ -20,4 +20,4 @@ MonoBehaviour:
   _stressTime: 30
   _rebootAffector: {fileID: 11400000, guid: 574c1b6113180c94b81fb77410b90faa, type: 2}
   _shopSlots: 5
-  _upgradeSlots: 5
+  _upgradeSlots: 6

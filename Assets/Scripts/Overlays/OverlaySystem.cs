@@ -15,8 +15,8 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
     [SerializeField] TMP_Text _headerText, _subtitleText;
     
     readonly Stack<(OverlayData Data, Overlay Overlay)> _overlayStack = new();
-    Overlay _currentOverlay;
-
+    
+    public Overlay CurrentOverlay { get; private set; }
     public bool IsOverlayActive => _overlayStack.Count > 0;
 
     public static event Action OnClick;
@@ -67,11 +67,11 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
             gameObject.SetActive(true);
         } else {
             // Hide current top overlay
-            _currentOverlay.SetActive(false);
+            CurrentOverlay.SetActive(false);
         }
 
         var (data, overlay) = _overlayStack.Peek();
-        _currentOverlay = overlay;
+        CurrentOverlay = overlay;
         overlay.SetActive(true);
         
         SetText(data._header, _headerText);

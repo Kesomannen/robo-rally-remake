@@ -9,9 +9,9 @@ public class MoveProgram : ProgramCardData {
     [SerializeField] Vector2Int _direction = new(1, 0);
     [SerializeField] bool _relative = true;
 
-    public override bool CanPlace(Player player, int positionInRegister) => true;
+    public override bool CanPlace(Player player, int register) => true;
 
-    public override IEnumerator ExecuteRoutine(Player player, int positionInRegister) {
+    public override IEnumerator ExecuteRoutine(Player player, int register) {
         for (var i = 0; i < _steps; i++){
             TaskScheduler.PushRoutine(player.Model.Move(_direction, _relative));
         }

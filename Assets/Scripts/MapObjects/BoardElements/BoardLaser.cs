@@ -65,11 +65,14 @@ public class BoardLaser : MapObject, ITooltipable {
 
         IEnumerator Damage(IPlayer target) {
             _lasers.ForEach(l => l.SetActiveVisual(true));
-
+            _laserSound.Play();
+            yield return CoroutineUtils.Wait(_laserSound.Clip.length);
+            
             _damageSound.Play();
-            var pos = _damageParticles.transform.position;
-            _damageParticles.transform.position = target.Owner.Model.transform.position;
-            Debug.Log($"Moved particles from {pos} to {_damageParticles.transform.position}, target pos: {target.Owner.Model.transform.position}");
+            var t = _damageParticles.transform;
+            var pos = t.position;
+            t.position = target.Owner.Model.transform.position;
+            Debug.Log($"Moved particles from {pos} to {t.position}, target pos: {target.Owner.Model.transform.position}");
             _damageParticles.Play();
             yield return CoroutineUtils.Wait(Mathf.Max(_damageSound.Clip.length, _damageParticles.main.duration) + 0.5f);
 

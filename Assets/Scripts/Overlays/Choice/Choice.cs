@@ -1,80 +1,71 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class Choice<T> : Overlay {
-    [SerializeField] TMP_Text _timerText;
-
-    protected IReadOnlyList<T> Options;
-    protected IReadOnlyList<bool> AvailableOptions;
-
-    Action<T> _callback;
-
-    protected abstract void OnInit();
+    [SerializeField] Button _submitButton;
+    [SerializeField] [ReadOnly] int _minChoices;
+    [SerializeField] [ReadOnly] int _maxChoices;
+    [SerializeField] [ReadOnly] bool _canCancel;
     
-    public void Init(IReadOnlyList<T> options, IReadOnlyList<bool> availableArray, Action<T> callback = null) {
+    public bool IsCancelled { get; private set; }
+    public bool IsSubmitted { get; private set; }
+    public IReadOnlyList<int> SelectedOptions => _selectedOptions;
+
+    protected IReadOnlyList<T> Options { get; private set; }
+    protected Func<T, bool> AvailablePredicate { get; private set; }
+    readonly List<int> _selectedOptions = new();
+
+    bool _ignoreSubmit;
+    
+    public event Action<IEnumerable<int>> OnSubmit;
+    public event Action OnCancel;
+    
+    protected abstract void OnInit();
+
+    public void Init(IReadOnlyList<T> options, bool canCancel, int minChoices = 1, int maxChoices = 1, Func<T, bool> availablePredicate = null) {
         Options = options;
-        AvailableOptions = availableArray;
-        _callback = callback;
-        
-        ChoiceSystem.Instance.StartChoice(availableArray, options.Count);
+        AvailablePredicate = availablePredicate ?? (_ => true);
+        _minChoices = minChoices;
+        _maxChoices = maxChoices;
+        _canCancel = canCancel;
+
+        _ignoreSubmit = _maxChoices == 1;
+        _submitButton.gameObject.SetActive(!_ignoreSubmit);
+        if (!_ignoreSubmit) {
+            _submitButton.onClick.AddListener(Submit);
+        }
         
         OnInit();
     }
 
-    protected override void OnEnable() {
-        base.OnEnable();
-        ChoiceSystem.TimeLeft.OnValueChanged += OnTimeLeftChanged;
-    }
-
-    protected override void OnDisable() {
-        base.OnDisable();
-        ChoiceSystem.TimeLeft.OnValueChanged -= OnTimeLeftChanged;
-    }
-
-    public class ChoiceResult {
-        public bool ChoiceMade;
-        public int Index;
-        public T Value;
-    }
-    
-    public static IEnumerator Create(
-        Player player,
-        OverlayData<Choice<T>> overlayData,
-        IReadOnlyList<T> options, 
-        IReadOnlyList<bool> availableArray,
-        ChoiceResult result,
-        float maxTime = 10f,
-        Action<T> callback = null)
-    {
-        if (PlayerSystem.IsLocal(player)) {
-            OverlaySystem.Instance.PushAndShowOverlay(overlayData).Init(options, availableArray, callback);
-            ChoiceSystem.Instance.StartChoice(availableArray, options.Count, maxTime);
+    protected void Toggle(int option) {
+        if (_selectedOptions.Contains(option)) {
+            _selectedOptions.Remove(option);
+        } else {
+            _selectedOptions.Add(option);
+            if (_ignoreSubmit) {
+                Submit();
+            }
         }
+    }
+
+    void Submit() {
+        if (_selectedOptions.Count < _minChoices || _selectedOptions.Count > _maxChoices) return;
         
-        ChoiceSystem.OnChoiceMade += OnChoiceMade;
-        void OnChoiceMade(int index) {
-            result.ChoiceMade = true;
-            result.Index = index;
-            result.Value = options[index];
-            ChoiceSystem.OnChoiceMade -= OnChoiceMade;
-        }
-
-        yield return new WaitUntil(() => result.ChoiceMade);
-    }
-
-    void OnTimeLeftChanged(float _, float timeLeft) {
-        _timerText.text = timeLeft.ToString(CultureInfo.InvariantCulture);
-    }
-
-    protected void OnOptionChoose(T choice) {
-        ChoiceSystem.Instance.EndChoice(Options.IndexOf(choice));
+        OnSubmit?.Invoke(_selectedOptions);
+        IsSubmitted = true;
+        
         OverlaySystem.Instance.DestroyCurrentOverlay();
-        _callback?.Invoke(choice);
     }
-    
-    protected override void OnOverlayClick() { }
+
+    protected override void OnOverlayClick() {
+        if (!_canCancel) return;
+        
+        OnCancel?.Invoke();
+        IsCancelled = true;
+        
+        OverlaySystem.Instance.DestroyCurrentOverlay();
+    }
 }

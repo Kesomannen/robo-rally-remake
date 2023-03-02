@@ -83,6 +83,7 @@ public class PlayerSystem : Singleton<PlayerSystem> {
 
         return players
             .OrderByDescending(x => x.Value)
+            .ThenByDescending(x => x.Key.BonusPriority)
             .Select(x => x.Key);
     }
 }

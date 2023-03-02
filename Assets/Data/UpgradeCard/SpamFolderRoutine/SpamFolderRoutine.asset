@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Spam Folder Routine
   _description: Add a Spam Folder card onto your discard pile.
-  _icon: {fileID: 21300000, guid: 30fc70d2d652da84cb00f5d3d68187f3, type: 3}
+  _icon: {fileID: 21300000, guid: a98051c00d30c9a4f9c2a12ee90afd99, type: 3}
   _cost: 2
   _useCost: 0
   _type: 0

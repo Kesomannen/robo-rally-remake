@@ -8,6 +8,8 @@ public class MenuUtils : Singleton<MenuUtils> {
     [Space]
     [SerializeField] TMP_Text _errorText;
     [SerializeField] GameObject _errorObject;
+    [Space]
+    [SerializeField] SoundEffect _errorSound;
 
     void OnEnable() {
         MenuSystem.OnMenuChanged += OnMenuChanged;
@@ -34,6 +36,7 @@ public class MenuUtils : Singleton<MenuUtils> {
     int _errorTweenId;
     
     public void ShowError(string message) {
+        _errorSound.Play();
         _errorObject.SetActive(true);
         _errorText.text = message;
         

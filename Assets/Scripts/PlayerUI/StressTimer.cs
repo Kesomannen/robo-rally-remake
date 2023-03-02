@@ -7,6 +7,7 @@ public class StressTimer : MonoBehaviour, ITooltipable {
     [SerializeField] float _jumpDuration;
     [SerializeField] TMP_Text _text;
     [SerializeField] SoundEffect _clockSound;
+    [SerializeField] SoundEffect _stressSound;
 
     bool _isStressed;
 
@@ -24,13 +25,19 @@ public class StressTimer : MonoBehaviour, ITooltipable {
         
         ProgrammingPhase.StressTimer.OnValueChanged += OnStressValueChanged;
         ProgrammingPhase.OnPhaseStarted += OnPhaseStarted;
+        ProgrammingPhase.OnStressStarted += OnStressStart;
     }
 
     void OnDestroy(){
         ProgrammingPhase.StressTimer.OnValueChanged -= OnStressValueChanged;
         ProgrammingPhase.OnPhaseStarted -= OnPhaseStarted;
+        ProgrammingPhase.OnStressStarted += OnStressStart;
     }
     
+    void OnStressStart() {
+        _stressSound.Play();
+    }
+
     void OnPhaseStarted() {
         _isStressed = false;
         _text.text = "---";
@@ -41,7 +48,7 @@ public class StressTimer : MonoBehaviour, ITooltipable {
             _text.text = "---";
             return;
         }
-        _clockSound?.Play();
+        _clockSound.Play();
         _text.text = next.ToString();
 
         if (_isStressed) {

@@ -10,15 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cf116d7b888f4cd8877912ea6d0e0447, type: 3}
-  m_Name: ButtonHover
+  m_Name: Clock
   m_EditorClassIdentifier: 
   _clips:
-  - {fileID: 8300000, guid: 849f8316d0e6bec4d83544007408697c, type: 3}
-  _volume: 0.3
-  _volumeVariance: 0.1
+  - {fileID: 8300000, guid: f73b2a1b92cfd504ab86f3a2f216bec2, type: 3}
+  - {fileID: 8300000, guid: ea087dee4c390344bbf155d5aadb7640, type: 3}
+  _volume: 0.4
+  _volumeVariance: 0.2
   _pitch: 1
-  _pitchVariance: 0.3
-  _loopTime:
-    _enabled: 0
-    _value: 0
-  _preferredAudioTrack: 1
+  _pitchVariance: 0.2
+  _preferredAudioTrack: 2

@@ -59,7 +59,7 @@ MonoBehaviour:
     _placement: 0
   _damageParticles: {fileID: 579072399726300810, guid: 07d5480f3e1ebd4459afb5e80f5935fb, type: 3}
   _damageSound: {fileID: 11400000, guid: ba93fa178869d8d4ba287294cfe48088, type: 2}
-  _laserSound: {fileID: 11400000, guid: ba93fa178869d8d4ba287294cfe48088, type: 2}
+  _laserSound: {fileID: 11400000, guid: 06441e7e6075c0847b8896a3f0671180, type: 2}
 --- !u!212 &3662140187091209615
 SpriteRenderer:
   m_ObjectHideFlags: 0

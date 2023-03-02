@@ -18,10 +18,8 @@ public class PhaseSystem : Singleton<PhaseSystem> {
     static IEnumerator PhaseSystemRoutine() {
         _isRunning = true;
         while (true) {
-            if (NetworkManager.Singleton != null) {
-                yield return DoPhaseRoutine(ShopPhase.Instance.DoPhase(), Phase.Shop);
-                if (!_isRunning) yield break;   
-            }
+            yield return DoPhaseRoutine(ShopPhase.Instance.DoPhase(), Phase.Shop);
+            if (!_isRunning) yield break;   
             yield return DoPhaseRoutine(ProgrammingPhase.DoPhase(), Phase.Programming);
             if (!_isRunning) yield break;
             yield return DoPhaseRoutine(ExecutionPhase.DoPhase(), Phase.Execution);
@@ -29,8 +27,8 @@ public class PhaseSystem : Singleton<PhaseSystem> {
         }
         
         IEnumerator DoPhaseRoutine(IEnumerator routine, Phase phase) {
-            yield return TaskScheduler.WaitUntilClear();
             yield return NetworkSystem.Instance.SyncPlayers();
+            yield return TaskScheduler.WaitUntilClear();
             Current.Value = phase;
             yield return routine;
         }

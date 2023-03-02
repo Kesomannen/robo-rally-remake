@@ -83,6 +83,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5563013277522782113, guid: c74c614e9f3a9034e935ded9359f8dce, type: 3}
+      propertyPath: _onClick._value
+      value: 
+      objectReference: {fileID: 11400000, guid: ba93fa178869d8d4ba287294cfe48088, type: 2}
+    - target: {fileID: 5563013277522782113, guid: c74c614e9f3a9034e935ded9359f8dce, type: 3}
+      propertyPath: _onClick._enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5616511996089484015, guid: c74c614e9f3a9034e935ded9359f8dce, type: 3}
       propertyPath: _unavailableOverlay
       value: 
@@ -175,6 +183,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8197752021984657513, guid: c74c614e9f3a9034e935ded9359f8dce, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 4187043476227626560, guid: ac28fee2560dc15458f9441d2d7e061a, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c74c614e9f3a9034e935ded9359f8dce, type: 3}
 --- !u!1 &1374462463899179726 stripped

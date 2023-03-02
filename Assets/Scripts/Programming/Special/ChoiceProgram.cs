@@ -7,17 +7,20 @@ public class ChoiceProgram : ProgramCardData {
     [SerializeField] ProgramCardData[] _options;
     [SerializeField] OverlayData<Choice<ProgramCardData>> _choiceOverlay;
 
-    public override bool CanPlace(Player player, int positionInRegister) => _options.Any(c => c.CanPlace(player, positionInRegister));
+    public override bool CanPlace(Player player, int register) => _options.Any(c => c.CanPlace(player, register));
 
-    public override IEnumerator ExecuteRoutine(Player player, int positionInRegister) {
-        var result = new Choice<ProgramCardData>.ChoiceResult();
-        yield return Choice<ProgramCardData>.Create(
-            player,
-            _choiceOverlay,
-            _options,
-            _options.Select(o => o.CanPlace(player, positionInRegister)).ToArray(),
-            result
-            );
-        yield return result.Value.ExecuteRoutine(player, positionInRegister);
+    public override IEnumerator ExecuteRoutine(Player player, int register) {
+        var result = new ProgramCardData[1];
+        yield return ChoiceSystem.DoChoice(new ChoiceData<ProgramCardData> {
+            Player = player,
+            Overlay = _choiceOverlay,
+            AvailablePredicate = c => c.CanPlace(player, register),
+            OutputArray = result,
+            Options = _options,
+            Message = "choosing a program card to execute",
+            MinChoices = 1
+        });
+        player.RegisterPlay(result[0]);
+        yield return result[0].ExecuteRoutine(player, register);
     }
 }

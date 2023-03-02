@@ -3,16 +3,25 @@ using System.Collections;
 using UnityEngine;
 
 public class UIManager : Singleton<UIManager> {
-    [SerializeField] UITransition _transition;
+    [SerializeField] Transition _transition;
     [SerializeField] Transform _playerUIParent, _executionUIParent, _shopUIParent;
 
     public IEnumerator ChangeState(UIState newState) {
         if (_currentState == newState) yield break;
         
-        Exit(_currentState);
-        _currentState = newState;
-        yield return Enter(_currentState);
-        
+        var text = newState switch {
+            UIState.Programming => "Programming Phase",
+            UIState.Execution => "Execution Phase",
+            UIState.Shop => "Shop Phase",
+            UIState.None => "None",
+            _ => throw new ArgumentOutOfRangeException()
+        };
+        yield return _transition.DoTransition(text, () => {
+            Exit(_currentState);
+            Enter(newState);
+            _currentState = newState;
+        });
+
         OnStateChange?.Invoke(_currentState);
     }
 
@@ -20,41 +29,36 @@ public class UIManager : Singleton<UIManager> {
 
     public static event Action<UIState> OnStateChange;
 
-    IEnumerator Enter(UIState state) {
-        yield return state switch {
-            UIState.Programming => Programming(),
-            UIState.Execution => Execution(),
-            UIState.Shop => Shop(),
-            UIState.None => None(),
+    void Enter(UIState state) {
+        Action action = state switch {
+            UIState.Programming => Programming,
+            UIState.Execution => Execution,
+            UIState.Shop => Shop,
+            UIState.None => None,
             _ => throw new ArgumentOutOfRangeException()
         };
+        action();
 
-        IEnumerator None() { yield break; }
+        void None() { }
         
-        IEnumerator Programming() {
-            yield return _transition.DoTransition("Programming Phase", () => {
-                _playerUIParent.gameObject.SetActive(true);
-                UIMap.Instance.gameObject.SetActive(true);
+        void Programming() {
+            _playerUIParent.gameObject.SetActive(true);
+            UIMap.Instance.gameObject.SetActive(true);
 
-                UIMap.Instance.CanFocus = true;
-                UIMap.Instance.ZoomToDefault();
-            });
+            UIMap.Instance.CanFocus = true;
+            UIMap.Instance.ZoomToDefault();
         }
 
-        IEnumerator Execution() {
-            yield return _transition.DoTransition("Execution Phase", () => {
-                _executionUIParent.gameObject.SetActive(true);
-                UIMap.Instance.gameObject.SetActive(true);
+        void Execution() {
+            _executionUIParent.gameObject.SetActive(true);
+            UIMap.Instance.gameObject.SetActive(true);
 
-                UIMap.Instance.CanFocus = false;
-                UIMap.Instance.ZoomToFullscreen(); 
-            });
+            UIMap.Instance.CanFocus = false;
+            UIMap.Instance.ZoomToFullscreen(); 
         }
 
-        IEnumerator Shop() {
-            yield return _transition.DoTransition("Shop Phase", () => {
-                _shopUIParent.gameObject.SetActive(true); 
-            });
+        void Shop() {
+            _shopUIParent.gameObject.SetActive(true); 
         }
     }
 

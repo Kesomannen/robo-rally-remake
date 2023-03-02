@@ -1032,6 +1032,7 @@ MonoBehaviour:
   _overlay: {fileID: 234874726}
   _errorText: {fileID: 21767466}
   _errorObject: {fileID: 1161412130}
+  _errorSound: {fileID: 11400000, guid: d6d699d5f4cd8c94f8baa0eae294b834, type: 2}
 --- !u!1 &234874726
 GameObject:
   m_ObjectHideFlags: 0

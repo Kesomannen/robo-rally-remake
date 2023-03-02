@@ -59,7 +59,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
          } else {
              var cards = registerCardIds.Select(c => ProgramCardData.GetById(c)).ToArray();
              for (var i = 0; i < cards.Length; i++) {
-                 player.Program.SetCard(i, cards[i]);
+                 player.Program.SetRegister(i, cards[i]);
                  Debug.Log($"Register {i} of player {playerIndex} is now {cards[i]}");
              }
              
@@ -98,7 +98,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
             if (player.Program[i] != null) continue;
             
             var index = i;
-            player.Program.SetCard(index, player.DiscardTopCardsUntil(c => c.CanPlace(player, index)));
+            player.Program.SetRegister(index, player.DiscardTopCardsUntil(c => c.CanPlace(player, index)));
         }
 
         // Lock registers

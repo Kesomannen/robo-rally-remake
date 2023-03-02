@@ -184,7 +184,7 @@ public class Player : IPlayer {
             if (card == null) continue;
 
             DiscardPile.AddCard(card, CardPlacement.Top);
-            Program.SetCard(i, null);
+            Program.SetRegister(i, null);
         }
     }
 

@@ -8,9 +8,9 @@ using UnityEngine;
 public class SpamProgram : ProgramCardData {
     const int SearchDepth = 5;
     
-    public override bool CanPlace(Player player, int positionInRegister) => true;
+    public override bool CanPlace(Player player, int register) => true;
     
-    public override IEnumerator ExecuteRoutine(Player player, int positionInRegister) {
+    public override IEnumerator ExecuteRoutine(Player player, int register) {
         var i = 0;
         List<ProgramCardData> cards = new();
 
@@ -18,13 +18,13 @@ public class SpamProgram : ProgramCardData {
             cards.Clear();
             yield return NetworkSystem.Instance.QueryPlayerCards(player, Pile.DrawPile, i * SearchDepth, (i + 1) * SearchDepth, cards);
             i++;
-        } while (!cards.Any(c => c.CanPlace(player, positionInRegister)));
-        var card = cards.First(c => c.CanPlace(player, positionInRegister));
+        } while (!cards.Any(c => c.CanPlace(player, register)));
+        var card = cards.First(c => c.CanPlace(player, register));
         player.DrawPile.RemoveCard(card);
         
         yield return CoroutineUtils.Wait(0.5f);
         player.RegisterPlay(card);
-        yield return card.ExecuteRoutine(player, positionInRegister);
+        yield return card.ExecuteRoutine(player, register);
         ExecutionPhase.OnExecutionComplete += RemoveCard;
         
         player.DiscardPile.AddCard(card, CardPlacement.Top);
@@ -32,7 +32,7 @@ public class SpamProgram : ProgramCardData {
         void RemoveCard() {
             Debug.Log("Removing card");
             ExecutionPhase.OnExecutionComplete -= RemoveCard;
-            player.Program.SetCard(positionInRegister, null);
+            player.Program.SetRegister(register, null);
         }
     }
 }

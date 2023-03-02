@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf116d7b888f4cd8877912ea6d0e0447, type: 3}
+  m_Name: ShootLaser
+  m_EditorClassIdentifier: 
+  _clips:
+  - {fileID: 8300000, guid: fdaea7ec59c995240b57d9e905b00e64, type: 3}
+  - {fileID: 8300000, guid: 949b435e62150d24a9ae236e1ae37902, type: 3}
+  - {fileID: 8300000, guid: e4418d32b31b6754b9eba6f4a07f061d, type: 3}
+  - {fileID: 8300000, guid: 2525360b54868084cae22c7e234f5a18, type: 3}
+  - {fileID: 8300000, guid: cc44710135ffaac40b2163bfb38606db, type: 3}
+  - {fileID: 8300000, guid: 4debf5afd2fe6724fb5b15838eb682dd, type: 3}
+  _volume: 1
+  _volumeVariance: 0.1
+  _pitch: 1
+  _pitchVariance: 0.1
+  _priority: 0
+  _preferredAudioTrack: 2

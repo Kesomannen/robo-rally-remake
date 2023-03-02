@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class PlayerExecutionPanel : Container<Player>, IPointerClickHandler {
     [Header("References")]
     [SerializeField] PlayerExecutionRegister[] _registers;
+    [SerializeField] Image _robotImage;
     [SerializeField] TMP_Text _nameText;
     [SerializeField] TMP_Text _energyText;
     [SerializeField] TMP_Text _checkpointText;
@@ -47,6 +49,7 @@ public class PlayerExecutionPanel : Container<Player>, IPointerClickHandler {
         _energyText.text = player.Energy.ToString();
         _checkpointText.text = player.CurrentCheckpoint.ToString();
         _rebootedOverlay.SetActive(player.IsRebooted.Value);
+        _robotImage.sprite = player.RobotData.Icon;
 
         player.Energy.OnValueChanged += OnEnergyChanged;
         player.IsRebooted.OnValueChanged += (_, next) => _rebootedOverlay.SetActive(next);

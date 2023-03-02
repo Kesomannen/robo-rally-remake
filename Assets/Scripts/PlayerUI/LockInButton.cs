@@ -10,6 +10,7 @@ public class LockInButton : MonoBehaviour, IPointerClickHandler {
     [SerializeField] Color _invalidColor;
     [SerializeField] float _shakeDuration;
     [SerializeField] float _shakeMagnitude;
+    [SerializeField] SoundEffect _invalidSound;
 
     bool _canClick = true;
 
@@ -48,6 +49,8 @@ public class LockInButton : MonoBehaviour, IPointerClickHandler {
     }
     
     void InvalidAnimation() {
+        _invalidSound.Play();
+        
         _image.color = _invalidColor;
         LeanTween.value(gameObject, _image.color, Color.white, _shakeDuration)
             .setOnUpdate(c => _image.color = c);

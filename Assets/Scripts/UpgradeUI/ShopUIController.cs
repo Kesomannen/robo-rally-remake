@@ -3,10 +3,11 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 
-public class ShopUI : MonoBehaviour {
+public class ShopUIController : MonoBehaviour {
     [Header("References")]
     [SerializeField] TMP_Text _currentPlayerText;
     [SerializeField] Transform _upgradeParent;
+    [SerializeField] PlayerPanelArray _panelArray;
     [SerializeField] OverlayData<Choice<UpgradeCardData>> _overrideOverlay;
     
     [Header("Prefabs")]
@@ -35,21 +36,25 @@ public class ShopUI : MonoBehaviour {
     }
     
     void OnNewPlayer(Player player) {
+        if (player == null) {
+            _currentPlayerText.text = "All players skipped, restocking...";
+            return;
+        }
         _currentPlayerText.text = $"{player} is buying...";
+        UpdateCards();
     }
 
     void OnRestock(int index, UpgradeCardData card) {
         var shopCard = _shopCards[index]; 
         shopCard.SetContent(card);
         TaskScheduler.PushRoutine(shopCard.RestockAnimation());
+        UpdateCards();
     }
     
     void OnCardClicked(ShopCard shopCard) {
-        var localPlayer = PlayerSystem.LocalPlayer;
-        if (ShopPhase.CurrentPlayer != localPlayer) return;
-        
         var card = shopCard.Content;
-        if (card.Cost > localPlayer.Energy.Value) return;
+        var localPlayer = PlayerSystem.LocalPlayer;
+        if (!shopCard.Available) return;
         
         for (var i = 0; i < localPlayer.Upgrades.Count; i++) {
             if (localPlayer.Upgrades[i] != null) continue;
@@ -59,14 +64,16 @@ public class ShopUI : MonoBehaviour {
         StartCoroutine(ChoseOverride());
 
         IEnumerator ChoseOverride() {
-            var result = new Choice<UpgradeCardData>.ChoiceResult();
-            yield return Choice<UpgradeCardData>.Create(
-                localPlayer,
-                _overrideOverlay,
-                localPlayer.Upgrades,
-                Enumerable.Repeat(true, localPlayer.Upgrades.Count).ToArray(),
-                result);
-            ShopPhase.Instance.MakeDecision(false, card, result.Index);
+            var overlay = OverlaySystem.Instance.PushAndShowOverlay(_overrideOverlay);
+            overlay.Init(localPlayer.Upgrades, true);
+            
+            while (!overlay.IsCancelled && !overlay.IsSubmitted) {
+                yield return null;
+            }
+
+            if (overlay.IsSubmitted) {
+                ShopPhase.Instance.MakeDecision(false, card, overlay.SelectedOptions[0]);
+            }
         }
     }
     
@@ -74,12 +81,18 @@ public class ShopUI : MonoBehaviour {
         if (skipped) {
             
         } else {
-            TaskScheduler.PushRoutine(_shopCards.First(c => c.Content == card).BuyAnimation());
+            TaskScheduler.PushRoutine(_shopCards.First(c => c.Content == card)
+                .BuyAnimation(_panelArray.Panels.First(p => p.Content == player).transform));
         }
     }
-
-    // Used in button UnityEvent
+    
     public void Skip() {
         ShopPhase.Instance.MakeDecision(true, null, -1);
+    }
+
+    void UpdateCards() {
+        foreach (var card in _shopCards) {
+            card.UpdateAvailability();
+        }
     }
 }

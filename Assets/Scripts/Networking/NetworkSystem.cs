@@ -91,45 +91,56 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
         _playersReady.Add(id);
     }
 
-    static readonly List<ProgramCardData> _queryResults = new();
+    static readonly Queue<ProgramCardData[]> _queryResults = new();
     static bool _querying;
 
     [ClientRpc]
     void QueryClientRpc(byte playerIndex, byte pile, byte startIndex, byte endIndex) {
-        if (PlayerSystem.Players[playerIndex] != PlayerSystem.LocalPlayer) return;
+        var localPlayer = PlayerSystem.LocalPlayer;
+        if (PlayerSystem.Players[playerIndex] != localPlayer) return;
         Debug.Log($"Querying {PlayerSystem.Players[playerIndex]}'s {(Pile)pile} pile from {startIndex} to {endIndex}");
         
+        if (!GetQuery((Pile) pile, startIndex, endIndex, localPlayer, out var result)) {
+            return;
+        }
+
+        SendQueryResultsServerRpc(result);
+    }
+    static bool GetQuery(Pile pile, int startIndex, int endIndex, Player player, out byte[] result) {
         var depth = endIndex - startIndex;
-        var collection = PlayerSystem.LocalPlayer.GetCollection((Pile)pile);
+        var collection = player.GetCollection(pile);
+        
         if (collection.Cards.Count < startIndex + depth) {
-            if ((Pile)pile == Pile.DrawPile) {
-                PlayerSystem.LocalPlayer.ShuffleDeck();
+            if (pile == Pile.DrawPile) {
+                player.ShuffleDeck();
             } else {
-                Debug.LogError($"Cannot query {PlayerSystem.LocalPlayer}'s {(Pile)pile} pile from {startIndex} to {endIndex}; not enough cards");
-                return;
+                Debug.LogError($"Cannot query {player}'s {pile} pile from {startIndex} to {endIndex}; not enough cards");
+                result = null;
+                return false;
             }
         }
 
-        var result = collection
-            .Cards.Skip(startIndex)
+        result = collection.Cards
+            .Skip(startIndex)
             .Take(depth)
             .Select(c => (byte)c.GetLookupId())
             .ToArray();
-        
-        SendQueryResultsServerRpc(result);
+        return true;
     }
-    
+
     [ServerRpc(RequireOwnership = false)]
     void SendQueryResultsServerRpc(byte[] cardIds) {
-        _queryResults.AddRange(cardIds.Select(c => ProgramCardData.GetById(c)));
+        var cards = cardIds.Select(c => ProgramCardData.GetById(c)).ToArray();
+        _queryResults.Enqueue(cards);
         SendQueryResultsClientRpc(cardIds);
     }
     
     [ClientRpc]
     void SendQueryResultsClientRpc(byte[] cardIds) {
         if (IsServer) return;
-        _queryResults.AddRange(cardIds.Select(c => ProgramCardData.GetById(c)));
-        Debug.Log($"Received query results: {string.Join(", ", _queryResults.Select(c => c.Name))}");
+        var cards = cardIds.Select(c => ProgramCardData.GetById(c)).ToArray();
+        _queryResults.Enqueue(cards);
+        Debug.Log($"Received query results: {string.Join(", ", cards.Select(c => c.Name))}");
     }
 
     public IEnumerator QueryPlayerCards(Player player, Pile pile, int startIndex, int endIndex, List<ProgramCardData> result) {
@@ -137,14 +148,15 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
         _querying = true;
         
         if (IsServer) {
-            var playerIndex = (byte)PlayerSystem.Players.IndexOf(player);
-            QueryClientRpc(playerIndex, (byte) pile, (byte) startIndex, (byte) endIndex);
+            var playerIndex = PlayerSystem.Players.IndexOf(player);
+            QueryClientRpc((byte) playerIndex, (byte) pile, (byte) startIndex, (byte) endIndex);
+        } else if (NetworkManager == null) {
+            if (!GetQuery(pile, startIndex, endIndex, player, out var queryResult)) yield break;
+            _queryResults.Enqueue(queryResult.Select(id => ProgramCardData.GetById(id)).ToArray());
         }
-        while (_queryResults.Count == 0) {
-            yield return null;
-        }
-        result.AddRange(_queryResults);
-        _queryResults.Clear();
+        yield return new WaitUntil(() => _queryResults.Count > 0);
+        
+        result.AddRange(_queryResults.Dequeue());
         _querying = false;
     }
 }
