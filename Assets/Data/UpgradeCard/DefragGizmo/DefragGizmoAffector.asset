@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac2a0afc42b347fcae172939e4f2bd63, type: 3}
+  m_Name: DefragGizmoAffector
+  m_EditorClassIdentifier: 
+  _filterType: 1
+  _cardType: 1
+  _card: {fileID: 11400000, guid: ecc7d4ad841b0624999bcaff2184a12f, type: 2}
+  _drawReplacements: 1
+  _discardPermanently: 1
+  _random: 1
+  _amount: 1
+  _minCards: 0
+  _overlay:
+    _header: Defrag Gizmo
+    _subtitle: Chose a card to discard permanently
+    _prefab: {fileID: 487802381806119471, guid: d6ba4746ecbe0da4cb2d657a607d96e8, type: 3}
+    _canPreview: 1
+  _time: 30

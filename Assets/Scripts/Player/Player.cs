@@ -232,10 +232,11 @@ public class Player : IPlayer {
 
     public void UseUpgrade(int index) {
         var upgrade = _upgrades[index];
-        Log.Instance.UseUpgradeMessage(this, upgrade);
-        upgrade.Apply(this);
         OnUpgradeUsed?.Invoke(upgrade);
+        upgrade.Apply(this);
 
+        Log.Instance.UseUpgradeMessage(this, upgrade);
+        
         if (upgrade.Type == UpgradeType.Temporary) {
             RemoveUpgrade(index);   
         }

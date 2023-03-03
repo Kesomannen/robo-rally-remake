@@ -1,19 +1,19 @@
 using System.Linq;
 using UnityEngine;
 
-public class UpgradeCardArray : MonoBehaviour {
-    [SerializeField] Container<UpgradeCardData> _cardPrefab;
+public class HandUpgradeCardArray : MonoBehaviour {
+    [SerializeField] HandUpgradeCard _cardPrefab;
     [SerializeField] Transform _cardParent;
     [SerializeField] Vector2 _cardSize;
     [SerializeField] Transform _highlightParent;
     [SerializeField] int _cardsPerRow;
 
-    Container<UpgradeCardData>[] _cards;
+    HandUpgradeCard[] _cards;
 
     static Player Owner => PlayerSystem.LocalPlayer;
 
     void Awake() {
-        _cards = new Container<UpgradeCardData>[Owner.Upgrades.Count];
+        _cards = new HandUpgradeCard[Owner.Upgrades.Count];
         for (var i = 0; i < Owner.Upgrades.Count; i++) {
             var upgrade = Owner.Upgrades[i];
             if (upgrade == null) continue;
@@ -21,17 +21,32 @@ public class UpgradeCardArray : MonoBehaviour {
         }
         Owner.OnUpgradeAdded += CreateCard;
         Owner.OnUpgradeRemoved += RemoveCard;
+        
+        PhaseSystem.Current.OnValueChanged += OnPhaseChanged;
+        ExecutionPhase.OnPlayerRegistersComplete += UpdateAvailability;
+        ExecutionPhase.OnPlayerRegister += OnPlayerRegister;
+        ProgrammingPhase.OnPlayerLockedIn += OnPlayerLockedIn;
     }
 
     void OnDestroy() {
         Owner.OnUpgradeAdded -= CreateCard;
         Owner.OnUpgradeRemoved -= RemoveCard;
+        
+        PhaseSystem.Current.OnValueChanged -= OnPhaseChanged;
+        ExecutionPhase.OnPlayerRegistersComplete -= UpdateAvailability;
+        ExecutionPhase.OnPlayerRegister += OnPlayerRegister;
+        ProgrammingPhase.OnPlayerLockedIn -= OnPlayerLockedIn;
     }
+    
+    void OnPhaseChanged(Phase prev, Phase next) => UpdateAvailability();
+    void OnPlayerLockedIn(Player player) => UpdateAvailability();
+    void OnPlayerRegister(ProgramCardData card, int index, Player player) => UpdateAvailability();
 
     void CreateCard(UpgradeCardData data, int index) {
         var newCard = Instantiate(_cardPrefab, _cardParent);
-        newCard.SetContent(data);
-        newCard.GetComponent<HandUpgradeCard>().HighlightParent = _highlightParent;
+        if (!newCard.isActiveAndEnabled) newCard.Awake();
+        newCard.GetComponent<Container<UpgradeCardData>>().SetContent(data);
+        newCard.HighlightParent = _highlightParent;
         _cards[index] = newCard;
         
         newCard.transform.SetSiblingIndex(index);
@@ -60,6 +75,13 @@ public class UpgradeCardArray : MonoBehaviour {
                 panel.transform.SetSiblingIndex(i);
                 i++;
             }
+        }
+    }
+
+    void UpdateAvailability() {
+        foreach (var card in _cards) {
+            if (card == null) continue;
+            card.UpdateAvailability();
         }
     }
 }

@@ -2861,8 +2861,8 @@ MonoBehaviour:
   _robotToLoad: {fileID: 11400000, guid: 15f17d4ffc1e55b4fbfd3d6c4a1863d8, type: 2}
   _upgradesToLoad:
   - {fileID: 11400000, guid: 65bdee8cc476ffe409a6a5ce878fffce, type: 2}
-  - {fileID: 11400000, guid: 676a7364fb3ce004fac6eaf446beecc5, type: 2}
-  - {fileID: 11400000, guid: 1b9b6a9682c952e47b72ef19675de50f, type: 2}
+  - {fileID: 11400000, guid: 8a3d8f7499b70f442ac276063a17a11f, type: 2}
+  - {fileID: 11400000, guid: 26750c35ef1bfff409351900bbc44121, type: 2}
   - {fileID: 11400000, guid: f2b33da2af1a08d4caf4f0f70ae87171, type: 2}
   - {fileID: 11400000, guid: 38eb07b4610911246872e87356ff76ed, type: 2}
   - {fileID: 11400000, guid: 649f34c8ff222eb4da75eca097e35423, type: 2}
@@ -7766,7 +7766,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _grid: {fileID: 1866782232}
   _mapCamera: {fileID: 519420031}
-  _cameraMargin: 1
+  _cameraMargin: 0.5
   _mapMax: {x: 0, y: 0}
   _mapMin: {x: 0, y: 0}
   _mapCenter: {x: 0, y: 0}
@@ -8314,7 +8314,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8517748590e54c3885de4d36fa831031, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cardPrefab: {fileID: 3397558776210219767, guid: 65e77fac707386b4e84c2fe0967af8f9, type: 3}
+  _cardPrefab: {fileID: 2326441568909003353, guid: 65e77fac707386b4e84c2fe0967af8f9, type: 3}
   _cardParent: {fileID: 1984671237}
   _cardSize: {x: 128.125, y: 175}
   _highlightParent: {fileID: 1014605358}
@@ -8354,7 +8354,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -38, y: 54}
+  m_AnchoredPosition: {x: -194.1, y: 95}
   m_SizeDelta: {x: 571.48, y: 84.150024}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1995271084
@@ -8369,7 +8369,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8517748590e54c3885de4d36fa831031, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cardPrefab: {fileID: 3397558776210219767, guid: 65e77fac707386b4e84c2fe0967af8f9, type: 3}
+  _cardPrefab: {fileID: 2326441568909003353, guid: 65e77fac707386b4e84c2fe0967af8f9, type: 3}
   _cardParent: {fileID: 1995271083}
   _cardSize: {x: 128.125, y: 175}
   _highlightParent: {fileID: 1014605358}

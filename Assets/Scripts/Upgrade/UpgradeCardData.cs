@@ -27,7 +27,7 @@ public class UpgradeCardData : Lookup<UpgradeCardData>, IAffector<IPlayer> {
     public UpgradeType Type => _type;
     public IReadOnlyList<UpgradeTooltipData> Tooltips => _tooltips;
 
-    public bool CanUse(IPlayer player) {
+    public virtual bool CanUse(IPlayer player) {
         if (_type == UpgradeType.Permanent
             || _type == UpgradeType.Action && player.Owner.Energy.Value < UseCost) return false;
         if (player.Owner.IsRebooted.Value) return false;

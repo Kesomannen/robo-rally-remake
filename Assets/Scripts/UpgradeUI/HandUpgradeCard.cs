@@ -22,32 +22,22 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public Transform HighlightParent { set => _highlightParent = value; }
 
-    void Awake() {
-        _container = GetComponent<Container<UpgradeCardData>>();
-        
-        ProgrammingPhase.OnPlayerLockedIn += OnPlayerLockedIn;
-        ProgrammingPhase.OnPhaseStarted += UpdateAvailability;
-        
+    public void Awake() {
         var t = transform;
         _originalParent = t.parent;
         _originalSize = t.localScale;
     }
     
-    void OnDestroy() {
-        ProgrammingPhase.OnPlayerLockedIn -= OnPlayerLockedIn;
-        ProgrammingPhase.OnPhaseStarted -= UpdateAvailability;
-    }
-
     void Start() {
         UpdateAvailability();
     }
 
-    void OnPlayerLockedIn(Player player) => UpdateAvailability();
-    
-    void UpdateAvailability() {
-        var available = _container.Content != null 
-            && _container.Content.CanUse(PlayerSystem.LocalPlayer) 
-            || _container.Content.Type == UpgradeType.Permanent;
+    public void UpdateAvailability() {
+        if (_container == null) _container = GetComponent<Container<UpgradeCardData>>();
+        
+        var available = _container.Content != null
+                        && (_container.Content.CanUse(PlayerSystem.LocalPlayer)
+                            || _container.Content.Type == UpgradeType.Permanent);
         
         _unavailableOverlay.gameObject.SetActive(!available);
         _selectable.interactable = available;
@@ -96,7 +86,7 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
             Owner.UseUpgrade(index);
             
             _clickable = true;
-            
+
             yield break;
         }
     }
