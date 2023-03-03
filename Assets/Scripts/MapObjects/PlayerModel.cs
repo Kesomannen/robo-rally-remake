@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
@@ -26,7 +27,17 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
 
     public bool Pushable => true;
     protected override bool CanRotate => true;
+    
+    public event Action<CallbackContext> OnPush;
+    public event Action<CallbackContext> OnShoot; 
 
+    public struct CallbackContext {
+        public Player Target;
+        public Player Attacker;
+        public CardAffector Affector;
+        public Vector2Int OutgoingDirection;
+    }
+    
     public bool CanEnter(Vector2Int enterDir) => false;
     public bool CanExit(Vector2Int exitDir) => true;
     
@@ -85,6 +96,13 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
             
             foreach (var player in hits) {
                 player.Owner.ApplyCardAffector(Owner.LaserAffector);
+                OnShoot?.Invoke(new CallbackContext {
+                    Target = player.Owner,
+                    Attacker = Owner,
+                    Affector = Owner.LaserAffector,
+                    OutgoingDirection = dir
+                });
+                
                 _hitParticle.transform.position = player.Owner.Model.transform.position;
                 _hitParticle.Play();
                 yield return CoroutineUtils.Wait(_hitParticle.main.duration);
@@ -103,12 +121,22 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
         _moveParticle.Play();
         _moveSound.Play();
         
-        if (Owner.PushAffector.Cards.Count > 0) {
-            foreach (var player in mapEvent.MapObjects.OfType<IPlayer>().Select(m => m.Owner).Where(p => p != Owner)) {
-                player.ApplyCardAffector(Owner.PushAffector);
-            }
-        }
+        RegisterPush(mapEvent);
         yield return Interaction.EaseEvent(mapEvent, _moveTweenType, _moveTweenSpeed);
+    }
+    
+    public void RegisterPush(MapEvent mapEvent) {
+        if (Owner.PushAffector.Cards.Count <= 0) return;
+
+        foreach (var player in mapEvent.MapObjects.OfType<IPlayer>().Select(m => m.Owner).Where(p => p != Owner)) {
+            player.ApplyCardAffector(Owner.PushAffector);
+            OnPush?.Invoke(new CallbackContext {
+                Target = player,
+                Attacker = Owner,
+                Affector = Owner.PushAffector,
+                OutgoingDirection = mapEvent.Direction
+            });
+        }
     }
 
     public void Highlight(bool highlight) {

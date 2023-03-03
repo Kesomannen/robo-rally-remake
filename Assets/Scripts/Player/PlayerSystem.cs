@@ -47,7 +47,6 @@ public class PlayerSystem : Singleton<PlayerSystem> {
         }
         
         var playerArgs = new PlayerArgs {
-            OwnerId = id,
             RobotData = robotData,
             ModelPrefab = _playerModelPrefab,
             SpawnPoint = spawnPoint,

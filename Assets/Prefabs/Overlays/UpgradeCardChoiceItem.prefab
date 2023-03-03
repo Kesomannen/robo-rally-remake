@@ -352,7 +352,7 @@ MonoBehaviour:
   _unavailableOverlay: {fileID: 3278540069952141333}
   _container: {fileID: 4612262631256419035}
   _optionIndex: 0
-  _selectedSize: 1.15
+  _selectedSize: 1.1
   _selectDuration: 0.2
   _selectTweenType: 27
 --- !u!224 &8950785021183791843 stripped

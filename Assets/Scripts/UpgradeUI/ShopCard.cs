@@ -47,11 +47,18 @@ public class ShopCard : UpgradeCard, IPointerClickHandler, IPointerEnterHandler 
         LeanTween
             .value(gameObject, 0, 1, _buyTweenDuration)
             .setEase(_buyTweenType)
-            .setOnUpdate(value => transform.position = Vector3.Slerp(transform.position, target.position, value));
-        LeanTween.scale(gameObject, Vector3.zero, _buyTweenDuration).setEase(_buyTweenType);
+            .setOnUpdate(value => {
+                var t = transform;
+                t.position = Vector3.Lerp(t.position, target.position, value);
+                t.localScale = Vector3.Lerp(Vector3.one, Vector3.zero, value);
+                t.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(0, 180, value));
+            });
+        
         yield return CoroutineUtils.Wait(_buyTweenDuration);
         gameObject.SetActive(false);
-        transform.localScale = Vector3.one;
+        var t = transform;
+        t.localScale = Vector3.one;
+        t.rotation = Quaternion.identity;
         _layoutElement.ignoreLayout = false;
     }
 

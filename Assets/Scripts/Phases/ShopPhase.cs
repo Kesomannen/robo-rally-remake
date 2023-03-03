@@ -39,6 +39,8 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
         var orderedPlayers = PlayerSystem.GetOrderedPlayers();
         TaskScheduler.PushSequence(routines: orderedPlayers.Select(DoPlayerTurn).ToArray());
         yield return TaskScheduler.WaitUntilClear();
+        
+        CurrentPlayer = null;
         OnNewPlayer?.Invoke(null);
 
         if (_skippedPlayers != PlayerSystem.Players.Count) yield break;
@@ -134,7 +136,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
             Log.Instance.SkipMessage(CurrentPlayer);
         } else {
             CurrentPlayer.Energy.Value -= upgrade.Cost;
-            CurrentPlayer.AddUpgrade(upgrade, playerUpgradeIndex);
+            CurrentPlayer.ReplaceUpgradeAt(upgrade, playerUpgradeIndex);
             _shopCards[_shopCards.IndexOf(upgrade)] = null;
             
             OnPlayerDecision?.Invoke(CurrentPlayer, false, upgrade);

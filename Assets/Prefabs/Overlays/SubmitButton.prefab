@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2010580989314568268}
   - component: {fileID: 2010580989314568269}
   - component: {fileID: 2010580989314568270}
-  - component: {fileID: 2010580989314568271}
+  - component: {fileID: 7619621919754840300}
   m_Layer: 5
   m_Name: SubmitButton
   m_TagString: Untagged
@@ -68,7 +68,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1821225098, guid: b09bc695cd6c3ce42aa8b638c6a4fdeb, type: 3}
+  m_Sprite: {fileID: 1257299831, guid: ce1bd1a75c4ee174e90048deee922b6c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -107,10 +107,10 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: -826013194, guid: b09bc695cd6c3ce42aa8b638c6a4fdeb, type: 3}
-    m_PressedSprite: {fileID: -1887976925, guid: b09bc695cd6c3ce42aa8b638c6a4fdeb, type: 3}
+    m_HighlightedSprite: {fileID: 1771208147, guid: ce1bd1a75c4ee174e90048deee922b6c, type: 3}
+    m_PressedSprite: {fileID: -14477223, guid: ce1bd1a75c4ee174e90048deee922b6c, type: 3}
     m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: -1669254054, guid: ce1bd1a75c4ee174e90048deee922b6c, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -122,7 +122,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &2010580989314568271
+--- !u!114 &7619621919754840300
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -134,11 +134,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_IgnoreLayout: 1
+  m_IgnoreLayout: 0
   m_MinWidth: -1
   m_MinHeight: -1
   m_PreferredWidth: -1
-  m_PreferredHeight: -1
+  m_PreferredHeight: 85
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1

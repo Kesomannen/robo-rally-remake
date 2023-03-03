@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -42,7 +43,7 @@ public class Player : IPlayer {
     public override string ToString() => _name;
     
     // Events
-    public event Action<CardAffector> OnCardAffectorApplied; 
+    public event Action<CardAffector> OnCardAffectorApplied;
     public event Action<ProgramCardData> OnDraw, OnDiscard;
     public event Action<UpgradeCardData, int> OnUpgradeAdded, OnUpgradeRemoved;
     public event Action<UpgradeCardData> OnUpgradeUsed;
@@ -194,13 +195,40 @@ public class Player : IPlayer {
     #endregion
 
     #region Upgrades
+
+    public IEnumerator GetSlotAndAdd(UpgradeCardData upgrade) {
+        var output = new int[1];
+        yield return GetUpgradeSlot(output, $"choosing an upgrade to replace with {upgrade}");
+        ReplaceUpgradeAt(upgrade, output[0]);
+    }
     
-    public void AddUpgrade(UpgradeCardData upgrade, int index) {
+    public IEnumerator GetUpgradeSlot(int[] output, string message = "choosing an upgrade to replace") {
+        for (var i = 0; i < _upgrades.Length; i++) {
+            if (_upgrades[i] != null) continue;
+            output[0] = i;
+            yield break;
+        }
+        
+        var result = new UpgradeCardData[1];
+        yield return ChoiceSystem.DoChoice(new ChoiceData<UpgradeCardData> {
+            Overlay = ShopUIController.Instance.OverrideOverlay,
+            Player = this,
+            Options = _upgrades,
+            Message = message,
+            OutputArray = result,
+            MinChoices = 1
+        });
+        output[0] = _upgrades.IndexOf(result[0]);
+    }
+    
+    public void ReplaceUpgradeAt(UpgradeCardData upgrade, int index) {
         RemoveUpgrade(index);
         _upgrades[index] = upgrade;
         upgrade.OnBuy(this);
         OnUpgradeAdded?.Invoke(upgrade, index);
     }
+
+    public void UseUpgrade(UpgradeCardData upgrade) => UseUpgrade(_upgrades.IndexOf(upgrade));
 
     public void UseUpgrade(int index) {
         var upgrade = _upgrades[index];
@@ -213,6 +241,8 @@ public class Player : IPlayer {
         }
     }
     
+    public void RemoveUpgrade([NotNull] UpgradeCardData upgrade) => RemoveUpgrade(_upgrades.IndexOf(upgrade));
+
     public void RemoveUpgrade(int index) {
         var upgrade = _upgrades[index];
         if (upgrade == null) return;
@@ -257,12 +287,11 @@ public class Player : IPlayer {
 public enum Pile {
     Hand = 2,
     DrawPile = 1,
-    DiscardPile = 0,
+    DiscardPile = 0
 }
 
 public struct PlayerArgs {
     public RebootToken SpawnPoint;
-    public ulong OwnerId;
     public RobotData RobotData;
     public PlayerModel ModelPrefab;
     public int StartingEnergy;

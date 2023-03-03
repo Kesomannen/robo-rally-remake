@@ -863,7 +863,7 @@ MonoBehaviour:
   _overrideOverlay:
     _header: Chose a card to override
     _subtitle: 
-    _prefab: {fileID: -3147114287512598999, guid: 07defdd122cd83e458be545500e90d4a, type: 3}
+    _prefab: {fileID: -7393959214566925834, guid: 22e19115d7aa50f459a8ac40f96bcbd6, type: 3}
     _canPreview: 0
   _shopCardPrefab: {fileID: -3931275337680322805, guid: 26adbe8b95cd2874ead727820fa407bc, type: 3}
 --- !u!1 &244314945
@@ -1972,7 +1972,6 @@ GameObject:
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
   - component: {fileID: 519420033}
-  - component: {fileID: 519420034}
   m_Layer: 0
   m_Name: MapCamera
   m_TagString: Untagged
@@ -2095,29 +2094,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   m_MaxRayIntersections: 0
---- !u!114 &519420034
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c88f5cead0c0b2a4eb05b5900433f8d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ComponentVersion: 1
-  m_AssetsPPU: 16
-  m_RefResolutionX: 320
-  m_RefResolutionY: 180
-  m_CropFrame: 0
-  m_GridSnapping: 2
-  m_UpscaleRT: 0
-  m_PixelSnapping: 0
-  m_CropFrameX: 0
-  m_CropFrameY: 0
-  m_StretchFill: 0
 --- !u!1 &541025100
 GameObject:
   m_ObjectHideFlags: 0
@@ -2884,7 +2860,7 @@ MonoBehaviour:
   _mapToLoad: {fileID: 11400000, guid: 37198eb64666d204fac61c3a11f4c391, type: 2}
   _robotToLoad: {fileID: 11400000, guid: 15f17d4ffc1e55b4fbfd3d6c4a1863d8, type: 2}
   _upgradesToLoad:
-  - {fileID: 11400000, guid: bfbd67667ecba924aa56d51adea9b5da, type: 2}
+  - {fileID: 11400000, guid: 65bdee8cc476ffe409a6a5ce878fffce, type: 2}
   - {fileID: 11400000, guid: 676a7364fb3ce004fac6eaf446beecc5, type: 2}
   - {fileID: 11400000, guid: 1b9b6a9682c952e47b72ef19675de50f, type: 2}
   - {fileID: 11400000, guid: f2b33da2af1a08d4caf4f0f70ae87171, type: 2}
@@ -5514,7 +5490,7 @@ MonoBehaviour:
   _cardVerticalOffset: 2
   _easingType: 2
   _cardMoveDuration: 0.2
-  _drawDiscardDelay: 0.1
+  _drawDiscardDelay: 0.3
 --- !u!1 &1379078317
 GameObject:
   m_ObjectHideFlags: 0
@@ -7790,6 +7766,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _grid: {fileID: 1866782232}
   _mapCamera: {fileID: 519420031}
+  _cameraMargin: 1
   _mapMax: {x: 0, y: 0}
   _mapMin: {x: 0, y: 0}
   _mapCenter: {x: 0, y: 0}
@@ -8377,7 +8354,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -38, y: 34}
+  m_AnchoredPosition: {x: -38, y: 54}
   m_SizeDelta: {x: 571.48, y: 84.150024}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1995271084

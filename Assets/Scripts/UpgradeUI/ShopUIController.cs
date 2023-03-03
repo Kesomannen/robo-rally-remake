@@ -3,7 +3,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 
-public class ShopUIController : MonoBehaviour {
+public class ShopUIController : Singleton<ShopUIController> {
     [Header("References")]
     [SerializeField] TMP_Text _currentPlayerText;
     [SerializeField] Transform _upgradeParent;
@@ -14,8 +14,12 @@ public class ShopUIController : MonoBehaviour {
     [SerializeField] ShopCard _shopCardPrefab;
 
     ShopCard[] _shopCards;
+    
+    public OverlayData<Choice<UpgradeCardData>> OverrideOverlay => _overrideOverlay;
 
-    void Awake() {
+    protected override void Awake() {
+        base.Awake();
+        
         _shopCards = new ShopCard[GameSettings.Instance.ShopSlots];
         for (var i = 0; i < _shopCards.Length; i++) {
             var card = Instantiate(_shopCardPrefab, _upgradeParent);
@@ -29,7 +33,9 @@ public class ShopUIController : MonoBehaviour {
         ShopPhase.OnNewPlayer += OnNewPlayer;
     }
 
-    void OnDestroy() {
+    protected override void OnDestroy() {
+        base.OnDestroy();
+        
         ShopPhase.OnRestock -= OnRestock;
         ShopPhase.OnPlayerDecision -= OnPlayerDecision;
         ShopPhase.OnNewPlayer -= OnNewPlayer;
@@ -55,26 +61,11 @@ public class ShopUIController : MonoBehaviour {
         var card = shopCard.Content;
         var localPlayer = PlayerSystem.LocalPlayer;
         if (!shopCard.Available) return;
-        
-        for (var i = 0; i < localPlayer.Upgrades.Count; i++) {
-            if (localPlayer.Upgrades[i] != null) continue;
-            ShopPhase.Instance.MakeDecision(false, card, i);
-            return;
-        }
-        StartCoroutine(ChoseOverride());
 
-        IEnumerator ChoseOverride() {
-            var overlay = OverlaySystem.Instance.PushAndShowOverlay(_overrideOverlay);
-            overlay.Init(localPlayer.Upgrades, true);
-            
-            while (!overlay.IsCancelled && !overlay.IsSubmitted) {
-                yield return null;
-            }
-
-            if (overlay.IsSubmitted) {
-                ShopPhase.Instance.MakeDecision(false, card, overlay.SelectedOptions[0]);
-            }
-        }
+        var result = new int[1];
+        this.RunCoroutine(localPlayer.GetUpgradeSlot(result)).OnComplete += _ => {
+            ShopPhase.Instance.MakeDecision(false, card, result[0]);
+        };
     }
     
     void OnPlayerDecision(Player player, bool skipped, UpgradeCardData card) {

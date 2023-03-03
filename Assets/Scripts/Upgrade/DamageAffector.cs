@@ -10,29 +10,32 @@ public class DamageAffector : ScriptableAffector<IPlayer> {
     [SerializeField] Destination _destination;
     [SerializeField] Placement _placement;
 
+    Pile Pile => (Pile)((int)_destination - 1);
+    CardPlacement CardPlacement => (CardPlacement)((int)_placement - 1);
+
     public override void Apply(IPlayer target) {
         var player = target.Owner;
-        var damage = GetDamage(player);
+        var cardAffector = GetDamage(player);
         
-        if (_replace) damage.Cards.Clear();
-        damage.Cards.AddRange(_cards);
+        if (_replace) cardAffector.Cards.Clear();
+        cardAffector.Cards.AddRange(_cards);
 
-        damage.Destination = EnumUtils.ModifyValue(damage.Destination, _destination);
-        damage.Placement = EnumUtils.ModifyValue(damage.Placement, _placement);
+        cardAffector.Destination = EnumUtils.ModifyValue(cardAffector.Destination, Pile);
+        cardAffector.Placement = EnumUtils.ModifyValue(cardAffector.Placement, CardPlacement);
     }
     
     public override void Remove(IPlayer target) {
         var player = target.Owner;
-        var damage = GetDamage(player);
+        var cardAffector = GetDamage(player);
 
         foreach (var card in _cards){
-            if (damage.Cards.Remove(card) && _replacementCard != null) {
-                damage.Cards.Add(_replacementCard);
+            if (cardAffector.Cards.Remove(card) && _replacementCard != null) {
+                cardAffector.Cards.Add(_replacementCard);
             }
         }
 
-        if ((int)damage.Destination == (int)_destination) damage.Destination = default;
-        if ((int)damage.Placement == (int)_placement) damage.Placement = default;
+        if ((int)cardAffector.Destination == (int)_destination) cardAffector.Destination = default;
+        if ((int)cardAffector.Placement == (int)_placement) cardAffector.Placement = default;
     }
     
     CardAffector GetDamage(Player player) {

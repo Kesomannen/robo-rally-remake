@@ -21,6 +21,5 @@ MonoBehaviour:
   _type: 2
   _useContext: 0
   _temporaryAffectors: []
-  _permanentAffectors:
-  - {fileID: 0}
+  _permanentAffectors: []
   _tooltips: []

@@ -5169,7 +5169,7 @@ MonoBehaviour:
   _overlay: {fileID: 4366056486496507193, guid: 8a292111ee88f6d4aafdea21f23ea262, type: 3}
   _unavailableOverlay: {fileID: 7825788952913227841}
   _buyTweenDuration: 1
-  _buyTweenType: 13
+  _buyTweenType: 16
   _layoutElement: {fileID: 5477565006458404917}
 --- !u!114 &5477565006458404917
 MonoBehaviour:

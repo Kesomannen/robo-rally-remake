@@ -21,7 +21,7 @@ public class Testing : MonoBehaviour {
         if (NetworkManager.Singleton != null) return;
 
         for (var i = 0; i < _upgradesToLoad.Length; i++) {
-            PlayerSystem.Players[0].AddUpgrade(_upgradesToLoad[i], i);
+            PlayerSystem.Players[0].ReplaceUpgradeAt(_upgradesToLoad[i], i);
         }
         PhaseSystem.StartPhaseSystem();
     }

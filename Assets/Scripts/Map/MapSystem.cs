@@ -9,6 +9,7 @@ using UnityEngine.Tilemaps;
 public class MapSystem : Singleton<MapSystem> {
     [SerializeField] Grid _grid;
     [SerializeField] Camera _mapCamera;
+    [SerializeField] float _cameraMargin = 1f;
     [SerializeField] [ReadOnly] Vector2 _mapMax;
     [SerializeField] [ReadOnly] Vector2 _mapMin;
     [SerializeField] [ReadOnly] Vector2 _mapCenter;
@@ -101,9 +102,9 @@ public class MapSystem : Singleton<MapSystem> {
         var horizontalMin = (_mapMax.x - _mapMin.x) / 2;
         
         if (verticalMin * _mapCamera.aspect < horizontalMin) {
-            _mapCamera.orthographicSize = horizontalMin / _mapCamera.aspect;
+            _mapCamera.orthographicSize = horizontalMin / _mapCamera.aspect + _cameraMargin;
         } else {
-            _mapCamera.orthographicSize = verticalMin;
+            _mapCamera.orthographicSize = verticalMin + _cameraMargin;
         }
 
         _mapCenter = (_mapMax + _mapMin) / 2;

@@ -73,6 +73,10 @@ public class UpgradeCardData : Lookup<UpgradeCardData>, IAffector<IPlayer> {
             affector.Remove(player);
         }
     }
+
+    public override string ToString() {
+        return $"{Name} ({Cost})";
+    }
 }
 
 [Flags]

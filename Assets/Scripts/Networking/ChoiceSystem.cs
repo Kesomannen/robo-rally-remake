@@ -14,15 +14,23 @@ public class ChoiceSystem : NetworkSingleton<ChoiceSystem> {
     [SerializeField] TMP_Text _messageText;
     
     static float _timeLeft;
-    static readonly Queue<byte[]> _receivedResults = new();
+    static int _currentChoiceId;
+    static readonly Queue<(uint Id, byte[] Choices)> _receivedResults = new();
 
     const float DefaultTime = 20f;
+
+    protected override void Awake() {
+        base.Awake();
+        _currentChoiceId = 0;
+    }
 
     public static IEnumerator DoChoice<T>(ChoiceData<T> data) {
         yield return Instance.DoChoiceInternal(data);
     }
     
     IEnumerator DoChoiceInternal<T>(ChoiceData<T> data) {
+        var choiceId = _currentChoiceId++;
+        
         data.AvailablePredicate ??= _ => true;
         if (data.Time <= 0) {
             data.Time = DefaultTime;
@@ -34,7 +42,7 @@ public class ChoiceSystem : NetworkSingleton<ChoiceSystem> {
         
         if (isLocal) {
             overlay = OverlaySystem.Instance.PushAndShowOverlay(data.Overlay);
-            overlay.OnSubmit += SubmitResult;
+            overlay.OnSubmit += r => SubmitResult(choiceId, r);
             overlay.Init(data.Options, false, data.MinChoices, data.MaxChoices, data.AvailablePredicate);
             
             _timerPanel.SetActive(true);
@@ -43,14 +51,14 @@ public class ChoiceSystem : NetworkSingleton<ChoiceSystem> {
             _messageText.gameObject.SetActive(true);
             _messageText.text = $"{data.Player} is {data.Message}";
         }
-        yield return new WaitUntil(() => _receivedResults.Count > 0);
+        yield return new WaitUntil(() => _receivedResults.Any(x => x.Id == choiceId));
         
         var result = _receivedResults.Dequeue();
         for (var i = 0; i < data.OutputArray.Length; i++) {
-            data.OutputArray[i] = data.Options[result[i]];
+            data.OutputArray[i] = data.Options[result.Choices[i]];
         }
         if (isLocal) {
-            while (overlay != null && OverlaySystem.Instance.CurrentOverlay != overlay) {
+            if (overlay != null) {
                 OverlaySystem.Instance.DestroyCurrentOverlay();
             }
 
@@ -76,29 +84,29 @@ public class ChoiceSystem : NetworkSingleton<ChoiceSystem> {
                 } while (!data.AvailablePredicate(data.Options[choice]) || randomChoices.Contains(choice));
                 randomChoices[i] = choice;
             }
-            SubmitResult(randomChoices);
+            SubmitResult(choiceId, randomChoices);
         }
     }
 
-    void SubmitResult(IEnumerable<int> pickedChoices) {
+    void SubmitResult(int id, IEnumerable<int> pickedChoices) {
         var result = pickedChoices.Select(x => (byte) x).ToArray();
         if (NetworkManager == null) {
-            _receivedResults.Enqueue(result);
+            _receivedResults.Enqueue(((uint) id, result));
         } else {
-            SubmitResultServerRpc(result);
+            SubmitResultServerRpc((uint) id, result);
         }
     }
     
     [ServerRpc(RequireOwnership = false)]
-    void SubmitResultServerRpc(byte[] result) {
-        _receivedResults.Enqueue(result);
-        SubmitResultClientRpc(result);
+    void SubmitResultServerRpc(uint id, byte[] result) {
+        _receivedResults.Enqueue((id, result));
+        SubmitResultClientRpc(id, result);
     }
     
     [ClientRpc]
-    void SubmitResultClientRpc(byte[] result) {
+    void SubmitResultClientRpc(uint id, byte[] result) {
         if (IsServer) return;
-        _receivedResults.Enqueue(result);
+        _receivedResults.Enqueue((id,result));
     }
 }
 
