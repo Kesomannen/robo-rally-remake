@@ -9,6 +9,10 @@ public abstract class Choice<T> : Overlay {
     [SerializeField] [ReadOnly] int _maxChoices;
     [SerializeField] [ReadOnly] bool _canCancel;
 
+    public bool IsDone { get; private set; }
+    public bool WasCancelled { get; private set; }
+    public IReadOnlyList<int> SelectedOptions => _selectedOptions;
+    
     protected IReadOnlyList<T> Options { get; private set; }
     protected Func<T, bool> AvailablePredicate { get; private set; }
     readonly List<int> _selectedOptions = new();
@@ -53,6 +57,7 @@ public abstract class Choice<T> : Overlay {
     void Submit() {
         if (!ValidInput) return;
         
+        IsDone = true;
         OnSubmit?.Invoke(_selectedOptions);
 
         OverlaySystem.Instance.DestroyCurrentOverlay();
@@ -61,6 +66,8 @@ public abstract class Choice<T> : Overlay {
     protected override void OnOverlayClick() {
         if (!_canCancel) return;
         
+        IsDone = true;
+        WasCancelled = true;
         OnCancel?.Invoke();
 
         OverlaySystem.Instance.DestroyCurrentOverlay();

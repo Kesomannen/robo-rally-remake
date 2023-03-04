@@ -31,6 +31,7 @@ public class LaserMoveAffector : ScriptableAffector<IPlayer> {
         
         var distance = Mathf.Abs(attackerPos.x - targetPos.x) + Mathf.Abs(attackerPos.y - targetPos.y);
         if (distance < _minDistance) return;
+
         TaskScheduler.PushRoutine(_optional ? OptionalChoice() : PushTarget());
 
         IEnumerator OptionalChoice() {
@@ -50,7 +51,6 @@ public class LaserMoveAffector : ScriptableAffector<IPlayer> {
         
         IEnumerator PushTarget() {
             var delta = (int) Mathf.Sign(_moveDistance);
-
             for (var i = 0; i < Mathf.Abs(_moveDistance); i++) {
                 if (distance < _minDistance) yield break;
                 distance += delta;

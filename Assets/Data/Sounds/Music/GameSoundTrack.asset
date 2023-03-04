@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf116d7b888f4cd8877912ea6d0e0447, type: 3}
+  m_Name: GameSoundTrack
+  m_EditorClassIdentifier: 
+  _clips:
+  - {fileID: 8300000, guid: 1db2aa74007789d4bbe707efb3a54e52, type: 3}
+  - {fileID: 8300000, guid: 38d997fecdc769c4c910e57029cab1f9, type: 3}
+  - {fileID: 8300000, guid: 4a39b42d303b3e544ac75e8c85e43adb, type: 3}
+  - {fileID: 8300000, guid: b6b7628df9e6e074b95b2e6d8305a64c, type: 3}
+  - {fileID: 8300000, guid: 71933df7edf4c9c48a0c4b32fdc97b4d, type: 3}
+  - {fileID: 8300000, guid: 6d82fd916effdaa4496982cc406395ce, type: 3}
+  _volume: 0.2
+  _volumeVariance: 0
+  _pitch: 1
+  _pitchVariance: 0
+  _priority: -1
+  _preferredAudioTrack: 0

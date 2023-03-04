@@ -15,7 +15,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
     
     public static Player CurrentPlayer { get; private set; }
 
-    const float RestockDelay = 0.5f;
+    const float RestockDelay = 0.25f;
     
     public static event Action<Player, bool, UpgradeCardData> OnPlayerDecision;
     public static event Action<Player> OnNewPlayer;
@@ -34,7 +34,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
 
         yield return RestockCards(true);
         yield return TaskScheduler.WaitUntilClear();
-        
+
         _skippedPlayers = 0;
         var orderedPlayers = PlayerSystem.GetOrderedPlayers();
         TaskScheduler.PushSequence(routines: orderedPlayers.Select(DoPlayerTurn).ToArray());
@@ -88,15 +88,16 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
         }
 
         for (var i = _restockCards!.Length - 1; i >= 0; i--) {
-            if (_shopCards[i] == _restockCards[i]) continue;
-            TaskScheduler.PushRoutine(Restock(i, _restockCards[i]), delay: RestockDelay);    
+            Debug.Log($"Restocking card {i} with {_restockCards[i]}");
+            if (_shopCards[i] == _restockCards[i] && _shopCards[i] != null) continue;
+            TaskScheduler.PushRoutine(Restock(i, _restockCards[i]));
         }
         _restockCards = null;
         
         IEnumerator Restock(int index, UpgradeCardData card) {
+            yield return CoroutineUtils.Wait(RestockDelay);
             _shopCards[index] = card;
             OnRestock?.Invoke(index, card);
-            yield break;
         }
     }
 

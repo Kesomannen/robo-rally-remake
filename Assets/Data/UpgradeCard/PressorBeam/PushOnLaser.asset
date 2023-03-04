@@ -15,8 +15,8 @@ MonoBehaviour:
   _moveDistance: 1
   _minDistance: 0
   _moveSpeed: 2.5
-  _moveType: 24
-  _countAsPush: 1
+  _moveType: 6
+  _countAsPush: 0
   _optional: 1
   _overlay:
     _header: 

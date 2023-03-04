@@ -201,8 +201,8 @@ public class Player : IPlayer {
         yield return GetUpgradeSlot(output, $"choosing an upgrade to replace with {upgrade}");
         ReplaceUpgradeAt(upgrade, output[0]);
     }
-    
-    public IEnumerator GetUpgradeSlot(int[] output, string message = "choosing an upgrade to replace") {
+
+    IEnumerator GetUpgradeSlot(int[] output, string message = "choosing an upgrade to replace") {
         for (var i = 0; i < _upgrades.Length; i++) {
             if (_upgrades[i] != null) continue;
             output[0] = i;
@@ -232,9 +232,9 @@ public class Player : IPlayer {
 
     public void UseUpgrade(int index) {
         var upgrade = _upgrades[index];
-        OnUpgradeUsed?.Invoke(upgrade);
         upgrade.Apply(this);
-
+        
+        OnUpgradeUsed?.Invoke(upgrade);
         Log.Instance.UseUpgradeMessage(this, upgrade);
         
         if (upgrade.Type == UpgradeType.Temporary) {

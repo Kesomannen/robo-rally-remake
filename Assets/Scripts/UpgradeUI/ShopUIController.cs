@@ -51,9 +51,8 @@ public class ShopUIController : Singleton<ShopUIController> {
     }
 
     void OnRestock(int index, UpgradeCardData card) {
-        var shopCard = _shopCards[index]; 
-        shopCard.SetContent(card);
-        TaskScheduler.PushRoutine(shopCard.RestockAnimation());
+        var shopCard = _shopCards[index];
+        TaskScheduler.PushRoutine(shopCard.RestockAnimation(card));
         UpdateCards();
     }
     
@@ -62,10 +61,22 @@ public class ShopUIController : Singleton<ShopUIController> {
         var localPlayer = PlayerSystem.LocalPlayer;
         if (!shopCard.Available) return;
 
-        var result = new int[1];
-        this.RunCoroutine(localPlayer.GetUpgradeSlot(result)).OnComplete += _ => {
-            ShopPhase.Instance.MakeDecision(false, card, result[0]);
-        };
+        for (var i = 0; i < localPlayer.Upgrades.Count; i++) {
+            if (localPlayer.Upgrades[i] != null) continue;
+            ShopPhase.Instance.MakeDecision(false, card, i);
+            return;
+        }
+        StartCoroutine(ChoseOverride());
+
+        IEnumerator ChoseOverride() {
+            var overlay = OverlaySystem.Instance.PushAndShowOverlay(_overrideOverlay);
+            overlay.Init(localPlayer.Upgrades, true);
+            yield return new WaitUntil(() => overlay.IsDone);
+
+            if (!overlay.WasCancelled) {
+                ShopPhase.Instance.MakeDecision(false, card, overlay.SelectedOptions[0]);
+            }
+        }
     }
     
     void OnPlayerDecision(Player player, bool skipped, UpgradeCardData card) {

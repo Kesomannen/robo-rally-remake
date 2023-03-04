@@ -5167,10 +5167,12 @@ MonoBehaviour:
     _selected: {fileID: -2127545493, guid: c14ee0cba10d8184ca4776c2b80b6db6, type: 3}
   _showOverlayOnClick: 1
   _overlay: {fileID: 4366056486496507193, guid: 8a292111ee88f6d4aafdea21f23ea262, type: 3}
+  _layoutElement: {fileID: 5477565006458404917}
   _unavailableOverlay: {fileID: 7825788952913227841}
   _buyTweenDuration: 1
-  _buyTweenType: 16
-  _layoutElement: {fileID: 5477565006458404917}
+  _buyTweenType: 10
+  _restockTweenDuration: 0.5
+  _restockTweenType: 27
 --- !u!114 &5477565006458404917
 MonoBehaviour:
   m_ObjectHideFlags: 0

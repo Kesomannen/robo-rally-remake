@@ -12,6 +12,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
     public const int RegisterCount = 5;
     const float SubPhaseDelay = 0;
     const float StepDelay = 0.5f;
+    const float UpgradeAvailableDelay = 1f;
 
     public static event Action OnPhaseStart, OnPhaseEnd, OnExecutionComplete, OnPlayerRegistersComplete;
     public static event Action<ProgramCardData, int, Player> OnPlayerRegister;
@@ -97,6 +98,11 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
             Debug.Log($"Starting player {player} register {register}");
             
             CurrentPlayer = player;
+
+            if (player.Upgrades.Any(u => u != null && u.CanUse(player) && u.Type is UpgradeType.Action or UpgradeType.Permanent)) {
+                yield return CoroutineUtils.Wait(UpgradeAvailableDelay);
+            }
+
             var card = player.Program[register];
             if (card == null) yield break;
             

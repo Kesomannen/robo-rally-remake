@@ -57,6 +57,6 @@ public class TaskScheduler : Singleton<TaskScheduler> {
     }
     
     public static IEnumerator WaitUntilClear() {
-        yield return new WaitWhile(() => _isRunning);
+        yield return new WaitWhile(() => _isRunning || _tasks.Count > 0);
     }
 }

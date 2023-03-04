@@ -3696,6 +3696,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AudioSystem
       objectReference: {fileID: 0}
+    - target: {fileID: 3495286989864147276, guid: b431eff03c24ddf4fbd922f550f80d9b, type: 3}
+      propertyPath: _soundTrack
+      value: 
+      objectReference: {fileID: 11400000, guid: cdb27c72acb75514f8f1b726bb9f61c7, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b431eff03c24ddf4fbd922f550f80d9b, type: 3}
 --- !u!1001 &1331458945

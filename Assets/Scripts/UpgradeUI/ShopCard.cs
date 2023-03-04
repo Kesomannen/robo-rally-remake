@@ -6,10 +6,14 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class ShopCard : UpgradeCard, IPointerClickHandler, IPointerEnterHandler {
+    [SerializeField] LayoutElement _layoutElement;
     [SerializeField] GameObject _unavailableOverlay;
+    [Space]
     [SerializeField] float _buyTweenDuration = 0.5f;
     [SerializeField] LeanTweenType _buyTweenType;
-    [SerializeField] LayoutElement _layoutElement;
+    [Space]
+    [SerializeField] float _restockTweenDuration = 0.5f;
+    [SerializeField] LeanTweenType _restockTweenType;
 
     public bool Available {
         get {
@@ -37,26 +41,35 @@ public class ShopCard : UpgradeCard, IPointerClickHandler, IPointerEnterHandler 
         Selectable.interactable = Available;
     }
 
-    public IEnumerator RestockAnimation() {
+    public IEnumerator RestockAnimation(UpgradeCardData card) {
+        var t = transform;
+
+        if (gameObject.activeInHierarchy) {
+            LeanTween.scale(gameObject, Vector3.zero, _restockTweenDuration / 2).setEase(_buyTweenType);
+            yield return CoroutineUtils.Wait(_restockTweenDuration);   
+        }
+
+        t.localScale = Vector3.zero;
+        t.rotation = Quaternion.Euler(0, 0, 180);
         gameObject.SetActive(true);
-        yield break;
+        SetContent(card);
+        
+        LeanTween.scale(gameObject, Vector3.one, _restockTweenDuration).setEase(_restockTweenType);
+        LeanTween.rotateZ(gameObject, 0, _restockTweenDuration).setEase(_restockTweenType);
+        yield return CoroutineUtils.Wait(_restockTweenDuration);
     }
 
     public IEnumerator BuyAnimation(Transform target) {
-        _layoutElement.ignoreLayout = true;
-        LeanTween
-            .value(gameObject, 0, 1, _buyTweenDuration)
-            .setEase(_buyTweenType)
-            .setOnUpdate(value => {
-                var t = transform;
-                t.position = Vector3.Lerp(t.position, target.position, value);
-                t.localScale = Vector3.Lerp(Vector3.one, Vector3.zero, value);
-                t.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(0, 180, value));
-            });
-        
-        yield return CoroutineUtils.Wait(_buyTweenDuration);
-        gameObject.SetActive(false);
         var t = transform;
+        _layoutElement.ignoreLayout = true;
+
+        LeanTween.move(gameObject, target.position, _buyTweenDuration).setEase(_buyTweenType);
+        LeanTween.scale(gameObject, Vector3.zero, _buyTweenDuration).setEase(_buyTweenType);
+        LeanTween.rotateZ(gameObject, 180, _buyTweenDuration).setEase(_buyTweenType);
+        yield return CoroutineUtils.Wait(_buyTweenDuration);
+        
+        gameObject.SetActive(false);
+
         t.localScale = Vector3.one;
         t.rotation = Quaternion.identity;
         _layoutElement.ignoreLayout = false;

@@ -16,5 +16,5 @@ MonoBehaviour:
   _takeUpgradeOverlay:
     _header: Choose an upgrade to take
     _subtitle: Modular Chassis
-    _prefab: {fileID: -3147114287512598999, guid: 07defdd122cd83e458be545500e90d4a, type: 3}
+    _prefab: {fileID: -7393959214566925834, guid: 22e19115d7aa50f459a8ac40f96bcbd6, type: 3}
     _canPreview: 0

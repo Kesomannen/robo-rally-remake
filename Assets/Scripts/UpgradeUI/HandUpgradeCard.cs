@@ -11,6 +11,7 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
     [SerializeField] float _highlightScale;
     [SerializeField] GameObject _unavailableOverlay;
     [SerializeField] Selectable _selectable;
+    [SerializeField] [ReadOnly] bool _usedThisTurn;
 
     Container<UpgradeCardData> _container;
     Transform _highlightParent;
@@ -32,10 +33,23 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
         UpdateAvailability();
     }
 
+    void OnEnable() {
+        ProgrammingPhase.OnPhaseStarted += OnProgrammingStarted;
+    }
+    
+    void OnDisable() {
+        ProgrammingPhase.OnPhaseStarted -= OnProgrammingStarted;
+    }
+    
+    void OnProgrammingStarted() {
+        _usedThisTurn = false;
+    }
+
     public void UpdateAvailability() {
         if (_container == null) _container = GetComponent<Container<UpgradeCardData>>();
         
         var available = _container.Content != null
+                        && !_usedThisTurn
                         && (_container.Content.CanUse(PlayerSystem.LocalPlayer)
                             || _container.Content.Type == UpgradeType.Permanent);
         
@@ -81,10 +95,12 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
         IEnumerator UseUpgrade() {
             var index = Owner.Upgrades.IndexOf(upgrade);
+            
             NetworkSystem.Instance.BroadcastUpgrade(index);
             Owner.Energy.Value -= upgrade.UseCost;
             Owner.UseUpgrade(index);
             
+            _usedThisTurn = true;
             _clickable = true;
 
             yield break;

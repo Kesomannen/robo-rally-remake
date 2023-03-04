@@ -436,6 +436,7 @@ GameObject:
   m_Component:
   - component: {fileID: 514020556175758216}
   - component: {fileID: 514020556175758219}
+  - component: {fileID: 3495286989864147276}
   m_Layer: 0
   m_Name: AudioSystem
   m_TagString: Untagged
@@ -476,3 +477,18 @@ MonoBehaviour:
   _musicChannel: {fileID: 514020554401031475}
   _uiChannel: {fileID: 514020555523695583}
   _sfxChannel: {fileID: 514020555519445315}
+--- !u!114 &3495286989864147276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 514020556175758218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49ef40c6c2af4219a0d424811b9682c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundTrack: {fileID: 0}
+  _delay: 3
+  _playing: 0

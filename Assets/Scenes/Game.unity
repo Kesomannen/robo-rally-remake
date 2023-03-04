@@ -7766,7 +7766,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _grid: {fileID: 1866782232}
   _mapCamera: {fileID: 519420031}
-  _cameraMargin: 0.5
+  _cameraMargin: 0
   _mapMax: {x: 0, y: 0}
   _mapMin: {x: 0, y: 0}
   _mapCenter: {x: 0, y: 0}
@@ -8758,6 +8758,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AudioSystem
       objectReference: {fileID: 0}
+    - target: {fileID: 3495286989864147276, guid: b431eff03c24ddf4fbd922f550f80d9b, type: 3}
+      propertyPath: _soundTrack
+      value: 
+      objectReference: {fileID: 11400000, guid: 5fe63a8d375d53b4e96d4762b048bdf0, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b431eff03c24ddf4fbd922f550f80d9b, type: 3}
 --- !u!1001 &984570600069919754

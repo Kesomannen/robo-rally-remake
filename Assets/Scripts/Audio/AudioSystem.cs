@@ -1,14 +1,33 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class AudioSystem : Singleton<AudioSystem> {
     [SerializeField] AudioChannel _musicChannel, _uiChannel, _sfxChannel;
 
-    public static float MusicVolume { get; set; } = 0.5f;
-    public static float SfxVolume { get; set; } = 0.5f;
+    public static float MusicVolume {
+        get => _musicVolume;
+        set {
+            var current = Instance._musicChannel.Source.volume;
+            var currentBase = current / _musicVolume;
+            Instance._musicChannel.Source.volume = currentBase * value;
+            _musicVolume = value;
+        }
+    }
+    public static float SfxVolume {
+        get => _sfxVolume;
+        set {
+            var current = Instance._sfxChannel.Source.volume;
+            var currentBase = current / _sfxVolume;
+            Instance._sfxChannel.Source.volume = currentBase * value;
+            _sfxVolume = value;
+        }
+    }
 
     int _uiPriority;
     int _sfxPriority;
+    static float _musicVolume = 0.5f;
+    static float _sfxVolume = 0.5f;
 
     const string MusicVolumePrefKey = "MusicVolume";
     const string SfxVolumePrefKey = "SfxVolume";
@@ -25,16 +44,19 @@ public class AudioSystem : Singleton<AudioSystem> {
         PlayerPrefs.SetFloat(SfxVolumePrefKey, SfxVolume);
     }
 
-    public void Play(SoundEffect sound, AudioTrack audioTrack) {
+    public IEnumerator PlayAndWait(SoundEffect sound, AudioTrack audioTrack) {
         var channel = GetChannel(audioTrack);
         var currentPriority = audioTrack == AudioTrack.UI ? _uiPriority : _sfxPriority;
         if (channel.Source.isPlaying && currentPriority > sound.Priority) {
-            return;
+            yield break;
         }
         
-        channel.Source.pitch = sound.Pitch;
+        var pitch = sound.Pitch;
+        var clip = sound.Clip;
+        
+        channel.Source.pitch = pitch;
         channel.Source.volume = sound.Volume * (audioTrack == AudioTrack.Music ? MusicVolume : SfxVolume);
-        channel.Source.clip = sound.Clip;
+        channel.Source.clip = clip;
         channel.Source.Play();
 
         if (audioTrack == AudioTrack.UI) {
@@ -42,6 +64,12 @@ public class AudioSystem : Singleton<AudioSystem> {
         } else if (audioTrack == AudioTrack.Sfx) {
             _sfxPriority = sound.Priority;
         }
+
+        yield return CoroutineUtils.Wait(clip.length / pitch);
+    }
+    
+    public void Play(SoundEffect sound, AudioTrack audioTrack) {
+        StartCoroutine(PlayAndWait(sound, audioTrack));
     }
 
     AudioChannel GetChannel(AudioTrack audioTrack) {
