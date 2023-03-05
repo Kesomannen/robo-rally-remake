@@ -1,23 +1,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class CollectionOverlay : Overlay {
-    [SerializeField] Transform _cardContainer;
-    [SerializeField] ProgramCard _cardPrefab;
+    [FormerlySerializedAs("_cardContainer")]
+    [SerializeField] Transform _itemParent;
     [SerializeField] DynamicUITween _onEnableTween;
 
-    readonly List<ProgramCard> _cardObjects = new();
+    readonly List<Transform> _objects = new();
 
-    public void Init(IEnumerable<ProgramCardData> cards, bool shuffledView = false) {
-        var cardList = cards.ToList();
-        if (shuffledView) cardList.Shuffle();
-        foreach (var card in cardList) {
-            var cardInstance = Instantiate(_cardPrefab, _cardContainer);
-            cardInstance.SetContent(card);
-            _cardObjects.Add(cardInstance);
-            cardInstance.gameObject.SetActive(false);
+    public void Init<T>(Container<T> prefab, IEnumerable<T> contents, bool shuffledView = false) {
+        var contentList = contents.Where(x => x != null).ToList();
+        if (shuffledView) contentList.Shuffle();
+        
+        foreach (var container in contentList.Select(card => Instantiate(prefab, _itemParent).SetContent(card))) {
+            _objects.Add(container.transform);
+            container.gameObject.SetActive(false);
         }
-        StartCoroutine(TweenHelper.DoUITween(_onEnableTween.ToTween(_cardObjects.Select(c => c.gameObject))));
+        StartCoroutine(TweenHelper.DoUITween(_onEnableTween.ToTween(_objects.Select(c => c.gameObject))));
     }
 }

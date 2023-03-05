@@ -8,19 +8,29 @@ public class AudioSystem : Singleton<AudioSystem> {
     public static float MusicVolume {
         get => _musicVolume;
         set {
+            var clampedValue = Mathf.Clamp(value, 0.01f, 1);
+            
             var current = Instance._musicChannel.Source.volume;
             var currentBase = current / _musicVolume;
-            Instance._musicChannel.Source.volume = currentBase * value;
-            _musicVolume = value;
+            Instance._musicChannel.Source.volume = currentBase * clampedValue;
+            
+            _musicVolume = clampedValue;
         }
     }
     public static float SfxVolume {
         get => _sfxVolume;
         set {
+            var clampedValue = Mathf.Clamp(value, 0.01f, 1);
+            
             var current = Instance._sfxChannel.Source.volume;
             var currentBase = current / _sfxVolume;
-            Instance._sfxChannel.Source.volume = currentBase * value;
-            _sfxVolume = value;
+            Instance._sfxChannel.Source.volume = currentBase * clampedValue;
+            
+            current = Instance._uiChannel.Source.volume;
+            currentBase = current / _sfxVolume;
+            Instance._uiChannel.Source.volume = currentBase * clampedValue;
+            
+            _sfxVolume = clampedValue;
         }
     }
 
@@ -34,8 +44,8 @@ public class AudioSystem : Singleton<AudioSystem> {
 
     protected override void Awake() {
         base.Awake();
-        MusicVolume = PlayerPrefs.GetFloat(MusicVolumePrefKey, MusicVolume);
-        SfxVolume = PlayerPrefs.GetFloat(SfxVolumePrefKey, SfxVolume);
+        MusicVolume = PlayerPrefs.GetFloat(MusicVolumePrefKey, _musicVolume);
+        SfxVolume = PlayerPrefs.GetFloat(SfxVolumePrefKey, _sfxVolume);
     }
 
     protected override void OnDestroy() {

@@ -6,6 +6,7 @@ public class MapData : Lookup<MapData> {
     [SerializeField] string _name;
     [SerializeField] MapDifficulty _difficulty;
     [SerializeField] MapLength _length;
+    [SerializeField] Sprite _thumbnail;
 
     [Header("References")]
     [SerializeField] GameObject _prefab;
@@ -14,7 +15,10 @@ public class MapData : Lookup<MapData> {
     public MapDifficulty Difficulty => _difficulty;
     public MapLength Length => _length;
     public GameObject Prefab => _prefab;
-    public Texture2D Thumbnail => null; 
+    public Sprite Thumbnail {
+        get => _thumbnail;
+        set => _thumbnail = value;
+    }
 
     public override string ToString() => _name;
 }

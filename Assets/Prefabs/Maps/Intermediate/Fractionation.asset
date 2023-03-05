@@ -15,4 +15,5 @@ MonoBehaviour:
   _name: Fractionation
   _difficulty: 1
   _length: 1
+  _thumbnail: {fileID: 21300000, guid: 9a6d795963709f148a9d4c77d11b4d07, type: 3}
   _prefab: {fileID: 4940928074727746032, guid: 8ac27f77c35c23443ac8fa3a1dc30ca6, type: 3}

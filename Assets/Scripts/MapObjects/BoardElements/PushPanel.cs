@@ -4,7 +4,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 
-public class PushPanel : BoardElement<PushPanel, ICanEnterHandler>, ITooltipable {
+public class PushPanel : BoardElement<PushPanel, ICanEnterHandler>, ITooltipable, ITriggerAwake {
     [Header("Push Panel")]
     [SerializeField] int[] _activeRegisters; 
     [SerializeField] Vector2Int _direction;
@@ -32,6 +32,7 @@ public class PushPanel : BoardElement<PushPanel, ICanEnterHandler>, ITooltipable
         }
     }
 
+    public void TriggerAwake() => Awake();
     protected override void Awake() {
         base.Awake();
         _direction = Rotator.Rotate(_direction);

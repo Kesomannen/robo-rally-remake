@@ -15,4 +15,5 @@ MonoBehaviour:
   _name: Gear Stripper
   _difficulty: 3
   _length: 2
+  _thumbnail: {fileID: 21300000, guid: e4237a1890eced341b2b8ff53e73c404, type: 3}
   _prefab: {fileID: 4940928074727746032, guid: 1ffdeb326a67c1944949eaa72fc185c8, type: 3}

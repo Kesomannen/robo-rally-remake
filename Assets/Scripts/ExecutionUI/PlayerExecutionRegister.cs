@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-public class PlayerExecutionRegister : Container<ProgramCardData>, ITooltipable {
+public class PlayerExecutionRegister : MonoBehaviour, ITooltipable {
     [Header("References")]
     [SerializeField] Image _programCardImage;
     [SerializeField] Image _backgroundImage;
@@ -23,12 +23,14 @@ public class PlayerExecutionRegister : Container<ProgramCardData>, ITooltipable 
     [SerializeField] Sprite _sprite1;
     [FormerlySerializedAs("_visibleSelected")] 
     [SerializeField] Sprite _sprite11;
+    [SerializeField] Sprite _emptySprite;
 
-    public string Header => _visible ? Content.Header : "???";
-    public string Description => _visible ? Content.Description : "???";
+    public string Header => _visible ? (_content == null ? "Empty" : _content.Header) : "???";
+    public string Description => _visible ? _content == null ? "" : _content.Description : "???";
 
     RectTransform _rectTransform;
     RectTransform _programCardTransform;
+    ProgramCardData _content;
     bool _visible;
 
     public bool Visible {
@@ -85,7 +87,8 @@ public class PlayerExecutionRegister : Container<ProgramCardData>, ITooltipable 
         Visible = false;
     }
 
-    protected override void Serialize(ProgramCardData card) {
-        _programCardImage.sprite = card.Artwork;
+    public void SetContent(ProgramCardData card) {
+        _content = card;
+        _programCardImage.sprite = card == null ? _emptySprite : card.Artwork;
     }
 }

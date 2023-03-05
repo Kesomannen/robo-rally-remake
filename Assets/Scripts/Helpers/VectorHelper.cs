@@ -17,4 +17,6 @@ public static class VectorHelper {
     public static Vector2Int FlipHorizontal(Vector2Int v2) => new(-v2.x, v2.y);
     public static Vector2Int FlipVertical(Vector2Int v2) => new(v2.x, -v2.y);
     public static int GetRotationSteps(float zRot) => Mathf.RoundToInt(zRot / 90 % 4);
+    
+    public static int GridDistance(this Vector2Int a, Vector2Int b) => Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
 }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 111a43a4336770a4abbe25e078ef58bc, type: 3}
   m_Name: GunBot
   m_EditorClassIdentifier: 
-  _name: Gunbot
+  _name: Hulk x90
   _description: Deal a Hull Damage card instead of a Spam to robots you shoot.
   _icon: {fileID: 21300000, guid: 2824c472c382a1f4693079c1ee2e3803, type: 3}
   _sprite: {fileID: 21300000, guid: 2824c472c382a1f4693079c1ee2e3803, type: 3}
@@ -38,6 +38,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 789c848c7ae69f4479f9670eb7ec46ac, type: 2}
   - {fileID: 11400000, guid: 18607977aaffdee4e93c7b63daed4cf9, type: 2}
   - {fileID: 11400000, guid: 18607977aaffdee4e93c7b63daed4cf9, type: 2}
+  - {fileID: 11400000, guid: 0696f8f8044a828429776892891a7ac3, type: 2}
+  - {fileID: 11400000, guid: 0696f8f8044a828429776892891a7ac3, type: 2}
+  - {fileID: 11400000, guid: 0696f8f8044a828429776892891a7ac3, type: 2}
+  - {fileID: 11400000, guid: 0696f8f8044a828429776892891a7ac3, type: 2}
+  - {fileID: 11400000, guid: 0696f8f8044a828429776892891a7ac3, type: 2}
+  - {fileID: 11400000, guid: 0696f8f8044a828429776892891a7ac3, type: 2}
+  - {fileID: 11400000, guid: 0696f8f8044a828429776892891a7ac3, type: 2}
   _laserDamage: {fileID: 11400000, guid: 62b9f46bf38d5c248aef57a59d49e9b8, type: 2}
   _pushDamage: {fileID: 11400000, guid: f12f970e8a61e8b4a8ff670aee35dece, type: 2}
   _onSpawnAffectors:

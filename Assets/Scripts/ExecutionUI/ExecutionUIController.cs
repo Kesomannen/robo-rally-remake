@@ -155,25 +155,25 @@ public class ExecutionUIController : MonoBehaviour {
         }
     }
     
+    Player _previousPlayer;
+    
     void OnPlayerRegister(ProgramCardData card, int index, Player player) {
         player.Model.Highlight(true);
         
-        var playerIndex = _panelsController.Panels.IndexOf(panel => panel.Content == player);
-        var panel = _panelsController.Panels[playerIndex];
+        var panel = _panelsController.Panels.First(panel => panel.Content == player);
         var register = panel.Registers[index];
         
         register.Visible = true;
         BalanceScale(panel, register, register.Scale + 0.2f);
-        
-        if (playerIndex <= 0) return;
-        
-        // Unhighlight previous player
-        var prevPlayer = _currentPlayerOrder[playerIndex - 1];
-        prevPlayer.Model.Highlight(false);
-        
-        var prevPanel = _panelsController.Panels[playerIndex - 1];
-        var prevRegister = prevPanel.Registers[index];
-        BalanceScale(prevPanel, prevRegister, prevRegister.Scale - 0.2f);
+
+        if (_previousPlayer != null) {
+            // Unhighlight previous player
+            _previousPlayer.Model.Highlight(false);
+            var prevPanel = _panelsController.Panels.First(prevPanel => prevPanel.Content == _previousPlayer);
+            var prevRegister = prevPanel.Registers[index];
+            BalanceScale(prevPanel, prevRegister, prevRegister.Scale - 0.2f);
+        }
+        _previousPlayer = player;
     }
 
     void OnPlayerRegistersComplete() {
@@ -182,6 +182,7 @@ public class ExecutionUIController : MonoBehaviour {
             BalanceScale(playerPanel, playerPanel.Registers[ExecutionPhase.CurrentRegister], 1);
             playerPanel.Content.Model.Highlight(false);
         }
+        _previousPlayer = null;
     }
 
     void OnNewSubPhase(ExecutionSubPhase executionSubPhase) {

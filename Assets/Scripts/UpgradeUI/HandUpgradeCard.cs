@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -12,12 +11,12 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
     [SerializeField] GameObject _unavailableOverlay;
     [SerializeField] Selectable _selectable;
     [SerializeField] [ReadOnly] bool _usedThisTurn;
-
+    [SerializeField] [ReadOnly] Vector3 _originalSize;
+    [SerializeField] [ReadOnly] bool _clickable = true;
+    
     Container<UpgradeCardData> _container;
     Transform _highlightParent;
     Transform _originalParent;
-    Vector3 _originalSize;
-    bool _clickable = true;
 
     static Player Owner => PlayerSystem.LocalPlayer;
 
@@ -27,18 +26,16 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
         var t = transform;
         _originalParent = t.parent;
         _originalSize = t.localScale;
-    }
-    
-    void Start() {
-        UpdateAvailability();
-    }
-
-    void OnEnable() {
+        
         ProgrammingPhase.OnPhaseStarted += OnProgrammingStarted;
     }
-    
-    void OnDisable() {
+
+    void OnDestroy() {
         ProgrammingPhase.OnPhaseStarted -= OnProgrammingStarted;
+    }
+
+    void Start() {
+        UpdateAvailability();
     }
     
     void OnProgrammingStarted() {

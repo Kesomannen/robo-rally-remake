@@ -21,9 +21,7 @@ public class Antenna : MapObject, ICanEnterHandler, ITooltipable {
     }
 
     public static float GetDistance(Vector2Int pos) {
-        var a = Instance.GridPos;
-        var b = pos;
-        return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
+        return Instance.GridPos.GridDistance(pos);
     }
 
     public IEnumerator BeamAnimation(Player player) {

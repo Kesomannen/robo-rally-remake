@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: HullDamageOnLaser
   m_EditorClassIdentifier: 
   _target: 1
-  _cards: []
+  _cards:
+  - {fileID: 11400000, guid: 0696f8f8044a828429776892891a7ac3, type: 2}
   _replacementCard: {fileID: 11400000, guid: ecc7d4ad841b0624999bcaff2184a12f, type: 2}
-  _replace: 0
+  _replace: 1
   _destination: 0
   _placement: 0

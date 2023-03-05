@@ -96,11 +96,12 @@ MonoBehaviour:
   _targetPile: 1
   _shuffledView: 1
   _collectionOverlayData:
-    Header: Draw Pile
-    Subtitle: Cards are not shown in order.
-    Prefab: {fileID: 9105691054769382345, guid: 6a7835c3c7e13c24aa7b259bbf92fc4c, type: 3}
-    CanPreview: 0
+    _header: Draw Pile
+    _subtitle: Cards are not shown in order.
+    _prefab: {fileID: 9105691054769382345, guid: 6a7835c3c7e13c24aa7b259bbf92fc4c, type: 3}
+    _canPreview: 0
   _cardCountText: {fileID: 3399899694282681233}
+  _cardPrefab: {fileID: -4837892012670907284, guid: 852a4f1b39d0eff43b4ad4b129005922, type: 3}
 --- !u!114 &4228034244385261969
 MonoBehaviour:
   m_ObjectHideFlags: 0

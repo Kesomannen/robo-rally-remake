@@ -4,7 +4,9 @@ using UnityEngine.InputSystem;
 public class TopButtons : MonoBehaviour {
     [SerializeField] GameObject _log, _chat;
     [SerializeField] GameObject _chatNotification;
+    [SerializeField] Container<UpgradeCardData> _upgradePrefab;
     [SerializeField] OverlayData<SettingsOverlay> _settingsOverlay;
+    [SerializeField] OverlayData<CollectionOverlay> _shopOverlay;
     [SerializeField] SoundEffect _chatNotificationSound;
     [SerializeField] InputAction _toggleSettings;
 
@@ -62,5 +64,10 @@ public class TopButtons : MonoBehaviour {
         
         _log.SetActive(!_log.activeSelf);
         _chat.SetActive(false);
+    }
+
+    public void ToggleShop() {
+        if (OverlaySystem.Instance.IsOverlayActive) return;
+        OverlaySystem.Instance.PushAndShowOverlay(_shopOverlay).Init(_upgradePrefab, ShopPhase.ShopCards);
     }
 }

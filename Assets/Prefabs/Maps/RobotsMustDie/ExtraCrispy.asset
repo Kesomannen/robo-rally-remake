@@ -15,4 +15,5 @@ MonoBehaviour:
   _name: Extra Crispy
   _difficulty: 3
   _length: 0
+  _thumbnail: {fileID: 21300000, guid: 7f74c86e345e6994989cbe65d1aa7d9f, type: 3}
   _prefab: {fileID: 4940928074727746032, guid: 3f45cab598394434b9d0472017a3e8ae, type: 3}

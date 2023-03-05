@@ -8,6 +8,7 @@ public class CardCollectionDisplay : MonoBehaviour, IPointerClickHandler {
     [SerializeField] OverlayData<CollectionOverlay> _collectionOverlayData;
     [Space]
     [SerializeField] TMP_Text _cardCountText;
+    [SerializeField] Container<ProgramCardData> _cardPrefab;
 
     CardCollection _collection;
     static Player Owner => PlayerSystem.LocalPlayer;
@@ -30,6 +31,6 @@ public class CardCollectionDisplay : MonoBehaviour, IPointerClickHandler {
     }
 
     public void OnPointerClick(PointerEventData e) {
-        OverlaySystem.Instance.PushAndShowOverlay(_collectionOverlayData).Init(_collection.Cards, _shuffledView);
+        OverlaySystem.Instance.PushAndShowOverlay(_collectionOverlayData).Init(_cardPrefab, _collection.Cards, _shuffledView);
     }
 }

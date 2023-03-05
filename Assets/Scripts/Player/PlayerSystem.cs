@@ -73,6 +73,7 @@ public class PlayerSystem : Singleton<PlayerSystem> {
     public static IEnumerable<Player> GetOrderedPlayers() {
         var players = _players.ToDictionary(x => x.BonusPriority)
                               .OrderBy(x => Antenna.GetDistance(x.Key.Model.GridPos))
+                              .ThenByDescending(x => x.Key.Model.GridPos.y)
                               .ToDictionary(x => x.Key, x => x.Value);
 
         for (var i = 0; i < players.Count; i++) {

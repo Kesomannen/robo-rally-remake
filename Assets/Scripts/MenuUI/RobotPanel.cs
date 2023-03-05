@@ -19,8 +19,7 @@ public class RobotPanel : Container<RobotData>, IPointerEnterHandler, IPointerEx
     [SerializeField] float _hoverScale;
     [SerializeField] float _tweenDuration;
     [SerializeField] LeanTweenType _tweenType;
-
-    State _state;
+    [SerializeField] [ReadOnly] State _state;
     
     public enum State {
         Available,
@@ -29,29 +28,25 @@ public class RobotPanel : Container<RobotData>, IPointerEnterHandler, IPointerEx
     }
 
     public void SetState(State state) {
-        if (state == _state) return;
         _state = state;
-        
-        Debug.Log($"Set state to {_state}", this);
-        
         _uiSounds.enabled = _state == State.Available;
 
         switch (_state) {
             case State.Available:
                 _backgroundImage.sprite = _defaultSprite;
-                FadeIconTo(_grayColor);
+                FadeTo(_grayColor);
                 ScaleElementsTo(1);
                 break;
             
             case State.Unavailable:
                 _backgroundImage.sprite = _defaultSprite;
-                FadeIconTo(_unavailableColor);
-                ScaleElementsTo(0.8f);
+                FadeTo(_unavailableColor);
+                ScaleElementsTo(0.9f);
                 break;
             
             case State.Selected:
                 _backgroundImage.sprite = _selectedSprite;
-                FadeIconTo(Color.white);
+                FadeTo(Color.white);
                 ScaleElementsTo(_hoverScale);
                 break;
             
@@ -65,20 +60,21 @@ public class RobotPanel : Container<RobotData>, IPointerEnterHandler, IPointerEx
             _iconImage.gameObject, _nameText.gameObject, _descriptionText.gameObject
         };
         _scaleTweenIds = new int[_scaleTargets.Length];
+        SetState(State.Available);
     }
 
     public void OnPointerEnter(PointerEventData e) {
         if (_state != State.Available) return;
         _backgroundImage.sprite = _highlightedSprite;
         ScaleElementsTo(_hoverScale);
-        FadeIconTo(Color.white);
+        FadeTo(Color.white);
     }
 
     public void OnPointerExit(PointerEventData e) {
         if (_state != State.Available) return;
         _backgroundImage.sprite = _defaultSprite;
         ScaleElementsTo(1);
-        FadeIconTo(_grayColor);
+        FadeTo(_grayColor);
     }
     
     public void OnPointerClick(PointerEventData e) {
@@ -105,12 +101,17 @@ public class RobotPanel : Container<RobotData>, IPointerEnterHandler, IPointerEx
 
     int _fadeTweenId;
 
-    void FadeIconTo(Color color) {
+    void FadeTo(Color color) {
         LeanTween.cancel(_fadeTweenId);
         _fadeTweenId = LeanTween
             .value(_iconImage.gameObject, _iconImage.color, color, _tweenDuration)
             .setEase(_tweenType)
-            .setOnUpdate(c => _iconImage.color = c)
+            .setOnUpdate(c => {
+                _iconImage.color = c;
+                _backgroundImage.color = c;
+                _nameText.color = c;
+                _descriptionText.color = c;
+            })
             .uniqueId;
     }
 

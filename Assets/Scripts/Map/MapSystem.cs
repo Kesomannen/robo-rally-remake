@@ -10,15 +10,12 @@ public class MapSystem : Singleton<MapSystem> {
     [SerializeField] Grid _grid;
     [SerializeField] Camera _mapCamera;
     [SerializeField] float _cameraMargin = 1f;
-    [SerializeField] [ReadOnly] Vector2 _mapMax;
-    [SerializeField] [ReadOnly] Vector2 _mapMin;
-    [SerializeField] [ReadOnly] Vector2 _mapCenter;
+   
 
     static Dictionary<Vector2Int, List<MapObject>> _tiles;
     static Dictionary<Tilemap, IBoard> _boards;
     
     GameObject _currentMap;
-    (Vector2 Min, Vector2 Max)[] _tilemapBounds;
 
     public static Action OnMapLoaded;
 
@@ -58,31 +55,12 @@ public class MapSystem : Singleton<MapSystem> {
         OnMapLoaded?.Invoke();
         Debug.Log($"Map {mapData} loaded.");
     }
+    
+    public static (float Size, Vector2 Pos) GetCameraPosition(IEnumerable<Tilemap> tilemaps, float aspectRatio, float margin) {
+        var mapMax = Vector2.negativeInfinity;
+        var mapMin = Vector2.positiveInfinity;
 
-    void OnDrawGizmos() {
-        if (!Application.isPlaying) return;
-        
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(_mapCenter, (_mapMax - _mapMin) + 0.5f * Vector2.one);
-
-        Gizmos.color = Color.green;
-        foreach (var (min, max) in _tilemapBounds) {
-            Gizmos.DrawWireCube((max + min) / 2, max - min);
-        }
-    }
-
-    void PositionCamera() {
-        var t = _mapCamera.transform;
-        _mapMax = Vector2.negativeInfinity;
-        _mapMin = Vector2.positiveInfinity;
-        
-        _tilemapBounds = new (Vector2 Min, Vector2 Max)[_boards.Count];
-
-        var tilemaps = _boards.Keys.ToArray();
-        
-        for (var i = 0; i < tilemaps.Length; i++) {
-            var tilemap = tilemaps[i];
-            
+        foreach (var tilemap in tilemaps) {
             tilemap.CompressBounds();
             var bounds = tilemap.cellBounds;
             var boundsMax = (Vector2)tilemap.CellToWorld(bounds.max);
@@ -91,24 +69,31 @@ public class MapSystem : Singleton<MapSystem> {
             // Correcting bounds for tilemap
             var max = Vector2.Max(boundsMax, boundsMin);
             var min = Vector2.Min(boundsMax, boundsMin);
-            _tilemapBounds[i] = (min, max);
-
-            Debug.Log($"Tilemap {tilemap.name} bounds: {min} - {max}", tilemap);
-            _mapMax = Vector2.Max(_mapMax, max);
-            _mapMin = Vector2.Min(_mapMin, min);
+            
+            mapMax = Vector2.Max(mapMax, max);
+            mapMin = Vector2.Min(mapMin, min);
         }
 
-        var verticalMin = (_mapMax.y - _mapMin.y) / 2;
-        var horizontalMin = (_mapMax.x - _mapMin.x) / 2;
+        var verticalMin = (mapMax.y - mapMin.y) / 2;
+        var horizontalMin = (mapMax.x - mapMin.x) / 2;
         
-        if (verticalMin * _mapCamera.aspect < horizontalMin) {
-            _mapCamera.orthographicSize = horizontalMin / _mapCamera.aspect + _cameraMargin;
+        float size;
+        if (verticalMin * aspectRatio < horizontalMin) {
+            size = horizontalMin / aspectRatio + margin;
         } else {
-            _mapCamera.orthographicSize = verticalMin + _cameraMargin;
+            size = verticalMin + margin;
         }
 
-        _mapCenter = (_mapMax + _mapMin) / 2;
-        t.position = new Vector3(_mapCenter.x, _mapCenter.y, t.position.z);
+        var center = (mapMax + mapMin) / 2;
+        return (size, center);
+    }
+    
+    void PositionCamera() {
+        var (size, pos) = GetCameraPosition(_boards.Keys, _mapCamera.aspect, _cameraMargin);
+        
+        var t = _mapCamera.transform;
+        t.position = new Vector3(pos.x, pos.y, t.position.z);
+        _mapCamera.orthographicSize = size;
     }
 
     void RegisterMapObject(MapObject mapObject) {

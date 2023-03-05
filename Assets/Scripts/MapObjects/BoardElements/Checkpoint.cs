@@ -2,7 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 
-public class Checkpoint : BoardElement<Checkpoint, IPlayer>, ITooltipable {
+public class Checkpoint : BoardElement<Checkpoint, IPlayer>, ITooltipable, ITriggerAwake {
     [SerializeField] int _index;
     [SerializeField] TMP_Text _indexText;
 
@@ -22,6 +22,7 @@ public class Checkpoint : BoardElement<Checkpoint, IPlayer>, ITooltipable {
         }
     }
 
+    public void TriggerAwake() => Awake();
     protected override void Awake() {
         base.Awake();
         _indexText.text = _index.ToString();

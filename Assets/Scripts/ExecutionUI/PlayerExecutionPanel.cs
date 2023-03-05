@@ -30,18 +30,26 @@ public class PlayerExecutionPanel : Container<Player>, IPointerClickHandler {
 
     void Awake() {
         ExecutionPhase.OnPhaseStart += OnExecutionStart;
+        ExecutionPhase.OnPhaseEnd += OnExecutionEnd;
     }
 
     void OnDestroy() {
         ExecutionPhase.OnPhaseEnd -= OnExecutionStart;
+        ExecutionPhase.OnPhaseEnd -= OnExecutionEnd;
     }
 
     void OnExecutionStart() {
+        Content.Program.OnRegisterChanged += OnRegisterChanged;
+        
         var isLocal = PlayerSystem.IsLocal(Content);
         for (var i = 0; i < _registers.Length; i++) {
             _registers[i].SetContent(Content.Program[i]);
             _registers[i].Visible = isLocal;
         }
+    }
+
+    void OnExecutionEnd() {
+        Content.Program.OnRegisterChanged -= OnRegisterChanged;
     }
 
     protected override void Serialize(Player player) {
@@ -55,6 +63,10 @@ public class PlayerExecutionPanel : Container<Player>, IPointerClickHandler {
         player.IsRebooted.OnValueChanged += (_, next) => _rebootedOverlay.SetActive(next);
         player.CurrentCheckpoint.OnValueChanged += (_, next) => _checkpointText.text = next.ToString();
         player.OnCardAffectorApplied += OnCardAffectorApplied;
+    }
+    
+    void OnRegisterChanged(int index, ProgramCardData prev, ProgramCardData next) {
+        _registers[index].SetContent(next);
     }
 
     void OnCardAffectorApplied(CardAffector affector) {

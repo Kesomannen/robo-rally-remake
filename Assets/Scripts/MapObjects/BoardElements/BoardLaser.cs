@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BoardLaser : MapObject, ITooltipable {
+public class BoardLaser : MapObject, ITooltipable, ITriggerAwake {
     [SerializeField] Vector2Int _direction;
     [SerializeField] Laser _laserPrefab;
     [SerializeField] CardAffector _affector;
@@ -26,6 +26,7 @@ public class BoardLaser : MapObject, ITooltipable {
         }
     }
 
+    public void TriggerAwake() => Awake();
     protected override void Awake() {
         base.Awake();
         _lasersInScene++;

@@ -48,4 +48,5 @@ public static class Extensions {
     }
     
     public static void SetActive(this Component component, bool active) => component.gameObject.SetActive(active);
+    public static T EnforceComponent<T>(this GameObject component) where T : Component => component.GetComponent<T>() ?? component.AddComponent<T>();
 }

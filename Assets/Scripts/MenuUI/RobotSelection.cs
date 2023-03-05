@@ -23,17 +23,21 @@ public class RobotSelection : MonoBehaviour {
 
         LobbySystem.OnPlayerUpdatedOrAdded += OnPlayerUpdatedOrAdded;
         LobbySystem.OnPlayerRemoved += OnPlayerRemoved;
+        RoomMenu.OnLocalPlayerReady += OnLocalPlayerReady;
+        
+        _panels.ForEach(UpdatePanel);
     }
 
     void OnDisable() {
-        foreach (var panel in _panels) {
-            panel.SetState(RobotPanel.State.Available);
-        }        
-        
         LobbySystem.OnPlayerUpdatedOrAdded -= OnPlayerUpdatedOrAdded;
         LobbySystem.OnPlayerRemoved -= OnPlayerRemoved;
+        RoomMenu.OnLocalPlayerReady -= OnLocalPlayerReady;
     }
     
+    void OnLocalPlayerReady() {
+        _panels.ForEach(UpdatePanel);
+    }
+
     void OnPlayerRemoved(ulong id) {
         UpdatePanel(_playerRobots[id]);
         _playerRobots.Remove(id);
@@ -54,7 +58,8 @@ public class RobotSelection : MonoBehaviour {
 
         if (_playerRobots[localId] == panel.Content) {
             panel.SetState(RobotPanel.State.Selected);
-        } else if (_playerRobots.Any(player => player.Value == panel.Content)) {
+        } else if (_playerRobots.Any(player => player.Value == panel.Content) 
+                   || LobbySystem.PlayersInLobby[localId].IsReady) {
             panel.SetState(RobotPanel.State.Unavailable);
         } else {
             panel.SetState(RobotPanel.State.Available);

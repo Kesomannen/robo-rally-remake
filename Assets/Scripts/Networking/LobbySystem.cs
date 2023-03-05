@@ -61,13 +61,13 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         var id = NetworkManager.LocalClientId;
         if (IsServer) {
             NetworkManager.OnClientConnectedCallback += OnClientConnected;
-            
-            _playersInLobby.Add(id, new LobbyPlayerData {
+
+            _playersInLobby[id] = new LobbyPlayerData {
                 Name = _playerName,
                 IsHost = true,
                 IsReady = false,
-                RobotId = (byte) RobotData.GetRandom().GetLookupId()
-            });
+                RobotId = (byte)RobotData.GetRandom().GetLookupId()
+            };
             OnPlayerUpdatedOrAdded?.Invoke(id, _playersInLobby[id]);
 
             //StartCoroutine(UpdateLobbyRoutine());
@@ -90,12 +90,12 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
     
     void OnClientConnected(ulong id) {
         if (!IsServer) return;
-        _playersInLobby.Add(id, new LobbyPlayerData {
+        _playersInLobby[id] = new LobbyPlayerData {
             Name = "Retrieving name...",
             IsHost = false,
             IsReady = false,
             RobotId = GetRandomRobot()
-        });
+        };
         OnPlayerUpdatedOrAdded?.Invoke(id, _playersInLobby[id]);
         
         GetNameClientRpc(id);
@@ -211,13 +211,14 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
     }
 
     public async Task<bool> StartGame() {
+        Debug.Log("Starting game");
         try {
-            await Matchmaking.LockLobbyAsync();   
+            await Matchmaking.LockLobbyAsync();
+            NetworkManager.SceneManager.LoadScene("Game", LoadSceneMode.Single);
         } catch (LobbyServiceException e) {
             Debug.LogError($"Failed to lock lobby: {e.Message}");
             return false;
         }
-        NetworkManager.SceneManager.LoadScene("Game", LoadSceneMode.Single);
         return true;
     }
     

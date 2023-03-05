@@ -15,4 +15,5 @@ MonoBehaviour:
   _name: High Octane
   _difficulty: 0
   _length: 1
+  _thumbnail: {fileID: 21300000, guid: 417fee7c00d13d44db7e67aac5788320, type: 3}
   _prefab: {fileID: 2735810581556869128, guid: d5608e7e88ce47941a1f911fdea14021, type: 3}

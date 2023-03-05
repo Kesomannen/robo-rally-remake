@@ -29,7 +29,7 @@ public class LaserMoveAffector : ScriptableAffector<IPlayer> {
         var attackerPos = attacker.Model.GridPos;
         var targetPos = target.Model.GridPos;
         
-        var distance = Mathf.Abs(attackerPos.x - targetPos.x) + Mathf.Abs(attackerPos.y - targetPos.y);
+        var distance = attackerPos.GridDistance(targetPos);
         if (distance < _minDistance) return;
 
         TaskScheduler.PushRoutine(_optional ? OptionalChoice() : PushTarget());
@@ -43,7 +43,7 @@ public class LaserMoveAffector : ScriptableAffector<IPlayer> {
                 OutputArray = result,
                 Message = $"choosing whether to {(_moveDistance < 0 ? "pull" : "push")} {context.Target}",
                 MinChoices = 1
-            });
+            }); 
             if (result[0]) {
                 TaskScheduler.PushRoutine(PushTarget());
             }

@@ -12,12 +12,12 @@ public class RepeatProgram : ProgramCardData {
     }
 
     public override IEnumerator ExecuteRoutine(Player player, int register)  {
-        var posToRepeat = register + _relativeRepeatIndex;
-        var card = player.Program[posToRepeat];
+        var registerToRepeat = register + _relativeRepeatIndex;
+        var card = player.Program[registerToRepeat];
         for (var i = 0; i < _repeatCount; i++) {
             yield return CoroutineUtils.Wait(_timeBetweenRepeats);
             player.RegisterPlay(card);
-            yield return card.ExecuteRoutine(player, posToRepeat);
+            yield return card.ExecuteRoutine(player, registerToRepeat);
         }
     }
 }

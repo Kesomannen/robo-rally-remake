@@ -14,6 +14,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
     static bool _currentPlayerReady;
     
     public static Player CurrentPlayer { get; private set; }
+    public static IReadOnlyList<UpgradeCardData> ShopCards => _shopCards;
 
     const float RestockDelay = 0.25f;
     
