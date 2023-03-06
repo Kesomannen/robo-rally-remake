@@ -186,6 +186,7 @@ GameObject:
   - component: {fileID: 4936615271306806922}
   - component: {fileID: 7174551188889054330}
   - component: {fileID: 8486632034240765099}
+  - component: {fileID: 5620313041094060068}
   m_Layer: 0
   m_Name: PushPanel
   m_TagString: Untagged
@@ -251,12 +252,12 @@ SpriteRenderer:
   m_SortingLayerID: -2014963105
   m_SortingLayer: -1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: d9dbfbd2f0594e544a1f4a9d226c0677, type: 3}
+  m_Sprite: {fileID: -1894394392, guid: d9dbfbd2f0594e544a1f4a9d226c0677, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.125, y: 1.125}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -293,7 +294,7 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 1.125, y: 1.125}
-    newSize: {x: 1, y: 1}
+    newSize: {x: 1.125, y: 1.125}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -317,7 +318,8 @@ MonoBehaviour:
   _activeRegisters: 0100000003000000
   _direction: {x: 0, y: -1}
   _pushSpeed: 2
-  _pushEaseType: 2
+  _pushEaseType: 12
+  _animation: {fileID: 5620313041094060068}
   _registerTexts:
   - {fileID: 814839960680717044}
   - {fileID: 7637114450654172871}
@@ -334,6 +336,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _highlightMaterial: {fileID: 2100000, guid: c385d055d2118d54584af44e2183a368, type: 2}
+--- !u!114 &5620313041094060068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2474868672773014525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d9db881a78a4b618eeffc76536bd07a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _frameTime: 0.1
+  _sprites:
+  - {fileID: 387855563, guid: d9dbfbd2f0594e544a1f4a9d226c0677, type: 3}
+  - {fileID: 898142232, guid: d9dbfbd2f0594e544a1f4a9d226c0677, type: 3}
+  - {fileID: -1954183748, guid: d9dbfbd2f0594e544a1f4a9d226c0677, type: 3}
+  - {fileID: -1137774804, guid: d9dbfbd2f0594e544a1f4a9d226c0677, type: 3}
+  - {fileID: -1894394392, guid: d9dbfbd2f0594e544a1f4a9d226c0677, type: 3}
+  _looping: 0
 --- !u!1 &6719982245010109292
 GameObject:
   m_ObjectHideFlags: 0

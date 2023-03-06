@@ -12,8 +12,8 @@ public class ZoomBotAffector : ScriptableAffector<IPlayer> {
     readonly List<PlayerModel> _affectedPlayers = new();
 
     public override void Apply(IPlayer target) {
-        var invocations
-        if (invocations == null || !invocations.Any()) {
+        var invocations = ExecutionPhase.GetPhaseEndInvocations();
+        if (invocations == null || !invocations.Contains(OnExecutionEnd)) {
             ExecutionPhase.OnPhaseEnd += OnExecutionEnd;
         } 
         
@@ -25,8 +25,13 @@ public class ZoomBotAffector : ScriptableAffector<IPlayer> {
     }
 
     void OnExecutionEnd() {
-        foreach (var model in _affectedPlayers) {
-            for (var i = 0; i < _distance; i++) {
+        for (var i = 0; i < _affectedPlayers.Count; i++) {
+            var model = _affectedPlayers[i];
+            if (model == null) {
+                _affectedPlayers.RemoveAt(i);
+                i--;
+            }
+            for (var j = 0; j < _distance; j++) {
                 model.Owner.RegisterPlay(_programCardPreview);
                 TaskScheduler.PushRoutine(model.Move(_direction, _relative));
             }

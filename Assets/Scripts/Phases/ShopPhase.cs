@@ -16,8 +16,6 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
     public static Player CurrentPlayer { get; private set; }
     public static IReadOnlyList<UpgradeCardData> ShopCards => _shopCards;
 
-    const float RestockDelay = 0.25f;
-    
     public static event Action<Player, bool, UpgradeCardData> OnPlayerDecision;
     public static event Action<Player> OnNewPlayer;
     public static event Action<int, UpgradeCardData> OnRestock;
@@ -88,15 +86,13 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
             yield return new WaitUntil(() => _restockCards != null);
         }
 
-        for (var i = _restockCards!.Length - 1; i >= 0; i--) {
-            Debug.Log($"Restocking card {i} with {_restockCards[i]}");
-            if (_shopCards[i] == _restockCards[i] && _shopCards[i] != null) continue;
-            TaskScheduler.PushRoutine(Restock(i, _restockCards[i]));
-        }
+        TaskScheduler.PushSequence(actions: _restockCards
+            .Where((_, i) => _shopCards[i] != _restockCards[i])
+            .Select<UpgradeCardData, Action>((card, i) => () => Restock(card, i))
+            .ToArray());
         _restockCards = null;
         
-        IEnumerator Restock(int index, UpgradeCardData card) {
-            yield return CoroutineUtils.Wait(RestockDelay);
+        void Restock(UpgradeCardData card, int index) {
             _shopCards[index] = card;
             OnRestock?.Invoke(index, card);
         }

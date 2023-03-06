@@ -12,6 +12,7 @@ public class PushPanel : BoardElement<PushPanel, ICanEnterHandler>, ITooltipable
     [Header("Animation")]
     [SerializeField] float _pushSpeed;
     [SerializeField] LeanTweenType _pushEaseType;
+    [SerializeField] PassiveAnimation _animation;
     
     [Header("References")]
     [SerializeField] TMP_Text[] _registerTexts;
@@ -55,6 +56,11 @@ public class PushPanel : BoardElement<PushPanel, ICanEnterHandler>, ITooltipable
         AddActivation();
         
         action.MapObjects.AddRange(pushable.Skip(1).Select(o => o.Object));
-        TaskScheduler.PushRoutine(Interaction.EaseEvent(action, _pushEaseType, _pushSpeed));
+        TaskScheduler.PushRoutine(Routine());
+
+        IEnumerator Routine() {
+            _animation.PlayOnce();
+            yield return Interaction.EaseEvent(action, _pushEaseType, _pushSpeed);
+        }
     }
 }

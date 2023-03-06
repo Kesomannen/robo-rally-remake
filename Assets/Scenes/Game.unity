@@ -2864,8 +2864,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ad5597ae79c4fa47973471e5c5d4293, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mapToLoad: {fileID: 11400000, guid: 37198eb64666d204fac61c3a11f4c391, type: 2}
-  _robotToLoad: {fileID: 11400000, guid: f5662703ca885694093898b0567926b5, type: 2}
+  _mapToLoad: {fileID: 11400000, guid: ee6058072b906024f90f5c10f1ceb3de, type: 2}
+  _robotToLoad: {fileID: 11400000, guid: 37b46a89c76c78b4f99841f95498e646, type: 2}
   _upgradesToLoad:
   - {fileID: 11400000, guid: 65bdee8cc476ffe409a6a5ce878fffce, type: 2}
   - {fileID: 11400000, guid: 8a3d8f7499b70f442ac276063a17a11f, type: 2}
