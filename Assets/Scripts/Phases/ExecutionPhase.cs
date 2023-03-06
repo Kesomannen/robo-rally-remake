@@ -19,6 +19,11 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
     public static event Action<ExecutionSubPhase> OnNewSubPhase;
     public static event Action<IReadOnlyList<Player>> OnPlayersOrdered;
     public static event Action<int> OnNewRegister;
+    
+    public static IEnumerable<Action> GetPhaseEndInvocations() {
+        var invocationList = OnPhaseEnd?.GetInvocationList();
+        return invocationList?.Cast<Action>();
+    }
 
     public static IEnumerator DoPhase() {
         OnPhaseStart?.Invoke();

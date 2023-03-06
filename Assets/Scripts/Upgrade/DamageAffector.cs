@@ -10,8 +10,8 @@ public class DamageAffector : ScriptableAffector<IPlayer> {
     [SerializeField] Destination _destination;
     [SerializeField] Placement _placement;
 
-    Pile Pile => (Pile)((int)_destination - 1);
-    CardPlacement CardPlacement => (CardPlacement)((int)_placement - 1);
+    Pile Pile => _destination.Convert<Destination, Pile>(-1);
+    CardPlacement CardPlacement => _placement.Convert<Placement, CardPlacement>(-1);
 
     public override void Apply(IPlayer target) {
         var player = target.Owner;

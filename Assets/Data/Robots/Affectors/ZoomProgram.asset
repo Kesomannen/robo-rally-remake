@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 63049e0a4931204469eec5981a097efa, type: 3}
-  m_Name: Move3
+  m_Name: ZoomProgram
   m_EditorClassIdentifier: 
-  _name: Move 3
-  _description: Move your robot three spaces forward.
-  _artwork: {fileID: 21300000, guid: 4ca13229f67fc6249a9138ad27252f73, type: 3}
+  _name: Zoom Program
+  _description: Move forward one space at the end of execution.
+  _artwork: {fileID: 21300000, guid: 5d7ddaf87d8eadb4da58ff6374b7c4a7, type: 3}
   _type: 0
-  _steps: 3
+  _steps: 1
   _direction: {x: 1, y: 0}
   _relative: 1

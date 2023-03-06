@@ -9,8 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41d6cd3e30894fb9906289775660f9a9, type: 3}
-  m_Name: OneBonusPriority
+  m_Script: {fileID: 11500000, guid: 48f54436ec464ec6864393857295e266, type: 3}
+  m_Name: ZoomBotMove
   m_EditorClassIdentifier: 
-  _value: 1
-  _target: 2
+  _relative: 1
+  _direction: {x: 1, y: 0}
+  _distance: 1
+  _programCardPreview: {fileID: 11400000, guid: 2577db1c39f442646835279f30cc60d1, type: 2}
+  _subscribed: 1

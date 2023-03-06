@@ -27,8 +27,8 @@ public class PhaseSystem : Singleton<PhaseSystem> {
         }
         
         IEnumerator DoPhaseRoutine(IEnumerator routine, Phase phase) {
-            yield return NetworkSystem.Instance.SyncPlayers();
             yield return TaskScheduler.WaitUntilClear();
+            yield return NetworkSystem.Instance.SyncPlayers();
             Current.Value = phase;
             yield return routine;
         }
