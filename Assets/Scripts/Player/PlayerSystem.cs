@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class PlayerSystem : Singleton<PlayerSystem> {
     [SerializeField] PlayerModel _playerModelPrefab;
+    [SerializeField] ScriptableCardAffector _rebootAffector;
 
     static readonly List<Player> _players = new();
     public static IReadOnlyList<Player> Players => _players;
@@ -13,6 +14,7 @@ public class PlayerSystem : Singleton<PlayerSystem> {
     static List<RebootToken> _unoccupiedSpawnPoints;
 
     public static bool IsLocal(Player player) => player == LocalPlayer;
+    public static bool EnergyEnabled => !LobbySystem.LobbySettings.BeginnerGame.Enabled;
     
     protected override void Awake() {
         base.Awake();
@@ -32,8 +34,7 @@ public class PlayerSystem : Singleton<PlayerSystem> {
     }
 
     public void CreatePlayer(ulong id, LobbyPlayerData data, bool randomizeSpawn) {
-        var settings = GameSettings.Instance;
-
+        var settings = LobbySystem.LobbySettings;
         var robotData = RobotData.GetById(data.RobotId);
         
         RebootToken spawnPoint;
@@ -52,9 +53,8 @@ public class PlayerSystem : Singleton<PlayerSystem> {
             SpawnPoint = spawnPoint,
             StartingEnergy = settings.StartingEnergy,
             CardsPerTurn = settings.CardsPerTurn,
-            HandSize = settings.MaxCardsInHand,
             RegisterCount = ExecutionPhase.RegisterCount,
-            RebootAffector = settings.RebootAffector.ToInstance(),
+            RebootAffector = _rebootAffector.ToInstance(),
             UpgradeSlots = settings.UpgradeSlots,
             Name = data.Name
         };

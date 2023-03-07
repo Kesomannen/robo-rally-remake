@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Zoom Program
   _description: Move forward one space at the end of execution.
-  _artwork: {fileID: 21300000, guid: 5d7ddaf87d8eadb4da58ff6374b7c4a7, type: 3}
+  _artwork: {fileID: 21300000, guid: 8135ca07d63006b47bb6a0b2b0617d38, type: 3}
   _type: 0
   _steps: 1
   _direction: {x: 1, y: 0}

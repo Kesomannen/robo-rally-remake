@@ -12,7 +12,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
     public const int RegisterCount = 5;
     const float SubPhaseDelay = 0;
     const float StepDelay = 0.5f;
-    const float UpgradeAvailableDelay = 1f;
+    const float UpgradeAvailableDelay = 3f;
 
     public static event Action OnPhaseStart, OnPhaseEnd, OnExecutionComplete, OnPlayerRegistersComplete;
     public static event Action<ProgramCardData, int, Player> OnPlayerRegister;
@@ -49,7 +49,6 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
 
     static Player[] _previousPlayerOrder;
     
-    // ReSharper disable Unity.PerformanceAnalysis
     static IEnumerator DoRegister(int register) {
         Debug.Log($"Starting register {register}");
         
@@ -104,7 +103,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
             
             CurrentPlayer = player;
 
-            if (player.Upgrades.Any(u => u != null && u.CanUse(player) && u.Type is UpgradeType.Action or UpgradeType.Permanent)) {
+            if (player.Upgrades.Any(u => u != null && u.CanUse(player) && u.Type is UpgradeType.Action or UpgradeType.Temporary)) {
                 yield return CoroutineUtils.Wait(UpgradeAvailableDelay);
             }
 
@@ -113,7 +112,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
             
             player.RegisterPlay(card);
             OnPlayerRegister?.Invoke(card, register, player);
-            TaskScheduler.PushRoutine(card.ExecuteRoutine(player, register));
+            TaskScheduler.PushRoutine(card.ExecuteRoutine(player, register), StepDelay);
         }
     }
 }

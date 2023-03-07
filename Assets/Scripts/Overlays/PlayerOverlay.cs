@@ -26,8 +26,13 @@ public class PlayerOverlay : Overlay {
 
     public void Init(Player player) {
         _player = player;
+
         Refresh();
-        StartCoroutine(TweenHelper.DoUITween(_tween, _objects.Concat(_upgradeCards.Select(c => c.gameObject))));
+        StartCoroutine(TweenHelper.DoUITween(_tween, _objects
+            .Where(o => o != null)
+            .Concat(_upgradeCards
+                .Select(c => c.gameObject))
+        ));
     }
 
     void Refresh() {

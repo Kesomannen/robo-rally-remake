@@ -22,7 +22,6 @@ public class Player : IPlayer {
     public readonly Program Program;
 
     public int CardsPerTurn;
-    
     public int BonusPriority;
 
     // Damage
@@ -53,9 +52,15 @@ public class Player : IPlayer {
         _name = args.Name;
         RobotData = args.RobotData;
 
+        var startingDeck = args.RobotData.StartingDeck;
+        if (!PlayerSystem.EnergyEnabled) {
+            // Take out energy cards
+            startingDeck = startingDeck.Where(x => x.Type != ProgramCardData.CardType.Utility);
+        }
+
         // Cards
-        Hand = new CardCollection(maxCards: args.HandSize);
-        DrawPile = new CardCollection(startingCards: args.RobotData.StartingDeck);
+        Hand = new CardCollection();
+        DrawPile = new CardCollection(startingCards: startingDeck);
         DiscardPile = new CardCollection();
         Program = new Program(args.RegisterCount);
         
@@ -297,7 +302,6 @@ public struct PlayerArgs {
     public PlayerModel ModelPrefab;
     public int StartingEnergy;
     public int CardsPerTurn;
-    public int HandSize;
     public int RegisterCount;
     public CardAffector RebootAffector;
     public int UpgradeSlots;

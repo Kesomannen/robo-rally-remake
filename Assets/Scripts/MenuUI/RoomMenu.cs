@@ -11,6 +11,7 @@ public class RoomMenu : Menu {
     [SerializeField] LobbyPlayerPanel _playerPanelPrefab;
     [SerializeField] Transform _playerPanelParent;
     [SerializeField] TMP_Text _lobbyCodeText;
+    [SerializeField] SettingsPanelProperty _startingEnergyProperty, _cardsPerTurnProperty, _stressTimeProperty, _shopCardsProperty, _upgradeSlotsProperty, _beginnerGameProperty, _advancedGameProperty;
 
     readonly List<LobbyPlayerPanel> _playerPanels = new();
     
@@ -29,6 +30,15 @@ public class RoomMenu : Menu {
         foreach (var (id, data) in LobbySystem.PlayersInLobby) {
             UpdatePanel(id, data);
         }
+        
+        var settings = LobbySystem.LobbySettings;
+        _startingEnergyProperty.LobbyProperty = settings.StartingEnergy;
+        _cardsPerTurnProperty.LobbyProperty = settings.CardsPerTurn;
+        _stressTimeProperty.LobbyProperty = settings.StressTime;
+        _shopCardsProperty.LobbyProperty = settings.ShopCards;
+        _upgradeSlotsProperty.LobbyProperty = settings.UpgradeSlots;
+        _beginnerGameProperty.LobbyProperty = settings.BeginnerGame;
+        _advancedGameProperty.LobbyProperty = settings.AdvancedGame;
 
         _readyButton.gameObject.SetActive(true);
         _startGameButton.gameObject.SetActive(false);

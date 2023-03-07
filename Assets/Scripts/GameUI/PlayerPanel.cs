@@ -23,16 +23,24 @@ public class PlayerPanel : Container<Player>, IPointerClickHandler {
     [SerializeField] Image _energyIcon;
     [SerializeField] [Min(0)] float _tweenDuration;
     [SerializeField] LeanTweenType _tweenType;
+
+    static bool EnergyEnabled => PlayerSystem.EnergyEnabled;
     
+    void Start() {
+        if (EnergyEnabled || !_energyText.Enabled) return;
+        _energyText.Value.gameObject.SetActive(false);
+        _energyIcon.gameObject.SetActive(false);
+    }
+
     protected override void Serialize(Player player) {
         if (_nameText.Enabled) _nameText.Value.text = PlayerSystem.IsLocal(player) ? $"{player} (You)" : player.ToString();
-        if (_energyText.Enabled) _energyText.Value.text = player.Energy.ToString();
+        if (_energyText.Enabled && EnergyEnabled) _energyText.Value.text = player.Energy.ToString();
         Content.Energy.OnValueChanged += OnEnergyChanged;
         if (_robotIcon.Enabled) _robotIcon.Value.sprite = player.RobotData.Icon;
     }
     
     void OnEnergyChanged(int prev, int next) {
-        if (!_energyText.Enabled) return;
+        if (!_energyText.Enabled || !EnergyEnabled) return;
         var energyText = _energyText.Value;
 
         var effectColor = next > prev ? Color.green : Color.red;

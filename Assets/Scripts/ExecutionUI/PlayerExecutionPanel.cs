@@ -46,6 +46,7 @@ public class PlayerExecutionPanel : Container<Player>, IPointerClickHandler {
             _registers[i].SetContent(Content.Program[i]);
             _registers[i].Visible = isLocal;
         }
+        
     }
 
     void OnExecutionEnd() {

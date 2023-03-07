@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Zoom Bot
   _description: Moves one space forward at the end of the execution phase.
-  _icon: {fileID: 21300000, guid: 32f7012d99d2f8e4bb5dc5f1fd8c770c, type: 3}
-  _sprite: {fileID: 21300000, guid: 32f7012d99d2f8e4bb5dc5f1fd8c770c, type: 3}
+  _icon: {fileID: 21300000, guid: 0d091df029400b9488931707024f6ae3, type: 3}
+  _sprite: {fileID: 21300000, guid: 0d091df029400b9488931707024f6ae3, type: 3}
   _color: {r: 0.5764329, g: 0.8679245, b: 0.58431107, a: 1}
   _startingDeck:
   - {fileID: 11400000, guid: 7d66565cef5302d4c98375131e02105f, type: 2}

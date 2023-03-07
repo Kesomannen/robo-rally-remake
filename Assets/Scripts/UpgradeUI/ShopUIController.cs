@@ -20,7 +20,7 @@ public class ShopUIController : Singleton<ShopUIController> {
     protected override void Awake() {
         base.Awake();
         
-        _shopCards = new ShopCard[GameSettings.Instance.ShopSlots];
+        _shopCards = new ShopCard[LobbySystem.LobbySettings.ShopCards];
         for (var i = 0; i < _shopCards.Length; i++) {
             var card = Instantiate(_shopCardPrefab, _upgradeParent);
             card.OnCardClicked += OnCardClicked;

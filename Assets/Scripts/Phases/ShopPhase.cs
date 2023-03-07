@@ -24,7 +24,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
 
     protected override void Awake() {
         base.Awake();
-        _shopCards = new UpgradeCardData[GameSettings.Instance.ShopSlots];
+        _shopCards = new UpgradeCardData[LobbySystem.LobbySettings.ShopCards];
     }
 
     public IEnumerator DoPhase() {

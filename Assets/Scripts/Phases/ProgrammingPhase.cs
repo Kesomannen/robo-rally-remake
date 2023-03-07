@@ -22,7 +22,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
         IsStressed = false;
         PlayerUIRegister.Locked = false;
         LocalPlayerLockedIn = false;
-        StressTimer.Value = GameSettings.Instance.StressTime;
+        StressTimer.Value = LobbySystem.LobbySettings.StressTime.Value;
         
         OnPhaseStarted?.Invoke();
         
@@ -32,6 +32,11 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
 
         _playersLockedIn = 0;
         yield return new WaitUntil(() => _playersLockedIn >= PlayerSystem.Players.Count);
+
+        if (LobbySystem.LobbySettings.AdvancedGame.Enabled) yield break;
+        foreach (var player in PlayerSystem.Players) {
+            player.DiscardHand();
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -50,6 +55,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
 
      void LockPlayerRegister(byte playerIndex, IEnumerable<byte> registerCardIds) {
          var player = PlayerSystem.Players[playerIndex];
+         var stressEnabled = LobbySystem.LobbySettings.StressTime.Enabled;
          
          OnPlayerLockedIn?.Invoke(player);
          
@@ -63,12 +69,12 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
                  Debug.Log($"Register {i} of player {playerIndex} is now {cards[i]}");
              }
              
-             if (!IsStressed) {
-                 StartCoroutine(StressRoutine());   
+             if (!IsStressed && stressEnabled) {
+                 StartCoroutine(StressRoutine());
              }
          }
 
-         if (IsStressed) return;
+         if (IsStressed || !stressEnabled) return;
          OnStressStarted?.Invoke();
      }
 

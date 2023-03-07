@@ -1,6 +1,4 @@
 using System.Collections;
-using Unity.Netcode;
-using UnityEngine;
 
 public class PhaseSystem : Singleton<PhaseSystem> {
     static bool _isRunning;
@@ -18,7 +16,9 @@ public class PhaseSystem : Singleton<PhaseSystem> {
     static IEnumerator PhaseSystemRoutine() {
         _isRunning = true;
         while (true) {
-            yield return DoPhaseRoutine(ShopPhase.Instance.DoPhase(), Phase.Shop);
+            if (PlayerSystem.EnergyEnabled) {
+                yield return DoPhaseRoutine(ShopPhase.Instance.DoPhase(), Phase.Shop);   
+            }
             if (!_isRunning) yield break;   
             yield return DoPhaseRoutine(ProgrammingPhase.DoPhase(), Phase.Programming);
             if (!_isRunning) yield break;

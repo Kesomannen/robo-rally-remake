@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using Unity.Netcode;
@@ -23,10 +22,21 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
         
         Debug.Log("NetworkSystem spawned, loading map...");
         MapSystem.Instance.LoadMap(MapData.GetById(LobbySystem.LobbyMap.Value));
-        
+
         foreach (var (id, data) in LobbySystem.PlayersInLobby) {
             PlayerSystem.Instance.CreatePlayer(id, data, false);
         }
+        
+        if (!PlayerSystem.EnergyEnabled) {
+            var spaces = MapSystem.GetByType<EnergySpace>().ToArray();
+            // ReSharper disable once ForCanBeConvertedToForeach
+            // Collection was modified; enumeration operation may not execute.
+            for (var i = 0; i < spaces.Length; i++) {
+                var energySpace = spaces[i];
+                MapSystem.DestroyObject(energySpace);
+            }
+        }
+        
         PhaseSystem.StartPhaseSystem();
     }
 
@@ -111,7 +121,7 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
         var depth = endIndex - startIndex;
         var collection = player.GetCollection(pile);
         
-        if (collection.Cards.Count < startIndex + depth) {
+        if (collection.Cards.Count <= startIndex + depth) {
             if (pile == Pile.DrawPile) {
                 player.ShuffleDeck();
             } else {

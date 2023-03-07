@@ -17,9 +17,10 @@ public class ProgramCardViewer : MonoBehaviour {
     [SerializeField] float _tweenTime;
     
     Vector3 SpacedSize => (_cardSize + Vector2.one * _cardSpacing) * CanvasUtils.CanvasScale;
-    
+
     readonly List<ProgramCard> _cards = new();
     Player _lastPlayer;
+    bool _isAnimating;
     
     void Start() {
         foreach (var player in PlayerSystem.Players) {
@@ -33,7 +34,10 @@ public class ProgramCardViewer : MonoBehaviour {
         _lastPlayer = player;
     }
 
-    public IEnumerator AddCard(ProgramCardData data, bool replace = false) {
+    IEnumerator AddCard(ProgramCardData data, bool replace = false) {
+        yield return new WaitUntil(() => !_isAnimating);
+        _isAnimating = true;
+        
         if (replace) {
             yield return ClearCards();
         }
@@ -50,9 +54,11 @@ public class ProgramCardViewer : MonoBehaviour {
         
         LeanTween.move(newCard.gameObject, targetPos, _tweenTime).setEase(_tweenType);
         yield return CoroutineUtils.Wait(_tweenTime);
+        _isAnimating = false;
     }
 
     public IEnumerator ClearCards() {
+        _isAnimating = true;
         foreach (var card in _cards) {
             var pos = card.transform.position + SpacedSize.y * Vector3.down;
             LeanTween.move(card.gameObject, pos, _tweenTime).setEase(_tweenType);
@@ -63,5 +69,6 @@ public class ProgramCardViewer : MonoBehaviour {
             Destroy(card.gameObject);
         }
         _cards.Clear();
+        _isAnimating = false;
     }
 }

@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using System.Collections;
-using System.Linq;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "MoveProgram", menuName = "ScriptableObjects/Programs/Move")]

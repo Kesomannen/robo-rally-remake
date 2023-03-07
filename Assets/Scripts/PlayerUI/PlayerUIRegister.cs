@@ -48,7 +48,7 @@ public class PlayerUIRegister : MonoBehaviour, IPointerClickHandler {
         if (Locked || !item.Content.CanPlace(Owner, _index)) return false;
         if (!IsEmpty && !Remove()) return false;
 
-            _cardContainer.SetContent(item.Content);
+        _cardContainer.SetContent(item.Content);
         _cardContainer.gameObject.SetActive(true);
         Owner.Program.SetRegister(_index, item.Content);
         

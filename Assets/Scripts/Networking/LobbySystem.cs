@@ -21,11 +21,13 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
     
     static readonly Dictionary<ulong, LobbyPlayerData> _playersInLobby = new();
     public static IReadOnlyDictionary<ulong, LobbyPlayerData> PlayersInLobby => _playersInLobby;
-
+    
+    public static LobbySettings LobbySettings { get; private set; } = new();
     public static readonly ObservableField<int> LobbyMap = new();
 
     public static event Action<ulong, LobbyPlayerData> OnPlayerUpdatedOrAdded;
     public static event Action<ulong> OnPlayerRemoved;
+    public static event Action<LobbySettings> OnLobbySettingsUpdated; 
 
     public static string LobbyJoinCode => Matchmaking.CurrentLobby.LobbyCode;
     
@@ -62,6 +64,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         if (IsServer) {
             NetworkManager.OnClientConnectedCallback += OnClientConnected;
 
+            LobbySettings = new LobbySettings();
             _playersInLobby[id] = new LobbyPlayerData {
                 Name = _playerName,
                 IsHost = true,
@@ -118,6 +121,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
             UpdatePlayerClientRpc(id, data);
         }
         UpdateLobbyMapClientRpc((byte) LobbyMap.Value);
+        UpdateLobbySettingsClientRpc(LobbySettings);
     }
 
     [ClientRpc]
@@ -161,8 +165,21 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         Debug.Log($"Updated player {id} with data {data}");
     }
 
+    [ClientRpc]
+    void UpdateLobbySettingsClientRpc(LobbySettings settings) {
+        if (IsServer) return;
+        LobbySettings = settings;
+        OnLobbySettingsUpdated?.Invoke(settings);
+    }
+
     # region Public Methods
 
+    public void RefreshLobbySettings() {
+        OnLobbySettingsUpdated?.Invoke(LobbySettings);
+        Debug.Log($"Refreshed lobby settings: {LobbySettings}");
+        UpdateLobbySettingsClientRpc(LobbySettings);
+    }
+    
     public void UpdatePlayer([CanBeNull] RobotData robot = null, bool? ready = null) {
         var id = NetworkManager.LocalClientId;
         var data = _playersInLobby[id];
