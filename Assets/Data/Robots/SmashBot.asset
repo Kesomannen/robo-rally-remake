@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Smash Bot
   _description: Pushes robots two spaces instead of one.
-  _icon: {fileID: 21300000, guid: 2824c472c382a1f4693079c1ee2e3803, type: 3}
-  _sprite: {fileID: 21300000, guid: 2824c472c382a1f4693079c1ee2e3803, type: 3}
+  _icon: {fileID: 21300000, guid: 54cf458315de1924d953b758269df009, type: 3}
+  _sprite: {fileID: 21300000, guid: 54cf458315de1924d953b758269df009, type: 3}
   _color: {r: 1, g: 0.79504734, b: 0.4009434, a: 1}
   _startingDeck:
   - {fileID: 11400000, guid: 2cb459cf240aad04daea347bb26fee55, type: 2}

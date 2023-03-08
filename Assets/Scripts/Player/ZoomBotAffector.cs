@@ -4,12 +4,9 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "ScriptableObjects/Affectors/Zoom Bot", fileName = "ZoomBotAffector")]
 public class ZoomBotAffector : ScriptableAffector<IPlayer> {
-    [SerializeField] bool _relative;
-    [SerializeField] Vector2Int _direction;
-    [SerializeField] int _distance;
-    [SerializeField] ProgramCardData _programCardPreview;
+    [SerializeField] ProgramCardData _programCard;
     
-    readonly List<PlayerModel> _affectedPlayers = new();
+    readonly List<Player> _affectedPlayers = new();
 
     public override void Apply(IPlayer target) {
         var invocations = ExecutionPhase.GetPhaseEndInvocations();
@@ -17,24 +14,23 @@ public class ZoomBotAffector : ScriptableAffector<IPlayer> {
             ExecutionPhase.OnPhaseEnd += OnExecutionEnd;
         } 
         
-        _affectedPlayers.Add(target.Owner.Model);
+        _affectedPlayers.Add(target.Owner);
     }
     
     public override void Remove(IPlayer target) {
-        _affectedPlayers.Remove(target.Owner.Model);
+        _affectedPlayers.Remove(target.Owner);
     }
 
     void OnExecutionEnd() {
         for (var i = 0; i < _affectedPlayers.Count; i++) {
-            var model = _affectedPlayers[i];
-            if (model == null) {
+            var player = _affectedPlayers[i];
+            if (player == null) {
                 _affectedPlayers.RemoveAt(i);
                 i--;
+                continue;
             }
-            for (var j = 0; j < _distance; j++) {
-                model.Owner.RegisterPlay(_programCardPreview);
-                TaskScheduler.PushRoutine(model.Move(_direction, _relative));
-            }
+            player.RegisterPlay(_programCard);
+            TaskScheduler.PushRoutine(_programCard.ExecuteRoutine(player, 6));
         }
     }
 }
