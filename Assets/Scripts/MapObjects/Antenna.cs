@@ -8,7 +8,7 @@ public class Antenna : MapObject, ICanEnterHandler, ITooltipable {
 
     public static Antenna Instance { get; private set; }
 
-    public bool Pushable => false;
+    public bool Movable => false;
 
     public bool CanEnter(Vector2Int enterDir) => false;
     

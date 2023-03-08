@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class RebootToken : MapObject, ITooltipable {
     [SerializeField] Vector2Int _direction;
     [SerializeField] bool _isSpawnPoint;
+    [SerializeField] OverlayData<Choice<Vector2Int>> _directionChoiceOverlay;
 
     Vector2Int _startPos;
 
@@ -30,7 +32,8 @@ public class RebootToken : MapObject, ITooltipable {
         MapSystem.Instance.MoveObjectInstant(Object, _startPos);
     }
 
-    public IEnumerator RespawnRoutine(MapObject obj) {
+    public IEnumerator RespawnRoutine(IPlayer player) {
+        var obj = player.Object;
         var tile = MapSystem.GetTile(GridPos);
         var obstructions = tile.OfType<ICanEnterHandler>().Where(o => o.Object != obj);
         foreach (var obstruct in obstructions) {
@@ -40,7 +43,18 @@ public class RebootToken : MapObject, ITooltipable {
                 Debug.LogWarning("RebootToken is obstructed!", this);
             }
         }
-        // TODO: Allow the player to choose direction
         MapSystem.Instance.MoveObjectInstant(obj, GridPos);
+
+        var result = new Vector2Int[1];
+        yield return ChoiceSystem.DoChoice(new ChoiceData<Vector2Int> {
+            Overlay = _directionChoiceOverlay,
+            Player = player.Owner,
+            Options = DirectionChoice.DirectionsWithoutZero,
+            Message = "choosing a direction to respawn",
+            OutputArray = result,
+            MinChoices = 1
+        });
+        var targetRot = VectorHelper.GetRotationSteps(result[0]);
+        yield return obj.RotateRoutine(targetRot - obj.Rotator.RotZ);
     }
 }

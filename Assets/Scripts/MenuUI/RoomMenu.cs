@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 using TMPro;
@@ -81,9 +82,13 @@ public class RoomMenu : Menu {
         Destroy(playerPanel.gameObject);
     }
 
-    public async void StartGame() {
-        using (new LoadingScreen("Staring Game...")) {
-            await LobbySystem.Instance.StartGame();   
+    public void StartGame() {
+        StartCoroutine(StartGameCoroutine());
+        
+        IEnumerator StartGameCoroutine() {
+            using (new LoadingScreen("Starting Game...")) {
+                yield return LobbySystem.Instance.StartGame();
+            }
         }
     }
 

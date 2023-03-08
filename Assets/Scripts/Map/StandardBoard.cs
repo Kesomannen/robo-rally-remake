@@ -8,6 +8,6 @@ public class StandardBoard : MonoBehaviour, IBoard {
     }
 
     public void Respawn(IPlayer player) {
-        TaskScheduler.PushRoutine(_rebootToken.RespawnRoutine(player.Object));
+        TaskScheduler.PushRoutine(_rebootToken.RespawnRoutine(player));
     }
 }

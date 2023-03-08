@@ -16,7 +16,7 @@ public interface IOnEnterExitHandler : IOnEnterHandler, IOnExitHandler { }
 
 public interface ICanEnterHandler : IMapObject {
     bool CanEnter(Vector2Int enterDir);
-    bool Pushable { get; }
+    bool Movable { get; }
 }
 
 public interface ICanExitHandler : IMapObject {

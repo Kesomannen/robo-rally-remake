@@ -227,18 +227,24 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         return true;
     }
 
-    public async Task<bool> StartGame() {
+    public IEnumerator StartGame() {
         Debug.Log("Starting game");
-        try {
-            await Matchmaking.LockLobbyAsync();
-            NetworkManager.SceneManager.LoadScene("Game", LoadSceneMode.Single);
-        } catch (LobbyServiceException e) {
-            Debug.LogError($"Failed to lock lobby: {e.Message}");
-            return false;
-        }
-        return true;
+        var lockLobbyAsync = Matchmaking.LockLobbyAsync();
+        yield return new WaitUntil(() => lockLobbyAsync.IsCompleted);
+        
+        var sceneManager = NetworkManager.SceneManager;
+        var isLoaded = false;
+        
+        sceneManager.OnLoadEventCompleted += OnLoadComplete;
+        sceneManager.LoadScene("Game", LoadSceneMode.Single);
+        yield return new WaitUntil(() => isLoaded);
+        
+        void OnLoadComplete(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut) {
+            isLoaded = true;
+            sceneManager.OnLoadEventCompleted -= OnLoadComplete;
+        }   
     }
-    
+
     public void SetLobbyMap(int id) {
         if (!IsServer || id == LobbyMap.Value) return;
 

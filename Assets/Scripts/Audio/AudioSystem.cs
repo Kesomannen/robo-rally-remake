@@ -87,7 +87,7 @@ public class AudioSystem : Singleton<AudioSystem> {
             AudioTrack.Music => _musicChannel,
             AudioTrack.UI => _uiChannel,
             AudioTrack.Sfx => _sfxChannel,
-            _ => throw new System.NotImplementedException()
+            _ => throw new ArgumentOutOfRangeException()
         };
     }
 }

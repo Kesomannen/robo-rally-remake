@@ -46,14 +46,13 @@ public class PlayerUIRegister : MonoBehaviour, IPointerClickHandler {
 
     public bool Place(Container<ProgramCardData> item) {
         if (Locked || !item.Content.CanPlace(Owner, _index)) return false;
-        if (!IsEmpty && !Remove()) return false;
+        if (!IsEmpty) return false;
 
         _cardContainer.SetContent(item.Content);
         _cardContainer.gameObject.SetActive(true);
         Owner.Program.SetRegister(_index, item.Content);
         
         _onPlaceSound.Play();
-        
         return true;
     }
 

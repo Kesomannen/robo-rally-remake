@@ -62,6 +62,7 @@ public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
         
         // Get objects to move with enough progress
         var movable = targets
+            .Where(t => t is not ICanEnterHandler handler || handler.Movable)
             .Where(t => _progress.EnforceKey(t.Object, StartProgress) >= _cost)
             .ToList();
         

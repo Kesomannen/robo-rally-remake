@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public abstract class MapObject : MonoBehaviour, IMapObject {
     public MapObject Object => this;
-    protected TransformRotator Rotator { get; private set; }
+    public TransformRotator Rotator { get; private set; }
     
     // ReSharper disable once InconsistentNaming
     [ReadOnly] public Vector2Int GridPos;

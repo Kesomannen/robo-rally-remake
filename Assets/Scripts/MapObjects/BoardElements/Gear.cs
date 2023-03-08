@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public class Gear : BoardElement<Gear, IMapObject>, ITooltipable {
@@ -15,11 +16,12 @@ public class Gear : BoardElement<Gear, IMapObject>, ITooltipable {
     }
 
     protected override void Activate(IMapObject[] targets) {
-        var routines = new IEnumerator[targets.Length];
-        for (var i = 0; i < targets.Length; i++) {
+        var movable = targets.Where(t => t is not ICanEnterHandler handler || handler.Movable).ToArray();
+        var routines = new IEnumerator[movable.Length];
+        for (var i = 0; i < movable.Length; i++) {
             AddActivation();
             
-            routines[i] = targets[i].Object.RotateRoutine(_rotationSteps);
+            routines[i] = movable[i].Object.RotateRoutine(_rotationSteps);
         }
         TaskScheduler.PushRoutine(this.RunRoutines(routines));
     }

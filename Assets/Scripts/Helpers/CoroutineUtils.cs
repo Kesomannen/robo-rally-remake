@@ -18,6 +18,7 @@ public static class CoroutineUtils {
     public static WaitForEndOfFrame WaitEndOfFrame() => _endOfFrame;
 
     public static IEnumerator RunRoutines(this MonoBehaviour owner, params IEnumerator[] routines) {
+        if (routines.Length == 0) yield break;
         var handles = routines.Select(r => new CoroutineHandle(owner, r)).ToArray();
         yield return new WaitWhile(() => handles.Any(h => !h.IsDone));
     }

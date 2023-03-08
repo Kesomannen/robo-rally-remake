@@ -13,7 +13,7 @@ public class TransformRotator : IRotator {
 
     int _rotZ;
 
-    public TransformRotator(Vector3 angles){
+    public TransformRotator(Vector3 angles) {
         _rotZ = VectorHelper.GetRotationSteps(angles.z);
         FlipX = Mathf.RoundToInt((angles.y / 180f) % 2f) != 0;
         FlipY = Mathf.RoundToInt((angles.x / 180f) % 2f) != 0;

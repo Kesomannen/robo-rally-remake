@@ -12,7 +12,7 @@ public class HandUpgradeCardArray : MonoBehaviour {
 
     static Player Owner => PlayerSystem.LocalPlayer;
 
-    void Awake() {
+    void Start() {
         _cards = new HandUpgradeCard[Owner.Upgrades.Count];
         for (var i = 0; i < Owner.Upgrades.Count; i++) {
             var upgrade = Owner.Upgrades[i];
@@ -26,6 +26,8 @@ public class HandUpgradeCardArray : MonoBehaviour {
         ExecutionPhase.OnPlayerRegistersComplete += UpdateAvailability;
         ExecutionPhase.OnPlayerRegister += OnPlayerRegister;
         ProgrammingPhase.OnPlayerLockedIn += OnPlayerLockedIn;
+        
+        Debug.Log("HandUpgradeCardArray.Start", this);
     }
 
     void OnDestroy() {

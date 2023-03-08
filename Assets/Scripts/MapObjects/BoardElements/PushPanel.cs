@@ -47,7 +47,7 @@ public class PushPanel : BoardElement<PushPanel, ICanEnterHandler>, ITooltipable
     }
 
     protected override void Activate(ICanEnterHandler[] targets) {
-        var pushable = targets.Where(t => t.Pushable).ToArray();
+        var pushable = targets.Where(t => t.Movable).ToArray();
         if (pushable.Length == 0) return;
         
         if (!_activeRegisters.Contains(ExecutionPhase.CurrentRegister) ||

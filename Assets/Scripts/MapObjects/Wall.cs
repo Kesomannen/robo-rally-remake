@@ -4,7 +4,7 @@ using UnityEngine;
 public class Wall : MapObject, ICanEnterExitHandler, ITooltipable {
     [SerializeField] Vector2Int[] _openDirections;
 
-    public bool Pushable => false;
+    public bool Movable => false;
     
     public string Header => "Wall";
     public string Description => "A wall. You can't go through it.";

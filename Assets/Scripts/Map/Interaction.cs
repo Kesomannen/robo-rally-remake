@@ -61,7 +61,7 @@ public static class Interaction {
         return canEnter && canExit;
     }
     
-    public static bool SoftMove(MapObject mapObject, Vector2Int dir, out MapEvent mapEvent){
+    public static bool SoftMove(MapObject mapObject, Vector2Int dir, out MapEvent mapEvent) {
         if (CanMove(mapObject.GridPos, dir, mapObject)){
             mapEvent = new MapEvent(mapObject, dir);
             return true;
@@ -70,11 +70,11 @@ public static class Interaction {
         return false;
     }
 
-    public static bool Push(MapObject mapObject, Vector2Int dir, out MapEvent mapEvent) {
+    public static bool Push(MapObject mapObject, Vector2Int dir, out MapEvent mapEvent, IReadOnlyList<Type> ignoredTypes = null) {
         mapEvent = null;
 
         // Check exit
-        var sourceTile = MapSystem.GetTile(mapObject.GridPos);
+        var sourceTile = MapSystem.GetTile(mapObject.GridPos).Where(IsConsidered);
         var canExit = CheckTile(sourceTile, (ICanExitHandler o) => o.CanExit(dir), mapObject);
         if (!canExit) return false;
         
@@ -82,17 +82,20 @@ public static class Interaction {
         
         var targetTileFilled = MapSystem.TryGetTile(mapObject.GridPos + dir, out var targetTile);
         if (!targetTileFilled) return true;
+        targetTile = targetTile.Where(IsConsidered).ToArray();
 
         // Check enter
         var blockages = targetTile.OfType<ICanEnterHandler>().Where(o => !o.CanEnter(-dir)).ToArray();
         if (blockages.Length == 0) return true;
-        if (blockages.Any(o => !o.Pushable)) return false;
+        if (blockages.Any(o => !o.Movable)) return false;
 
         // Push next
         if (!Push(blockages[0].Object, dir, out _)) return false;
         // If we can push one, push all
         mapEvent.MapObjects.AddRange(blockages.Select(o => o.Object));
         return true;
+        
+        bool IsConsidered(IMapObject obj) => ignoredTypes == null || !ignoredTypes.Contains(obj.GetType());
     }
 }
 

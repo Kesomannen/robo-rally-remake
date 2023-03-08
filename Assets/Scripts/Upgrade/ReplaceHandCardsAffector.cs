@@ -60,7 +60,7 @@ public class ReplaceHandCardsAffector : ScriptablePermanentAffector<IPlayer> {
             
             foreach (var card in matchingCards) {
                 plr.DiscardCard(card);
-                plr.DiscardPile.RemoveCard(card);
+                if (_discardPermanently) plr.DiscardPile.RemoveCard(card);
             }
 
             if (_drawReplacements) {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -21,11 +22,14 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
     [SerializeField] SoundEffect _rebootSound;
 
     Highlight _highlight;
+
+    public readonly List<Type> IgnoredObjectsForMoving = new();
+    public readonly List<Type> IgnoredObjectsForLaser = new();
     
     public Player Owner { get; private set; }
     public RebootToken Spawn { get; private set; }
 
-    public bool Pushable => true;
+    public bool Movable { get; set; } = true;
     protected override bool CanRotate => true;
     
     public event Action<CallbackContext> OnPush;
@@ -116,7 +120,7 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
         if (Owner.IsRebooted.Value) yield break;
         
         var moveVector = relative ? Rotator.Rotate(dir) : dir;
-        if (!Interaction.Push(this, moveVector, out var mapEvent)) yield break;
+        if (!Interaction.Push(this, moveVector, out var mapEvent, IgnoredObjectsForMoving)) yield break;
         
         _moveParticle.Play();
         _moveSound.Play();
