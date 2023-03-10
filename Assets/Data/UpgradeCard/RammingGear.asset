@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fb4f757b1b54c20843e5f9319a60ece, type: 3}
+  m_Name: RammingGear
+  m_EditorClassIdentifier: 
+  _name: Ramming Gear
+  _description: Deal a Spam card to robots you push.
+  _icon: {fileID: 21300000, guid: b271adb9f3a14c54fa5b8f42e5814f44, type: 3}
+  _type: 1
+  _cost: 2
+  _useCost: 0
+  _tooltips: []
+  _affectors:
+  - {fileID: 11400000, guid: 62e1218d5f31b494ca8c69c540af86e2, type: 2}
+  _permanentAffectors: []

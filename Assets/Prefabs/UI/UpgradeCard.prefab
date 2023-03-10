@@ -231,8 +231,8 @@ MonoBehaviour:
     _default: {fileID: -1671962435, guid: c14ee0cba10d8184ca4776c2b80b6db6, type: 3}
     _selected: {fileID: -2127545493, guid: c14ee0cba10d8184ca4776c2b80b6db6, type: 3}
   _actionSprite:
-    _default: {fileID: -1141475657, guid: 64771e306dbff8e46b66b651218def24, type: 3}
-    _selected: {fileID: -940706659, guid: 64771e306dbff8e46b66b651218def24, type: 3}
+    _default: {fileID: -1671962435, guid: c14ee0cba10d8184ca4776c2b80b6db6, type: 3}
+    _selected: {fileID: -2127545493, guid: c14ee0cba10d8184ca4776c2b80b6db6, type: 3}
   _showOverlayOnClick: 1
   _overlay: {fileID: 4366056486496507193, guid: 8a292111ee88f6d4aafdea21f23ea262, type: 3}
 --- !u!114 &5821832709130163066

@@ -3,7 +3,7 @@
 [CreateAssetMenu(menuName = "Upgrade/Card")]
 public class CardUpgrade : UpgradeCardData {
     [SerializeField] CardAffector _cardAffector;
-
+    
     public override bool CanUse(Player player) {
         return UpgradeUtils.IsProgramming(player);
     }

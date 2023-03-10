@@ -10,9 +10,9 @@ public class MoveProgram : ProgramCardData {
     public override bool CanPlace(Player player, int register) => true;
 
     public override IEnumerator ExecuteRoutine(Player player, int register) {
-        for (var i = 0; i < _steps; i++){
-            TaskScheduler.PushRoutine(player.Model.Move(_direction, _relative));
+        for (var i = 0; i < _steps; i++) {
+            yield return player.Model.Move(_direction, _relative);
+            yield return TaskScheduler.DefaultTaskDelay;
         }
-        yield break;
     }
 }

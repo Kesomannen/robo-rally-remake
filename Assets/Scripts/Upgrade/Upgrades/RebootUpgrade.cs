@@ -1,16 +1,15 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(menuName = "Upgrade/Reboot")]
 public class RebootUpgrade : UpgradeCardData {
     [SerializeField] bool _takeDamage;
     
     public override bool CanUse(Player player) {
-        return UpgradeSystem.BeforeRegister.Active;
+        return UpgradeAwaiter.BeforeRegister.Active;
     }
 
     public override void OnAdd(Player player) {
-        UpgradeSystem.BeforeRegister.AddListener();
+        UpgradeAwaiter.BeforeRegister.AddListener(player);
     }
 
     public override void Use(Player player) {

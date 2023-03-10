@@ -12,8 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48f54436ec464ec6864393857295e266, type: 3}
   m_Name: ZoomBotMove
   m_EditorClassIdentifier: 
-  _relative: 1
-  _direction: {x: 1, y: 0}
-  _distance: 1
-  _programCardPreview: {fileID: 11400000, guid: 2577db1c39f442646835279f30cc60d1, type: 2}
-  _subscribed: 1
+  _programCard: {fileID: 11400000, guid: 2577db1c39f442646835279f30cc60d1, type: 2}

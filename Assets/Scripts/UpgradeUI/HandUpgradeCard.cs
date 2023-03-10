@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -10,6 +11,7 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
     [SerializeField] float _highlightScale;
     [SerializeField] GameObject _unavailableOverlay;
     [SerializeField] Selectable _selectable;
+    [Space]
     [SerializeField] [ReadOnly] bool _usedThisTurn;
     [SerializeField] [ReadOnly] Vector3 _originalSize;
     [SerializeField] [ReadOnly] bool _clickable = true;
@@ -19,8 +21,12 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
     Transform _originalParent;
 
     static Player Owner => PlayerSystem.LocalPlayer;
-
+    UpgradeCardData Content => _container.Content;
+    
     public Transform HighlightParent { set => _highlightParent = value; }
+    public bool Available => _selectable.interactable;
+    
+    public static event Action<HandUpgradeCard> OnCardClicked; 
 
     public void Awake() {
         var t = transform;
@@ -45,30 +51,32 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
     public void UpdateAvailability() {
         if (_container == null) _container = GetComponent<Container<UpgradeCardData>>();
         
-        var available = _container.Content != null
+        var available = Content != null
                         && !_usedThisTurn
-                        && (_container.Content.CanUse(PlayerSystem.LocalPlayer)
-                            || _container.Content.Type == UpgradeType.Permanent);
+                        && Owner.Energy.Value >= Content.UseCost
+                        && (Content.CanUse(PlayerSystem.LocalPlayer)
+                            || Content.Type == UpgradeType.Permanent);
         
         _unavailableOverlay.gameObject.SetActive(!available);
         _selectable.interactable = available;
     }
 
-    public void OnPointerEnter(PointerEventData eventData) {
-        UpdateAvailability();
-    
+    public void SetHighlighted(bool highlighted) {
         var t = transform;
-        t.SetParent(_highlightParent, true);
-        t.SetAsLastSibling();
-        
-        ScaleTo(_highlightScale);
+        if (highlighted) {
+            t.SetParent(_highlightParent, true);
+            t.SetAsLastSibling();
+
+            ScaleTo(_highlightScale);
+        } else {
+            t.SetParent(_originalParent);
+            
+            ScaleTo(1);
+        }
     }
     
-    public void OnPointerExit(PointerEventData eventData) {
-        transform.SetParent(_originalParent);
-        
-        ScaleTo(1);
-    }
+    public void OnPointerEnter(PointerEventData eventData) => SetHighlighted(true);
+    public void OnPointerExit(PointerEventData eventData) => SetHighlighted(false);
 
     int _tweenId;
     
@@ -81,20 +89,21 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
     }
     
     public void OnPointerClick(PointerEventData eventData) {
+        UpdateAvailability();
+        
         if (!_clickable || !_selectable.interactable) return;
+        if (Content.Type == UpgradeType.Permanent) return;
         if (eventData.button != PointerEventData.InputButton.Left) return;
-        
-        var upgrade = _container.Content;
-        if (!upgrade.CanUse(Owner)) return;
-        
+
         _clickable = false;
+        OnCardClicked?.Invoke(this);
         TaskScheduler.PushRoutine(UseUpgrade());
 
         IEnumerator UseUpgrade() {
-            var index = Owner.Upgrades.IndexOf(upgrade);
+            var index = Owner.Upgrades.IndexOf(Content);
             
             NetworkSystem.Instance.BroadcastUpgrade(index);
-            Owner.Energy.Value -= upgrade.UseCost;
+            Owner.Energy.Value -= Content.UseCost;
             Owner.UseUpgrade(index);
             
             _usedThisTurn = true;

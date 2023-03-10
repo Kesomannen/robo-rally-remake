@@ -235,7 +235,7 @@ public class Player : IPlayer {
         Log.Instance.UseUpgradeMessage(this, upgrade);
         
         if (upgrade.Type == UpgradeType.Temporary) {
-            RemoveUpgrade(index);   
+            RemoveUpgrade(index);
         }
     }
     

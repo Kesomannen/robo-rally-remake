@@ -13,9 +13,14 @@ MonoBehaviour:
   m_Name: Zoop
   m_EditorClassIdentifier: 
   _name: Zoop
-  _description: Rotate to face any direction
+  _description: Rotate to face any direction.
   _icon: {fileID: 21300000, guid: 30fc70d2d652da84cb00f5d3d68187f3, type: 3}
-  _type: 1
+  _type: 0
   _cost: 1
   _useCost: 0
   _tooltips: []
+  _overlay:
+    _header: Choose a direction
+    _subtitle: Zoop
+    _prefab: {fileID: -383597599178427649, guid: da1f6f1fa3b5eca4fb2e2b3463bbb8f5, type: 3}
+    _canPreview: 1

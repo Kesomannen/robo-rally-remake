@@ -20,11 +20,13 @@ public class CrabLegsUpgrade : UpgradeCardData {
     }
 
     IEnumerator OnAfterExecute(ProgramExecution execution) {
+        // We check again in case the card was changed by another upgrade
+        if (execution.Card != _targetCard) yield break;
         var model = execution.Player.Model;
         
         var dirs = new[] { Vector2Int.up, Vector2Int.down, Vector2Int.zero };
         for (var i = 0; i < dirs.Length; i++) {
-                dirs[i] = model.Rotator.Rotate(dirs[i]);
+            dirs[i] = model.Rotator.Rotate(dirs[i]);
         }
             
         var result = new Vector2Int[1];

@@ -25,7 +25,8 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
 
     public readonly List<Type> IgnoredObjectsForMoving = new();
     public readonly List<Type> IgnoredObjectsForLaser = new();
-    
+    public readonly List<Vector2Int> LaserDirections = new() { Vector2Int.right };
+
     public Player Owner { get; private set; }
     public RebootToken Spawn { get; private set; }
 
@@ -70,31 +71,33 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
     public static bool ShootLasers() {
         _hits = 0;
         foreach (var model in PlayerSystem.Players.Where(p => !p.IsRebooted.Value).Select(p => p.Model)) {
-            model.ShootLaser(model.Rotator.Identity);
+            model.ShootLaser();
         }
         return _hits > 0;
     }
     
-    void ShootLaser(Vector2Int dir, int maxDistance = 20) {
-        var pos = GridPos;
-        for (var i = 0; i < maxDistance; i++) {
-            if (!Interaction.CanMove(pos, dir, this)) {
-                break;
+    void ShootLaser(int maxDistance = 20) {
+        foreach (var dir in LaserDirections.Select(dir => Rotator.Rotate(dir))) {
+            var pos = GridPos;
+            for (var i = 0; i < maxDistance; i++) {
+                if (!Interaction.CanMove(pos, dir, this, IgnoredObjectsForLaser)) {
+                    continue;
+                }
+                pos += dir;
             }
-            pos += dir;
+
+            var targetFilled = MapSystem.TryGetTile(pos + dir, out var tile);
+            if (!targetFilled) continue;
+        
+            var hits = tile.OfType<IPlayer>().Where(p => p.Owner != Owner).ToArray();
+            if (hits.Length == 0) continue;
+            _hits += hits.Length;
+
+            TaskScheduler.PushRoutine(Fire(dir, hits));   
         }
 
-        var targetFilled = MapSystem.TryGetTile(pos + dir, out var tile);
-        if (!targetFilled) return;
-        
-        var hits = tile.OfType<IPlayer>().Where(p => p.Owner != Owner).ToArray();
-        if (hits.Length == 0) return;
-        _hits += hits.Length;
-
-        TaskScheduler.PushRoutine(Fire());
-
-        IEnumerator Fire() {
-            var lasers = Laser.ShootLaser(_laserPrefab, this, dir, maxDistance);
+        IEnumerator Fire(Vector2Int direction, IEnumerable<IPlayer> hits) {
+            var lasers = Laser.ShootLaser(_laserPrefab, this, direction, maxDistance, ignoredTypes: IgnoredObjectsForLaser);
             lasers.ForEach(l => l.SetActiveVisual(true));
             _laserSound.Play();
             
@@ -104,7 +107,7 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
                     Target = player.Owner,
                     Attacker = Owner,
                     Affector = Owner.LaserAffector,
-                    OutgoingDirection = dir
+                    OutgoingDirection = direction
                 });
                 
                 _hitParticle.transform.position = player.Owner.Model.transform.position;

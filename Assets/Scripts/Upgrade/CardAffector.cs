@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-public class CardAffector : IPermanentAffector<IPlayer> {
+public class CardAffector : IPermanentAffector<Player> {
     [SerializeField] List<ProgramCardData> _cards;
     [SerializeField] Pile _destination;
     [SerializeField] CardPlacement _placement;
@@ -27,5 +27,5 @@ public class CardAffector : IPermanentAffector<IPlayer> {
         _placement = placement;
     }
 
-    public void Apply(IPlayer player) => player.Owner.ApplyCardAffector(this);
+    public void Apply(Player player) => player.ApplyCardAffector(this);
 }

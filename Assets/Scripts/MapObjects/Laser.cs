@@ -29,7 +29,7 @@ public class Laser : MapObject, IOnEnterExitHandler {
         OnUnobstructed?.Invoke(this, mapObject);
     }
 
-    public static List<T> ShootLaser<T>(T prefab, MapObject source, Vector2Int dir, int maxDistance = 20, bool ignoreSource = true) where T : Laser {
+    public static List<T> ShootLaser<T>(T prefab, MapObject source, Vector2Int dir, int maxDistance = 20, bool ignoreSource = true, IReadOnlyList<Type> ignoredTypes = null) where T : Laser {
         var i = 0;
         Vector2Int pos;
         var lasers = new List<T>();
@@ -47,7 +47,7 @@ public class Laser : MapObject, IOnEnterExitHandler {
             i++;
 
             if (i >= maxDistance) break;
-        } while (Interaction.CanMove(pos, dir));
+        } while (Interaction.CanMove(pos, dir, ignoredTypes: ignoredTypes));
         return lasers;
     }
 }

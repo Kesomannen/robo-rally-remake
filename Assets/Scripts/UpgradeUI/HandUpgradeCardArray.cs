@@ -7,6 +7,8 @@ public class HandUpgradeCardArray : MonoBehaviour {
     [SerializeField] Vector2 _cardSize;
     [SerializeField] Transform _highlightParent;
     [SerializeField] int _cardsPerRow;
+    [Space]
+    [SerializeField] GameObject _reminder;
 
     HandUpgradeCard[] _cards;
 
@@ -23,9 +25,12 @@ public class HandUpgradeCardArray : MonoBehaviour {
         Owner.OnUpgradeRemoved += RemoveCard;
         
         PhaseSystem.Current.OnValueChanged += OnPhaseChanged;
+        ProgrammingPhase.OnPlayerLockedIn += OnPlayerLockedIn;
         ExecutionPhase.OnPlayerRegistersComplete += UpdateAvailability;
         ExecutionPhase.OnPlayerRegister += OnPlayerRegister;
-        ProgrammingPhase.OnPlayerLockedIn += OnPlayerLockedIn;
+        
+        UpgradeAwaiter.OnPauseEventStart += OnPauseEventStart;
+        UpgradeAwaiter.OnPauseEventEnd += OnPauseEventEnd;
         
         Debug.Log("HandUpgradeCardArray.Start", this);
     }
@@ -35,9 +40,22 @@ public class HandUpgradeCardArray : MonoBehaviour {
         Owner.OnUpgradeRemoved -= RemoveCard;
         
         PhaseSystem.Current.OnValueChanged -= OnPhaseChanged;
+        ProgrammingPhase.OnPlayerLockedIn -= OnPlayerLockedIn;
         ExecutionPhase.OnPlayerRegistersComplete -= UpdateAvailability;
         ExecutionPhase.OnPlayerRegister += OnPlayerRegister;
-        ProgrammingPhase.OnPlayerLockedIn -= OnPlayerLockedIn;
+        
+        UpgradeAwaiter.OnPauseEventStart -= OnPauseEventStart;
+        UpgradeAwaiter.OnPauseEventEnd -= OnPauseEventEnd;
+    }
+    
+    void OnPauseEventStart() { 
+        UpdateAvailability();
+        _reminder.SetActive(_cards.Any(c => c != null && c.Available));
+    }
+    
+    void OnPauseEventEnd() {
+        UpdateAvailability();
+        _reminder.SetActive(false);
     }
     
     void OnPhaseChanged(Phase prev, Phase next) => UpdateAvailability();

@@ -6,13 +6,10 @@ using UnityEngine;
 
 public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
     public static int CurrentRegister { get; private set; }
-    public static ExecutionSubPhase CurrentSubPhase { get; private set; }
-    public static Player CurrentPlayer { get; private set; }
 
     public const int RegisterCount = 5;
     const float SubPhaseDelay = 0;
     const float StepDelay = 0.5f;
-    const float UpgradeAvailableDelay = 3f;
 
     public static event Action OnPhaseStart, OnPhaseEnd, OnExecutionComplete, OnPlayerRegistersComplete;
     public static event Action<ExecutionSubPhase> OnNewSubPhase;
@@ -27,8 +24,8 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
     }
 
     public static IEnumerator DoPhase() {
-        OnPhaseStart?.Invoke();
         yield return UIManager.Instance.ChangeState(UIState.Execution);
+        OnPhaseStart?.Invoke();
         
         TaskScheduler.PushSequence(
             delay: StepDelay,
@@ -57,7 +54,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
         OnNewRegister?.Invoke(register);
 
         yield return CoroutineUtils.Wait(StepDelay);
-        yield return UpgradeSystem.AwaitEvent(UpgradeSystem.BeforePlayerOrdering);
+        yield return UpgradeAwaiter.AwaitEvent(UpgradeAwaiter.BeforePlayerOrdering);
 
         var orderedPlayers = PlayerSystem.GetOrderedPlayers().ToArray();
         if (_previousPlayerOrder != null && !_previousPlayerOrder.SequenceEqual(orderedPlayers)) {
@@ -94,7 +91,6 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
         
         IEnumerator DoSubPhase(ExecutionSubPhase subPhase, Func<bool> execute) {
             if (execute()) {
-                CurrentSubPhase = subPhase;
                 OnNewSubPhase?.Invoke(subPhase);
                 yield return CoroutineUtils.Wait(SubPhaseDelay);
             }
@@ -102,17 +98,20 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
 
         IEnumerator DoPlayerRegister(Player player) {
             Debug.Log($"Starting player {player} register {register}");
-            
-            CurrentPlayer = player;
 
             var card = player.Program[register];
             if (card == null) yield break;
             
-            yield return UpgradeSystem.AwaitEvent(UpgradeSystem.BeforeRegister, card);
-            
             var execution = new ProgramExecution(card, player, register);
+            yield return UpgradeAwaiter.AwaitEvent(UpgradeAwaiter.BeforeRegister, player);
+            
             OnPlayerRegister?.Invoke(execution);
+            TaskScheduler.PushRoutine(AfterRegister(execution));
             TaskScheduler.PushRoutine(execution.Execute());
+        }
+
+        IEnumerator AfterRegister(ProgramExecution execution) {
+            yield return UpgradeAwaiter.AwaitEvent(UpgradeAwaiter.AfterRegister, execution.Player);
         }
     }
 }

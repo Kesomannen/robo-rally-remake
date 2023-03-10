@@ -34,7 +34,7 @@ public class PlayerExecutionPanel : Container<Player>, IPointerClickHandler {
     }
 
     void OnDestroy() {
-        ExecutionPhase.OnPhaseEnd -= OnExecutionStart;
+        ExecutionPhase.OnPhaseStart -= OnExecutionStart;
         ExecutionPhase.OnPhaseEnd -= OnExecutionEnd;
     }
 

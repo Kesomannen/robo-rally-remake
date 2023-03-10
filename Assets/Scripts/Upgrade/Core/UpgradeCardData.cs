@@ -9,7 +9,6 @@ public abstract class UpgradeCardData : Lookup<UpgradeCardData> {
     [Space]
     [SerializeField] UpgradeType _type;
     [SerializeField] [Min(0)] int _cost;
-    [ShowIf(nameof(_type), ShowIfComparer.Equals, (int)UpgradeType.Temporary)]
     [SerializeField] [Min(0)] int _useCost;
     [Space]
     [SerializeField] UpgradeTooltipData[] _tooltips;
@@ -34,5 +33,6 @@ public abstract class UpgradeCardData : Lookup<UpgradeCardData> {
 
 public enum UpgradeType {
     Temporary,
-    Permanent
+    Permanent,
+    Action
 }

@@ -50,15 +50,17 @@ public static class Interaction {
         return tile.OfType<T>().All(predicate);
     }
 
-    public static bool CanMove(Vector2Int source, Vector2Int dir, MapObject except = null){
+    public static bool CanMove(Vector2Int source, Vector2Int dir, MapObject except = null, IReadOnlyList<Type> ignoredTypes = null) {
         var targetPos = source + dir;
-        var canEnter = !MapSystem.TryGetTile(targetPos, out var tile) 
-                       || CheckTile(tile, (ICanEnterHandler o) => o.CanEnter(-dir));
+        var canEnter = !MapSystem.TryGetTile(targetPos, out var tile)
+                       || CheckTile(tile.Where(IsConsidered), (ICanEnterHandler o) => o.CanEnter(-dir));
 
         var canExit = !MapSystem.TryGetTile(source, out var sourceTile) 
-                      || CheckTile(sourceTile, (ICanExitHandler o) => o.CanExit(dir), except);
+                      || CheckTile(sourceTile.Where(IsConsidered), (ICanExitHandler o) => o.CanExit(dir), except);
 
         return canEnter && canExit;
+        
+        bool IsConsidered(IMapObject obj) => ignoredTypes == null || !ignoredTypes.Contains(obj.GetType());
     }
     
     public static bool SoftMove(MapObject mapObject, Vector2Int dir, out MapEvent mapEvent) {

@@ -15,7 +15,7 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
     
     [Header("Sprites")]
     [SerializeField] Sprite[] _costSprites;
-    [SerializeField] CardSprite _temporarySprite, _permanentSprite;
+    [SerializeField] CardSprite _temporarySprite, _permanentSprite, _actionSprite;
     [SerializeField] bool _showOverlayOnClick = true;
     [SerializeField] UpgradeCardOverlay _overlay;
 
@@ -45,6 +45,7 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
         var cardSprite = card.Type switch {
             UpgradeType.Temporary => _temporarySprite,
             UpgradeType.Permanent => _permanentSprite,
+            UpgradeType.Action => _actionSprite,
             _ => throw new ArgumentOutOfRangeException()
         };
         _backgroundImage.sprite = cardSprite.Default;
@@ -70,4 +71,4 @@ public class UpgradeCard : Container<UpgradeCardData>, IPointerClickHandler, ITo
         };
         OverlaySystem.Instance.PushAndShowOverlay(overlay).Init(Content);
     }
-}
+}   

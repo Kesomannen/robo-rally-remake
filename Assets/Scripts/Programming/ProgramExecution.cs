@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 
 public class ProgramExecution {
-    public readonly ProgramCardData Card;
+    public ProgramCardData Card;
     public readonly Player Player;
     public readonly int Register;
     
@@ -22,12 +22,14 @@ public class ProgramExecution {
     public IEnumerator Execute() {
         Started = true;
         IsExecuting = true;
+        Player.OnExecute(this);
         OnExecutionStart?.Invoke(this);
         
         yield return Card.ExecuteRoutine(Player, Register);
         
         IsExecuting = false;
         OnExecutionEnd?.Invoke(this);
+        Debug.Log($"Execution of {Card.name} ended");
     }
     
     public IEnumerator WaitUntilEnd() {

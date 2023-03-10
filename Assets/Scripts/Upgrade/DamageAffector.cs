@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "DamageAffector", menuName = "ScriptableObjects/Affectors/Damage")]
-public class DamageAffector : ScriptableAffector<IPlayer> {
+public class DamageAffector : ScriptableAffector<Player> {
     [SerializeField] Target _target;
     [SerializeField] ProgramCardData[] _cards;
     [SerializeField] ProgramCardData _replacementCard;
@@ -13,9 +13,8 @@ public class DamageAffector : ScriptableAffector<IPlayer> {
     Pile Pile => _destination.Convert<Destination, Pile>(-1);
     CardPlacement CardPlacement => _placement.Convert<Placement, CardPlacement>(-1);
 
-    public override void Apply(IPlayer target) {
-        var player = target.Owner;
-        var cardAffector = GetDamage(player);
+    public override void Apply(Player target) {
+        var cardAffector = GetDamage(target);
         
         if (_replace) cardAffector.Cards.Clear();
         cardAffector.Cards.AddRange(_cards);
@@ -24,11 +23,10 @@ public class DamageAffector : ScriptableAffector<IPlayer> {
         cardAffector.Placement = EnumUtils.ModifyValue(cardAffector.Placement, CardPlacement);
     }
     
-    public override void Remove(IPlayer target) {
-        var player = target.Owner;
-        var cardAffector = GetDamage(player);
+    public override void Remove(Player target) {
+        var cardAffector = GetDamage(target);
 
-        foreach (var card in _cards){
+        foreach (var card in _cards) {
             if (cardAffector.Cards.Remove(card) && _replacementCard != null) {
                 cardAffector.Cards.Add(_replacementCard);
             }
