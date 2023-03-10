@@ -163,11 +163,13 @@ public class ExecutionUIController : MonoBehaviour {
     
     Player _previousPlayer;
     
-    void OnPlayerRegister(ProgramCardData card, int index, Player player) {
+    void OnPlayerRegister(ProgramExecution execution) {
+        var player = execution.Player;
+        
         player.Model.Highlight(true);
         
         var panel = _panelsController.Panels.First(panel => panel.Content == player);
-        var register = panel.Registers[index];
+        var register = panel.Registers[execution.Register];
         
         register.Visible = true;
         BalanceScale(panel, register, register.Scale + 0.2f);
@@ -176,7 +178,7 @@ public class ExecutionUIController : MonoBehaviour {
             // Unhighlight previous player
             _previousPlayer.Model.Highlight(false);
             var prevPanel = _panelsController.Panels.First(prevPanel => prevPanel.Content == _previousPlayer);
-            var prevRegister = prevPanel.Registers[index];
+            var prevRegister = prevPanel.Registers[execution.Register];
             BalanceScale(prevPanel, prevRegister, prevRegister.Scale - 0.2f);
         }
         _previousPlayer = player;

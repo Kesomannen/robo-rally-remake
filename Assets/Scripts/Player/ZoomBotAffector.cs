@@ -29,8 +29,9 @@ public class ZoomBotAffector : ScriptableAffector<IPlayer> {
                 i--;
                 continue;
             }
-            player.RegisterPlay(_programCard);
-            TaskScheduler.PushRoutine(_programCard.ExecuteRoutine(player, 6));
+
+            const int register = ExecutionPhase.RegisterCount - 1;
+            TaskScheduler.PushRoutine(new ProgramExecution(_programCard, player, register).Execute());
         }
     }
 }

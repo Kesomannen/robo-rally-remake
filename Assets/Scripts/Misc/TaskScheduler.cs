@@ -5,16 +5,16 @@ using UnityEngine;
 
 public class TaskScheduler : Singleton<TaskScheduler> {
     static readonly Stack<(IEnumerator Routine, Action Callback, float Delay)> _tasks = new();
-    static bool _isRunning;
+    public static bool IsRunning { get; private set; }
 
     const float DefaultTaskDelay = 0.25f;
     
     public static void PushRoutine(IEnumerator routine, float delay = DefaultTaskDelay, Action onComplete = null) {
         _tasks.Push((routine, onComplete, delay));
         Debug.Log($"Pushed routine. {_tasks.Count} tasks in queue.");
-        if (_isRunning) return;
+        if (IsRunning) return;
         
-        _isRunning = true;
+        IsRunning = true;
         Instance.StartCoroutine(RunTasks());
     }
     
@@ -24,9 +24,9 @@ public class TaskScheduler : Singleton<TaskScheduler> {
         }
         Debug.Log($"Pushed sequence. {_tasks.Count} tasks in queue.");
         
-        if (_isRunning) return;
+        if (IsRunning) return;
         
-        _isRunning = true;
+        IsRunning = true;
         Instance.StartCoroutine(RunTasks());
     }
     
@@ -35,9 +35,9 @@ public class TaskScheduler : Singleton<TaskScheduler> {
             _tasks.Push((WrapAction(actions[i]), () => {}, delay));
         }
         
-        if (_isRunning) return;
+        if (IsRunning) return;
         
-        _isRunning = true;
+        IsRunning = true;
         Instance.StartCoroutine(RunTasks());
 
         IEnumerator WrapAction(Action action) {
@@ -53,10 +53,10 @@ public class TaskScheduler : Singleton<TaskScheduler> {
             task.Callback?.Invoke();
             yield return CoroutineUtils.Wait(task.Delay);
         }
-        _isRunning = false;
+        IsRunning = false;
     }
     
     public static IEnumerator WaitUntilClear() {
-        yield return new WaitWhile(() => _isRunning || _tasks.Count > 0);
+        yield return new WaitWhile(() => IsRunning || _tasks.Count > 0);
     }
 }

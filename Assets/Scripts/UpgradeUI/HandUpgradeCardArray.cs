@@ -41,8 +41,8 @@ public class HandUpgradeCardArray : MonoBehaviour {
     }
     
     void OnPhaseChanged(Phase prev, Phase next) => UpdateAvailability();
-    void OnPlayerLockedIn(Player player) => UpdateAvailability();
-    void OnPlayerRegister(ProgramCardData card, int index, Player player) => UpdateAvailability();
+    void OnPlayerLockedIn(Player _) => UpdateAvailability();
+    void OnPlayerRegister(ProgramExecution _) => UpdateAvailability();
 
     void CreateCard(UpgradeCardData data, int index) {
         var newCard = Instantiate(_cardPrefab, _cardParent);

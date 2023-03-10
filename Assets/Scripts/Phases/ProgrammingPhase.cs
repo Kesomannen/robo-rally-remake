@@ -7,11 +7,12 @@ using System.Linq;
 
 public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
     public static bool IsStressed { get; private set; }
-    public static bool LocalPlayerLockedIn { get; private set; }
+    public static IReadOnlyList<Player> PlayersLockedIn => _playersLockedIn;
+    static bool LocalPlayerLockedIn { get; set; }
     
     public static readonly ObservableField<int> StressTimer = new();
-    
-    static int _playersLockedIn;
+
+    static readonly List<Player> _playersLockedIn = new();
 
     public static event Action OnPhaseStarted, OnStressStarted;
     public static event Action<Player> OnPlayerLockedIn;
@@ -29,9 +30,9 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
         foreach (var player in PlayerSystem.Players) {
             player.DrawCardsUpTo(player.CardsPerTurn);
         }
-
-        _playersLockedIn = 0;
-        yield return new WaitUntil(() => _playersLockedIn >= PlayerSystem.Players.Count);
+        
+        yield return new WaitUntil(() => _playersLockedIn.Count >= PlayerSystem.Players.Count);
+        _playersLockedIn.Clear();
 
         if (LobbySystem.LobbySettings.AdvancedGame.Enabled) yield break;
         foreach (var player in PlayerSystem.Players) {
@@ -43,20 +44,19 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
     public void LockRegisterServerRpc(byte playerIndex, byte[] registerCardIds) {
         LockPlayerRegister(playerIndex, registerCardIds);
         LockRegisterClientRpc(playerIndex, registerCardIds);
-        _playersLockedIn++;
     }
 
     [ClientRpc]
     void LockRegisterClientRpc(byte playerIndex, byte[] registerCardIds) {
         if (IsServer) return;
         LockPlayerRegister(playerIndex, registerCardIds);
-        _playersLockedIn++;
     }
 
      void LockPlayerRegister(byte playerIndex, IEnumerable<byte> registerCardIds) {
          var player = PlayerSystem.Players[playerIndex];
          var stressEnabled = LobbySystem.LobbySettings.StressTime.Enabled;
          
+         _playersLockedIn.Add(player);
          OnPlayerLockedIn?.Invoke(player);
          
          if (PlayerSystem.IsLocal(player)) {
@@ -113,6 +113,6 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
     }
 
     public static void Continue() {
-        _playersLockedIn = PlayerSystem.Players.Count;
+        _playersLockedIn.Add(PlayerSystem.LocalPlayer);
     }
 }

@@ -34,19 +34,19 @@ public class Player : IPlayer {
     public IReadOnlyList<UpgradeCardData> Upgrades => _upgrades;
         
     public readonly ObservableField<int> Energy;
-
-    // Implementations
+    
     public Player Owner => this;
     public MapObject Object => Model;
 
     public override string ToString() => _name;
     
-    // Events
     public event Action<CardAffector> OnCardAffectorApplied;
     public event Action<ProgramCardData> OnDraw, OnDiscard;
+    
     public event Action<UpgradeCardData, int> OnUpgradeAdded, OnUpgradeRemoved;
     public event Action<UpgradeCardData> OnUpgradeUsed;
-    public event Action<ProgramCardData> OnProgramCardPlayed;
+    
+    public event Action<ProgramExecution> OnProgramCardExecuted; 
 
     public Player(PlayerArgs args) {
         _name = args.Name;
@@ -113,7 +113,7 @@ public class Player : IPlayer {
         DrawPile.Shuffle();
     }
 
-    public ProgramCardData GetTopCard() {
+    ProgramCardData GetTopCard() {
         if (DrawPile.Cards.Count == 0) ShuffleDeck();
         var card = DrawPile.Cards[0];
         DrawPile.RemoveCard(0);
@@ -132,12 +132,10 @@ public class Player : IPlayer {
         return null;
     }
 
-    public void DrawCard() {
+    void DrawCard() {
         var card = GetTopCard();
 
         Hand.AddCard(card, CardPlacement.Top);
-        card.OnDraw(this);
-
         OnDraw?.Invoke(card);
     }
 
@@ -151,15 +149,13 @@ public class Player : IPlayer {
         DrawCards(Mathf.Max(0, count - Hand.Cards.Count));
     }
 
-    public void DiscardCard(int index) {
+    void DiscardCard(int index) {
         if (Hand.Cards.Count == 0) return;
 
         var card = Hand[index];
         Hand.RemoveCard(index);
 
         DiscardPile.AddCard(card, CardPlacement.Top);
-        card.OnDiscard(this);
-
         OnDiscard?.Invoke(card);
     }
 
@@ -176,7 +172,7 @@ public class Player : IPlayer {
         for (var i = 0; i < cards; i++) DiscardCard(Hand.Cards.Count - 1);
     }
 
-    public void DiscardRandomCard() {
+    void DiscardRandomCard() {
         DiscardCard(Random.Range(0, Hand.Cards.Count));
     }
 
@@ -192,10 +188,6 @@ public class Player : IPlayer {
             DiscardPile.AddCard(card, CardPlacement.Top);
             Program.SetRegister(i, null);
         }
-    }
-
-    public void RegisterPlay(ProgramCardData card) {
-        OnProgramCardPlayed?.Invoke(card);
     }
     #endregion
 
@@ -229,7 +221,7 @@ public class Player : IPlayer {
     public void ReplaceUpgradeAt(UpgradeCardData upgrade, int index) {
         RemoveUpgrade(index);
         _upgrades[index] = upgrade;
-        upgrade.OnBuy(this);
+        upgrade.OnAdd(this);
         OnUpgradeAdded?.Invoke(upgrade, index);
     }
 
@@ -237,7 +229,7 @@ public class Player : IPlayer {
 
     public void UseUpgrade(int index) {
         var upgrade = _upgrades[index];
-        upgrade.Apply(this);
+        upgrade.Use(this);
         
         OnUpgradeUsed?.Invoke(upgrade);
         Log.Instance.UseUpgradeMessage(this, upgrade);
@@ -249,17 +241,21 @@ public class Player : IPlayer {
     
     public void RemoveUpgrade([NotNull] UpgradeCardData upgrade) => RemoveUpgrade(_upgrades.IndexOf(upgrade));
 
-    public void RemoveUpgrade(int index) {
+    void RemoveUpgrade(int index) {
         var upgrade = _upgrades[index];
         if (upgrade == null) return;
         
-        upgrade.Remove(this);
+        upgrade.OnRemove(this);
         _upgrades[index] = null;
         OnUpgradeRemoved?.Invoke(upgrade, index);
     }
     
     #endregion
 
+    public void OnExecute(ProgramExecution execution) {
+        OnProgramCardExecuted?.Invoke(execution);
+    }
+    
     public void Reboot(IBoard board, bool takeDamage = true) {
         board.Respawn(Model);
         if (takeDamage) ApplyCardAffector(RebootAffector);

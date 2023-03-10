@@ -16,7 +16,6 @@ public class RepeatProgram : ProgramCardData {
         var card = player.Program[registerToRepeat];
         for (var i = 0; i < _repeatCount; i++) {
             yield return CoroutineUtils.Wait(_timeBetweenRepeats);
-            player.RegisterPlay(card);
             yield return card.ExecuteRoutine(player, registerToRepeat);
         }
     }

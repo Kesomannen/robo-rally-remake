@@ -2734,12 +2734,7 @@ MonoBehaviour:
   _mapToLoad: {fileID: 11400000, guid: ee6058072b906024f90f5c10f1ceb3de, type: 2}
   _robotToLoad: {fileID: 11400000, guid: 37b46a89c76c78b4f99841f95498e646, type: 2}
   _upgradesToLoad:
-  - {fileID: 11400000, guid: 65bdee8cc476ffe409a6a5ce878fffce, type: 2}
-  - {fileID: 11400000, guid: 8a3d8f7499b70f442ac276063a17a11f, type: 2}
-  - {fileID: 11400000, guid: 26750c35ef1bfff409351900bbc44121, type: 2}
-  - {fileID: 11400000, guid: f2b33da2af1a08d4caf4f0f70ae87171, type: 2}
-  - {fileID: 11400000, guid: 38eb07b4610911246872e87356ff76ed, type: 2}
-  - {fileID: 11400000, guid: 649f34c8ff222eb4da75eca097e35423, type: 2}
+  - {fileID: 11400000, guid: 33912ce2368b83749939df566f923356, type: 2}
 --- !u!114 &761913675
 MonoBehaviour:
   m_ObjectHideFlags: 0

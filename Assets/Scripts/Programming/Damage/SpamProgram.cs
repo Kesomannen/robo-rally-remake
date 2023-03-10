@@ -23,8 +23,7 @@ public class SpamProgram : ProgramCardData {
         player.DrawPile.RemoveCard(card);
         
         yield return CoroutineUtils.Wait(0.5f);
-        player.RegisterPlay(card);
-        yield return card.ExecuteRoutine(player, register);
+        yield return new ProgramExecution(card, player, register).Execute();
         ExecutionPhase.OnExecutionComplete += RemoveCard;
         
         player.DiscardPile.AddCard(card, CardPlacement.Top);

@@ -16,9 +16,6 @@ public abstract class ProgramCardData : Lookup<ProgramCardData>, ITooltipable {
     public abstract IEnumerator ExecuteRoutine(Player player, int register);
     public abstract bool CanPlace(Player player, int register);
 
-    public virtual void OnDraw(Player player) { }
-    public virtual void OnDiscard(Player player) { }
-
     public override string ToString() => _name;
     
     public enum CardType {

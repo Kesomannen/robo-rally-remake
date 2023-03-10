@@ -19,6 +19,7 @@ public class RobotData : Lookup<RobotData>, ITooltipable {
     public string Name => _name;
     public string Header => _name;
     public string Description => _description;
+    
     public Sprite Icon => _icon;
     public Sprite Sprite => _sprite;
     public Color Color => _color;

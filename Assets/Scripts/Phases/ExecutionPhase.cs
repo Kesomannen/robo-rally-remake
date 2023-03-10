@@ -15,10 +15,11 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
     const float UpgradeAvailableDelay = 3f;
 
     public static event Action OnPhaseStart, OnPhaseEnd, OnExecutionComplete, OnPlayerRegistersComplete;
-    public static event Action<ProgramCardData, int, Player> OnPlayerRegister;
     public static event Action<ExecutionSubPhase> OnNewSubPhase;
     public static event Action<IReadOnlyList<Player>> OnPlayersOrdered;
     public static event Action<int> OnNewRegister;
+    
+    public static event Action<ProgramExecution> OnPlayerRegister;
     
     public static IEnumerable<Action> GetPhaseEndInvocations() {
         var invocationList = OnPhaseEnd?.GetInvocationList();
@@ -56,6 +57,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
         OnNewRegister?.Invoke(register);
 
         yield return CoroutineUtils.Wait(StepDelay);
+        yield return UpgradeSystem.AwaitEvent(UpgradeSystem.BeforePlayerOrdering);
 
         var orderedPlayers = PlayerSystem.GetOrderedPlayers().ToArray();
         if (_previousPlayerOrder != null && !_previousPlayerOrder.SequenceEqual(orderedPlayers)) {
@@ -103,16 +105,14 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
             
             CurrentPlayer = player;
 
-            if (player.Upgrades.Any(u => u != null && u.CanUse(player) && u.Type is UpgradeType.Action or UpgradeType.Temporary)) {
-                yield return CoroutineUtils.Wait(UpgradeAvailableDelay);
-            }
-
             var card = player.Program[register];
             if (card == null) yield break;
             
-            player.RegisterPlay(card);
-            OnPlayerRegister?.Invoke(card, register, player);
-            TaskScheduler.PushRoutine(card.ExecuteRoutine(player, register), StepDelay);
+            yield return UpgradeSystem.AwaitEvent(UpgradeSystem.BeforeRegister, card);
+            
+            var execution = new ProgramExecution(card, player, register);
+            OnPlayerRegister?.Invoke(execution);
+            TaskScheduler.PushRoutine(execution.Execute());
         }
     }
 }

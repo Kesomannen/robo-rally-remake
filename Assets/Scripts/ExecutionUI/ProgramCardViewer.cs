@@ -24,12 +24,11 @@ public class ProgramCardViewer : MonoBehaviour {
     
     void Start() {
         foreach (var player in PlayerSystem.Players) {
-            player.OnProgramCardPlayed += card => OnProgramCardPlayed(player, card);
+            player.OnProgramCardExecuted += execution => OnProgramCardPlayed(player, execution.Card);
         }
     }
     
     void OnProgramCardPlayed(Player player, ProgramCardData card) {
-        //_headerText.text = $"{player} playing {card}";
         StartCoroutine(AddCard(card, _lastPlayer != player));
         _lastPlayer = player;
     }

@@ -20,7 +20,6 @@ public class ChoiceProgram : ProgramCardData {
             Message = "choosing a program card to execute",
             MinChoices = 1
         });
-        player.RegisterPlay(result[0]);
-        yield return result[0].ExecuteRoutine(player, register);
+        yield return new ProgramExecution(result[0], player, register).Execute();
     }
 }
