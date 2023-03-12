@@ -11,8 +11,8 @@ public class MoveProgram : ProgramCardData {
 
     public override IEnumerator ExecuteRoutine(Player player, int register) {
         for (var i = 0; i < _steps; i++) {
-            yield return player.Model.Move(_direction, _relative);
             yield return TaskScheduler.DefaultTaskDelay;
+            yield return player.Model.Move(_direction, _relative);
         }
     }
 }

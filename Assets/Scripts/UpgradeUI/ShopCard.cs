@@ -21,6 +21,7 @@ public class ShopCard : UpgradeCard, IPointerClickHandler, IPointerEnterHandler 
 
             return gameObject.activeInHierarchy
                    && ShopPhase.CurrentPlayer == localPlayer
+                   && Content != null
                    && Content.Cost <= localPlayer.Energy.Value
                    && !localPlayer.Upgrades.Contains(Content);
         }
@@ -42,6 +43,8 @@ public class ShopCard : UpgradeCard, IPointerClickHandler, IPointerEnterHandler 
     }
 
     public IEnumerator RestockAnimation(UpgradeCardData card) {
+        Debug.Log($"Doing restock animation for {card}", this);
+        Debug.Log(gameObject.activeInHierarchy, this);
         var t = transform;
 
         if (gameObject.activeInHierarchy) {
@@ -57,6 +60,8 @@ public class ShopCard : UpgradeCard, IPointerClickHandler, IPointerEnterHandler 
         LeanTween.scale(gameObject, Vector3.one, _restockTweenDuration).setEase(_restockTweenType);
         LeanTween.rotateZ(gameObject, 0, _restockTweenDuration).setEase(_restockTweenType);
         yield return CoroutineUtils.Wait(_restockTweenDuration);
+        
+        gameObject.SetActive(true); 
     }
 
     public IEnumerator BuyAnimation(Transform target) {

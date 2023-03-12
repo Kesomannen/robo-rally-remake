@@ -3,22 +3,22 @@ using System.Linq;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "ScriptableObjects/Affectors/Zoom Bot", fileName = "ZoomBotAffector")]
-public class ZoomBotAffector : ScriptableAffector<IPlayer> {
+public class ZoomBotAffector : ScriptableAffector<Player> {
     [SerializeField] ProgramCardData _programCard;
     
     readonly List<Player> _affectedPlayers = new();
 
-    public override void Apply(IPlayer target) {
+    public override void Apply(Player target) {
         var invocations = ExecutionPhase.GetPhaseEndInvocations();
         if (invocations == null || !invocations.Contains(OnExecutionEnd)) {
             ExecutionPhase.OnPhaseEnd += OnExecutionEnd;
         } 
         
-        _affectedPlayers.Add(target.Owner);
+        _affectedPlayers.Add(target);
     }
     
-    public override void Remove(IPlayer target) {
-        _affectedPlayers.Remove(target.Owner);
+    public override void Remove(Player target) {
+        _affectedPlayers.Remove(target);
     }
 
     void OnExecutionEnd() {

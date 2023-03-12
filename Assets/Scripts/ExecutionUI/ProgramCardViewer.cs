@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public class ProgramCardViewer : MonoBehaviour {
     [Header("References")]
     [SerializeField] ProgramCard _programCardPrefab;
-    [SerializeField] TMP_Text _headerText;
+    [SerializeField] UpgradeCard _upgradeCardPrefab;
 
     [Header("Layout")]
     [SerializeField] Vector2 _cardSize;
@@ -18,40 +17,46 @@ public class ProgramCardViewer : MonoBehaviour {
     
     Vector3 SpacedSize => (_cardSize + Vector2.one * _cardSpacing) * CanvasUtils.CanvasScale;
 
-    readonly List<ProgramCard> _cards = new();
+    readonly List<Transform> _cards = new();
     Player _lastPlayer;
     bool _isAnimating;
     
     void Start() {
         foreach (var player in PlayerSystem.Players) {
-            player.OnProgramCardExecuted += execution => OnProgramCardPlayed(player, execution.Card);
+            player.OnProgramCardExecuted += OnProgramCardPlayed;
+            player.OnUpgradeUsed += upgrade => OnUpgradeUsed(player, upgrade);
         }
     }
     
-    void OnProgramCardPlayed(Player player, ProgramCardData card) {
-        StartCoroutine(AddCard(card, _lastPlayer != player));
+    void OnUpgradeUsed(Player player, UpgradeCardData upgrade) {
+        StartCoroutine(AddCard(_upgradeCardPrefab, upgrade, true));
         _lastPlayer = player;
     }
+    
+    void OnProgramCardPlayed(ProgramExecution execution) {
+        StartCoroutine(AddCard(_programCardPrefab, execution.Card, _lastPlayer != execution.Player));
+        _lastPlayer = execution.Player;
+    }
 
-    IEnumerator AddCard(ProgramCardData data, bool replace = false) {
+    IEnumerator AddCard<T>(Container<T> prefab, T content, bool replace) {
         yield return new WaitUntil(() => !_isAnimating);
+        if (replace) yield return ClearCards();
+        yield return DoAnimation(Instantiate(prefab, transform).SetContent(content).transform);
+    }
+    
+    IEnumerator DoAnimation(Transform cardTransform) {
         _isAnimating = true;
         
-        if (replace) {
-            yield return ClearCards();
-        }
-        
         var t = transform;
-        
         var targetPos = t.position + _cards.Count * Vector3.right;
-        var startPos = _cards.Count > 0 ? targetPos + SpacedSize.y * Vector3.down : targetPos + SpacedSize.x * Vector3.left;
+        var startPos = _cards.Count > 0 ? 
+            targetPos + SpacedSize.y * Vector3.down 
+            : targetPos + SpacedSize.x * Vector3.left;
         
-        var newCard = Instantiate(_programCardPrefab, t);
-        newCard.SetContent(data);
-        newCard.transform.position = startPos;
-        _cards.Add(newCard);
+        cardTransform.position = startPos;
+        _cards.Add(cardTransform);
         
-        LeanTween.move(newCard.gameObject, targetPos, _tweenTime).setEase(_tweenType);
+        LeanTween.move(cardTransform.gameObject, targetPos, _tweenTime).setEase(_tweenType);
         yield return CoroutineUtils.Wait(_tweenTime);
         _isAnimating = false;
     }

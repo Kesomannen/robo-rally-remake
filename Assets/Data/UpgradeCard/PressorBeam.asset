@@ -24,10 +24,10 @@ MonoBehaviour:
   _minDistance: 1
   _moveSpeed: 2.5
   _moveType: 9
-  _countAsPush: 1
+  _countAsPush: 0
   _optional: 1
   _overlay:
-    _header: Pull target?
-    _subtitle: Tractor Beam
+    _header: Push target?
+    _subtitle: Pressor Beam
     _prefab: {fileID: 2857633715039716534, guid: a369f1b48dade904bab2b0c2e16b6e52, type: 3}
     _canPreview: 1

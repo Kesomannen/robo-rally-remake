@@ -16,8 +16,9 @@ using Random = UnityEngine.Random;
 public class LobbySystem : NetworkSingleton<LobbySystem> {
     [SerializeField] TMP_InputField _inputField;
     [SerializeField] GameObject _enterNameMenu;
-    
-    static string _playerName;
+
+    public static string PlayerName { get; private set; } = "Player";
+    public static event Action<string> OnNameChanged;
     
     static readonly Dictionary<ulong, LobbyPlayerData> _playersInLobby = new();
     public static IReadOnlyDictionary<ulong, LobbyPlayerData> PlayersInLobby => _playersInLobby;
@@ -27,7 +28,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
 
     public static event Action<ulong, LobbyPlayerData> OnPlayerUpdatedOrAdded;
     public static event Action<ulong> OnPlayerRemoved;
-    public static event Action<LobbySettings> OnLobbySettingsUpdated; 
+    public static event Action<LobbySettings> OnLobbySettingsUpdated;
 
     public static string LobbyJoinCode => Matchmaking.CurrentLobby.LobbyCode;
     
@@ -39,20 +40,21 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         using (new LoadingScreen("Signing in...")) {
             Matchmaking.InitializeAsync();
         }
-        GetName();
+        if (PlayerPrefs.HasKey(PlayerPrefsNameKey)) {
+            PlayerName = PlayerPrefs.GetString(PlayerPrefsNameKey);
+        } else {
+            GatherName();   
+        }
     }
 
-    void GetName() {
-        if (PlayerPrefs.HasKey(PlayerPrefsNameKey)) {
-            _playerName = PlayerPrefs.GetString(PlayerPrefsNameKey);
-        } else {
-            _enterNameMenu.SetActive(true);
-            _inputField.onSubmit.AddListener(s => {
-                _playerName = s;
-                PlayerPrefs.SetString(PlayerPrefsNameKey, s);
-                _enterNameMenu.SetActive(false);
-            });
-        }
+    public void GatherName() {
+        _enterNameMenu.SetActive(true);
+        _inputField.onSubmit.AddListener(s => {
+            PlayerName = s;
+            PlayerPrefs.SetString(PlayerPrefsNameKey, s);
+            _enterNameMenu.SetActive(false);
+            OnNameChanged?.Invoke(s);
+        });
     }
 
     public override void OnNetworkSpawn() {
@@ -66,7 +68,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
 
             LobbySettings = new LobbySettings();
             _playersInLobby[id] = new LobbyPlayerData {
-                Name = _playerName,
+                Name = PlayerName,
                 IsHost = true,
                 IsReady = false,
                 RobotId = (byte)RobotData.GetRandom().GetLookupId()
@@ -134,7 +136,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
     [ClientRpc]
     void GetNameClientRpc(ulong id) {
         if (IsServer || id != NetworkManager.LocalClientId) return;
-        SetNameServerRpc(id, _playerName);
+        SetNameServerRpc(id, PlayerName);
     }
     
     [ServerRpc(RequireOwnership = false)]
@@ -233,15 +235,21 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         yield return new WaitUntil(() => lockLobbyAsync.IsCompleted);
         
         var sceneManager = NetworkManager.SceneManager;
-        var isLoaded = false;
+        var succeeded = false;
+        var failed = false;
         
         sceneManager.OnLoadEventCompleted += OnLoadComplete;
         sceneManager.LoadScene("Game", LoadSceneMode.Single);
-        yield return new WaitUntil(() => isLoaded);
-        
+        yield return new WaitUntil(() => succeeded || failed);
+
         void OnLoadComplete(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut) {
-            isLoaded = true;
             sceneManager.OnLoadEventCompleted -= OnLoadComplete;
+            if (clientsTimedOut.Count > 0) {
+                Debug.LogError($"Failed to load scene {sceneName} for clients {string.Join(", ", clientsTimedOut)}");
+                failed = true;
+            } else {
+                succeeded = true;
+            }
         }   
     }
 

@@ -13,7 +13,6 @@ public class TaskScheduler : Singleton<TaskScheduler> {
     
     public static void PushRoutine(IEnumerator routine, float delay = DefaultTaskDelay, Action onComplete = null) {
         _tasks.Push((routine, onComplete, delay));
-        Debug.Log($"Pushed routine. {_tasks.Count} tasks in queue.");
         if (_isRunning) return;
         
         _isRunning = true;
@@ -24,8 +23,7 @@ public class TaskScheduler : Singleton<TaskScheduler> {
         for (var i = routines.Length - 1; i >= 0; i--){
             _tasks.Push((routines[i], () => {}, delay));
         }
-        Debug.Log($"Pushed sequence. {_tasks.Count} tasks in queue.");
-        
+
         if (_isRunning) return;
         
         _isRunning = true;
@@ -54,6 +52,7 @@ public class TaskScheduler : Singleton<TaskScheduler> {
             yield return task.Routine;
             task.Callback?.Invoke();
             yield return CoroutineUtils.Wait(task.Delay);
+            Debug.Log($"Task completed. {_tasks.Count} tasks remaining.");
         }
         _isRunning = false;
     }

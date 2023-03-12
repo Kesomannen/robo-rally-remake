@@ -6,7 +6,8 @@ public class RotateUpgrade : UpgradeCardData {
     [SerializeField] OverlayData<Choice<Vector2Int>> _overlay;
     
     public override bool CanUse(Player player) {
-        return UpgradeAwaiter.BeforeRegister.Active || UpgradeAwaiter.AfterRegister.Active;
+        return UpgradeAwaiter.BeforeRegister.ActiveFor(player)
+               || UpgradeAwaiter.AfterRegister.ActiveFor(player);
     }
     
     public override void OnAdd(Player player) {

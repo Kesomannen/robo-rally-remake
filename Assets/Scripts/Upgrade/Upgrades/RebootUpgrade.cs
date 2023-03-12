@@ -5,11 +5,11 @@ public class RebootUpgrade : UpgradeCardData {
     [SerializeField] bool _takeDamage;
     
     public override bool CanUse(Player player) {
-        return UpgradeAwaiter.BeforeRegister.Active;
+        return UpgradeAwaiter.AfterRegister.ActiveFor(player);
     }
 
     public override void OnAdd(Player player) {
-        UpgradeAwaiter.BeforeRegister.AddListener(player);
+        UpgradeAwaiter.AfterRegister.AddListener(player);
     }
 
     public override void Use(Player player) {

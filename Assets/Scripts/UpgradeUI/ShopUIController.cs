@@ -52,8 +52,9 @@ public class ShopUIController : Singleton<ShopUIController> {
 
     void OnRestock(int index, UpgradeCardData card) {
         var shopCard = _shopCards[index];
-        TaskScheduler.PushRoutine(shopCard.RestockAnimation(card));
         UpdateCards();
+        Debug.Log($"Restocking {card} at index {index}");
+        TaskScheduler.PushRoutine(shopCard.RestockAnimation(card));
     }
     
     void OnCardClicked(ShopCard shopCard) {

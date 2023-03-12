@@ -14,7 +14,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
     static bool _currentPlayerReady;
     
     public static Player CurrentPlayer { get; private set; }
-    public static IReadOnlyList<UpgradeCardData> ShopCards => _shopCards;
+    public static IEnumerable<UpgradeCardData> ShopCards => _shopCards;
 
     public static event Action<Player, bool, UpgradeCardData> OnPlayerDecision;
     public static event Action<Player> OnNewPlayer;
@@ -36,9 +36,11 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
 
         _skippedPlayers = 0;
         var orderedPlayers = PlayerSystem.GetOrderedPlayers();
-        TaskScheduler.PushSequence(routines: orderedPlayers.Select(DoPlayerTurn).ToArray());
-        yield return TaskScheduler.WaitUntilClear();
-        
+        foreach (var player in orderedPlayers) {
+            yield return DoPlayerTurn(player);
+            yield return TaskScheduler.WaitUntilClear();
+        }
+
         CurrentPlayer = null;
         OnNewPlayer?.Invoke(null);
 
@@ -86,16 +88,14 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
             yield return new WaitUntil(() => _restockCards != null);
         }
 
-        TaskScheduler.PushSequence(actions: _restockCards
-            .Where((_, i) => _shopCards[i] != _restockCards[i])
-            .Select<UpgradeCardData, Action>((card, i) => () => Restock(card, i))
-            .ToArray());
-        _restockCards = null;
-        
-        void Restock(UpgradeCardData card, int index) {
-            _shopCards[index] = card;
-            OnRestock?.Invoke(index, card);
+        for (var i = 0; i < _restockCards.Length; i++) {
+            if (_shopCards[i] == _restockCards[i]) continue;
+            
+            var card = _restockCards[i];
+            _shopCards[i] = card;
+            OnRestock?.Invoke(i, card);
         }
+        _restockCards = null;
     }
 
     [ClientRpc]
@@ -107,11 +107,8 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
     public void MakeDecision(bool skipped, UpgradeCardData upgrade, int index) {
         var id = skipped ? 0 : upgrade.GetLookupId();
 
-        if (NetworkManager == null) {
-            SetReady(skipped, upgrade, index);
-        } else {
-            MakeDecisionServerRpc(skipped, (byte) id, (byte) index);    
-        }
+        if (NetworkManager == null) SetReady(skipped, upgrade, index);
+        else MakeDecisionServerRpc(skipped, (byte)id, (byte)index);
     }
     
     [ServerRpc(RequireOwnership = false)]
@@ -140,6 +137,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
             OnPlayerDecision?.Invoke(CurrentPlayer, false, upgrade);
             Log.Instance.BuyUpgradeMessage(CurrentPlayer, upgrade);
         }
+        CurrentPlayer = null;
         _currentPlayerReady = true;
     }
 }

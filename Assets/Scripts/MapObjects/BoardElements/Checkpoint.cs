@@ -1,10 +1,13 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
 public class Checkpoint : BoardElement<Checkpoint, IPlayer>, ITooltipable, ITriggerAwake {
     [SerializeField] int _index;
     [SerializeField] TMP_Text _indexText;
+    [SerializeField] ParticleSystem _particle;
+    [SerializeField] SoundEffect _sound;
 
     public event Action<Player> OnPlayerReached;
 
@@ -34,11 +37,18 @@ public class Checkpoint : BoardElement<Checkpoint, IPlayer>, ITooltipable, ITrig
             var current = player.CurrentCheckpoint;
 
             if (current.Value != _index - 1) continue;
+            TaskScheduler.PushRoutine(Routine());
             AddActivation();
-            current.Value = _index;
-            OnPlayerReached?.Invoke(player);
             
-            Log.Instance.CheckpointMessage(player, _index);
+            IEnumerator Routine() {
+                current.Value = _index;
+                OnPlayerReached?.Invoke(player);
+                Log.Instance.CheckpointMessage(player, _index);
+                
+                _particle.Play();
+                _sound.Play();
+                yield return CoroutineUtils.Wait(_particle.main.duration);
+            }
         }
     }
 }

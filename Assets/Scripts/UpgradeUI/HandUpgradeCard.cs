@@ -61,7 +61,7 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
         _selectable.interactable = available;
     }
 
-    public void SetHighlighted(bool highlighted) {
+    void SetHighlighted(bool highlighted) {
         var t = transform;
         if (highlighted) {
             t.SetParent(_highlightParent, true);

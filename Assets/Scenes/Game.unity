@@ -434,7 +434,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _programCardPrefab: {fileID: -4837892012670907284, guid: 852a4f1b39d0eff43b4ad4b129005922, type: 3}
-  _headerText: {fileID: 0}
+  _upgradeCardPrefab: {fileID: 0}
   _cardSize: {x: 128.125, y: 175}
   _cardSpacing: 85
   _tweenType: 9
@@ -1936,7 +1936,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 2.5625, z: -10}
+  m_LocalPosition: {x: 0.5, y: 2.5625, z: -20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2732,12 +2732,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ad5597ae79c4fa47973471e5c5d4293, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mapToLoad: {fileID: 11400000, guid: ee6058072b906024f90f5c10f1ceb3de, type: 2}
+  _mapToLoad: {fileID: 11400000, guid: b0f5e608bc8120e45863f455a917919f, type: 2}
   _robotToLoad: {fileID: 11400000, guid: ef0584a46c19e0149a7b36d95295ee26, type: 2}
   _upgradesToLoad:
   - {fileID: 11400000, guid: 33912ce2368b83749939df566f923356, type: 2}
-  - {fileID: 11400000, guid: 0093150bf71474f43b7fe67606b87904, type: 2}
-  - {fileID: 11400000, guid: 87468500390fda24b80c65d510feb93a, type: 2}
+  - {fileID: 11400000, guid: 5680d3887ef52f7489915c50deb15406, type: 2}
 --- !u!114 &761913675
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2762,7 +2761,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6102abc6f644961979aa331f880547a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pauseTime: 2
+  _pauseTime: 4
 --- !u!1 &772788829
 GameObject:
   m_ObjectHideFlags: 0

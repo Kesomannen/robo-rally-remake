@@ -1360,6 +1360,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _musicSlider: {fileID: 573954021}
   _sfxSlider: {fileID: 1752799644}
+  _nameText:
+    _enabled: 0
+    _value: {fileID: 0}
 --- !u!114 &6058921284358513438
 MonoBehaviour:
   m_ObjectHideFlags: 0

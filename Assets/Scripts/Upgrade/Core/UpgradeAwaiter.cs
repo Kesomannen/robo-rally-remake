@@ -15,9 +15,9 @@ public class UpgradeAwaiter : Singleton<UpgradeAwaiter> {
 
     public static IEnumerator AwaitEvent<T>(PauseEvent<T> pauseEvent, T arg) {
         if (!pauseEvent.ShouldAwait(arg)) yield break;
-        pauseEvent.Active = true;
+        pauseEvent.Activate(arg);
         yield return Await();
-        pauseEvent.Active = false;
+        pauseEvent.Deactivate();
     }
     
     public static IEnumerator AwaitEvent(PauseEvent pauseEvent) {
@@ -42,18 +42,24 @@ public class UpgradeAwaiter : Singleton<UpgradeAwaiter> {
 
     public class PauseEvent<T> {
         readonly List<T> _listeners = new();
+        T _currentArg;
+        bool _active;
         
-        public bool Active;
-
+        public bool ActiveFor(T arg) => _active && _currentArg.Equals(arg);
+        public void Activate(T arg) {
+            _currentArg = arg;
+            _active = true;
+        }
+        public void Deactivate() => _active = false;
+        
         public bool ShouldAwait(T arg) => _listeners.Any(listener => listener.Equals(arg));
-
         public void AddListener(T listener) => _listeners.Add(listener);
         public void RemoveListener(T listener) => _listeners.Remove(listener);
     }
 
     public class PauseEvent {
         int _listeners;
-        
+
         public bool Active;
 
         public bool ShouldAwait => _listeners > 0;

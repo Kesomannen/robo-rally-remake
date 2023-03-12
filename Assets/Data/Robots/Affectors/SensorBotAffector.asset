@@ -9,8 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41d6cd3e30894fb9906289775660f9a9, type: 3}
-  m_Name: SensorBotPriority
+  m_Script: {fileID: 11500000, guid: 4c9f0a34636047aa9616c70accf2eb45, type: 3}
+  m_Name: SensorBotAffector
   m_EditorClassIdentifier: 
-  _value: 1
-  _target: 2

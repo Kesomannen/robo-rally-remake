@@ -41,4 +41,4 @@ MonoBehaviour:
   _laserDamage: {fileID: 11400000, guid: 62b9f46bf38d5c248aef57a59d49e9b8, type: 2}
   _pushDamage: {fileID: 11400000, guid: f12f970e8a61e8b4a8ff670aee35dece, type: 2}
   _onSpawnAffectors:
-  - {fileID: 11400000, guid: d88c51152f6ac004a9ab8220f01bd3dd, type: 2}
+  - {fileID: 11400000, guid: 137d0972b095b90498421298e6a8f3c3, type: 2}

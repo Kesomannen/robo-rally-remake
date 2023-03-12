@@ -12,7 +12,7 @@ public class HackUpgrade : UpgradeCardData {
     }
 
     public override bool CanUse(Player player) {
-        return UpgradeAwaiter.AfterRegister.Active;
+        return UpgradeAwaiter.AfterRegister.ActiveFor(player);
     }
     
     public override void Use(Player player) {

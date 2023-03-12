@@ -86,12 +86,24 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
                 pos += dir;
             }
 
-            var targetFilled = MapSystem.TryGetTile(pos + dir, out var tile);
-            if (!targetFilled) continue;
-        
-            var hits = tile.OfType<IPlayer>().Where(p => p.Owner != Owner).ToArray();
-            if (hits.Length == 0) continue;
-            _hits += hits.Length;
+            List<PlayerModel> hits = new();
+            
+            if (IgnoredObjectsForLaser.Contains(typeof(PlayerModel))) {
+                // Check every tile in the path
+                for (var i = 0; i < maxDistance; i++) {
+                    if (MapSystem.TryGetTile(pos, out var tile)) {
+                        hits.AddRange(tile.OfType<PlayerModel>().Where(p => p.Owner != Owner));   
+                    }
+                    pos -= dir;
+                }
+            } else {
+                var targetFilled = MapSystem.TryGetTile(pos + dir, out var tile);
+                if (!targetFilled) continue;
+                hits.AddRange(tile.OfType<PlayerModel>().Where(p => p.Owner != Owner));
+            }
+            
+            if (hits.Count == 0) continue;
+            _hits += hits.Count;
 
             TaskScheduler.PushRoutine(Fire(dir, hits));   
         }

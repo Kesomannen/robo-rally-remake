@@ -9,16 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49a2ba9cb742c7947b216ea81ab50218, type: 3}
+  m_Script: {fileID: 11500000, guid: b0528249f2be40888bcbef4957a12547, type: 3}
   m_Name: RobotDataLookup
   m_EditorClassIdentifier: 
   _values:
+  - {fileID: 11400000, guid: 149695bb9de9b23449d563d467b23398, type: 2}
   - {fileID: 11400000, guid: f5662703ca885694093898b0567926b5, type: 2}
   - {fileID: 11400000, guid: 15f17d4ffc1e55b4fbfd3d6c4a1863d8, type: 2}
   - {fileID: 11400000, guid: cef402b3b1958fb4a82076337d20b84a, type: 2}
   - {fileID: 11400000, guid: 320533cde685f6c4fb5fbdfadf60086b, type: 2}
-  - {fileID: 11400000, guid: 37b46a89c76c78b4f99841f95498e646, type: 2}
   - {fileID: 11400000, guid: afec4b1e514a8bf44984081f768b4cfd, type: 2}
-  - {fileID: 11400000, guid: 149695bb9de9b23449d563d467b23398, type: 2}
   - {fileID: 11400000, guid: ef0584a46c19e0149a7b36d95295ee26, type: 2}
-  _maxDerivations: 1
+  - {fileID: 11400000, guid: 37b46a89c76c78b4f99841f95498e646, type: 2}

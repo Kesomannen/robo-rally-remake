@@ -14,7 +14,7 @@ public class RobotData : Lookup<RobotData>, ITooltipable {
     [SerializeField] ProgramCardData[] _startingDeck;
     [SerializeField] ScriptableCardAffector _laserDamage;
     [SerializeField] ScriptableCardAffector _pushDamage;
-    [SerializeField] ScriptableAffector<IPlayer>[] _onSpawnAffectors;
+    [SerializeField] ScriptableAffector<Player>[] _onSpawnAffectors;
 
     public string Name => _name;
     public string Header => _name;
@@ -29,7 +29,7 @@ public class RobotData : Lookup<RobotData>, ITooltipable {
     public CardAffector GetPushDamage() => _pushDamage.ToInstance();
 
     public void OnSpawn(Player player) {
-        foreach (var affector in _onSpawnAffectors){
+        foreach (var affector in _onSpawnAffectors) {
             affector.Apply(player);
         }
     }

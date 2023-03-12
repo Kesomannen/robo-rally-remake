@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "ScriptableObjects/Affectors/Scrambler")]
-public class ScramblerAffector : ScriptableAffector<IPlayer> {
+[CreateAssetMenu(menuName = "Upgrade/Scrambler")]
+public class ScramblerUpgrade : UpgradeCardData {
     const int SearchDepth = 5;
     
-    public override void Apply(IPlayer target) {
+    public override void OnAdd(Player target) {
         target.Owner.Model.OnShoot += OnShoot;
     }
     
-    public override void Remove(IPlayer target) {
+    public override void OnRemove(Player target) {
         target.Owner.Model.OnShoot -= OnShoot;
     }
 

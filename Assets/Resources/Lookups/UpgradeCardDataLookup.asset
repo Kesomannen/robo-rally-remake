@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49a2ba9cb742c7947b216ea81ab50218, type: 3}
+  m_Script: {fileID: 11500000, guid: 8c00ebf7256d45328d9301255bfff7b0, type: 3}
   m_Name: UpgradeCardDataLookup
   m_EditorClassIdentifier: 
   _values:
@@ -38,4 +38,3 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8f9a003cbb507754897ec9dd00aa988e, type: 2}
   - {fileID: 11400000, guid: 42807c5dd495cfe49a6cdc7feb5bbe52, type: 2}
   - {fileID: 11400000, guid: 6c1439b4b5d1da141969573a79049f15, type: 2}
-  _maxDerivations: 2

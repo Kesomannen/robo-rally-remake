@@ -6,9 +6,11 @@ public class ProgramExecution {
     public ProgramCardData Card;
     public readonly Player Player;
     public readonly int Register;
+
+    bool IsExecuting { get; set; }
+    bool Started { get; set; }
     
-    public bool IsExecuting { get; private set; }
-    public bool Started { get; private set; }
+    const float ExecutionDelay = 0.5f;
 
     public event Action<ProgramExecution> OnExecutionStart;
     public event Action<ProgramExecution> OnExecutionEnd; 
@@ -25,6 +27,7 @@ public class ProgramExecution {
         Player.OnExecute(this);
         OnExecutionStart?.Invoke(this);
         
+        yield return CoroutineUtils.Wait(ExecutionDelay);
         yield return Card.ExecuteRoutine(Player, Register);
         
         IsExecuting = false;
