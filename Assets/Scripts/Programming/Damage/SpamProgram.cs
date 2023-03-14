@@ -29,9 +29,11 @@ public class SpamProgram : ProgramCardData {
         player.DiscardPile.AddCard(card, CardPlacement.Top);
 
         void RemoveCard() {
-            Debug.Log("Removing card");
             ExecutionPhase.OnExecutionComplete -= RemoveCard;
-            player.Program.SetRegister(register, null);
+            
+            var program = player.Program;
+            if (program[register] != this) return;
+            program.SetRegister(register, null);
         }
     }
 }
