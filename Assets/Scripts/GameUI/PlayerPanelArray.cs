@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,10 +27,9 @@ public class PlayerPanelArray : MonoBehaviour {
 
     void Start() {
         Panels = new List<Container<Player>>(PlayerSystem.Players.Count);
-        for (var i = 0; i < PlayerSystem.Players.Count; i++) {
-            var player = PlayerSystem.Players[i];
+        foreach (var player in PlayerSystem.Players) {
             if (!_showLocalPlayer && PlayerSystem.IsLocal(player)) continue;
-            Panels[i] = Instantiate(_playerPanelPrefab, _playerPanelParent).SetContent(player);
+            Panels.Add(Instantiate(_playerPanelPrefab, _playerPanelParent).SetContent(player));
         }
     }
 }

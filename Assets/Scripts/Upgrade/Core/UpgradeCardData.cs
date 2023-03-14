@@ -9,7 +9,8 @@ public abstract class UpgradeCardData : Lookup<UpgradeCardData> {
     [Space]
     [SerializeField] UpgradeType _type;
     [SerializeField] [Min(0)] int _cost;
-    [SerializeField] [Min(0)] int _useCost;
+    [ShowIf("_type", ShowIfComparer.Equals, (int)UpgradeType.Action)]
+    [SerializeField] [Min(1)] int _usesPerTurn = 1;
     [Space]
     [SerializeField] UpgradeTooltipData[] _tooltips;
 
@@ -19,8 +20,8 @@ public abstract class UpgradeCardData : Lookup<UpgradeCardData> {
     
     public UpgradeType Type => _type;
     public int Cost => _cost;
-    public int UseCost => _useCost;
-    
+    public int UsesPerTurn => _usesPerTurn;
+
     public IReadOnlyList<UpgradeTooltipData> Tooltips => _tooltips;
 
     public virtual bool CanUse(Player player) => false;

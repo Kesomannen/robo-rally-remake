@@ -25,7 +25,8 @@ public class MemorySwapUpgrade : UpgradeCardData {
                 MinChoices = 3
             });
             foreach (var card in result) {
-                player.DiscardCard(card);
+                player.Hand.RemoveCard(card);
+                player.DrawPile.AddCard(card, CardPlacement.Top);
             }
         }
     }

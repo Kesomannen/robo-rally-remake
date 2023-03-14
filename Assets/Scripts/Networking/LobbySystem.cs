@@ -106,7 +106,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         OnPlayerUpdatedOrAdded?.Invoke(id, _playersInLobby[id]);
         
         GetNameClientRpc(id);
-        Invoke(nameof(SendLobbyUpdates), 0.5f);
+        Invoke(nameof(SendLobbyUpdates), 0.1f);
     }
     
     void OnClientDisconnected(ulong player) {
@@ -176,6 +176,12 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         OnLobbySettingsUpdated?.Invoke(settings);
     }
 
+    [ClientRpc]
+    void StartGameClientRpc() {
+        if (IsServer) return;
+        MenuUtils.Instance.ShowOverlay("Game starting...");
+    }
+
     # region Public Methods
 
     public void RefreshLobbySettings() {
@@ -230,7 +236,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
     }
 
     public IEnumerator StartGame() {
-        Debug.Log("Starting game");
+        StartGameClientRpc();
         var lockLobbyAsync = Matchmaking.LockLobbyAsync();
         yield return new WaitUntil(() => lockLobbyAsync.IsCompleted);
         

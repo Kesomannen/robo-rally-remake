@@ -130,6 +130,8 @@ public class MapSystem : Singleton<MapSystem> {
 
     static void CallHandlers<T>(IEnumerable<MapObject> tile, Action<T> action, MapObject except = null) where T : IMapObject {
         var handlers = except == null ? tile.OfType<T>().ToArray() : tile.Where(x => x != except).OfType<T>().ToArray();
+        // ReSharper disable once ForCanBeConvertedToForeach
+        // Collection was modified; enumeration may not operate correctly
         for (var i = 0; i < handlers.Length; i++) {
             var handler = handlers[i];
             action(handler);

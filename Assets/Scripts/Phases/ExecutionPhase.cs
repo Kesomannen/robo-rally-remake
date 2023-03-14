@@ -99,11 +99,10 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
         IEnumerator DoPlayerRegister(Player player) {
             Debug.Log($"Starting player {player} register {register}");
 
-            var card = player.Program[register];
-            if (card == null) yield break;
-            
-            var execution = new ProgramExecution(card, player, register);
+            if (player.Program[register] == null) yield break;
             yield return UpgradeAwaiter.AwaitEvent(UpgradeAwaiter.BeforeRegister, player);
+            if (player.Program[register] == null) yield break;
+            var execution = new ProgramExecution(player.Program[register], player, register);
             
             OnPlayerRegister?.Invoke(execution);
             TaskScheduler.PushRoutine(AfterRegister(execution));

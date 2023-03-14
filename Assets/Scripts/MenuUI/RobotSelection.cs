@@ -8,7 +8,7 @@ public class RobotSelection : MonoBehaviour {
     [SerializeField] Transform _robotPanelParent;
 
     readonly List<RobotPanel> _panels = new();
-    readonly Dictionary<ulong, RobotData> _playerRobots = new();
+    Dictionary<ulong, RobotData> _playerRobots;
 
     void Awake() {
         foreach (var robotData in RobotData.GetAll()) {
@@ -19,13 +19,14 @@ public class RobotSelection : MonoBehaviour {
     }
     
     void OnEnable() {
-        _playerRobots.Clear();
-
         LobbySystem.OnPlayerUpdatedOrAdded += OnPlayerUpdatedOrAdded;
         LobbySystem.OnPlayerRemoved += OnPlayerRemoved;
         RoomMenu.OnLocalPlayerReady += OnLocalPlayerReady;
         
-        _panels.ForEach(UpdatePanel);
+        LeanTween.delayedCall(0.3f, () => {
+            _playerRobots = LobbySystem.PlayersInLobby.ToDictionary(pair => pair.Key, pair => RobotData.GetById(pair.Value.RobotId));
+            _panels.ForEach(UpdatePanel);
+        });
     }
 
     void OnDisable() {
@@ -35,7 +36,10 @@ public class RobotSelection : MonoBehaviour {
     }
     
     void OnLocalPlayerReady() {
-        _panels.ForEach(UpdatePanel);
+        var localRobot = _playerRobots[NetworkManager.Singleton.LocalClientId];
+        foreach (var panel in _panels) {
+            panel.SetState(panel.Content == localRobot ? RobotPanel.State.Selected : RobotPanel.State.Unavailable);
+        }
     }
 
     void OnPlayerRemoved(ulong id) {
@@ -58,7 +62,7 @@ public class RobotSelection : MonoBehaviour {
 
         if (_playerRobots[localId] == panel.Content) {
             panel.SetState(RobotPanel.State.Selected);
-        } else if (_playerRobots.Any(player => player.Value == panel.Content) 
+        } else if (_playerRobots.Any(pair => pair.Value == panel.Content) 
                    || LobbySystem.PlayersInLobby[localId].IsReady) {
             panel.SetState(RobotPanel.State.Unavailable);
         } else {

@@ -7,7 +7,7 @@ using System.Linq;
 
 public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
     public static bool IsStressed { get; private set; }
-    public static IReadOnlyList<Player> PlayersLockedIn => _playersLockedIn;
+    public static IEnumerable<Player> PlayersLockedIn => _playersLockedIn;
     static bool LocalPlayerLockedIn { get; set; }
     
     public static readonly ObservableField<int> StressTimer = new();

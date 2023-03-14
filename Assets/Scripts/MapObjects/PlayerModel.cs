@@ -31,6 +31,7 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
     public RebootToken Spawn { get; private set; }
 
     public bool Movable { get; set; } = true;
+    public bool Hovering { get; set; }
     protected override bool CanRotate => true;
     
     public event Action<CallbackContext> OnPush;
@@ -50,6 +51,7 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
     public string Description => null;
 
     public override void Fall(IBoard board) {
+        if (Hovering) return;
         _rebootSound.Play();
         Owner.Reboot(board);
     }
@@ -131,7 +133,32 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
         }
     }
 
-    public IEnumerator Move(Vector2Int dir, bool relative) {
+    public IEnumerator MoveSteps(Vector2Int dir, bool relative, int steps, float delay = TaskScheduler.DefaultTaskDelay) {
+        yield return MoveSteps(Enumerable.Repeat(dir, steps), relative, delay);
+    }
+    
+    public IEnumerator MoveSteps(IEnumerable<Vector2Int> dirs, bool relative, float delay = TaskScheduler.DefaultTaskDelay) {
+        foreach (var dir in dirs) {
+            yield return CoroutineUtils.Wait(delay);
+            yield return Move(dir, relative);
+        }
+
+        if (!Hovering) yield break;
+        Hovering = false;
+
+        if (MapSystem.Instance.TryGetBoard(GridPos, out var board)) {
+            var tile = MapSystem.GetTile(GridPos);
+            if (tile.OfType<Pit>().Any()) {
+                Fall(board);
+            }
+        } else {
+            Fall(MapSystem.GetParentBoard(this));
+        }
+
+        Hovering = true;
+    }
+
+    IEnumerator Move(Vector2Int dir, bool relative) {
         if (Owner.IsRebooted.Value) yield break;
         
         var moveVector = relative ? Rotator.Rotate(dir) : dir;

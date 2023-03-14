@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: MapDataLookup
   m_EditorClassIdentifier: 
   _values:
-  - {fileID: 11400000, guid: ecd6b40d9b330dd4e8c947187a002b2f, type: 2}
   - {fileID: 11400000, guid: b0f5e608bc8120e45863f455a917919f, type: 2}
+  - {fileID: 11400000, guid: ecd6b40d9b330dd4e8c947187a002b2f, type: 2}
   - {fileID: 11400000, guid: fdcc374f8bfe0c042b9ecc1d07ca3169, type: 2}
   - {fileID: 11400000, guid: 464a53dfa8c43494e850987fdafa5bff, type: 2}
   - {fileID: 11400000, guid: 346b3615c1fadc54ab823ee53d2760fb, type: 2}

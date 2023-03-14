@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 423f78b727b34464a1840d7b5c85fc60, type: 3}
+  m_Name: Refresh
+  m_EditorClassIdentifier: 
+  _name: Refresh
+  _description: 'Replace the card in your current register with any of the following:
+    Move 1, 2 or 3; Turn Left or Right; U Turn; Move Back; Repeat. If you replace
+    a Damage card, discard it permanently.'
+  _icon: {fileID: 21300000, guid: 580fab44ef70f4948a8a1ff8eb51662b, type: 3}
+  _type: 0
+  _cost: 2
+  _usesPerTurn: 1
+  _tooltips: []
+  _options:
+  - {fileID: 11400000, guid: 2cb459cf240aad04daea347bb26fee55, type: 2}
+  - {fileID: 11400000, guid: 7d66565cef5302d4c98375131e02105f, type: 2}
+  - {fileID: 11400000, guid: 7284b567fda938c48ba9df3c7528a65a, type: 2}
+  - {fileID: 11400000, guid: bce61d717821cc64d8b4cff5e98ee1d3, type: 2}
+  - {fileID: 11400000, guid: 789c848c7ae69f4479f9670eb7ec46ac, type: 2}
+  - {fileID: 11400000, guid: a0c176612c85f9c45aa2ceba06c64869, type: 2}
+  - {fileID: 11400000, guid: 18607977aaffdee4e93c7b63daed4cf9, type: 2}
+  - {fileID: 11400000, guid: 77ee3c9c9ce971d45895324e00412f43, type: 2}
+  _overlay:
+    _header: Choose a card to Execute
+    _subtitle: Refresh
+    _prefab: {fileID: 487802381806119471, guid: d6ba4746ecbe0da4cb2d657a607d96e8, type: 3}
+    _canPreview: 1

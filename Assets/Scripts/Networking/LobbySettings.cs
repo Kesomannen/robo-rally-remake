@@ -39,8 +39,8 @@ public class LobbyProperty {
     
     public readonly byte Min;
     public readonly byte Max;
-    public readonly byte DefaultValue;
-    public readonly bool DefaultState;
+    readonly byte _defaultValue;
+    readonly bool _defaultState;
     
     public bool Enabled;
     public byte Value;
@@ -53,8 +53,8 @@ public class LobbyProperty {
         CanToggle = canToggle;
         HasValue = true;
 
-        DefaultValue = defaultValue;
-        DefaultState = enabled;
+        _defaultValue = defaultValue;
+        _defaultState = enabled;
         Enabled = enabled;
     }
     
@@ -62,13 +62,13 @@ public class LobbyProperty {
         CanToggle = true;
         HasValue = false;
         
-        DefaultState = defaultValue;
+        _defaultState = defaultValue;
         Enabled = defaultValue;
     }
     
     public void Reset() {
-        Value = DefaultValue;
-        Enabled = DefaultState;
+        Value = _defaultValue;
+        Enabled = _defaultState;
     }
     
     public static implicit operator byte(LobbyProperty property) {

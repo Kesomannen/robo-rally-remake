@@ -27,7 +27,7 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
         Debug.Log("NetworkSystem spawned, loading map...");
         MapSystem.Instance.LoadMap(MapData.GetById(LobbySystem.LobbyMap.Value));
 
-        foreach (var (id, data) in LobbySystem.PlayersInLobby) {
+        foreach (var (id, data) in LobbySystem.PlayersInLobby.OrderBy(value => value.Key)) {
             PlayerSystem.Instance.CreatePlayer(id, data, false);
         }
         
@@ -52,11 +52,11 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
 
         IEnumerator WaitForPlayers() {
             NetworkManager.SceneManager.OnLoadEventCompleted += LoadEventCompleted;
-            var allLoaded = false;
-            yield return new WaitUntil(() => allLoaded);
+            var loaded = false;
+            yield return new WaitUntil(() => loaded);
+            StartGameClientRpc();
             PhaseSystem.Start();
-            StartPhaseSystemClientRpc();
-            
+
             void LoadEventCompleted(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut) {
                 NetworkManager.SceneManager.OnLoadEventCompleted -= LoadEventCompleted;
                 if (clientsTimedOut.Count > 0) {
@@ -66,11 +66,17 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
                 if (clientsCompleted.Count < NetworkManager.ConnectedClientsList.Count) {
                     Debug.LogError($"Clients did not load: {string.Join(", ", NetworkManager.ConnectedClientsList.Select(c => c.ClientId).Except(clientsCompleted))}");
                 }
-                allLoaded = true;
+                loaded = true;
             }
         }
     }
 
+    [ClientRpc]
+    void StartGameClientRpc() {
+        if (IsServer) return;
+        PhaseSystem.Start();
+    }
+    
     void OnClientDisconnect(ulong id) {
         if (IsServer) {
             PlayerSystem.RemovePlayer(PlayerSystem.Players.First(p => p.ClientId == id));
@@ -79,12 +85,6 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
             // Host disconnected
             ReturnToLobby();
         }
-    }
-
-    [ClientRpc]
-    void StartPhaseSystemClientRpc() {
-        if (IsServer) return;
-        PhaseSystem.Start();
     }
 
     [ClientRpc]

@@ -35,7 +35,7 @@ public class MoveUpgrade : UpgradeCardData {
                 OutputArray = result,
                 MinChoices = 1
             });
-            yield return model.Move(result[0], false);   
+            yield return model.MoveSteps(result[0], false, 1);   
         }
     }
 }

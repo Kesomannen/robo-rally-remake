@@ -41,10 +41,7 @@ public class CrabLegsUpgrade : UpgradeCardData {
             
         var dir = result[0];
         if (dir == Vector2Int.zero) yield break;
-            
-        TaskScheduler.PushSequence(routines: new[] {
-            model.Move(dir, false),
-            model.Move(Vector2Int.right,true),
-        });
+
+        TaskScheduler.PushRoutine(model.MoveSteps(new[] { dir, model.Rotator.Identity }, false));
     }
 }

@@ -7,12 +7,9 @@ public static class EnumUtils {
         if (setValInt == 0) return baseVal;
         return (TBase) Enum.ToObject(typeof(TBase), setValInt + 1);
     }
-
-    public static T Shift<T>(this T e, int shift) where T : Enum =>
-        (T)Enum.ToObject(typeof(T), ToInt32(e) + shift);
-
-    public static TConvert Convert<TBase, TConvert>(this TBase baseVal, int shift = 0) where TBase : Enum where TConvert : Enum {
+    
+    public static TResult Convert<TBase, TResult>(this TBase baseVal, int shift = 0) where TBase : Enum where TResult : Enum {
         var baseValInt = ToInt32(baseVal);
-        return (TConvert)Enum.ToObject(typeof(TConvert), baseValInt + shift);
+        return (TResult)Enum.ToObject(typeof(TResult), baseValInt + shift);
     }
 }

@@ -12,7 +12,8 @@ public class CardCleanerProgram : ProgramCardData {
     public override IEnumerator ExecuteRoutine(Player player, int register) {
         var collection = player.GetCollection(_pile);
         for (var i = 0; i < _maxCards; i++) {
-            if (!collection.RemoveCard(_targetCard)) yield break;
+            collection.RemoveCard(_targetCard);
         }
+        yield break;
     }
 }

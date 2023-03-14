@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30dd3bfc83544aaf921a133764f692b0, type: 3}
+  m_Name: DefragGizmo
+  m_EditorClassIdentifier: 
+  _name: Defrag Gizmo
+  _description: Once per turn, you may replace a Damage card in your hand with a
+    card from your draw pile.
+  _icon: {fileID: 21300000, guid: 6509ad0757cf8c94ead2c4264327f829, type: 3}
+  _type: 2
+  _cost: 5
+  _usesPerTurn: 1
+  _tooltips: []
+  _overlay:
+    _header: Choose a Damage card
+    _subtitle: Defrag Gizmo
+    _prefab: {fileID: 487802381806119471, guid: d6ba4746ecbe0da4cb2d657a607d96e8, type: 3}
+    _canPreview: 1

@@ -43,8 +43,6 @@ public class ShopCard : UpgradeCard, IPointerClickHandler, IPointerEnterHandler 
     }
 
     public IEnumerator RestockAnimation(UpgradeCardData card) {
-        Debug.Log($"Doing restock animation for {card}", this);
-        Debug.Log(gameObject.activeInHierarchy, this);
         var t = transform;
 
         if (gameObject.activeInHierarchy) {

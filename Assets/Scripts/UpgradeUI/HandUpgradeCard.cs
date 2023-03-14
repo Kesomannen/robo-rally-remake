@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -12,7 +11,7 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
     [SerializeField] GameObject _unavailableOverlay;
     [SerializeField] Selectable _selectable;
     [Space]
-    [SerializeField] [ReadOnly] bool _usedThisTurn;
+    [SerializeField] [ReadOnly] int _usesThisTurn;
     [SerializeField] [ReadOnly] Vector3 _originalSize;
     [SerializeField] [ReadOnly] bool _clickable = true;
     
@@ -25,8 +24,6 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
     
     public Transform HighlightParent { set => _highlightParent = value; }
     public bool Available => _selectable.interactable;
-    
-    public static event Action<HandUpgradeCard> OnCardClicked; 
 
     public void Awake() {
         var t = transform;
@@ -45,15 +42,14 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
     }
     
     void OnProgrammingStarted() {
-        _usedThisTurn = false;
+        _usesThisTurn = 0;
     }
 
     public void UpdateAvailability() {
         if (_container == null) _container = GetComponent<Container<UpgradeCardData>>();
         
         var available = Content != null
-                        && !_usedThisTurn
-                        && Owner.Energy.Value >= Content.UseCost
+                        && _usesThisTurn < Content.UsesPerTurn
                         && (Content.CanUse(PlayerSystem.LocalPlayer)
                             || Content.Type == UpgradeType.Permanent);
         
@@ -96,17 +92,15 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
         if (eventData.button != PointerEventData.InputButton.Left) return;
 
         _clickable = false;
-        OnCardClicked?.Invoke(this);
         TaskScheduler.PushRoutine(UseUpgrade());
 
         IEnumerator UseUpgrade() {
             var index = Owner.Upgrades.IndexOf(Content);
             
             NetworkSystem.Instance.BroadcastUpgrade(index);
-            Owner.Energy.Value -= Content.UseCost;
             Owner.UseUpgrade(index);
             
-            _usedThisTurn = true;
+            _usesThisTurn++;
             _clickable = true;
 
             yield break;

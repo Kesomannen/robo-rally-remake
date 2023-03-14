@@ -45,15 +45,16 @@ public class CardCollection {
         return true;
     }
 
-    public int AddRange(IReadOnlyList<ProgramCardData> cards, CardPlacement placement) {
-        for (var i = 0; i < cards.Count; i++) {
-            if (!AddCard(cards[i], placement)) return i;
+    public void AddRange(IEnumerable<ProgramCardData> cards, CardPlacement placement) {
+        if (cards.Any(t => !AddCard(t, placement))) {
+            throw new InvalidOperationException("Not enough space in collection");
         }
-        return cards.Count;
     }
 
-    public bool RemoveCard(ProgramCardData card) {
-        return _cards.Remove(card);
+    public void RemoveCard(ProgramCardData card) {
+        var index = _cards.IndexOf(card);
+        if (index == -1) return;
+        RemoveCard(index);
     }
 
     public void RemoveCard(int index) {
