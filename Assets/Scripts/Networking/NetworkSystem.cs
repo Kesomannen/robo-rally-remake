@@ -19,6 +19,10 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
+
+        if (IsServer) {
+            
+        }
         
         Debug.Log("NetworkSystem spawned, loading map...");
         MapSystem.Instance.LoadMap(MapData.GetById(LobbySystem.LobbyMap.Value));
@@ -36,17 +40,68 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
                 MapSystem.DestroyObject(energySpace);
             }
         }
+
+        NetworkManager.OnClientDisconnectCallback += OnClientDisconnect;
+
+        _waitingOverlay.SetActive(true);
+        _waitingText.text = "Waiting for players to load...";
         
-        PhaseSystem.StartPhaseSystem();
+        if (IsServer) {
+            StartCoroutine(WaitForPlayers());
+        }
+
+        IEnumerator WaitForPlayers() {
+            NetworkManager.SceneManager.OnLoadEventCompleted += LoadEventCompleted;
+            var allLoaded = false;
+            yield return new WaitUntil(() => allLoaded);
+            PhaseSystem.Start();
+            StartPhaseSystemClientRpc();
+            
+            void LoadEventCompleted(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut) {
+                NetworkManager.SceneManager.OnLoadEventCompleted -= LoadEventCompleted;
+                if (clientsTimedOut.Count > 0) {
+                    Debug.LogError($"Clients timed out: {string.Join(", ", clientsTimedOut)}");
+                }
+
+                if (clientsCompleted.Count < NetworkManager.ConnectedClientsList.Count) {
+                    Debug.LogError($"Clients did not load: {string.Join(", ", NetworkManager.ConnectedClientsList.Select(c => c.ClientId).Except(clientsCompleted))}");
+                }
+                allLoaded = true;
+            }
+        }
+    }
+
+    void OnClientDisconnect(ulong id) {
+        if (IsServer) {
+            PlayerSystem.RemovePlayer(PlayerSystem.Players.First(p => p.ClientId == id));
+            PlayerDisconnectedClientRpc(id);
+        } else {
+            // Host disconnected
+            ReturnToLobby();
+        }
+    }
+
+    [ClientRpc]
+    void StartPhaseSystemClientRpc() {
+        if (IsServer) return;
+        PhaseSystem.Start();
+    }
+
+    [ClientRpc]
+    void PlayerDisconnectedClientRpc(ulong id) {
+        if (IsServer) return;
+        PlayerSystem.RemovePlayer(PlayerSystem.Players.First(p => p.ClientId == id));
     }
 
     public override void OnDestroy() {
         base.OnDestroy();
 
+        NetworkManager.OnClientDisconnectCallback -= OnClientDisconnect;
+
+        if (NetworkManager.Singleton == null) return;
+
         Matchmaking.LeaveLobbyAsync();
-        if (NetworkManager.Singleton != null) {
-            NetworkManager.Shutdown();
-        }
+        NetworkManager.Shutdown();
     }
 
     const int LobbySceneIndex = 0;

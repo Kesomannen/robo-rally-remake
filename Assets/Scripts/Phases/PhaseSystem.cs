@@ -5,7 +5,7 @@ public class PhaseSystem : Singleton<PhaseSystem> {
 
     public static ObservableField<Phase> Current { get; } = new();
 
-    public static void StartPhaseSystem() {
+    public static void Start() {
         Instance.StartCoroutine(PhaseSystemRoutine());
     }
 

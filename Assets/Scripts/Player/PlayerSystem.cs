@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class PlayerSystem : Singleton<PlayerSystem> {
     [SerializeField] PlayerModel _playerModelPrefab;
@@ -15,6 +17,8 @@ public class PlayerSystem : Singleton<PlayerSystem> {
 
     public static bool IsLocal(Player player) => player == LocalPlayer;
     public static bool EnergyEnabled => !LobbySystem.LobbySettings.BeginnerGame.Enabled;
+    
+    public static event Action<Player> OnPlayerRemoved;
     
     protected override void Awake() {
         base.Awake();
@@ -33,6 +37,11 @@ public class PlayerSystem : Singleton<PlayerSystem> {
             .ToList();
     }
 
+    public static void RemovePlayer(Player player) {
+        OnPlayerRemoved?.Invoke(player);
+        _players.Remove(player);
+    }
+    
     public void CreatePlayer(ulong id, LobbyPlayerData data, bool randomizeSpawn) {
         var settings = LobbySystem.LobbySettings;
         var robotData = RobotData.GetById(data.RobotId);
@@ -56,7 +65,8 @@ public class PlayerSystem : Singleton<PlayerSystem> {
             RegisterCount = ExecutionPhase.RegisterCount,
             RebootAffector = _rebootAffector.ToInstance(),
             UpgradeSlots = settings.UpgradeSlots,
-            Name = data.Name
+            Name = data.Name,
+            ClientId = id
         };
 
         var newPlayer = new Player(playerArgs);

@@ -9,6 +9,7 @@ using Random = UnityEngine.Random;
 public class Player : IPlayer {
     # region Fields, Properties & Constructor
     readonly string _name;
+    public readonly ulong ClientId;
     
     // Robot
     public readonly PlayerModel Model;
@@ -50,6 +51,7 @@ public class Player : IPlayer {
 
     public Player(PlayerArgs args) {
         _name = args.Name;
+        ClientId = args.ClientId;
         RobotData = args.RobotData;
 
         var startingDeck = args.RobotData.StartingDeck;
@@ -302,4 +304,5 @@ public struct PlayerArgs {
     public CardAffector RebootAffector;
     public int UpgradeSlots;
     public string Name;
+    public ulong ClientId;
 }

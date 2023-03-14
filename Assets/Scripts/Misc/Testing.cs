@@ -25,7 +25,7 @@ public class Testing : MonoBehaviour {
         for (var i = 0; i < _upgradesToLoad.Length; i++) {
             PlayerSystem.Players[0].ReplaceUpgradeAt(_upgradesToLoad[i], i);
         }
-        PhaseSystem.StartPhaseSystem();
+        PhaseSystem.Start();
     }
 
     public void Continue() => ProgrammingPhase.Continue();

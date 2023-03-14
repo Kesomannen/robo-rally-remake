@@ -40,6 +40,14 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         using (new LoadingScreen("Signing in...")) {
             Matchmaking.InitializeAsync();
         }
+        
+        _inputField.onSubmit.AddListener(s => {
+            PlayerName = s;
+            PlayerPrefs.SetString(PlayerPrefsNameKey, s);
+            _enterNameMenu.SetActive(false);
+            OnNameChanged?.Invoke(s);
+        });
+        
         if (PlayerPrefs.HasKey(PlayerPrefsNameKey)) {
             PlayerName = PlayerPrefs.GetString(PlayerPrefsNameKey);
         } else {
@@ -49,12 +57,6 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
 
     public void GatherName() {
         _enterNameMenu.SetActive(true);
-        _inputField.onSubmit.AddListener(s => {
-            PlayerName = s;
-            PlayerPrefs.SetString(PlayerPrefsNameKey, s);
-            _enterNameMenu.SetActive(false);
-            OnNameChanged?.Invoke(s);
-        });
     }
 
     public override void OnNetworkSpawn() {
@@ -104,7 +106,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         OnPlayerUpdatedOrAdded?.Invoke(id, _playersInLobby[id]);
         
         GetNameClientRpc(id);
-        SendLobbyUpdates();
+        Invoke(nameof(SendLobbyUpdates), 0.5f);
     }
     
     void OnClientDisconnected(ulong player) {
@@ -195,15 +197,13 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         UpdatePlayerServerRpc(id, data);
     }
     
-    public async Task<bool> LeaveLobby() {
+    public async Task LeaveLobby() {
         try {
             NetworkManager.Shutdown();
             await Matchmaking.LeaveLobbyAsync();   
         } catch (LobbyServiceException e) {
             Debug.LogError($"Failed to leave lobby: {e.Message}");
-            return false;
         }
-        return true;
     }
 
     public async Task<bool> JoinLobby(string lobbyCode) {
@@ -238,12 +238,12 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         var succeeded = false;
         var failed = false;
         
-        sceneManager.OnLoadEventCompleted += OnLoadComplete;
+        sceneManager.OnLoadEventCompleted += LoadComplete;
         sceneManager.LoadScene("Game", LoadSceneMode.Single);
         yield return new WaitUntil(() => succeeded || failed);
 
-        void OnLoadComplete(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut) {
-            sceneManager.OnLoadEventCompleted -= OnLoadComplete;
+        void LoadComplete(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut) {
+            sceneManager.OnLoadEventCompleted -= LoadComplete;
             if (clientsTimedOut.Count > 0) {
                 Debug.LogError($"Failed to load scene {sceneName} for clients {string.Join(", ", clientsTimedOut)}");
                 failed = true;
