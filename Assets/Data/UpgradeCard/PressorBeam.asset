@@ -15,10 +15,10 @@ MonoBehaviour:
   _name: Pressor Beam
   _description: Whenever you shoot a player, you may push them one space away from
     your robot.
-  _icon: {fileID: 21300000, guid: c5df48de28f878149b29e9fc3a7985ff, type: 3}
+  _icon: {fileID: 21300000, guid: bb294c93a95ba5e458615008b149c2a5, type: 3}
   _type: 1
   _cost: 3
-  _useCost: 0
+  _usesPerTurn: 1
   _tooltips: []
   _moveDistance: 1
   _minDistance: 1

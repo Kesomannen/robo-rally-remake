@@ -18,24 +18,6 @@ public class ScramblerUpgrade : UpgradeCardData {
     static void OnShoot(PlayerModel.CallbackContext context) {
         var register = ExecutionPhase.CurrentRegister;
         if (register >= ExecutionPhase.RegisterCount - 1) return;
-        
-        TaskScheduler.PushRoutine(Task());
-
-        IEnumerator Task() {
-            var target = context.Target;
-            var i = 0;
-            List<ProgramCardData> cards = new();
-
-            do {
-                cards.Clear();
-                yield return NetworkSystem.Instance.QueryPlayerCards(target, Pile.DrawPile, i * SearchDepth, (i + 1) * SearchDepth, cards);
-                i++;
-            } while (!cards.Any(c => c.CanPlace(target, register)));
-            var card = cards.First(c => c.CanPlace(target, register));
-            target.DrawPile.RemoveCard(card);
-        
-            yield return CoroutineUtils.Wait(0.5f);
-            target.Program.SetRegister(register + 1, card);
-        }
+        context.Target.Program.SetRegister(register + 1, null);
     }
 }

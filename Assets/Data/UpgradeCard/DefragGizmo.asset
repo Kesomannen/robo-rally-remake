@@ -15,7 +15,7 @@ MonoBehaviour:
   _name: Defrag Gizmo
   _description: Once per turn, you may replace a Damage card in your hand with a
     card from your draw pile.
-  _icon: {fileID: 21300000, guid: 6509ad0757cf8c94ead2c4264327f829, type: 3}
+  _icon: {fileID: 21300000, guid: 9ca95c5e3ca617141953787a9e771f83, type: 3}
   _type: 2
   _cost: 5
   _usesPerTurn: 1

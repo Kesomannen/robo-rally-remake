@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Cache Memory
   _description: You may put cards from your hand on top of your draw pile.
-  _icon: {fileID: 21300000, guid: 30fc70d2d652da84cb00f5d3d68187f3, type: 3}
+  _icon: {fileID: 21300000, guid: 8f9d0d086364df64dbb7283d0ebc730f, type: 3}
   _type: 2
   _cost: 4
   _usesPerTurn: 2147483647
