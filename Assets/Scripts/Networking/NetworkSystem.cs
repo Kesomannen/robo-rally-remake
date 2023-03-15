@@ -96,10 +96,10 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
     public override void OnDestroy() {
         base.OnDestroy();
 
-        NetworkManager.OnClientDisconnectCallback -= OnClientDisconnect;
-
         if (NetworkManager.Singleton == null) return;
 
+        NetworkManager.OnClientDisconnectCallback -= OnClientDisconnect;
+        
         Matchmaking.LeaveLobbyAsync();
         NetworkManager.Shutdown();
     }

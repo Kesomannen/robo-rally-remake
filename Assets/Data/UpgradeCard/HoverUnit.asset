@@ -15,7 +15,7 @@ MonoBehaviour:
   _name: Hover Unit
   _description: Your robot can pass over, but not land on, pits. If you end a Move
     action on a pit, reboot normally.
-  _icon: {fileID: 21300000, guid: 30fc70d2d652da84cb00f5d3d68187f3, type: 3}
+  _icon: {fileID: 21300000, guid: 7424753ef561ee64287696d5a83ca42b, type: 3}
   _type: 1
   _cost: 1
   _usesPerTurn: 1
