@@ -18,7 +18,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
     [SerializeField] GameObject _enterNameMenu;
 
     public static string PlayerName { get; private set; } = "Player";
-    public static event Action<string> OnNameChanged;
+    public static event Action<string> NameChanged;
     
     static readonly Dictionary<ulong, LobbyPlayerData> _playersInLobby = new();
     public static IReadOnlyDictionary<ulong, LobbyPlayerData> PlayersInLobby => _playersInLobby;
@@ -26,9 +26,9 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
     public static LobbySettings LobbySettings { get; private set; } = new();
     public static readonly ObservableField<int> LobbyMap = new();
 
-    public static event Action<ulong, LobbyPlayerData> OnPlayerUpdatedOrAdded;
-    public static event Action<ulong> OnPlayerRemoved;
-    public static event Action<LobbySettings> OnLobbySettingsUpdated;
+    public static event Action<ulong, LobbyPlayerData> PlayerUpdatedOrAdded;
+    public static event Action<ulong> PlayerRemoved;
+    public static event Action<LobbyProperty> LobbySettingsPropertyUpdated;
 
     public static string LobbyJoinCode => Matchmaking.CurrentLobby.LobbyCode;
     
@@ -45,7 +45,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
             PlayerName = s;
             PlayerPrefs.SetString(PlayerPrefsNameKey, s);
             _enterNameMenu.SetActive(false);
-            OnNameChanged?.Invoke(s);
+            NameChanged?.Invoke(s);
         });
         
         if (PlayerPrefs.HasKey(PlayerPrefsNameKey)) {
@@ -75,7 +75,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
                 IsReady = false,
                 RobotId = (byte)RobotData.GetRandom().GetLookupId()
             };
-            OnPlayerUpdatedOrAdded?.Invoke(id, _playersInLobby[id]);
+            PlayerUpdatedOrAdded?.Invoke(id, _playersInLobby[id]);
 
             //StartCoroutine(UpdateLobbyRoutine());
         }
@@ -103,7 +103,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
             IsReady = false,
             RobotId = GetRandomRobot()
         };
-        OnPlayerUpdatedOrAdded?.Invoke(id, _playersInLobby[id]);
+        PlayerUpdatedOrAdded?.Invoke(id, _playersInLobby[id]);
         
         GetNameClientRpc(id);
         Invoke(nameof(SendLobbyUpdates), 0.1f);
@@ -113,7 +113,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         if (IsServer) {
             _playersInLobby.Remove(player);
             RemovePlayerClientRpc(player);
-            OnPlayerRemoved?.Invoke(player);
+            PlayerRemoved?.Invoke(player);
         } else {
             // Host disconnected
             LeaveLobby();
@@ -124,15 +124,18 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         foreach (var (id, data) in _playersInLobby) {
             UpdatePlayerClientRpc(id, data);
         }
+        for (byte i = 0; i < LobbySettings.Properties.Count; i++) {
+            var property = LobbySettings.Properties[i];
+            UpdateLobbySettingsClientRpc(i, property.Value, property.Enabled);
+        }
         UpdateLobbyMapClientRpc((byte) LobbyMap.Value);
-        UpdateLobbySettingsClientRpc(LobbySettings);
     }
 
     [ClientRpc]
     void RemovePlayerClientRpc(ulong player) {
         if (IsServer) return;
         _playersInLobby.Remove(player);
-        OnPlayerRemoved?.Invoke(player);
+        PlayerRemoved?.Invoke(player);
     }
     
     [ClientRpc]
@@ -146,7 +149,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         var data = _playersInLobby[id];
         data.Name = playerName;
         _playersInLobby[id] = data;
-        OnPlayerUpdatedOrAdded?.Invoke(id, data);
+        PlayerUpdatedOrAdded?.Invoke(id, data);
         
         UpdatePlayerClientRpc(id, data);
         Debug.Log($"Set name of player {id} to {playerName}");
@@ -155,7 +158,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
     [ServerRpc(RequireOwnership = false)]
     void UpdatePlayerServerRpc(ulong playerId, LobbyPlayerData newPlayerData) {
         _playersInLobby[playerId] = newPlayerData;
-        OnPlayerUpdatedOrAdded?.Invoke(playerId, newPlayerData);
+        PlayerUpdatedOrAdded?.Invoke(playerId, newPlayerData);
         
         UpdatePlayerClientRpc(playerId, newPlayerData);
     }
@@ -165,15 +168,17 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         if (IsServer) return;
         
         _playersInLobby[id] = data;
-        OnPlayerUpdatedOrAdded?.Invoke(id, data);
+        PlayerUpdatedOrAdded?.Invoke(id, data);
         Debug.Log($"Updated player {id} with data {data}");
     }
 
     [ClientRpc]
-    void UpdateLobbySettingsClientRpc(LobbySettings settings) {
+    void UpdateLobbySettingsClientRpc(byte propertyId, byte value, bool enabled) {
         if (IsServer) return;
-        LobbySettings = settings;
-        OnLobbySettingsUpdated?.Invoke(settings);
+        var property = LobbySettings.Properties[propertyId];
+        property.Enabled = enabled;
+        property.Value = value;
+        LobbySettingsPropertyUpdated?.Invoke(property);
     }
 
     [ClientRpc]
@@ -184,10 +189,11 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
 
     # region Public Methods
 
-    public void RefreshLobbySettings() {
-        OnLobbySettingsUpdated?.Invoke(LobbySettings);
-        Debug.Log($"Refreshed lobby settings: {LobbySettings}");
-        UpdateLobbySettingsClientRpc(LobbySettings);
+    public void RefreshLobbyProperty(LobbyProperty property) {
+        if (!IsServer) return;
+        LobbySettingsPropertyUpdated?.Invoke(property);
+        var id = LobbySettings.Properties.IndexOf(property);
+        UpdateLobbySettingsClientRpc((byte) id, property.Value, property.Enabled);
     }
     
     public void UpdatePlayer([CanBeNull] RobotData robot = null, bool? ready = null) {
@@ -273,22 +279,6 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
     }
     
     # endregion
-
-    // Rate limits at 2 seconds
-    const float LobbyUpdateInterval = 5f;
-    
-    IEnumerator UpdateLobbyRoutine() {
-        if (!IsServer) yield break;
-        
-        while (NetworkManager != null) {
-            if (Matchmaking.CurrentMapID == LobbyMap.Value) continue;
-            var task = Matchmaking.UpdateLobbyAsync(new UpdateLobbyDataOptions {
-                MapID = (byte?)LobbyMap.Value
-            });
-            yield return new WaitUntil(() => task.IsCompleted);
-            yield return CoroutineUtils.Wait(LobbyUpdateInterval);
-        }
-    }
     
     static byte GetRandomRobot() {
         var occupiedIds = new HashSet<byte>();

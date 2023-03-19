@@ -26,11 +26,14 @@ public class DefragGizmo : UpgradeCardData {
                 Overlay = _overlay,
                 Player = player,
                 Options = cards,
-                Message = "choosing a card to replace with Defrag Gizmo",
+                Message = "choosing a damage card to remove with Defrag Gizmo",
                 OutputArray = result,
                 MinChoices = 1
             });
-            player.DiscardCard(result[0]);
+                        
+            Log.Instance.RawMessage($"{Log.PlayerString(player)} permanently discarded {Log.ProgramString(result[0])}");
+            
+            player.Hand.RemoveCard(result[0]);
             player.DrawCards(1);
         }
     }

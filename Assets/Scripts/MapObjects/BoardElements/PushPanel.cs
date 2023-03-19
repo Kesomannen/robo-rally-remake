@@ -16,6 +16,9 @@ public class PushPanel : BoardElement<PushPanel, ICanEnterHandler>, ITooltipable
     
     [Header("References")]
     [SerializeField] TMP_Text[] _registerTexts;
+    
+    [Header("Audio")]
+    [SerializeField] SoundEffect _pushSound;
 
     public string Header => "Push Panel";
     public string Description {
@@ -60,6 +63,7 @@ public class PushPanel : BoardElement<PushPanel, ICanEnterHandler>, ITooltipable
 
         IEnumerator Routine() {
             _animation.PlayOnce();
+            _pushSound.Play();
             yield return Interaction.EaseEvent(action, _pushEaseType, _pushSpeed);
         }
     }

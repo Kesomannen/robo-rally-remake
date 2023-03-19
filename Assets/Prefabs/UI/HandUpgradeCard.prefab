@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.5686275}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.19607843}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -211,6 +211,9 @@ MonoBehaviour:
   _highlightScale: 1.1
   _unavailableOverlay: {fileID: 5550969814015487503}
   _selectable: {fileID: 5983001564348241583}
+  _usesThisTurn: 0
+  _originalSize: {x: 0, y: 0, z: 0}
+  _clickable: 1
 --- !u!224 &1374462463899179727 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8197752021562342103, guid: c74c614e9f3a9034e935ded9359f8dce, type: 3}

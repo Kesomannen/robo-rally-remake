@@ -16,7 +16,7 @@ public class RoomMenu : Menu {
 
     readonly List<LobbyPlayerPanel> _playerPanels = new();
     
-    public static event Action OnLocalPlayerReady; 
+    public static event Action LocalPlayerReady; 
 
     public override void Show() {
         base.Show();
@@ -44,15 +44,15 @@ public class RoomMenu : Menu {
         _readyButton.gameObject.SetActive(true);
         _startGameButton.gameObject.SetActive(false);
 
-        LobbySystem.OnPlayerUpdatedOrAdded += UpdatePanel;
-        LobbySystem.OnPlayerRemoved += RemovePanel;
+        LobbySystem.PlayerUpdatedOrAdded += UpdatePanel;
+        LobbySystem.PlayerRemoved += RemovePanel;
     }
 
     public override async void Hide() {
         base.Hide();
 
-        LobbySystem.OnPlayerUpdatedOrAdded -= UpdatePanel;
-        LobbySystem.OnPlayerRemoved -= RemovePanel;
+        LobbySystem.PlayerUpdatedOrAdded -= UpdatePanel;
+        LobbySystem.PlayerRemoved -= RemovePanel;
     
         using (new LoadingScreen("Leaving Lobby...")) {
             await LobbySystem.Instance.LeaveLobby();
@@ -94,7 +94,7 @@ public class RoomMenu : Menu {
 
     public void Ready() {
         LobbySystem.Instance.UpdatePlayer(ready: true);
-        OnLocalPlayerReady?.Invoke();
+        LocalPlayerReady?.Invoke();
         _readyButton.SetActive(false);
     }
     

@@ -13,4 +13,4 @@ public class RailGun : UpgradeCardData {
         list.Remove(typeof(Wall));
         list.Remove(typeof(PlayerModel));
     }
-}
+}   

@@ -22,6 +22,7 @@ public class CrabLegsUpgrade : UpgradeCardData {
     IEnumerator OnAfterExecute(ProgramExecution execution) {
         // We check again in case the card was changed by another upgrade
         if (execution.Card != _targetCard) yield break;
+        if (execution.Player.IsRebooted.Value) yield break;
         var model = execution.Player.Model;
         
         var dirs = new[] { Vector2Int.up, Vector2Int.down, Vector2Int.zero };
@@ -42,6 +43,7 @@ public class CrabLegsUpgrade : UpgradeCardData {
         var dir = result[0];
         if (dir == Vector2Int.zero) yield break;
 
+        Log.Instance.RawMessage($"{Log.PlayerString(execution.Player)} moved one space {Log.DirectionString(dir)} and forward with {Log.UpgradeString(this)}");
         TaskScheduler.PushRoutine(model.MoveSteps(new[] { dir, model.Rotator.Identity }, false));
     }
 }

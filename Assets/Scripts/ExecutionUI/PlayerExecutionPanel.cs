@@ -31,11 +31,19 @@ public class PlayerExecutionPanel : Container<Player>, IPointerClickHandler {
     void Awake() {
         ExecutionPhase.OnPhaseStart += OnExecutionStart;
         ExecutionPhase.OnPhaseEnd += OnExecutionEnd;
+        PlayerSystem.OnPlayerRemoved += OnPlayerRemoved;
     }
 
     void OnDestroy() {
         ExecutionPhase.OnPhaseStart -= OnExecutionStart;
         ExecutionPhase.OnPhaseEnd -= OnExecutionEnd;
+        PlayerSystem.OnPlayerRemoved -= OnPlayerRemoved;
+    }
+    
+    void OnPlayerRemoved(Player player) {
+        if (player == Content) {
+            Destroy(gameObject);
+        }
     }
 
     void OnExecutionStart() {

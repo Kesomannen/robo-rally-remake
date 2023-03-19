@@ -42,6 +42,8 @@ public class ModularChassisUpgrade : UpgradeCardData {
                 takenUpgrade = result[0];
             }
 
+            Log.Instance.RawMessage($"{Log.PlayerString(pusher)} took {Log.UpgradeString(takenUpgrade)} from {Log.PlayerString(receiver)} with {Log.UpgradeString(this)}");
+            
             pusher.RemoveUpgrade(this);
             receiver.RemoveUpgrade(takenUpgrade);
             yield return pusher.GetSlotAndAdd(takenUpgrade);

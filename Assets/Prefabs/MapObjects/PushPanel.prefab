@@ -323,6 +323,7 @@ MonoBehaviour:
   _registerTexts:
   - {fileID: 814839960680717044}
   - {fileID: 7637114450654172871}
+  _pushSound: {fileID: 11400000, guid: 40ec9ff99c394dc4190bc2612f322eb3, type: 2}
 --- !u!114 &8486632034240765099
 MonoBehaviour:
   m_ObjectHideFlags: 0

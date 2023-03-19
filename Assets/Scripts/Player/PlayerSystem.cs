@@ -38,6 +38,8 @@ public class PlayerSystem : Singleton<PlayerSystem> {
     }
 
     public static void RemovePlayer(Player player) {
+        MapSystem.DestroyObject(player.Model);
+        
         OnPlayerRemoved?.Invoke(player);
         _players.Remove(player);
     }

@@ -301,6 +301,30 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -11.2283
       objectReference: {fileID: 0}
+    - target: {fileID: 5996818828344944857, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: _header
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996818828344944857, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: _description
+      value: Players draw up to this many cards every turn.
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551334198894696543, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: m_RaycastPadding.w
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551334198894696543, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: m_RaycastPadding.x
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551334198894696543, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: m_RaycastPadding.y
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551334198894696543, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: m_RaycastPadding.z
+      value: -10
+      objectReference: {fileID: 0}
     - target: {fileID: 7690793692004752884, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
       propertyPath: m_Name
       value: LobbySettingsProperty (1)
@@ -1312,6 +1336,31 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -11.2283
       objectReference: {fileID: 0}
+    - target: {fileID: 5996818828344944857, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: _header
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996818828344944857, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: _description
+      value: If enabled, players don't discard their remaining cards at the end of
+        the turn.
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551334198894696543, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: m_RaycastPadding.w
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551334198894696543, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: m_RaycastPadding.x
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551334198894696543, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: m_RaycastPadding.y
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551334198894696543, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: m_RaycastPadding.z
+      value: -10
+      objectReference: {fileID: 0}
     - target: {fileID: 7690793692004752884, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
       propertyPath: m_Name
       value: LobbySettingsProperty (6)
@@ -1657,6 +1706,14 @@ PrefabInstance:
     - target: {fileID: 5584430101667589599, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -11.2283
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996818828344944857, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: _header
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996818828344944857, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: _description
+      value: Players may not have more upgrades than this.
       objectReference: {fileID: 0}
     - target: {fileID: 7690793692004752884, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
       propertyPath: m_Name
@@ -3830,6 +3887,10 @@ PrefabInstance:
       propertyPath: _name
       value: Stress time
       objectReference: {fileID: 0}
+    - target: {fileID: 1910211263, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: _valueAffix
+      value: s
+      objectReference: {fileID: 0}
     - target: {fileID: 5584430101667589599, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -3857,6 +3918,15 @@ PrefabInstance:
     - target: {fileID: 5584430101667589599, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -11.2283
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996818828344944857, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: _header
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996818828344944857, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: _description
+      value: Once a player finishes their program, all other players will have this
+        much time to finish theirs. Can be disabled.
       objectReference: {fileID: 0}
     - target: {fileID: 7690793692004752884, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
       propertyPath: m_Name
@@ -5310,6 +5380,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tooltip
       objectReference: {fileID: 0}
+    - target: {fileID: 2602325722009559284, guid: 665534397b6183f4ba37032f7421233f, type: 3}
+      propertyPath: _fadeInSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2602325722009559284, guid: 665534397b6183f4ba37032f7421233f, type: 3}
+      propertyPath: _popupDuration
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2602325722040696170, guid: 665534397b6183f4ba37032f7421233f, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -6364,6 +6442,30 @@ PrefabInstance:
     - target: {fileID: 5584430101667589599, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -11.2283
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996818828344944857, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: _header
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996818828344944857, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: _description
+      value: This many cards will show up in the shop.
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551334198894696543, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: m_RaycastPadding.w
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551334198894696543, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: m_RaycastPadding.x
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551334198894696543, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: m_RaycastPadding.y
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551334198894696543, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: m_RaycastPadding.z
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 7690793692004752884, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
       propertyPath: m_Name
@@ -8847,6 +8949,30 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -11.2283
       objectReference: {fileID: 0}
+    - target: {fileID: 5996818828344944857, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: _header
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996818828344944857, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: _description
+      value: If enabled, the shop phase and energy are removed.
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551334198894696543, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: m_RaycastPadding.w
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551334198894696543, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: m_RaycastPadding.x
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551334198894696543, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: m_RaycastPadding.y
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551334198894696543, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: m_RaycastPadding.z
+      value: -10
+      objectReference: {fileID: 0}
     - target: {fileID: 7690793692004752884, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
       propertyPath: m_Name
       value: LobbySettingsProperty (5)
@@ -10061,6 +10187,30 @@ PrefabInstance:
     - target: {fileID: 5584430101667589599, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -11.2283
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996818828344944857, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: _header
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996818828344944857, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: _description
+      value: Players start with this amount of energy.
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551334198894696543, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: m_RaycastPadding.w
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551334198894696543, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: m_RaycastPadding.x
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551334198894696543, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: m_RaycastPadding.y
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551334198894696543, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
+      propertyPath: m_RaycastPadding.z
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 7690793692004752884, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
       propertyPath: m_Name

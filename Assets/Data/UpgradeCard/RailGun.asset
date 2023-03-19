@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Rail Gun
   _description: "You may shoot through\r walls and robots."
-  _icon: {fileID: 21300000, guid: 30fc70d2d652da84cb00f5d3d68187f3, type: 3}
+  _icon: {fileID: 21300000, guid: 9e1378fd8fd52e2488c902c6165c9fe5, type: 3}
   _type: 1
   _cost: 2
-  _useCost: 0
+  _usesPerTurn: 1
   _tooltips: []

@@ -35,6 +35,7 @@ public class RotateUpgrade : UpgradeCardData {
                 OutputArray = result,
                 MinChoices = 1
             });
+            Log.Instance.RawMessage($"{Log.PlayerString(player)} turned {Log.DirectionString(result[0])}");
             var targetRot = VectorHelper.GetRotationSteps(result[0]);
             yield return model.RotateRoutine(targetRot - model.Rotator.RotZ);
         }

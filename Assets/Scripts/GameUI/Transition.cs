@@ -11,6 +11,10 @@ public class Transition : MonoBehaviour {
     Action _onMiddle;
     bool _isPlaying;
 
+    void Start() {
+        gameObject.SetActive(false);
+    }
+
     public IEnumerator DoTransition(string text, Action onMiddle) {
         gameObject.SetActive(true);
         _isPlaying = true;

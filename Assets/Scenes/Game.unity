@@ -1414,9 +1414,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _messagePrefab: {fileID: 2621268316779453518, guid: 811d4850b2f31aa4b9094bac5ac76c60, type: 3}
   _messageParent: {fileID: 173976343}
-  _upgradeColor: {r: 0.615566, g: 0.7216981, b: 0.8207547, a: 1}
+  _cardColor: {r: 0.615566, g: 0.7216981, b: 0.8207547, a: 1}
   _checkpointColor: {r: 0.8396226, g: 0.7201693, b: 0.621796, a: 1}
   _rebootColor: {r: 0.51690996, g: 0.9056604, b: 0.54744685, a: 1}
+  _energyColor: {r: 1, g: 0.8224632, b: 0.5235849, a: 1}
   _defaultTextColor: {r: 1, g: 1, b: 1, a: 1}
   _messages: []
 --- !u!114 &349215630
@@ -2732,10 +2733,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ad5597ae79c4fa47973471e5c5d4293, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mapToLoad: {fileID: 11400000, guid: b86ee567c389a45468a6a8161b675d69, type: 2}
+  _mapToLoad: {fileID: 11400000, guid: ee6058072b906024f90f5c10f1ceb3de, type: 2}
   _robotToLoad: {fileID: 11400000, guid: ef0584a46c19e0149a7b36d95295ee26, type: 2}
   _upgradesToLoad:
-  - {fileID: 11400000, guid: 33912ce2368b83749939df566f923356, type: 2}
+  - {fileID: 11400000, guid: 0fc2d6e3731971d44ab4ece2a98f7bbd, type: 2}
   - {fileID: 11400000, guid: 5680d3887ef52f7489915c50deb15406, type: 2}
   - {fileID: 11400000, guid: fe1b5bf7602553e439aa64052f9dbe00, type: 2}
 --- !u!114 &761913675
@@ -2996,8 +2997,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -110.9, y: -25.51001}
-  m_SizeDelta: {x: 548.94, y: 48.98}
+  m_AnchoredPosition: {x: -78.182, y: -25.51001}
+  m_SizeDelta: {x: 483.52, y: 48.98}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &829286652
 MonoBehaviour:

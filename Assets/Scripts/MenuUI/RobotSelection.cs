@@ -19,9 +19,9 @@ public class RobotSelection : MonoBehaviour {
     }
     
     void OnEnable() {
-        LobbySystem.OnPlayerUpdatedOrAdded += OnPlayerUpdatedOrAdded;
-        LobbySystem.OnPlayerRemoved += OnPlayerRemoved;
-        RoomMenu.OnLocalPlayerReady += OnLocalPlayerReady;
+        LobbySystem.PlayerUpdatedOrAdded += OnPlayerUpdatedOrAdded;
+        LobbySystem.PlayerRemoved += OnPlayerRemoved;
+        RoomMenu.LocalPlayerReady += OnLocalPlayerReady;
         
         LeanTween.delayedCall(0.3f, () => {
             _playerRobots = LobbySystem.PlayersInLobby.ToDictionary(pair => pair.Key, pair => RobotData.GetById(pair.Value.RobotId));
@@ -30,9 +30,9 @@ public class RobotSelection : MonoBehaviour {
     }
 
     void OnDisable() {
-        LobbySystem.OnPlayerUpdatedOrAdded -= OnPlayerUpdatedOrAdded;
-        LobbySystem.OnPlayerRemoved -= OnPlayerRemoved;
-        RoomMenu.OnLocalPlayerReady -= OnLocalPlayerReady;
+        LobbySystem.PlayerUpdatedOrAdded -= OnPlayerUpdatedOrAdded;
+        LobbySystem.PlayerRemoved -= OnPlayerRemoved;
+        RoomMenu.LocalPlayerReady -= OnLocalPlayerReady;
     }
     
     void OnLocalPlayerReady() {

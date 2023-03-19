@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 [CreateAssetMenu(menuName = "Upgrade/Brakes")]
 public class BrakesUpgrade : UpgradeCardData {
@@ -7,15 +8,30 @@ public class BrakesUpgrade : UpgradeCardData {
     [SerializeField] OverlayData<Choice<bool>> _overlay;
     
     public override void OnAdd(Player player) {
-        player.OnProgramCardExecuted += OnExecute;
+        ExecutionPhase.OnPlayerRegister += OnRegister;
     }
     
     public override void OnRemove(Player player) {
-        player.OnProgramCardExecuted -= OnExecute;
+        ExecutionPhase.OnPlayerRegister -= OnRegister;
     }
 
-    void OnExecute(ProgramExecution execution) {
+    void OnRegister(ProgramExecution execution) {
         if (execution.Card != _targetCard) return;
-        execution.Card = _replacementCard;
+        TaskScheduler.PushRoutine(Task());
+        
+        IEnumerator Task() {
+            var result = new bool[1];
+            yield return ChoiceSystem.DoChoice(new ChoiceData<bool> {
+                Overlay = _overlay,
+                Player = execution.Player,
+                Options = new[] { true, false },
+                Message = "considering Brakes",
+                OutputArray = result,
+                MinChoices = 1
+            });
+            if (!result[0]) yield break;
+            execution.Card = _replacementCard;
+            Log.Instance.RawMessage($"{Log.PlayerString(execution.Player)} treated their {Log.ProgramString(_targetCard)} as a {Log.ProgramString(_replacementCard)} with {Log.UpgradeString(this)}");
+        }
     }
 }

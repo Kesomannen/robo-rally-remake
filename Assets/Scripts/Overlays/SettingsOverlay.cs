@@ -21,12 +21,12 @@ public class SettingsOverlay : Overlay {
             ? PlayerSystem.LocalPlayer.ToString()
             : LobbySystem.PlayerName;
 
-        LobbySystem.OnNameChanged += OnNameChanged;
+        LobbySystem.NameChanged += OnNameChanged;
     }
 
     protected override void OnDisable() {
         base.OnDisable();
-        LobbySystem.OnNameChanged -= OnNameChanged;
+        LobbySystem.NameChanged -= OnNameChanged;
     }
 
     static void OnSfxVolumeChanged(float value) {

@@ -3,7 +3,7 @@ using UnityEngine;
 public class MainMenu : Menu {
     public async void CreateGame() {
         var lobbyData = new LobbyData {
-            MapID = 0,
+            MapID = (byte) MapData.GetRandom().GetLookupId(),
             MaxPlayers = (byte) GameSettings.Instance.MaxPlayers,
             IsPrivate = false
         };

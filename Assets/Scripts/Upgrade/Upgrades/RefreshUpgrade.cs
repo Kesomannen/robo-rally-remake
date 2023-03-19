@@ -40,6 +40,8 @@ public class RefreshUpgrade : UpgradeCardData {
                 player.DiscardPile.AddCard(oldCard, CardPlacement.Top);
             }
             player.Program.SetRegister(registerIndex, result[0]);
+
+            Log.Instance.RawMessage($"{Log.PlayerString(player)} replaced {Log.ProgramString(oldCard)} with {Log.ProgramString(result[0])} in their register");
         }
     }
 }

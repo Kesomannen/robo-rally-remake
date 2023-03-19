@@ -5,8 +5,6 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "Upgrade/Scrambler")]
 public class ScramblerUpgrade : UpgradeCardData {
-    const int SearchDepth = 5;
-    
     public override void OnAdd(Player target) {
         target.Owner.Model.OnShoot += OnShoot;
     }
@@ -15,9 +13,11 @@ public class ScramblerUpgrade : UpgradeCardData {
         target.Owner.Model.OnShoot -= OnShoot;
     }
 
-    static void OnShoot(PlayerModel.CallbackContext context) {
+    void OnShoot(PlayerModel.CallbackContext context) {
         var register = ExecutionPhase.CurrentRegister;
         if (register >= ExecutionPhase.RegisterCount - 1) return;
         context.Target.Program.SetRegister(register + 1, null);
+        
+        Log.Instance.RawMessage($"{Log.PlayerString(context.Attacker)} discarded register {register + 1} of {Log.PlayerString(context.Target)} with {Log.UpgradeString(this)}");
     }
 }

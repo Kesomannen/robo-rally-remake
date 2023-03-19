@@ -80,9 +80,9 @@ MonoBehaviour:
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 0
-    m_Scale: 1
-    m_Name: LogSpriteAtlas_0
-    m_HashCode: 1944365481
+    m_Scale: 1.5
+    m_Name: Log_Player_Zoom Bot
+    m_HashCode: -2009346407
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 1
@@ -92,63 +92,63 @@ MonoBehaviour:
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 2
-    m_Scale: 1
-    m_Name: LogSpriteAtlas_2
-    m_HashCode: 1944365483
+    m_Scale: 1.5
+    m_Name: Log_Player_Smash Bot
+    m_HashCode: 1378396650
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 3
-    m_Scale: 1
-    m_Name: LogSpriteAtlas_3
-    m_HashCode: 1944365482
+    m_Scale: 1.5
+    m_Name: Log_Player_Twonky
+    m_HashCode: 1815141671
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 4
-    m_Scale: 1
-    m_Name: LogSpriteAtlas_4
-    m_HashCode: 1944365485
+    m_Scale: 1.5
+    m_Name: Log_Player_Rotator Bot
+    m_HashCode: -1979753457
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 5
-    m_Scale: 1
-    m_Name: LogSpriteAtlas_5
-    m_HashCode: 1944365484
+    m_Scale: 1.5
+    m_Name: Log_Player_Hammer Bot
+    m_HashCode: 1262008688
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 6
-    m_Scale: 1
-    m_Name: LogSpriteAtlas_6
-    m_HashCode: 1944365487
+    m_Scale: 1.5
+    m_Name: Log_Player_Hulk x90
+    m_HashCode: 1582759452
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 7
-    m_Scale: 1
-    m_Name: LogSpriteAtlas_7
-    m_HashCode: 1944365486
+    m_Scale: 1.5
+    m_Name: Log_Player_Fortress
+    m_HashCode: 861314767
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 8
-    m_Scale: 1
-    m_Name: LogSpriteAtlas_8
-    m_HashCode: 1944365473
+    m_Scale: 1.5
+    m_Name: Log_Icon_Energy
+    m_HashCode: 1625923021
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 9
-    m_Scale: 1
-    m_Name: LogSpriteAtlas_9
-    m_HashCode: 1944365472
+    m_Scale: 1.5
+    m_Name: Log_Icon_Reboot
+    m_HashCode: -1850527922
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 10
-    m_Scale: 1
-    m_Name: LogSpriteAtlas_10
-    m_HashCode: -260448616
+    m_Scale: 1.5
+    m_Name: Log_Icon_Card
+    m_HashCode: 983750939
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 11
-    m_Scale: 1
-    m_Name: LogSpriteAtlas_11
-    m_HashCode: -260448615
+    m_Scale: 1.5
+    m_Name: Log_Icon_Checkpoint
+    m_HashCode: -239468059
   m_SpriteGlyphTable:
   - m_Index: 0
     m_Metrics:

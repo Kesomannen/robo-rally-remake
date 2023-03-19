@@ -31,8 +31,6 @@ public class HandUpgradeCardArray : MonoBehaviour {
         
         UpgradeAwaiter.OnPauseEventStart += OnPauseEventStart;
         UpgradeAwaiter.OnPauseEventEnd += OnPauseEventEnd;
-        
-        Debug.Log("HandUpgradeCardArray.Start", this);
     }
 
     void OnDestroy() {

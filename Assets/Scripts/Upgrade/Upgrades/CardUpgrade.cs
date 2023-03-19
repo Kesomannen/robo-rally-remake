@@ -10,5 +10,12 @@ public class CardUpgrade : UpgradeCardData {
 
     public override void Use(Player player) {
         player.ApplyCardAffector(_cardAffector);
+        var pileName = _cardAffector.Destination switch {
+            Pile.Hand => "hand",
+            Pile.DiscardPile => "discard pile",
+            Pile.DrawPile => "draw pile",
+            _ => "unknown pile"
+        };
+        Log.Instance.RawMessage($"{Log.PlayerString(player)} added a {Log.ProgramString(_cardAffector.Cards[0])} to their {pileName}");
     }
 }

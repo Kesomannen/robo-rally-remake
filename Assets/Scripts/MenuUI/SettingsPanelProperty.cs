@@ -13,24 +13,27 @@ public class SettingsPanelProperty : MonoBehaviour {
     LobbyProperty _lobbyProperty;
 
     void OnEnable() {
-        LobbySystem.OnLobbySettingsUpdated += UpdateSettings;
+        LobbySystem.LobbySettingsPropertyUpdated += UpdateSettingsProperty;
     }
     
     void OnDisable() {
-        LobbySystem.OnLobbySettingsUpdated -= UpdateSettings;
+        LobbySystem.LobbySettingsPropertyUpdated -= UpdateSettingsProperty;
     }
     
-    void UpdateSettings(LobbySettings settings) {
-        if (_lobbyProperty == null) return;
-        
-        if (_lobbyProperty.CanToggle) {
-            _toggle.isOn = _lobbyProperty.Enabled;
+    void UpdateSettingsProperty(LobbyProperty property) {
+        if (property != _lobbyProperty) return;
+
+        if (property.CanToggle) {
+            _toggle.isOn = property.Enabled;
         }
-        if (_lobbyProperty.HasValue) {
-            _slider.value = _lobbyProperty.Value;
-            var intValue = Mathf.RoundToInt(_slider.value);
-            _text.text = $"{_name}: {intValue}{_valueAffix}";
-        }
+
+        var sliderActive = property.HasValue && property.Enabled;
+        _slider.gameObject.SetActive(sliderActive);
+        if (!sliderActive) return;
+
+        _slider.value = property.Value;
+        var intValue = Mathf.RoundToInt(_slider.value);
+        _text.text = $"{_name}: {intValue}{_valueAffix}";
     }
 
     public LobbyProperty LobbyProperty {
@@ -68,7 +71,7 @@ public class SettingsPanelProperty : MonoBehaviour {
         if (!value) {
             _text.text = _name;
         }
-        LobbySystem.Instance.RefreshLobbySettings();
+        LobbySystem.Instance.RefreshLobbyProperty(_lobbyProperty);
     }
 
     void RegisterValue(float value) {
@@ -77,6 +80,6 @@ public class SettingsPanelProperty : MonoBehaviour {
         
         if (intValue == _lobbyProperty.Value) return;
         _lobbyProperty.Value = (byte) intValue;
-        LobbySystem.Instance.RefreshLobbySettings();
+        LobbySystem.Instance.RefreshLobbyProperty(_lobbyProperty);
     }
 }

@@ -8,12 +8,12 @@ public class UpgradeAwaiter : Singleton<UpgradeAwaiter> {
     [SerializeField] float _pauseTime = 2f;
 
     public static readonly PauseEvent BeforePlayerOrdering = new();
-    public static readonly PauseEvent<Player> BeforeRegister = new();
-    public static readonly PauseEvent<Player> AfterRegister = new();
+    public static readonly PlayerPauseEvent BeforeRegister = new();
+    public static readonly PlayerPauseEvent AfterRegister = new();
 
     public static event Action OnPauseEventStart, OnPauseEventEnd;
 
-    public static IEnumerator AwaitEvent<T>(PauseEvent<T> pauseEvent, T arg) {
+    public static IEnumerator AwaitEvent(PlayerPauseEvent pauseEvent, Player arg) {
         if (!pauseEvent.ShouldAwait(arg)) yield break;
         pauseEvent.Activate(arg);
         yield return Await();
@@ -40,21 +40,21 @@ public class UpgradeAwaiter : Singleton<UpgradeAwaiter> {
         OnPauseEventEnd?.Invoke();
     }
 
-    public class PauseEvent<T> {
-        readonly List<T> _listeners = new();
-        T _currentArg;
+    public class PlayerPauseEvent {
+        readonly List<Player> _listeners = new();
+        Player _current;
         bool _active;
         
-        public bool ActiveFor(T arg) => _active && _currentArg.Equals(arg);
-        public void Activate(T arg) {
-            _currentArg = arg;
+        public bool ActiveFor(Player arg) => _active && _current == arg && !arg.IsRebooted.Value;
+        public void Activate(Player arg) {
+            _current = arg;
             _active = true;
         }
         public void Deactivate() => _active = false;
-        
-        public bool ShouldAwait(T arg) => _listeners.Any(listener => listener.Equals(arg));
-        public void AddListener(T listener) => _listeners.Add(listener);
-        public void RemoveListener(T listener) => _listeners.Remove(listener);
+
+        public bool ShouldAwait(Player arg) => _listeners.Any(listener => listener == arg && !listener.IsRebooted.Value);
+        public void AddListener(Player listener) => _listeners.Add(listener);
+        public void RemoveListener(Player listener) => _listeners.Remove(listener);
     }
 
     public class PauseEvent {

@@ -22,6 +22,7 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
     [SerializeField] SoundEffect _rebootSound;
 
     Highlight _highlight;
+    bool _canFall = true;
 
     public readonly List<Type> IgnoredObjectsForMoving = new();
     public readonly List<Type> IgnoredObjectsForLaser = new();
@@ -32,10 +33,11 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
 
     public bool Movable { get; set; } = true;
     public bool Hovering { get; set; }
+    public bool InvulnerableToLasers { get; set; }
     protected override bool CanRotate => true;
     
     public event Action<CallbackContext> OnPush;
-    public event Action<CallbackContext> OnShoot; 
+    public event Action<CallbackContext> OnShoot;
 
     public struct CallbackContext {
         public Player Target;
@@ -51,7 +53,7 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
     public string Description => null;
 
     public override void Fall(IBoard board) {
-        if (Hovering) return;
+        if (!_canFall) return;
         _rebootSound.Play();
         Owner.Reboot(board);
     }
@@ -116,14 +118,23 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
             _laserSound.Play();
             
             foreach (var player in hits) {
+                if (player.Owner.Model.InvulnerableToLasers) {
+                    Log.Instance.RawMessage($"{Log.PlayerString(Owner)} shot {Log.PlayerString(player.Owner)} but they were invulnerable to lasers");
+                    continue;
+                }
+
                 player.Owner.ApplyCardAffector(Owner.LaserAffector);
+                if (Owner.LaserAffector.Cards.Count > 0) {
+                    Log.Instance.RawMessage($"{Log.PlayerString(Owner)} shot {Log.PlayerString(player.Owner)} and dealt {string.Join(",", Owner.LaserAffector.Cards.Select(Log.ProgramString))})");
+                }
+                
                 OnShoot?.Invoke(new CallbackContext {
                     Target = player.Owner,
                     Attacker = Owner,
                     Affector = Owner.LaserAffector,
                     OutgoingDirection = direction
                 });
-                
+                    
                 _hitParticle.transform.position = player.Owner.Model.transform.position;
                 _hitParticle.Play();
                 yield return CoroutineUtils.Wait(_hitParticle.main.duration);
@@ -138,14 +149,15 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
     }
     
     public IEnumerator MoveSteps(IEnumerable<Vector2Int> dirs, bool relative, float delay = TaskScheduler.DefaultTaskDelay) {
+        _canFall = !Hovering;
+        
         foreach (var dir in dirs) {
             yield return CoroutineUtils.Wait(delay);
             yield return Move(dir, relative);
         }
-
+        
         if (!Hovering) yield break;
-        Hovering = false;
-
+        _canFall = true;
         if (MapSystem.Instance.TryGetBoard(GridPos, out var board)) {
             var tile = MapSystem.GetTile(GridPos);
             if (tile.OfType<Pit>().Any()) {
@@ -154,21 +166,21 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
         } else {
             Fall(MapSystem.GetParentBoard(this));
         }
-
-        Hovering = true;
     }
 
     IEnumerator Move(Vector2Int dir, bool relative) {
         if (Owner.IsRebooted.Value) yield break;
         
         var moveVector = relative ? Rotator.Rotate(dir) : dir;
-        if (!Interaction.Push(this, moveVector, out var mapEvent, IgnoredObjectsForMoving)) yield break;
+        if (!Interaction.Push(this, moveVector, out var mapEvent, IgnoredObjectsForMoving, true)) yield break;
         
         _moveParticle.Play();
         _moveSound.Play();
         
         RegisterPush(mapEvent);
         yield return Interaction.EaseEvent(mapEvent, _moveTweenType, _moveTweenSpeed);
+        
+        _moveParticle.Stop();
     }
     
     public void RegisterPush(MapEvent mapEvent) {
@@ -176,6 +188,10 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
 
         foreach (var player in mapEvent.MapObjects.OfType<IPlayer>().Select(m => m.Owner).Where(p => p != Owner)) {
             player.ApplyCardAffector(Owner.PushAffector);
+            if (Owner.PushAffector.Cards.Count > 0) {
+                Log.Instance.RawMessage($"{Log.PlayerString(Owner)} pushed {Log.PlayerString(player.Owner)} and dealt {string.Join(",", Owner.PushAffector.Cards.Select(Log.ProgramString))})");
+            }
+            
             OnPush?.Invoke(new CallbackContext {
                 Target = player,
                 Attacker = Owner,

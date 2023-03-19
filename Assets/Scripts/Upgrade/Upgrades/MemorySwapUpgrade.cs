@@ -20,7 +20,7 @@ public class MemorySwapUpgrade : UpgradeCardData {
                 Overlay = _overlay,
                 Player = player,
                 Options = player.Hand.Cards,
-                Message = "choosing cards to discard with Memory Swap",
+                Message = "choosing cards to cache with Memory Swap",
                 OutputArray = result,
                 MinChoices = 3
             });
@@ -28,6 +28,8 @@ public class MemorySwapUpgrade : UpgradeCardData {
                 player.Hand.RemoveCard(card);
                 player.DrawPile.AddCard(card, CardPlacement.Top);
             }
+            
+            Log.Instance.RawMessage($"{Log.PlayerString(player)} cached {Log.ProgramString(result[0])}, {Log.ProgramString(result[1])}, and {Log.ProgramString(result[2])}");
         }
     }
 }

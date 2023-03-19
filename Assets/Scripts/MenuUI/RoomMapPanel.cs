@@ -24,12 +24,12 @@ public class RoomMapPanel : Container<MapData> {
 
     void Awake() {
         LobbySystem.LobbyMap.OnValueChanged += OnMapChanged;
-        RoomMenu.OnLocalPlayerReady += OnLocalPlayerReady;
+        RoomMenu.LocalPlayerReady += OnLocalPlayerReady;
     }
     
     void OnDestroy() {
         LobbySystem.LobbyMap.OnValueChanged -= OnMapChanged;
-        RoomMenu.OnLocalPlayerReady -= OnLocalPlayerReady;
+        RoomMenu.LocalPlayerReady -= OnLocalPlayerReady;
     }
 
     void OnMapChanged(int _, int next) => Serialize(next);

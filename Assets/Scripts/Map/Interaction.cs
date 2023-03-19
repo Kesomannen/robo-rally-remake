@@ -72,10 +72,10 @@ public static class Interaction {
         return false;
     }
 
-    public static bool Push(MapObject mapObject, Vector2Int dir, out MapEvent mapEvent, IReadOnlyList<Type> ignoredTypes = null) {
+    public static bool Push(MapObject mapObject, Vector2Int dir, out MapEvent mapEvent, IReadOnlyList<Type> ignoredTypes = null, bool ignoreImmovable = false) {
         mapEvent = null;
         
-        if (mapObject is ICanEnterHandler { Movable: false }) return false;
+        if (!ignoreImmovable && mapObject is ICanEnterHandler { Movable: false }) return false;
 
         // Check exit
         var sourceTile = MapSystem.GetTile(mapObject.GridPos).Where(IsConsidered);

@@ -1,8 +1,10 @@
-﻿using Unity.Netcode;
+﻿using System.Collections.Generic;
 
-public class LobbySettings : INetworkSerializable {
+public class LobbySettings {
     public readonly LobbyProperty StartingEnergy, CardsPerTurn, StressTime, ShopCards, UpgradeSlots, AdvancedGame, BeginnerGame;
-
+    public IReadOnlyList<LobbyProperty> Properties => _properties;
+    readonly LobbyProperty[] _properties;
+    
     public LobbySettings() {
         StartingEnergy = new LobbyProperty(0, 10, 5);
         CardsPerTurn = new LobbyProperty(5, 10, 9);
@@ -12,24 +14,10 @@ public class LobbySettings : INetworkSerializable {
         
         AdvancedGame = new LobbyProperty(false);
         BeginnerGame = new LobbyProperty(false);
-    }
-
-    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter {
-        serializer.SerializeValue(ref StartingEnergy.Value);
-        serializer.SerializeValue(ref CardsPerTurn.Value);
-        serializer.SerializeValue(ref StressTime.Value);
-        serializer.SerializeValue(ref ShopCards.Value);
-        serializer.SerializeValue(ref UpgradeSlots.Value);
-        serializer.SerializeValue(ref AdvancedGame.Value);
-        serializer.SerializeValue(ref BeginnerGame.Value);
         
-        serializer.SerializeValue(ref StartingEnergy.Enabled);
-        serializer.SerializeValue(ref CardsPerTurn.Enabled);
-        serializer.SerializeValue(ref StressTime.Enabled);
-        serializer.SerializeValue(ref ShopCards.Enabled);
-        serializer.SerializeValue(ref UpgradeSlots.Enabled);
-        serializer.SerializeValue(ref AdvancedGame.Enabled);
-        serializer.SerializeValue(ref BeginnerGame.Enabled);
+        _properties = new[] {
+            StartingEnergy, CardsPerTurn, StressTime, ShopCards, UpgradeSlots, AdvancedGame, BeginnerGame
+        };
     }
 }
 
@@ -65,12 +53,7 @@ public class LobbyProperty {
         _defaultState = defaultValue;
         Enabled = defaultValue;
     }
-    
-    public void Reset() {
-        Value = _defaultValue;
-        Enabled = _defaultState;
-    }
-    
+
     public static implicit operator byte(LobbyProperty property) {
         return property.Value;
     }

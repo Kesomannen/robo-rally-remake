@@ -15,9 +15,9 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
     public static event Action<ExecutionSubPhase> OnNewSubPhase;
     public static event Action<IReadOnlyList<Player>> OnPlayersOrdered;
     public static event Action<int> OnNewRegister;
-    
+
     public static event Action<ProgramExecution> OnPlayerRegister;
-    
+
     public static IEnumerable<Action> GetPhaseEndInvocations() {
         var invocationList = OnPhaseEnd?.GetInvocationList();
         return invocationList?.Cast<Action>();
@@ -98,15 +98,14 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
 
         IEnumerator DoPlayerRegister(Player player) {
             Debug.Log($"Starting player {player} register {register}");
-
-            if (player.Program[register] == null) yield break;
+            
             yield return UpgradeAwaiter.AwaitEvent(UpgradeAwaiter.BeforeRegister, player);
             if (player.Program[register] == null) yield break;
             var execution = new ProgramExecution(player.Program[register], player, register);
             
-            OnPlayerRegister?.Invoke(execution);
             TaskScheduler.PushRoutine(AfterRegister(execution));
             TaskScheduler.PushRoutine(execution.Execute());
+            OnPlayerRegister?.Invoke(execution);
         }
 
         IEnumerator AfterRegister(ProgramExecution execution) {

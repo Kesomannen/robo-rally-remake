@@ -47,12 +47,11 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public void UpdateAvailability() {
         if (_container == null) _container = GetComponent<Container<UpgradeCardData>>();
-        
+
         var available = Content != null
+                        && Content.Type != UpgradeType.Permanent
                         && _usesThisTurn < Content.UsesPerTurn
-                        && (Content.CanUse(PlayerSystem.LocalPlayer)
-                            || Content.Type == UpgradeType.Permanent);
-        
+                        && Content.CanUse(PlayerSystem.LocalPlayer);
         _unavailableOverlay.gameObject.SetActive(!available);
         _selectable.interactable = available;
     }

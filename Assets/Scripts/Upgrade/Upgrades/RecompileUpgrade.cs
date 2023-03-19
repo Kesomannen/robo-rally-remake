@@ -10,5 +10,7 @@ public class RecompileUpgrade : UpgradeCardData {
         var cards = player.Hand.Cards.Count;
         player.DiscardHand();
         player.DrawCards(cards);
+        
+        Log.Instance.RawMessage($"{Log.PlayerString(player)} discarded {cards} cards");
     }
 }
