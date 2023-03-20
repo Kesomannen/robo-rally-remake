@@ -15,13 +15,13 @@ public class CrabLegsUpgrade : UpgradeCardData {
     }
 
     void OnExecute(ProgramExecution execution) {
-        if (execution.Card != _targetCard) return;
+        if (execution.CurrentCard != _targetCard) return;
         execution.ExecutionEnd += _ => TaskScheduler.PushRoutine(OnAfterExecute(execution));
     }
 
     IEnumerator OnAfterExecute(ProgramExecution execution) {
         // We check again in case the card was changed by another upgrade
-        if (execution.Card != _targetCard) yield break;
+        if (execution.CurrentCard != _targetCard) yield break;
         if (execution.Player.IsRebooted.Value) yield break;
         var model = execution.Player.Model;
         

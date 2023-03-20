@@ -20,6 +20,7 @@ public class ChoiceProgram : ProgramCardData {
             Message = "choosing a program card to execute",
             MinChoices = 1
         });
-        yield return new ProgramExecution(result[0], player, register).Execute();
+        var card = result[0];
+        yield return new ProgramExecution(() => card, player, register).Execute();
     }
 }

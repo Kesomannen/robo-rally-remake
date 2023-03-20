@@ -22,13 +22,9 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
     
     void Start() {
         NetworkObject.DestroyWithScene = true;
-    }
-
-    protected override void Awake() {
-        base.Awake();
-        if (LoadContext == Context.Singleplayer) {
-            FindObjectOfType<NetworkManager>().StartHost();
-        }
+        
+        if (LoadContext != Context.Singleplayer) return;
+        NetworkManager.StartHost();
     }
 
     public override void OnNetworkSpawn() {
@@ -66,7 +62,7 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
             if (LoadContext == Context.Multiplayer) {
                 StartCoroutine(WaitForPlayers());   
             } else {
-                PhaseSystem.Instance.Start();
+                PhaseSystem.Instance.StartPhaseRoutine();
             }
         }
 
@@ -75,7 +71,7 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
             var loaded = false;
             yield return new WaitUntil(() => loaded);
             StartGameClientRpc();
-            PhaseSystem.Instance.Start();
+            PhaseSystem.Instance.StartPhaseRoutine();
 
             void LoadEventCompleted(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut) {
                 NetworkManager.SceneManager.OnLoadEventCompleted -= LoadEventCompleted;
@@ -94,7 +90,7 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
     [ClientRpc]
     void StartGameClientRpc() {
         if (IsServer) return;
-        PhaseSystem.Instance.Start();
+        PhaseSystem.Instance.StartPhaseRoutine();
     }
     
     void OnClientDisconnect(ulong id) {
@@ -153,8 +149,6 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
     readonly List<ulong> _playersReady = new();
 
     public IEnumerator SyncPlayers() {
-        if (NetworkManager == null) yield break;
-        
         _waitingOverlay.SetActive(true);
         PlayerReadyServerRpc(NetworkManager.LocalClientId);
         while (_playersReady.Count < PlayerSystem.Players.Count) {
@@ -192,6 +186,7 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
 
         SendQueryResultsServerRpc(result);
     }
+    
     static bool GetQuery(Pile pile, int startIndex, int endIndex, Player player, out byte[] result) {
         var depth = endIndex - startIndex;
         var collection = player.GetCollection(pile);
@@ -236,9 +231,6 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
         if (IsServer) {
             var playerIndex = PlayerSystem.Players.IndexOf(player);
             QueryClientRpc((byte) playerIndex, (byte) pile, (byte) startIndex, (byte) endIndex);
-        } else if (NetworkManager == null) {
-            if (!GetQuery(pile, startIndex, endIndex, player, out var queryResult)) yield break;
-            _queryResults.Enqueue(queryResult.Select(id => ProgramCardData.GetById(id)).ToArray());
         }
         yield return new WaitUntil(() => _queryResults.Count > 0);
         

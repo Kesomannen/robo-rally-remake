@@ -31,7 +31,7 @@ public class ZoomBotAffector : ScriptableAffector<Player> {
             }
 
             const int register = ExecutionPhase.RegisterCount - 1;
-            TaskScheduler.PushRoutine(new ProgramExecution(_programCard, player, register).Execute());
+            TaskScheduler.PushRoutine(new ProgramExecution(() => _programCard, player, register).Execute());
         }
     }
 }

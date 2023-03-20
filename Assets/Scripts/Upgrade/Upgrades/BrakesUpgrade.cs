@@ -16,7 +16,7 @@ public class BrakesUpgrade : UpgradeCardData {
     }
 
     void OnRegister(ProgramExecution execution) {
-        if (execution.Card != _targetCard) return;
+        if (execution.CurrentCard != _targetCard) return;
         TaskScheduler.PushRoutine(Task());
         
         IEnumerator Task() {
@@ -30,7 +30,7 @@ public class BrakesUpgrade : UpgradeCardData {
                 MinChoices = 1
             });
             if (!result[0]) yield break;
-            execution.Card = _replacementCard;
+            execution.CardOverride = _replacementCard;
             Log.Instance.RawMessage($"{Log.PlayerString(execution.Player)} treated their {Log.ProgramString(_targetCard)} as a {Log.ProgramString(_replacementCard)} with {Log.UpgradeString(this)}");
         }
     }

@@ -3,26 +3,30 @@ using System.Collections;
 using UnityEngine;
 
 public class ProgramExecution {
-    public ProgramCardData Card;
+    public ProgramCardData CardOverride;
+    public readonly Func<ProgramCardData> CardFunc;
     public readonly Player Player;
     public readonly int Register;
 
     bool IsExecuting { get; set; }
     bool Started { get; set; }
     
+    public ProgramCardData CurrentCard => CardOverride ? CardOverride : CardFunc();
+    
     const float ExecutionDelay = 0.5f;
 
     public event Action<ProgramExecution> ExecutionStart;
     public event Action<ProgramExecution> ExecutionEnd; 
 
-    public ProgramExecution(ProgramCardData card, Player player, int register) {
-        Card = card;
+    public ProgramExecution(Func<ProgramCardData> cardFunc, Player player, int register) {
+        CardOverride = null;
+        CardFunc = cardFunc;
         Player = player;
         Register = register;
     }
 
     public IEnumerator Execute() {
-        if (Card == null) yield break;
+        if (CurrentCard == null) yield break;
         
         Started = true;
         IsExecuting = true;
@@ -30,11 +34,11 @@ public class ProgramExecution {
         ExecutionStart?.Invoke(this);
         
         yield return CoroutineUtils.Wait(ExecutionDelay);
-        yield return Card.ExecuteRoutine(Player, Register);
+        yield return CurrentCard.ExecuteRoutine(Player, Register);
         
         IsExecuting = false;
         ExecutionEnd?.Invoke(this);
-        Debug.Log($"Execution of {Card.name} ended");
+        Debug.Log($"Execution of {CurrentCard.name} ended");
     }
     
     public IEnumerator WaitUntilEnd() {

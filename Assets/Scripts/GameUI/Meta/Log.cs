@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class Log : Singleton<Log> {
     [SerializeField] GameObject _messagePrefab;
@@ -13,6 +14,7 @@ public class Log : Singleton<Log> {
     [SerializeField] Color _rebootColor;
     [SerializeField] Color _energyColor;
     [SerializeField] Color _defaultTextColor;
+    [SerializeField] ScrollRect _scrollRect;
     [SerializeField] [ReadOnly] List<string> _messages = new();
 
     const string PlayerSpritePrefix = "Log_Player_";
@@ -26,6 +28,10 @@ public class Log : Singleton<Log> {
     public void RawMessage(string message) => Publish(LogMessageType.Raw, args: Array.Empty<int>(), message: message);
 
     static int IndexOf(Player player) => PlayerSystem.Players.IndexOf(player);
+
+    void OnEnable() {
+        StartCoroutine(_scrollRect.ScrollToBottom());
+    }
 
     void Publish(LogMessageType type, IReadOnlyList<int> args, string message = null) {
         var text = type switch {
@@ -42,6 +48,9 @@ public class Log : Singleton<Log> {
         _messages.Add(text);
         var obj = Instantiate(_messagePrefab, _messageParent);
         obj.GetComponentInChildren<TMP_Text>().text = text;
+
+        if (!enabled) return;
+        StartCoroutine(_scrollRect.ScrollToBottom());
     }
 
     public static string PlayerString(Player player) => Instance.PlayerString(PlayerSystem.Players.IndexOf(player));

@@ -2,21 +2,22 @@ using System;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 using static System.Text.Encoding;
 
 public class Chat : NetworkSingleton<Chat> {
     [SerializeField] Transform _messageParent;
     [SerializeField] ChatMessage _messagePrefab;
     [SerializeField] TMP_InputField _inputField;
-    [SerializeField] ScrollRect _scrollView;
+    [FormerlySerializedAs("_scrollView")] 
+    [SerializeField] ScrollRect _scrollRect;
 
     public static event Action<string> MessageSent;
 
     void OnEnable() {
         _inputField.onSubmit.AddListener(_ => Send());
-        _scrollView.normalizedPosition = new Vector2(0, 0);
+        StartCoroutine(_scrollRect.ScrollToBottom());
     }
 
     public void Send() {
@@ -57,5 +58,7 @@ public class Chat : NetworkSingleton<Chat> {
             );
         
         MessageSent?.Invoke(str);
-    } 
+        if (!enabled) return;
+        StartCoroutine(_scrollRect.ScrollToBottom());
+    }
 }

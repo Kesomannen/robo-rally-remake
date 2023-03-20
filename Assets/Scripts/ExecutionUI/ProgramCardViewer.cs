@@ -36,7 +36,8 @@ public class ProgramCardViewer : MonoBehaviour {
     }
     
     void OnProgramCardPlayed(ProgramExecution execution) {
-        StartCoroutine(AddCard(_programCardPrefab, execution.Card, _lastPlayer != execution.Player));
+        Debug.Log($"OnProgramCardPlayed: {execution.CurrentCard}");
+        StartCoroutine(AddCard(_programCardPrefab, execution.CurrentCard, _lastPlayer != execution.Player));
         _lastPlayer = execution.Player;
     }
 

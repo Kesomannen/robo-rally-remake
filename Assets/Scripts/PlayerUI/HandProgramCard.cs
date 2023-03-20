@@ -103,7 +103,7 @@ public class HandProgramCard : ProgramCard, IDragHandler, IBeginDragHandler, IEn
     }
 
     public void OnBeginDrag(PointerEventData e) {
-        if (e.button != PointerEventData.InputButton.Left || !IsProgramming) return;
+        if (e.button == PointerEventData.InputButton.Right || PlayerUIRegister.Locked || !IsProgramming) return;
 
         _isDragging = true;
         Drag(e);

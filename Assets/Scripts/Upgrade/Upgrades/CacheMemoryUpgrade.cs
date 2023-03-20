@@ -14,7 +14,7 @@ public class CacheMemoryUpgrade : UpgradeCardData {
         // Make sure the player can still finish their program
         var cards = player.Hand.Cards;
         var cardsInProgram = player.Program.Cards.Count(c => c != null);
-        var maxDiscards = Mathf.Min(cards.Count, cardsInProgram + cards.Count, - ExecutionPhase.RegisterCount);
+        var maxDiscards = Mathf.Min(cards.Count, cardsInProgram + cards.Count - ExecutionPhase.RegisterCount);
         
         if (maxDiscards == 0) return;
         TaskScheduler.PushRoutine(Task());

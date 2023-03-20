@@ -1,8 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public static class Extensions {
@@ -49,4 +51,9 @@ public static class Extensions {
     
     public static void SetActive(this Component component, bool active) => component.gameObject.SetActive(active);
     public static T EnforceComponent<T>(this GameObject component) where T : Component => component.GetComponent<T>() ?? component.AddComponent<T>();
+
+    public static IEnumerator ScrollToBottom(this ScrollRect rect) {
+        yield return CoroutineUtils.Wait(0.1f);
+        rect.verticalNormalizedPosition = 0;
+    }
 }

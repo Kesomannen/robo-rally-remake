@@ -159,8 +159,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Deal an additional Spam damage to any robot you shoot.
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: dc36b4b77fe26524c8dd6982a3c3f416, type: 2}
-  m_sharedMaterial: {fileID: 3231958733206975079, guid: dc36b4b77fe26524c8dd6982a3c3f416, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c977f9312441f614dbcb4f35368381dd, type: 2}
+  m_sharedMaterial: {fileID: 1193160754575245638, guid: c977f9312441f614dbcb4f35368381dd, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -184,19 +184,19 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 35
+  m_fontSize: 30
   m_fontSizeBase: 12
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 0
-  m_fontSizeMax: 35
-  m_fontStyle: 16
+  m_fontSizeMax: 30
+  m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: -32.39
+  m_lineSpacing: -10
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -235,7 +235,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2886404054203621263}
-  - component: {fileID: 8383426086112948899}
+  - component: {fileID: 1598247070616496201}
+  - component: {fileID: 4727222516660139252}
   m_Layer: 5
   m_Name: Tooltips
   m_TagString: Untagged
@@ -260,10 +261,10 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 254.8922, y: 341.78}
+  m_AnchoredPosition: {x: 250.9375, y: 0}
+  m_SizeDelta: {x: 0, y: 341.78}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &8383426086112948899
+--- !u!114 &1598247070616496201
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -272,7 +273,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 9068943834861995912}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
@@ -280,15 +281,27 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 5
-  m_Spacing: 0
-  m_ChildForceExpandWidth: 0
-  m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 0
-  m_ChildControlHeight: 0
-  m_ChildScaleWidth: 0
-  m_ChildScaleHeight: 0
-  m_ReverseArrangement: 0
+  m_ChildAlignment: 2
+  m_StartCorner: 1
+  m_StartAxis: 0
+  m_CellSize: {x: 128.125, y: 175}
+  m_Spacing: {x: 0, y: 0}
+  m_Constraint: 0
+  m_ConstraintCount: 2
+--- !u!114 &4727222516660139252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9068943834861995912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 2
+  m_VerticalFit: 0
 --- !u!1001 &2879608959345912847
 PrefabInstance:
   m_ObjectHideFlags: 0

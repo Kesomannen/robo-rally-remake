@@ -22,7 +22,7 @@ public class HackUpgrade : UpgradeCardData {
             var register = ExecutionPhase.CurrentRegister;
             var card = player.Program[register];
             Log.Instance.RawMessage($"{Log.PlayerString(player)} executes {Log.ProgramString(card)} again");
-            yield return new ProgramExecution(card, player, register).Execute();
+            yield return new ProgramExecution(() => card, player, register).Execute();
         }
     }
 }

@@ -99,7 +99,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
         IEnumerator DoPlayerRegister(Player player) {
             Debug.Log($"Starting player {player} register {register}");
             
-            var execution = new ProgramExecution(player.Program[register], player, register);
+            var execution = new ProgramExecution(() => player.Program[register], player, register);
             TaskScheduler.PushRoutine(UpgradeAwaiter.AwaitEvent(UpgradeAwaiter.AfterRegister, execution.Player));
             TaskScheduler.PushRoutine(execution.Execute());
             

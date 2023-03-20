@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using Random = UnityEngine.Random;
 
 public class ChoiceSystem : NetworkSingleton<ChoiceSystem> {
@@ -54,7 +55,7 @@ public class ChoiceSystem : NetworkSingleton<ChoiceSystem> {
         yield return new WaitUntil(() => _receivedResults.Any(x => x.Id == choiceId));
         
         var result = _receivedResults.Dequeue();
-        for (var i = 0; i < data.OutputArray.Length; i++) {
+        for (var i = 0; i < Mathf.Min(data.OutputArray.Length, result.Choices.Length); i++) {
             data.OutputArray[i] = data.Options[result.Choices[i]];
         }
         if (isLocal) {
@@ -90,11 +91,7 @@ public class ChoiceSystem : NetworkSingleton<ChoiceSystem> {
 
     void SubmitResult(int id, IEnumerable<int> pickedChoices) {
         var result = pickedChoices.Select(x => (byte) x).ToArray();
-        if (NetworkManager == null) {
-            _receivedResults.Enqueue(((uint) id, result));
-        } else {
-            SubmitResultServerRpc((uint) id, result);
-        }
+        SubmitResultServerRpc((uint) id, result);
     }
     
     [ServerRpc(RequireOwnership = false)]

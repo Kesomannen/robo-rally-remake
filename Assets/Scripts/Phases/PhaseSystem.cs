@@ -1,12 +1,14 @@
 using System.Collections;
+using UnityEngine;
 
 public class PhaseSystem : Singleton<PhaseSystem> {
     static bool _isRunning;
 
     public static ObservableField<Phase> Current { get; } = new();
 
-    public void Start() {
+    public void StartPhaseRoutine() {
         if (_isRunning) return;
+        Debug.Log("Starting phase system...");
         StartCoroutine(PhaseSystemRoutine());
     }
 

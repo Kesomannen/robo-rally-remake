@@ -6,4 +6,13 @@
     public static string FormatMultiple(float number, string word) {
         return FormatMultiple((int) number, word);
     }
+
+    public static string Standing(int place) {
+        return place switch {
+            1 => "1st",
+            2 => "2nd",
+            3 => "3rd",
+            _ => $"{place}th"
+        };
+    }
 }

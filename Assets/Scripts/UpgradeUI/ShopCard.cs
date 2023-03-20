@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class ShopCard : UpgradeCard, IPointerClickHandler, IPointerEnterHandler {
     [SerializeField] LayoutElement _layoutElement;
     [SerializeField] GameObject _unavailableOverlay;
+    [SerializeField] ParticleSystem _restockParticle;
     [Space]
     [SerializeField] float _buyTweenDuration = 0.5f;
     [SerializeField] LeanTweenType _buyTweenType;
@@ -27,9 +28,9 @@ public class ShopCard : UpgradeCard, IPointerClickHandler, IPointerEnterHandler 
         }
     }
 
-    public event Action<ShopCard> OnCardClicked;
+    public event Action<ShopCard> CardClicked;
 
-    void Start() {
+    void Awake() {
         gameObject.SetActive(false);
     }
 
@@ -51,13 +52,15 @@ public class ShopCard : UpgradeCard, IPointerClickHandler, IPointerEnterHandler 
         }
 
         t.localScale = Vector3.zero;
-        t.rotation = Quaternion.Euler(0, 0, 180);
+        //t.rotation = Quaternion.Euler(0, 0, 180);
         gameObject.SetActive(true);
-        SetContent(card);
+        SetContent(card);   
         
         LeanTween.scale(gameObject, Vector3.one, _restockTweenDuration).setEase(_restockTweenType);
         LeanTween.rotateZ(gameObject, 0, _restockTweenDuration).setEase(_restockTweenType);
-        yield return CoroutineUtils.Wait(_restockTweenDuration);
+        yield return CoroutineUtils.Wait(_restockTweenDuration / 2);
+        _restockParticle.Play();
+        yield return CoroutineUtils.Wait(_restockTweenDuration / 2);
         
         gameObject.SetActive(true); 
     }
@@ -81,7 +84,7 @@ public class ShopCard : UpgradeCard, IPointerClickHandler, IPointerEnterHandler 
     public new void OnPointerClick(PointerEventData e) {
         base.OnPointerClick(e);
         if (e.button != PointerEventData.InputButton.Left) return;
-        OnCardClicked?.Invoke(this);
+        CardClicked?.Invoke(this);
     }
     
     public void OnPointerEnter(PointerEventData eventData) {
