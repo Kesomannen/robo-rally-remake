@@ -114,7 +114,10 @@ public class ExecutionUIController : MonoBehaviour {
         ExecutionPhase.NewSubPhase += OnNewSubPhase;
         ExecutionPhase.PlayerRegister += OnPlayerRegister;
         ExecutionPhase.PlayersOrdered += OnPlayersOrdered;
-        ExecutionPhase.PhaseStart += OnPhaseStart;
+    }
+
+    void OnEnable() {
+        StartCoroutine(_programCardViewer.ClearCards());
     }
 
     void OnDestroy() {
@@ -122,11 +125,6 @@ public class ExecutionUIController : MonoBehaviour {
         ExecutionPhase.NewSubPhase -= OnNewSubPhase;
         ExecutionPhase.PlayerRegister -= OnPlayerRegister;
         ExecutionPhase.PlayersOrdered -= OnPlayersOrdered;
-        ExecutionPhase.PhaseStart -= OnPhaseStart;
-    }
-    
-    void OnPhaseStart() {
-        StartCoroutine(_programCardViewer.ClearCards());
     }
 
     void OnPlayersOrdered(IReadOnlyList<Player> nextPlayerOrder) {

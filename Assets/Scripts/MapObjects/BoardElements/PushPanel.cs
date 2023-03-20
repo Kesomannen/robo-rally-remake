@@ -40,7 +40,7 @@ public class PushPanel : BoardElement<PushPanel, ICanEnterHandler>, ITooltipable
     protected override void Awake() {
         base.Awake();
         _direction = Rotator.Rotate(_direction);
-        OnRotationChanged += s => {
+        RotationChanged += s => {
             _direction = _direction.Transform(s);
         };
 

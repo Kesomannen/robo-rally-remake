@@ -19,7 +19,13 @@ MonoBehaviour:
   _type: 1
   _cost: 2
   _usesPerTurn: 1
-  _tooltips: []
+  _tooltips:
+  - _type: 1
+    _header: 
+    _description: 
+    _programCard: {fileID: 11400000, guid: ecc7d4ad841b0624999bcaff2184a12f, type: 2}
+    _upgradeCard: {fileID: 0}
+    _mechanic: 0
   _cardAffector:
     _cards:
     - {fileID: 11400000, guid: ecc7d4ad841b0624999bcaff2184a12f, type: 2}

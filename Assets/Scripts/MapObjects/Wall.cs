@@ -13,7 +13,7 @@ public class Wall : MapObject, ICanEnterExitHandler, ITooltipable {
         base.Awake();
         // Do initial rotation and subscribe to further changes
         _openDirections = _openDirections.Select(v => Rotator.Rotate(v)).ToArray();
-        OnRotationChanged += s => {
+        RotationChanged += s => {
             _openDirections = _openDirections.Select(v => v.Transform(s)).ToArray();
         };
     }

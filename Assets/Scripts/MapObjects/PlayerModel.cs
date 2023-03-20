@@ -61,7 +61,7 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
     protected override void Awake() {
         base.Awake();
         _highlight = GetComponent<Highlight>();
-        OnRotationChanged += _ => _rotateSound.Play();
+        RotationChanged += _ => _rotateSound.Play();
     }
 
     public void Init(Player owner, RebootToken spawnPoint) {

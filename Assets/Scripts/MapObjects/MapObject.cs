@@ -12,7 +12,7 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
 
     protected virtual bool CanRotate => false;
 
-    public event Action<int> OnRotationChanged;
+    public event Action<int> RotationChanged;
 
     public virtual void Fall(IBoard board) {
         MapSystem.DestroyObject(this);
@@ -27,7 +27,7 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
 
         Rotator.RotZ += steps;
         transform.eulerAngles = new Vector3(0, 0, Rotator.RotZ * 90f);
-        OnRotationChanged?.Invoke(steps);
+        RotationChanged?.Invoke(steps);
     }
 
     const float DefaultRotSpeed = 2f;
@@ -37,7 +37,7 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
         if (steps == 0 || !CanRotate) yield break;
         
         Rotator.RotZ += steps;
-        OnRotationChanged?.Invoke(steps);
+        RotationChanged?.Invoke(steps);
         
         var duration = Math.Abs(steps) / speed;
         LeanTween.rotateZ(gameObject, Rotator.RotZ * 90f, duration).setEase(easeType);

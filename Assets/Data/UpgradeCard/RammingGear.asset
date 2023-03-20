@@ -17,8 +17,14 @@ MonoBehaviour:
   _icon: {fileID: 21300000, guid: b271adb9f3a14c54fa5b8f42e5814f44, type: 3}
   _type: 1
   _cost: 2
-  _useCost: 0
-  _tooltips: []
+  _usesPerTurn: 1
+  _tooltips:
+  - _type: 1
+    _header: 
+    _description: 
+    _programCard: {fileID: 11400000, guid: ecc7d4ad841b0624999bcaff2184a12f, type: 2}
+    _upgradeCard: {fileID: 0}
+    _mechanic: 0
   _affectors:
   - {fileID: 11400000, guid: 62e1218d5f31b494ca8c69c540af86e2, type: 2}
   _permanentAffectors: []

@@ -55,6 +55,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         using (new LoadingScreen("Signing in...")) {
             Matchmaking.InitializeAsync();
         }
+        Debug.Log($"Signed in as {PlayerName}");
 
         _inputField.onSubmit.AddListener(s => {
             _playerName = s;

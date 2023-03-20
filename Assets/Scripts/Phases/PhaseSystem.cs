@@ -6,6 +6,7 @@ public class PhaseSystem : Singleton<PhaseSystem> {
     public static ObservableField<Phase> Current { get; } = new();
 
     public void Start() {
+        if (_isRunning) return;
         StartCoroutine(PhaseSystemRoutine());
     }
 

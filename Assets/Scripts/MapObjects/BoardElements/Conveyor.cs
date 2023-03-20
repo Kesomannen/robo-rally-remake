@@ -33,7 +33,7 @@ public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
             };
         }).ToArray();
 
-        OnRotationChanged += _ => {
+        RotationChanged += _ => {
             Debug.LogWarning("Conveyor rotation is not supported!", this);
         };
     }

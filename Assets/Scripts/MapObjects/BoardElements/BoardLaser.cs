@@ -31,7 +31,7 @@ public class BoardLaser : MapObject, ITooltipable, ITriggerAwake {
         base.Awake();
         _lasersInScene++;
         _direction = Rotator.Rotate(_direction);
-        OnRotationChanged += r => {
+        RotationChanged += r => {
             _direction = _direction.Transform(r);
         };
         OnActivate += Activate;

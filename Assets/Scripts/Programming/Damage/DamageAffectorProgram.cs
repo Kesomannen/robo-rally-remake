@@ -3,7 +3,7 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "DamageAffectorProgram", menuName = "ScriptableObjects/Programs/DamageAffector")]
 public class DamageAffectorProgram : SpamProgram {
-    [SerializeField] ScriptablePermanentAffector<IPlayer> _affector;
+    [SerializeField] ScriptablePermanentAffector<Player> _affector;
     [SerializeField] bool _actAsSpam;
 
     public override bool CanPlace(Player player, int register) => true;

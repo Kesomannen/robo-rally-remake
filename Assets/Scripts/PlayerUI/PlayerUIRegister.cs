@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -5,15 +6,25 @@ public class PlayerUIRegister : MonoBehaviour, IPointerClickHandler {
     [SerializeField] int _index;
     [SerializeField] Container<ProgramCardData> _cardContainer;
     [SerializeField] SoundEffect _onPlaceSound, _onRemoveSound;
+    [SerializeField] GameObject _lockedOverlay;
 
     static Player Owner => PlayerSystem.LocalPlayer;
 
     static readonly PlayerUIRegister[] _registers = new PlayerUIRegister[ExecutionPhase.RegisterCount];
     public static PlayerUIRegister GetRegister(int index) => _registers[index];
-    
-    public static bool Locked { get; set; }
+
+    static bool _locked;
+    public static bool Locked {
+        get => _locked;
+        set {
+            _locked = value;
+            LockedChanged?.Invoke(value);
+        }
+    }
 
     public bool IsEmpty => Owner.Program[_index] == null;
+
+    static event Action<bool> LockedChanged; 
 
     void Awake() {
         _registers[_index] = this;
@@ -25,10 +36,16 @@ public class PlayerUIRegister : MonoBehaviour, IPointerClickHandler {
 
     void Start() {
         Owner.Program.OnRegisterChanged += OnRegisterChanged;
+        LockedChanged += OnLockedChanged;
     }
     
     void OnDestroy() {
         Owner.Program.OnRegisterChanged -= OnRegisterChanged;
+        LockedChanged -= OnLockedChanged;
+    }
+    
+    void OnLockedChanged(bool locked) {
+        _lockedOverlay.SetActive(locked);
     }
 
     void OnRegisterChanged(int index, ProgramCardData prev, ProgramCardData next) {
@@ -56,14 +73,13 @@ public class PlayerUIRegister : MonoBehaviour, IPointerClickHandler {
         return true;
     }
 
-    bool Remove() {
-        if (Locked || IsEmpty || !Owner.Hand.AddCard(_cardContainer.Content, CardPlacement.Top)) return false;
+    void Remove() {
+        if (Locked || IsEmpty || !Owner.Hand.AddCard(_cardContainer.Content, CardPlacement.Top)) return;
 
         _cardContainer.gameObject.SetActive(false);
         Owner.Program.SetRegister(_index, null);
         
         _onRemoveSound.Play();
-        return true;
     }
 
     public void OnPointerClick(PointerEventData e) {
