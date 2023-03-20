@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 
 public class SkipButton : MonoBehaviour, IPointerClickHandler {
     void Awake() {
-        ShopPhase.OnNewPlayer += OnNewPlayer;
+        ShopPhase.NewPlayer += OnNewPlayer;
     }
 
     void OnEnable() {
@@ -11,7 +11,7 @@ public class SkipButton : MonoBehaviour, IPointerClickHandler {
     }
 
     void OnDestroy() {
-        ShopPhase.OnNewPlayer -= OnNewPlayer;
+        ShopPhase.NewPlayer -= OnNewPlayer;
     }
 
     public void OnPointerClick(PointerEventData e) {

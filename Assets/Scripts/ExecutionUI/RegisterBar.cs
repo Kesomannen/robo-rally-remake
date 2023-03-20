@@ -10,11 +10,11 @@ public class RegisterBar : MonoBehaviour {
     [SerializeField] float _tweenTime;
 
     void Awake() {
-        ExecutionPhase.OnNewRegister += MoveIndicatorTo;
+        ExecutionPhase.NewRegister += MoveIndicatorTo;
     }
 
     void OnDestroy() {
-        ExecutionPhase.OnNewRegister -= MoveIndicatorTo;
+        ExecutionPhase.NewRegister -= MoveIndicatorTo;
     }
 
     void OnEnable() {

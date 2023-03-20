@@ -17,7 +17,22 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
     [SerializeField] TMP_InputField _inputField;
     [SerializeField] GameObject _enterNameMenu;
 
-    public static string PlayerName { get; private set; } = "Player";
+    static string _playerName;
+    public static string PlayerName {
+        get {
+            if (!string.IsNullOrEmpty(_playerName)) return _playerName;
+
+            if (PlayerPrefs.HasKey(PlayerPrefsNameKey)) {
+                _playerName = PlayerPrefs.GetString(PlayerPrefsNameKey);
+            } else {
+                if (!InstanceExists) return "Player";
+
+                Instance.GatherName();
+                return "Retrieving name...";
+            }
+            return _playerName;
+        }
+    }
     public static event Action<string> NameChanged;
     
     static readonly Dictionary<ulong, LobbyPlayerData> _playersInLobby = new();
@@ -40,19 +55,13 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         using (new LoadingScreen("Signing in...")) {
             Matchmaking.InitializeAsync();
         }
-        
+
         _inputField.onSubmit.AddListener(s => {
-            PlayerName = s;
+            _playerName = s;
             PlayerPrefs.SetString(PlayerPrefsNameKey, s);
             _enterNameMenu.SetActive(false);
             NameChanged?.Invoke(s);
         });
-        
-        if (PlayerPrefs.HasKey(PlayerPrefsNameKey)) {
-            PlayerName = PlayerPrefs.GetString(PlayerPrefsNameKey);
-        } else {
-            GatherName();   
-        }
     }
 
     public void GatherName() {
@@ -184,6 +193,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
     [ClientRpc]
     void StartGameClientRpc() {
         if (IsServer) return;
+        NetworkSystem.LoadContext = NetworkSystem.Context.Multiplayer;
         MenuUtils.Instance.ShowOverlay("Game starting...");
     }
 
@@ -249,6 +259,8 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         var sceneManager = NetworkManager.SceneManager;
         var succeeded = false;
         var failed = false;
+        
+        NetworkSystem.LoadContext = NetworkSystem.Context.Multiplayer;
         
         sceneManager.OnLoadEventCompleted += LoadComplete;
         sceneManager.LoadScene("Game", LoadSceneMode.Single);

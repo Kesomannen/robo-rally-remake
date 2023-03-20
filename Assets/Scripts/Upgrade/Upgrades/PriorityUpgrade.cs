@@ -18,11 +18,11 @@ public class PriorityUpgrade : UpgradeCardData {
 
     public override void Use(Player player) {
         player.BonusPriority += _bonusPriority;
-        ExecutionPhase.OnPlayerRegistersComplete += Complete;
+        ExecutionPhase.PlayerRegistersComplete += Complete;
         Log.Instance.RawMessage($"{Log.PlayerString(player)} gained priority for this register");
         
         void Complete() {
-            ExecutionPhase.OnPlayerRegistersComplete -= Complete;
+            ExecutionPhase.PlayerRegistersComplete -= Complete;
             player.BonusPriority -= _bonusPriority;
         }
     }

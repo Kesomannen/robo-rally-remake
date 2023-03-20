@@ -8,11 +8,11 @@ public class BrakesUpgrade : UpgradeCardData {
     [SerializeField] OverlayData<Choice<bool>> _overlay;
     
     public override void OnAdd(Player player) {
-        ExecutionPhase.OnPlayerRegister += OnRegister;
+        ExecutionPhase.PlayerRegister += OnRegister;
     }
     
     public override void OnRemove(Player player) {
-        ExecutionPhase.OnPlayerRegister -= OnRegister;
+        ExecutionPhase.PlayerRegister -= OnRegister;
     }
 
     void OnRegister(ProgramExecution execution) {

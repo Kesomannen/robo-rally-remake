@@ -16,7 +16,7 @@ public class CrabLegsUpgrade : UpgradeCardData {
 
     void OnExecute(ProgramExecution execution) {
         if (execution.Card != _targetCard) return;
-        execution.OnExecutionEnd += _ => TaskScheduler.PushRoutine(OnAfterExecute(execution));
+        execution.ExecutionEnd += _ => TaskScheduler.PushRoutine(OnAfterExecute(execution));
     }
 
     IEnumerator OnAfterExecute(ProgramExecution execution) {

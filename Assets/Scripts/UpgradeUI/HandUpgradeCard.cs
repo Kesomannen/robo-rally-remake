@@ -30,11 +30,11 @@ public class HandUpgradeCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
         _originalParent = t.parent;
         _originalSize = t.localScale;
         
-        ProgrammingPhase.OnPhaseStarted += OnProgrammingStarted;
+        ProgrammingPhase.PhaseStarted += OnProgrammingStarted;
     }
 
     void OnDestroy() {
-        ProgrammingPhase.OnPhaseStarted -= OnProgrammingStarted;
+        ProgrammingPhase.PhaseStarted -= OnProgrammingStarted;
     }
 
     void Start() {

@@ -9,11 +9,11 @@ public class PlayerPanelArray : MonoBehaviour {
     public List<Container<Player>> Panels { get; private set; }
 
     void OnEnable() {
-        PlayerSystem.OnPlayerRemoved += OnPlayerRemoved;
+        PlayerSystem.PlayerRemoved += OnPlayerRemoved;
     }
     
     void OnDisable() {
-        PlayerSystem.OnPlayerRemoved -= OnPlayerRemoved;
+        PlayerSystem.PlayerRemoved -= OnPlayerRemoved;
     }
     
     void OnPlayerRemoved(Player player) {

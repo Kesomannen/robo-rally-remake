@@ -24,12 +24,12 @@ public class SpamProgram : ProgramCardData {
         
         yield return CoroutineUtils.Wait(0.5f);
         yield return new ProgramExecution(card, player, register).Execute();
-        ExecutionPhase.OnExecutionComplete += RemoveCard;
+        ExecutionPhase.ExecutionComplete += RemoveCard;
         
         player.DiscardPile.AddCard(card, CardPlacement.Top);
 
         void RemoveCard() {
-            ExecutionPhase.OnExecutionComplete -= RemoveCard;
+            ExecutionPhase.ExecutionComplete -= RemoveCard;
             
             var program = player.Program;
             if (program[register] != this) return;

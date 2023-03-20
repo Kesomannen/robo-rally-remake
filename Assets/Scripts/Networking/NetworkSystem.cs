@@ -12,23 +12,39 @@ using UnityEngine.SceneManagement;
 public class NetworkSystem : NetworkSingleton<NetworkSystem> {
     [SerializeField] GameObject _waitingOverlay;
     [SerializeField] TMP_Text _waitingText;
-
+    
+    public static Context LoadContext { get; set; } = Context.Singleplayer;
+    
+    public enum Context {
+        Singleplayer,
+        Multiplayer
+    }
+    
     void Start() {
         NetworkObject.DestroyWithScene = true;
+    }
+
+    protected override void Awake() {
+        base.Awake();
+        if (LoadContext == Context.Singleplayer) {
+            FindObjectOfType<NetworkManager>().StartHost();
+        }
     }
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
 
-        if (IsServer) {
-            
-        }
-        
         Debug.Log("NetworkSystem spawned, loading map...");
         MapSystem.Instance.LoadMap(MapData.GetById(LobbySystem.LobbyMap.Value));
-
-        foreach (var (id, data) in LobbySystem.PlayersInLobby.OrderBy(value => value.Key)) {
-            PlayerSystem.Instance.CreatePlayer(id, data, false);
+        
+        if (LoadContext == Context.Singleplayer) {
+            PlayerSystem.Instance.CreatePlayer(NetworkManager.LocalClientId,
+                new LobbyPlayerData {Name = LobbySystem.PlayerName, RobotId = 2},
+                true);
+        } else {
+            foreach (var (id, data) in LobbySystem.PlayersInLobby.OrderBy(value => value.Key)) {
+                PlayerSystem.Instance.CreatePlayer(id, data, false);
+            }
         }
         
         if (!PlayerSystem.EnergyEnabled) {
@@ -47,7 +63,11 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
         _waitingText.text = "Waiting for players to load...";
         
         if (IsServer) {
-            StartCoroutine(WaitForPlayers());
+            if (LoadContext == Context.Multiplayer) {
+                StartCoroutine(WaitForPlayers());   
+            } else {
+                PhaseSystem.Instance.Start();
+            }
         }
 
         IEnumerator WaitForPlayers() {
@@ -55,7 +75,7 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
             var loaded = false;
             yield return new WaitUntil(() => loaded);
             StartGameClientRpc();
-            PhaseSystem.Start();
+            PhaseSystem.Instance.Start();
 
             void LoadEventCompleted(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut) {
                 NetworkManager.SceneManager.OnLoadEventCompleted -= LoadEventCompleted;
@@ -74,7 +94,7 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
     [ClientRpc]
     void StartGameClientRpc() {
         if (IsServer) return;
-        PhaseSystem.Start();
+        PhaseSystem.Instance.Start();
     }
     
     void OnClientDisconnect(ulong id) {

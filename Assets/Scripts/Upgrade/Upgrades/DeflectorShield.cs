@@ -15,12 +15,12 @@ public class DeflectorShield : UpgradeCardData {
     }
     
     public override void Use(Player player) {
-        ExecutionPhase.OnNewRegister += NewRegister;
+        ExecutionPhase.NewRegister += NewRegister;
         player.Model.InvulnerableToLasers = true;
         player.Energy.Value--;
 
         void NewRegister(int register) {
-            ExecutionPhase.OnNewRegister -= NewRegister;
+            ExecutionPhase.NewRegister -= NewRegister;
             player.Model.InvulnerableToLasers = false;
         }
     }

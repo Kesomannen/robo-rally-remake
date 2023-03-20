@@ -11,21 +11,21 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
     const float SubPhaseDelay = 0;
     const float StepDelay = 0.5f;
 
-    public static event Action OnPhaseStart, OnPhaseEnd, OnExecutionComplete, OnPlayerRegistersComplete;
-    public static event Action<ExecutionSubPhase> OnNewSubPhase;
-    public static event Action<IReadOnlyList<Player>> OnPlayersOrdered;
-    public static event Action<int> OnNewRegister;
+    public static event Action PhaseStart, PhaseEnd, ExecutionComplete, PlayerRegistersComplete;
+    public static event Action<ExecutionSubPhase> NewSubPhase;
+    public static event Action<IReadOnlyList<Player>> PlayersOrdered;
+    public static event Action<int> NewRegister;
 
-    public static event Action<ProgramExecution> OnPlayerRegister;
+    public static event Action<ProgramExecution> PlayerRegister;
 
     public static IEnumerable<Action> GetPhaseEndInvocations() {
-        var invocationList = OnPhaseEnd?.GetInvocationList();
+        var invocationList = PhaseEnd?.GetInvocationList();
         return invocationList?.Cast<Action>();
     }
 
     public static IEnumerator DoPhase() {
         yield return UIManager.Instance.ChangeState(UIState.Execution);
-        OnPhaseStart?.Invoke();
+        PhaseStart?.Invoke();
         
         TaskScheduler.PushSequence(
             delay: StepDelay,
@@ -34,7 +34,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
 
         yield return TaskScheduler.WaitUntilClear();
         
-        OnExecutionComplete?.Invoke();
+        ExecutionComplete?.Invoke();
         
         foreach (var player in PlayerSystem.Players) {
             player.DiscardProgram();
@@ -42,7 +42,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
         
         yield return TaskScheduler.WaitUntilClear();
 
-        OnPhaseEnd?.Invoke();
+        PhaseEnd?.Invoke();
     }
 
     static Player[] _previousPlayerOrder;
@@ -51,14 +51,14 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
         Debug.Log($"Starting register {register}");
         
         CurrentRegister = register;
-        OnNewRegister?.Invoke(register);
+        NewRegister?.Invoke(register);
 
         yield return CoroutineUtils.Wait(StepDelay);
         yield return UpgradeAwaiter.AwaitEvent(UpgradeAwaiter.BeforePlayerOrdering);
 
         var orderedPlayers = PlayerSystem.GetOrderedPlayers().ToArray();
         if (_previousPlayerOrder != null && !_previousPlayerOrder.SequenceEqual(orderedPlayers)) {
-            OnPlayersOrdered?.Invoke(orderedPlayers);
+            PlayersOrdered?.Invoke(orderedPlayers);
             yield return CoroutineUtils.Wait(StepDelay);
         }
         _previousPlayerOrder = orderedPlayers;
@@ -85,13 +85,13 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
         );
 
         IEnumerator CompletePlayerRegisters() {
-            OnPlayerRegistersComplete?.Invoke();
+            PlayerRegistersComplete?.Invoke();
             yield break;
         }
         
         IEnumerator DoSubPhase(ExecutionSubPhase subPhase, Func<bool> execute) {
             if (execute()) {
-                OnNewSubPhase?.Invoke(subPhase);
+                NewSubPhase?.Invoke(subPhase);
                 yield return CoroutineUtils.Wait(SubPhaseDelay);
             }
         }
@@ -99,17 +99,12 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
         IEnumerator DoPlayerRegister(Player player) {
             Debug.Log($"Starting player {player} register {register}");
             
-            yield return UpgradeAwaiter.AwaitEvent(UpgradeAwaiter.BeforeRegister, player);
-            if (player.Program[register] == null) yield break;
             var execution = new ProgramExecution(player.Program[register], player, register);
-            
-            TaskScheduler.PushRoutine(AfterRegister(execution));
+            TaskScheduler.PushRoutine(UpgradeAwaiter.AwaitEvent(UpgradeAwaiter.AfterRegister, execution.Player));
             TaskScheduler.PushRoutine(execution.Execute());
-            OnPlayerRegister?.Invoke(execution);
-        }
-
-        IEnumerator AfterRegister(ProgramExecution execution) {
-            yield return UpgradeAwaiter.AwaitEvent(UpgradeAwaiter.AfterRegister, execution.Player);
+            
+            PlayerRegister?.Invoke(execution);
+            yield return UpgradeAwaiter.AwaitEvent(UpgradeAwaiter.BeforeRegister, player);
         }
     }
 }

@@ -25,9 +25,9 @@ public class HandUpgradeCardArray : MonoBehaviour {
         Owner.OnUpgradeRemoved += RemoveCard;
         
         PhaseSystem.Current.OnValueChanged += OnPhaseChanged;
-        ProgrammingPhase.OnPlayerLockedIn += OnPlayerLockedIn;
-        ExecutionPhase.OnPlayerRegistersComplete += UpdateAvailability;
-        ExecutionPhase.OnPlayerRegister += OnPlayerRegister;
+        ProgrammingPhase.PlayerLockedIn += OnPlayerLockedIn;
+        ExecutionPhase.PlayerRegistersComplete += UpdateAvailability;
+        ExecutionPhase.PlayerRegister += OnPlayerRegister;
         
         UpgradeAwaiter.OnPauseEventStart += OnPauseEventStart;
         UpgradeAwaiter.OnPauseEventEnd += OnPauseEventEnd;
@@ -38,9 +38,9 @@ public class HandUpgradeCardArray : MonoBehaviour {
         Owner.OnUpgradeRemoved -= RemoveCard;
         
         PhaseSystem.Current.OnValueChanged -= OnPhaseChanged;
-        ProgrammingPhase.OnPlayerLockedIn -= OnPlayerLockedIn;
-        ExecutionPhase.OnPlayerRegistersComplete -= UpdateAvailability;
-        ExecutionPhase.OnPlayerRegister += OnPlayerRegister;
+        ProgrammingPhase.PlayerLockedIn -= OnPlayerLockedIn;
+        ExecutionPhase.PlayerRegistersComplete -= UpdateAvailability;
+        ExecutionPhase.PlayerRegister += OnPlayerRegister;
         
         UpgradeAwaiter.OnPauseEventStart -= OnPauseEventStart;
         UpgradeAwaiter.OnPauseEventEnd -= OnPauseEventEnd;

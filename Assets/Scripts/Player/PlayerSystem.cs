@@ -18,7 +18,7 @@ public class PlayerSystem : Singleton<PlayerSystem> {
     public static bool IsLocal(Player player) => player == LocalPlayer;
     public static bool EnergyEnabled => !LobbySystem.LobbySettings.BeginnerGame.Enabled;
     
-    public static event Action<Player> OnPlayerRemoved;
+    public static event Action<Player> PlayerRemoved;
     
     protected override void Awake() {
         base.Awake();
@@ -40,7 +40,7 @@ public class PlayerSystem : Singleton<PlayerSystem> {
     public static void RemovePlayer(Player player) {
         MapSystem.DestroyObject(player.Model);
         
-        OnPlayerRemoved?.Invoke(player);
+        PlayerRemoved?.Invoke(player);
         _players.Remove(player);
     }
     
@@ -57,7 +57,7 @@ public class PlayerSystem : Singleton<PlayerSystem> {
             spawnPoint = _unoccupiedSpawnPoints[0];
             _unoccupiedSpawnPoints.RemoveAt(0);
         }
-        
+            
         var playerArgs = new PlayerArgs {
             RobotData = robotData,
             ModelPrefab = _playerModelPrefab,

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -29,17 +30,21 @@ public class PlayerExecutionPanel : Container<Player>, IPointerClickHandler {
     public IReadOnlyList<PlayerExecutionRegister> Registers => _registers;
 
     void Awake() {
-        ExecutionPhase.OnPhaseStart += OnExecutionStart;
-        ExecutionPhase.OnPhaseEnd += OnExecutionEnd;
-        PlayerSystem.OnPlayerRemoved += OnPlayerRemoved;
+        ExecutionPhase.PhaseStart += OnExecutionStart;
+        ExecutionPhase.PhaseEnd += OnExecutionEnd;
+        PlayerSystem.PlayerRemoved += OnPlayerRemoved;
     }
 
     void OnDestroy() {
-        ExecutionPhase.OnPhaseStart -= OnExecutionStart;
-        ExecutionPhase.OnPhaseEnd -= OnExecutionEnd;
-        PlayerSystem.OnPlayerRemoved -= OnPlayerRemoved;
+        ExecutionPhase.PhaseStart -= OnExecutionStart;
+        ExecutionPhase.PhaseEnd -= OnExecutionEnd;
+        PlayerSystem.PlayerRemoved -= OnPlayerRemoved;
     }
-    
+
+    void OnEnable() {
+        _energyText.text = Content?.Energy.ToString();
+    }
+
     void OnPlayerRemoved(Player player) {
         if (player == Content) {
             Destroy(gameObject);

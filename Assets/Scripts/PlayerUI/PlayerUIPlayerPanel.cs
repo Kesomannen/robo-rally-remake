@@ -31,8 +31,8 @@ public class PlayerUIPlayerPanel : PlayerPanel {
         Content.Energy.OnValueChanged += OnEnergyChanged;
         Content.OnCardAffectorApplied += OnCardGet;
 
-        ProgrammingPhase.OnPhaseStarted += OnPhaseStarted;
-        ProgrammingPhase.OnPlayerLockedIn += OnPlayerProgramDone;
+        ProgrammingPhase.PhaseStarted += OnPhaseStarted;
+        ProgrammingPhase.PlayerLockedIn += OnPlayerProgramDone;
 
         OnPhaseStarted();
     }

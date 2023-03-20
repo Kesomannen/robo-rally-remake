@@ -2,9 +2,9 @@
     protected override void Serialize(Player player) {
         base.Serialize(player);
         
-        ShopPhase.OnPhaseStarted += OnPhaseStarted;
-        ShopPhase.OnPlayerDecision += OnPlayerDecision;
-        ShopPhase.OnNewPlayer += OnNewPlayer;
+        ShopPhase.PhaseStarted += OnPhaseStarted;
+        ShopPhase.PlayerDecision += OnPlayerDecision;
+        ShopPhase.NewPlayer += OnNewPlayer;
         
         OnPhaseStarted();
     }

@@ -24,14 +24,14 @@ public class StressTimer : MonoBehaviour, ITooltipable {
         _text.text = "---";
         
         ProgrammingPhase.StressTimer.OnValueChanged += OnStressValueChanged;
-        ProgrammingPhase.OnPhaseStarted += OnPhaseStarted;
-        ProgrammingPhase.OnStressStarted += OnStressStart;
+        ProgrammingPhase.PhaseStarted += OnPhaseStarted;
+        ProgrammingPhase.StressStarted += OnStressStart;
     }
 
     void OnDestroy(){
         ProgrammingPhase.StressTimer.OnValueChanged -= OnStressValueChanged;
-        ProgrammingPhase.OnPhaseStarted -= OnPhaseStarted;
-        ProgrammingPhase.OnStressStarted += OnStressStart;
+        ProgrammingPhase.PhaseStarted -= OnPhaseStarted;
+        ProgrammingPhase.StressStarted += OnStressStart;
     }
     
     void OnStressStart() {

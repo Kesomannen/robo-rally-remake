@@ -28,17 +28,17 @@ public class ShopUIController : Singleton<ShopUIController> {
         }
         
         gameObject.SetActive(false);
-        ShopPhase.OnRestock += OnRestock;
-        ShopPhase.OnPlayerDecision += OnPlayerDecision;
-        ShopPhase.OnNewPlayer += OnNewPlayer;
+        ShopPhase.Restock += OnRestock;
+        ShopPhase.PlayerDecision += OnPlayerDecision;
+        ShopPhase.NewPlayer += OnNewPlayer;
     }
 
     protected override void OnDestroy() {
         base.OnDestroy();
         
-        ShopPhase.OnRestock -= OnRestock;
-        ShopPhase.OnPlayerDecision -= OnPlayerDecision;
-        ShopPhase.OnNewPlayer -= OnNewPlayer;
+        ShopPhase.Restock -= OnRestock;
+        ShopPhase.PlayerDecision -= OnPlayerDecision;
+        ShopPhase.NewPlayer -= OnNewPlayer;
     }
     
     void OnNewPlayer(Player player) {

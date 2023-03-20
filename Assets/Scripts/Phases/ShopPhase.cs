@@ -16,11 +16,11 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
     public static Player CurrentPlayer { get; private set; }
     public static IEnumerable<UpgradeCardData> ShopCards => _shopCards;
 
-    public static event Action<Player, bool, UpgradeCardData> OnPlayerDecision;
-    public static event Action<Player> OnNewPlayer;
-    public static event Action<int, UpgradeCardData> OnRestock;
+    public static event Action<Player, bool, UpgradeCardData> PlayerDecision;
+    public static event Action<Player> NewPlayer;
+    public static event Action<int, UpgradeCardData> Restock;
 
-    public static event Action OnPhaseStarted;
+    public static event Action PhaseStarted;
 
     protected override void Awake() {
         base.Awake();
@@ -29,7 +29,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
 
     public IEnumerator DoPhase() {
         yield return UIManager.Instance.ChangeState(UIState.Shop);
-        OnPhaseStarted?.Invoke();
+        PhaseStarted?.Invoke();
 
         yield return RestockCards(true);
         yield return TaskScheduler.WaitUntilClear();
@@ -42,7 +42,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
         }
 
         CurrentPlayer = null;
-        OnNewPlayer?.Invoke(null);
+        NewPlayer?.Invoke(null);
 
         if (_skippedPlayers != PlayerSystem.Players.Count) yield break;
         yield return RestockCards(false);
@@ -51,7 +51,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
 
     static IEnumerator DoPlayerTurn(Player player) {
         CurrentPlayer = player;
-        OnNewPlayer?.Invoke(player);
+        NewPlayer?.Invoke(player);
         
         yield return new WaitUntil(() => _currentPlayerReady);
         _currentPlayerReady = false;
@@ -73,7 +73,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
     }
     
     IEnumerator RestockCards(bool onlyIfEmpty) {
-        if (IsServer || NetworkManager == null) {
+        if (IsServer) {
             _restockCards = new UpgradeCardData[_shopCards.Length];
             for (var i = 0; i < _shopCards.Length; i++) {
                  if (_shopCards[i] == null || !onlyIfEmpty) {
@@ -93,7 +93,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
             
             var card = _restockCards[i];
             _shopCards[i] = card;
-            OnRestock?.Invoke(i, card);
+            Restock?.Invoke(i, card);
         }
         _restockCards = null;
     }
@@ -106,9 +106,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
     
     public void MakeDecision(bool skipped, UpgradeCardData upgrade, int index) {
         var id = skipped ? 0 : upgrade.GetLookupId();
-
-        if (NetworkManager == null) SetReady(skipped, upgrade, index);
-        else MakeDecisionServerRpc(skipped, (byte)id, (byte)index);
+        MakeDecisionServerRpc(skipped, (byte)id, (byte)index);
     }
     
     [ServerRpc(RequireOwnership = false)]
@@ -127,14 +125,14 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
         if (skipped) {
             _skippedPlayers++;
             
-            OnPlayerDecision?.Invoke(CurrentPlayer, true, null);
+            PlayerDecision?.Invoke(CurrentPlayer, true, null);
             Log.Instance.SkipMessage(CurrentPlayer);
         } else {
             CurrentPlayer.Energy.Value -= upgrade.Cost;
             CurrentPlayer.ReplaceUpgradeAt(upgrade, playerUpgradeIndex);
             _shopCards[_shopCards.IndexOf(upgrade)] = null;
             
-            OnPlayerDecision?.Invoke(CurrentPlayer, false, upgrade);
+            PlayerDecision?.Invoke(CurrentPlayer, false, upgrade);
             Log.Instance.BuyUpgradeMessage(CurrentPlayer, upgrade);
         }
         CurrentPlayer = null;

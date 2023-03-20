@@ -12,8 +12,8 @@ public class ProgramExecution {
     
     const float ExecutionDelay = 0.5f;
 
-    public event Action<ProgramExecution> OnExecutionStart;
-    public event Action<ProgramExecution> OnExecutionEnd; 
+    public event Action<ProgramExecution> ExecutionStart;
+    public event Action<ProgramExecution> ExecutionEnd; 
 
     public ProgramExecution(ProgramCardData card, Player player, int register) {
         Card = card;
@@ -22,16 +22,18 @@ public class ProgramExecution {
     }
 
     public IEnumerator Execute() {
+        if (Card == null) yield break;
+        
         Started = true;
         IsExecuting = true;
         Player.OnExecute(this);
-        OnExecutionStart?.Invoke(this);
+        ExecutionStart?.Invoke(this);
         
         yield return CoroutineUtils.Wait(ExecutionDelay);
         yield return Card.ExecuteRoutine(Player, Register);
         
         IsExecuting = false;
-        OnExecutionEnd?.Invoke(this);
+        ExecutionEnd?.Invoke(this);
         Debug.Log($"Execution of {Card.name} ended");
     }
     

@@ -14,8 +14,8 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
 
     static readonly List<Player> _playersLockedIn = new();
 
-    public static event Action OnPhaseStarted, OnStressStarted;
-    public static event Action<Player> OnPlayerLockedIn;
+    public static event Action PhaseStarted, StressStarted;
+    public static event Action<Player> PlayerLockedIn;
 
     public static IEnumerator DoPhase() {
         yield return UIManager.Instance.ChangeState(UIState.Programming);
@@ -25,7 +25,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
         LocalPlayerLockedIn = false;
         StressTimer.Value = LobbySystem.LobbySettings.StressTime.Value;
         
-        OnPhaseStarted?.Invoke();
+        PhaseStarted?.Invoke();
         
         foreach (var player in PlayerSystem.Players) {
             player.DrawCardsUpTo(player.CardsPerTurn);
@@ -57,7 +57,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
          var stressEnabled = LobbySystem.LobbySettings.StressTime.Enabled;
          
          _playersLockedIn.Add(player);
-         OnPlayerLockedIn?.Invoke(player);
+         PlayerLockedIn?.Invoke(player);
          
          if (PlayerSystem.IsLocal(player)) {
              PlayerUIRegister.Locked = true;
@@ -75,7 +75,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
          }
 
          if (IsStressed || !stressEnabled) return;
-         OnStressStarted?.Invoke();
+         StressStarted?.Invoke();
      }
 
     IEnumerator StressRoutine() {

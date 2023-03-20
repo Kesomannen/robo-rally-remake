@@ -91,7 +91,7 @@ public class Player : IPlayer {
         Model.Init(this, args.SpawnPoint);
         RobotData.OnSpawn(this);
 
-        ExecutionPhase.OnPhaseEnd += () => {
+        ExecutionPhase.PhaseEnd += () => {
             IsRebooted.Value = false;
         };
     }

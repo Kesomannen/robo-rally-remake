@@ -1435,6 +1435,7 @@ MonoBehaviour:
   _messageParent: {fileID: 1891774299}
   _messagePrefab: {fileID: 3176782827941025343, guid: ebef571b7b0d693458937fa6a47dcc87, type: 3}
   _inputField: {fileID: 1520048252}
+  _scrollView: {fileID: 1272794981}
 --- !u!1 &386933369
 GameObject:
   m_ObjectHideFlags: 0
@@ -2670,7 +2671,6 @@ GameObject:
   - component: {fileID: 761913670}
   - component: {fileID: 761913671}
   - component: {fileID: 761913673}
-  - component: {fileID: 761913674}
   - component: {fileID: 761913675}
   - component: {fileID: 761913676}
   m_Layer: 0
@@ -2721,24 +2721,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerModelPrefab: {fileID: 6361366146720679924, guid: 02d10ae4ba26c8642b70a581389a5dcd, type: 3}
   _rebootAffector: {fileID: 11400000, guid: 574c1b6113180c94b81fb77410b90faa, type: 2}
---- !u!114 &761913674
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 761913669}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ad5597ae79c4fa47973471e5c5d4293, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _mapToLoad: {fileID: 11400000, guid: ee6058072b906024f90f5c10f1ceb3de, type: 2}
-  _robotToLoad: {fileID: 11400000, guid: ef0584a46c19e0149a7b36d95295ee26, type: 2}
-  _upgradesToLoad:
-  - {fileID: 11400000, guid: 0fc2d6e3731971d44ab4ece2a98f7bbd, type: 2}
-  - {fileID: 11400000, guid: 5680d3887ef52f7489915c50deb15406, type: 2}
-  - {fileID: 11400000, guid: fe1b5bf7602553e439aa64052f9dbe00, type: 2}
 --- !u!114 &761913675
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4612,6 +4594,100 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7757758964884273815, guid: 15de29b7c206cd143a95e907f6194a0b, type: 3}
   m_PrefabInstance: {fileID: 7757758965831618275}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1237782320
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1237782323}
+  - component: {fileID: 1237782322}
+  - component: {fileID: 1237782321}
+  m_Layer: 0
+  m_Name: NetworkManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1237782321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1237782320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6960e84d07fb87f47956e7a81d71c4e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ProtocolType: 0
+  m_MaxPacketQueueSize: 128
+  m_MaxPayloadSize: 6144
+  m_HeartbeatTimeoutMS: 500
+  m_ConnectTimeoutMS: 1000
+  m_MaxConnectAttempts: 60
+  m_DisconnectTimeoutMS: 30000
+  ConnectionData:
+    Address: 127.0.0.1
+    Port: 7777
+    ServerListenAddress: 
+  DebugSimulator:
+    PacketDelayMS: 0
+    PacketJitterMS: 0
+    PacketDropRate: 0
+--- !u!114 &1237782322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1237782320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 593a2fe42fa9d37498c96f9a383b6521, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RunInBackground: 1
+  LogLevel: 1
+  NetworkConfig:
+    ProtocolVersion: 0
+    NetworkTransport: {fileID: 1237782321}
+    PlayerPrefab: {fileID: 0}
+    NetworkPrefabs: []
+    TickRate: 30
+    ClientConnectionBufferTimeout: 10
+    ConnectionApproval: 0
+    ConnectionData: 
+    EnableTimeResync: 0
+    TimeResyncInterval: 30
+    EnsureNetworkVariableLengthSafety: 0
+    EnableSceneManagement: 1
+    ForceSamePrefabs: 1
+    RecycleNetworkIds: 1
+    NetworkIdRecycleDelay: 120
+    RpcHashSize: 0
+    LoadSceneTimeOut: 120
+    SpawnTimeout: 1
+    EnableNetworkLogs: 1
+--- !u!4 &1237782323
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1237782320}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -8.086516, y: -5.1159296, z: 0.42248136}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1249856138
 GameObject:
   m_ObjectHideFlags: 0
@@ -4918,7 +4994,7 @@ GameObject:
   - component: {fileID: 1272794982}
   - component: {fileID: 1272794981}
   m_Layer: 5
-  m_Name: ScrollView
+  m_Name: ChatScrollView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5649,7 +5725,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 761913674}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Testing, Assembly-CSharp
         m_MethodName: Continue
         m_Mode: 1

@@ -110,19 +110,19 @@ public class ExecutionUIController : MonoBehaviour {
     }
 
     void Awake() {
-        ExecutionPhase.OnPlayerRegistersComplete += OnPlayerRegistersComplete;
-        ExecutionPhase.OnNewSubPhase += OnNewSubPhase;
-        ExecutionPhase.OnPlayerRegister += OnPlayerRegister;
-        ExecutionPhase.OnPlayersOrdered += OnPlayersOrdered;
-        ExecutionPhase.OnPhaseStart += OnPhaseStart;
+        ExecutionPhase.PlayerRegistersComplete += OnPlayerRegistersComplete;
+        ExecutionPhase.NewSubPhase += OnNewSubPhase;
+        ExecutionPhase.PlayerRegister += OnPlayerRegister;
+        ExecutionPhase.PlayersOrdered += OnPlayersOrdered;
+        ExecutionPhase.PhaseStart += OnPhaseStart;
     }
 
     void OnDestroy() {
-        ExecutionPhase.OnPlayerRegistersComplete -= OnPlayerRegistersComplete;
-        ExecutionPhase.OnNewSubPhase -= OnNewSubPhase;
-        ExecutionPhase.OnPlayerRegister -= OnPlayerRegister;
-        ExecutionPhase.OnPlayersOrdered -= OnPlayersOrdered;
-        ExecutionPhase.OnPhaseStart -= OnPhaseStart;
+        ExecutionPhase.PlayerRegistersComplete -= OnPlayerRegistersComplete;
+        ExecutionPhase.NewSubPhase -= OnNewSubPhase;
+        ExecutionPhase.PlayerRegister -= OnPlayerRegister;
+        ExecutionPhase.PlayersOrdered -= OnPlayersOrdered;
+        ExecutionPhase.PhaseStart -= OnPhaseStart;
     }
     
     void OnPhaseStart() {

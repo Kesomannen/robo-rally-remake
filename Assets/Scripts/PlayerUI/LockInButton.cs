@@ -25,11 +25,11 @@ public class LockInButton : MonoBehaviour, IPointerClickHandler {
     static Player Owner => PlayerSystem.LocalPlayer;
 
     void Awake() {
-        ProgrammingPhase.OnPhaseStarted += OnProgrammingStarted;
+        ProgrammingPhase.PhaseStarted += OnProgrammingStarted;
     }
     
     void OnDestroy() {
-        ProgrammingPhase.OnPhaseStarted -= OnProgrammingStarted;
+        ProgrammingPhase.PhaseStarted -= OnProgrammingStarted;
     }
     
     void OnProgrammingStarted() {

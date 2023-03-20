@@ -29,6 +29,8 @@ public class ProgramCardViewer : MonoBehaviour {
     }
     
     void OnUpgradeUsed(Player player, UpgradeCardData upgrade) {
+        if (!enabled) return;
+        
         StartCoroutine(AddCard(_upgradeCardPrefab, upgrade, true));
         _lastPlayer = player;
     }

@@ -11,7 +11,7 @@ public class ZoomBotAffector : ScriptableAffector<Player> {
     public override void Apply(Player target) {
         var invocations = ExecutionPhase.GetPhaseEndInvocations();
         if (invocations == null || !invocations.Contains(OnExecutionEnd)) {
-            ExecutionPhase.OnPhaseEnd += OnExecutionEnd;
+            ExecutionPhase.PhaseEnd += OnExecutionEnd;
         } 
         
         _affectedPlayers.Add(target);
