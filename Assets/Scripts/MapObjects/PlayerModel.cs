@@ -144,11 +144,11 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
         }
     }
 
-    public IEnumerator MoveSteps(Vector2Int dir, bool relative, int steps, float delay = TaskScheduler.DefaultTaskDelay) {
+    public IEnumerator MoveSteps(Vector2Int dir, bool relative, int steps, float delay = -1) {
         yield return MoveSteps(Enumerable.Repeat(dir, steps), relative, delay);
     }
     
-    public IEnumerator MoveSteps(IEnumerable<Vector2Int> dirs, bool relative, float delay = TaskScheduler.DefaultTaskDelay) {
+    public IEnumerator MoveSteps(IEnumerable<Vector2Int> dirs, bool relative, float delay = -1) {
         _canFall = !Hovering;
         
         foreach (var dir in dirs) {

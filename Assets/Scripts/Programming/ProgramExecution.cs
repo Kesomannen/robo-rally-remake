@@ -38,7 +38,6 @@ public class ProgramExecution {
         
         IsExecuting = false;
         ExecutionEnd?.Invoke(this);
-        Debug.Log($"Execution of {CurrentCard.name} ended");
     }
     
     public IEnumerator WaitUntilEnd() {

@@ -8,10 +8,17 @@ public class TaskScheduler : Singleton<TaskScheduler> {
     static bool _isRunning;
     
     public static int TaskCount => _tasks.Count;
-    
-    public const float DefaultTaskDelay = 0.25f;
-    
-    public static void PushRoutine(IEnumerator routine, float delay = DefaultTaskDelay, Action onComplete = null) {
+
+    static float _defaultTaskDelay;
+
+    protected override void Awake() {
+        base.Awake();
+        _defaultTaskDelay = 0.85f / LobbySystem.LobbySettings.GameSpeed.Value;
+    }
+
+    public static void PushRoutine(IEnumerator routine, float delay = -1, Action onComplete = null) {
+        if (delay < 0) delay = _defaultTaskDelay;
+        
         _tasks.Push((routine, onComplete, delay));
         if (_isRunning) return;
         
@@ -19,7 +26,9 @@ public class TaskScheduler : Singleton<TaskScheduler> {
         Instance.StartCoroutine(RunTasks());
     }
     
-    public static void PushSequence(float delay = DefaultTaskDelay, params IEnumerator[] routines) {
+    public static void PushSequence(float delay = -1, params IEnumerator[] routines) {
+        if (delay < 0) delay = _defaultTaskDelay;
+        
         for (var i = routines.Length - 1; i >= 0; i--){
             _tasks.Push((routines[i], () => {}, delay));
         }
@@ -30,7 +39,9 @@ public class TaskScheduler : Singleton<TaskScheduler> {
         Instance.StartCoroutine(RunTasks());
     }
     
-    public static void PushSequence(float delay = DefaultTaskDelay, params Action[] actions) {
+    public static void PushSequence(float delay = -1, params Action[] actions) {
+        if (delay < 0) delay = _defaultTaskDelay;
+        
         for (var i = actions.Length - 1; i >= 0; i--) {
             _tasks.Push((WrapAction(actions[i]), () => {}, delay));
         }
@@ -52,7 +63,6 @@ public class TaskScheduler : Singleton<TaskScheduler> {
             yield return task.Routine;
             task.Callback?.Invoke();
             yield return CoroutineUtils.Wait(task.Delay);
-            Debug.Log($"Task completed. {_tasks.Count} tasks remaining.");
         }
         _isRunning = false;
     }

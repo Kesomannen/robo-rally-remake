@@ -16,6 +16,7 @@ using Random = UnityEngine.Random;
 public class LobbySystem : NetworkSingleton<LobbySystem> {
     [SerializeField] TMP_InputField _inputField;
     [SerializeField] GameObject _enterNameMenu;
+    [SerializeField] int _minNameLength = 3;
 
     static string _playerName;
     public static string PlayerName {
@@ -57,11 +58,13 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         }
         Debug.Log($"Signed in as {PlayerName}");
 
-        _inputField.onSubmit.AddListener(s => {
-            _playerName = s;
-            PlayerPrefs.SetString(PlayerPrefsNameKey, s);
+        _inputField.onSubmit.AddListener(str => {
+            if (str.Replace(" ", "").Length < _minNameLength) return;
+            
+            _playerName = str;
+            PlayerPrefs.SetString(PlayerPrefsNameKey, str);
             _enterNameMenu.SetActive(false);
-            NameChanged?.Invoke(s);
+            NameChanged?.Invoke(str);
         });
     }
 
@@ -74,8 +77,8 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         LobbyMap.Value = Matchmaking.CurrentMapID;
         _playersInLobby.Clear();
         
-        var id = NetworkManager.LocalClientId;
         if (IsServer) {
+            var id = NetworkManager.LocalClientId;
             NetworkManager.OnClientConnectedCallback += OnClientConnected;
 
             LobbySettings = new LobbySettings();

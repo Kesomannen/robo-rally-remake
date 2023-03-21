@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 public class LobbySettings {
-    public readonly LobbyProperty StartingEnergy, CardsPerTurn, StressTime, ShopCards, UpgradeSlots, AdvancedGame, BeginnerGame;
+    public readonly LobbyProperty StartingEnergy, CardsPerTurn, StressTime, ShopCards, UpgradeSlots, AdvancedGame, BeginnerGame, GameSpeed;
     public IReadOnlyList<LobbyProperty> Properties => _properties;
     readonly LobbyProperty[] _properties;
     
@@ -11,12 +11,13 @@ public class LobbySettings {
         StressTime = new LobbyProperty(5, 60, 30, true);
         ShopCards = new LobbyProperty(3, 5, 5);
         UpgradeSlots = new LobbyProperty(2, 6, 6);
+        GameSpeed = new LobbyProperty(1, 5, 3);
         
         AdvancedGame = new LobbyProperty(false);
         BeginnerGame = new LobbyProperty(false);
         
         _properties = new[] {
-            StartingEnergy, CardsPerTurn, StressTime, ShopCards, UpgradeSlots, AdvancedGame, BeginnerGame
+            StartingEnergy, CardsPerTurn, StressTime, ShopCards, UpgradeSlots, AdvancedGame, BeginnerGame, GameSpeed
         };
     }
 }

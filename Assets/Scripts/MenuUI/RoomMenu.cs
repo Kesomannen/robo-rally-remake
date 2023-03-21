@@ -12,7 +12,7 @@ public class RoomMenu : Menu {
     [SerializeField] LobbyPlayerPanel _playerPanelPrefab;
     [SerializeField] Transform _playerPanelParent;
     [SerializeField] TMP_Text _lobbyCodeText;
-    [SerializeField] SettingsPanelProperty _startingEnergyProperty, _cardsPerTurnProperty, _stressTimeProperty, _shopCardsProperty, _upgradeSlotsProperty, _beginnerGameProperty, _advancedGameProperty;
+    [SerializeField] SettingsPanelProperty _startingEnergyProperty, _cardsPerTurnProperty, _stressTimeProperty, _shopCardsProperty, _upgradeSlotsProperty, _beginnerGameProperty, _advancedGameProperty, _gameSpeedProperty;
 
     readonly List<LobbyPlayerPanel> _playerPanels = new();
     
@@ -40,6 +40,7 @@ public class RoomMenu : Menu {
         _upgradeSlotsProperty.LobbyProperty = settings.UpgradeSlots;
         _beginnerGameProperty.LobbyProperty = settings.BeginnerGame;
         _advancedGameProperty.LobbyProperty = settings.AdvancedGame;
+        _gameSpeedProperty.LobbyProperty = settings.GameSpeed;
 
         _readyButton.gameObject.SetActive(true);
         _startGameButton.gameObject.SetActive(false);
