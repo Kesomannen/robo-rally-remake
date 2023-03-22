@@ -9,6 +9,7 @@ public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T> {
         }
     }
     
+    // ReSharper disable once StaticMemberInGenericType
     public static bool HasInstance { get; private set; }
     static T _instance;
 

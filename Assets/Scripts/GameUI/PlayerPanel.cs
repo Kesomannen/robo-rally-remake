@@ -35,7 +35,7 @@ public class PlayerPanel : Container<Player>, IPointerClickHandler {
     protected override void Serialize(Player player) {
         if (_nameText.Enabled) _nameText.Value.text = PlayerSystem.IsLocal(player) ? $"{player} (You)" : player.ToString();
         if (_energyText.Enabled && EnergyEnabled) _energyText.Value.text = player.Energy.ToString();
-        Content.Energy.OnValueChanged += OnEnergyChanged;
+        Content.Energy.ValueChanged += OnEnergyChanged;
         if (_robotIcon.Enabled) _robotIcon.Value.sprite = player.RobotData.Icon;
     }
     

@@ -7,7 +7,7 @@ public class SkipButton : MonoBehaviour, IPointerClickHandler {
     }
 
     void OnEnable() {
-        OnNewPlayer(ShopPhase.CurrentPlayer);
+        OnNewPlayer(ShopPhase.Instance.CurrentPlayer);
     }
 
     void OnDestroy() {

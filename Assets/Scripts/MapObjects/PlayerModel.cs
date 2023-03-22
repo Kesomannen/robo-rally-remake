@@ -34,7 +34,7 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
     public bool Movable { get; set; } = true;
     public bool Hovering { get; set; }
     public bool InvulnerableToLasers { get; set; }
-    protected override bool CanRotate => true;
+    public override bool CanRotate => true;
     
     public event Action<CallbackContext> OnPush;
     public event Action<CallbackContext> OnShoot;
@@ -125,7 +125,7 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
 
                 player.Owner.ApplyCardAffector(Owner.LaserAffector);
                 if (Owner.LaserAffector.Cards.Count > 0) {
-                    Log.Instance.RawMessage($"{Log.PlayerString(Owner)} shot {Log.PlayerString(player.Owner)} and dealt {string.Join(",", Owner.LaserAffector.Cards.Select(Log.ProgramString))})");
+                    Log.Instance.RawMessage($"{Log.PlayerString(Owner)} shot {Log.PlayerString(player.Owner)} and dealt {string.Join(",", Owner.LaserAffector.Cards.Select(Log.ProgramString))}");
                 }
                 
                 OnShoot?.Invoke(new CallbackContext {

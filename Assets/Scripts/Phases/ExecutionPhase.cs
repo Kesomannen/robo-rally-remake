@@ -8,8 +8,6 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
     public static int CurrentRegister { get; private set; }
 
     public const int RegisterCount = 5;
-    const float SubPhaseDelay = 0;
-    const float StepDelay = 0.5f;
 
     public static event Action PhaseStart, PhaseEnd, ExecutionComplete, PlayerRegistersComplete;
     public static event Action<ExecutionSubPhase> NewSubPhase;
@@ -23,43 +21,34 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
         return invocationList?.Cast<Action>();
     }
 
-    public static IEnumerator DoPhase() {
+    public IEnumerator DoPhase() {
         yield return UIManager.Instance.ChangeState(UIState.Execution);
         PhaseStart?.Invoke();
         
-        TaskScheduler.PushSequence(
-            delay: StepDelay,
-            routines: EnumerableUtils.For(RegisterCount, DoRegister).ToArray()
-            );
-
+        TaskScheduler.PushSequence(routines: EnumerableUtils.For(RegisterCount, DoRegister).ToArray());
         yield return TaskScheduler.WaitUntilClear();
-        
         ExecutionComplete?.Invoke();
-        
         foreach (var player in PlayerSystem.Players) {
             player.DiscardProgram();
         }
-        
         yield return TaskScheduler.WaitUntilClear();
 
         PhaseEnd?.Invoke();
     }
 
     static Player[] _previousPlayerOrder;
-    
-    static IEnumerator DoRegister(int register) {
-        Debug.Log($"Starting register {register}");
-        
-        CurrentRegister = register;
-        NewRegister?.Invoke(register);
 
-        yield return CoroutineUtils.Wait(StepDelay);
+    static IEnumerator DoRegister(int register) {
+         CurrentRegister = register; 
+         NewRegister?.Invoke(register);
+
+        yield return CoroutineUtils.Wait(TaskScheduler.DefaultTaskDelay);
         yield return UpgradeAwaiter.AwaitEvent(UpgradeAwaiter.BeforePlayerOrdering);
 
         var orderedPlayers = PlayerSystem.GetOrderedPlayers().ToArray();
         if (_previousPlayerOrder != null && !_previousPlayerOrder.SequenceEqual(orderedPlayers)) {
             PlayersOrdered?.Invoke(orderedPlayers);
-            yield return CoroutineUtils.Wait(StepDelay);
+            yield return CoroutineUtils.Wait(TaskScheduler.DefaultTaskDelay);
         }
         _previousPlayerOrder = orderedPlayers;
         
@@ -69,7 +58,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
         }
 
         TaskScheduler.PushSequence(
-            delay: SubPhaseDelay,
+            delay: -1,
             DoSubPhase(ExecutionSubPhase.Registers, () => {
                 TaskScheduler.PushSequence(routines: registerRoutines);
                 return PlayerSystem.Players.Any(p => !p.IsRebooted.Value);
@@ -92,11 +81,12 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
         IEnumerator DoSubPhase(ExecutionSubPhase subPhase, Func<bool> execute) {
             if (execute()) {
                 NewSubPhase?.Invoke(subPhase);
-                yield return CoroutineUtils.Wait(SubPhaseDelay);
             }
+            yield break;
         }
 
         IEnumerator DoPlayerRegister(Player player) {
+            if (player.IsRebooted.Value) yield break;
             Debug.Log($"Starting player {player} register {register}");
             
             var execution = new ProgramExecution(() => player.Program[register], player, register);

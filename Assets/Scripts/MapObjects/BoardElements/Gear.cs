@@ -16,7 +16,7 @@ public class Gear : BoardElement<Gear, IMapObject>, ITooltipable {
     }
 
     protected override void Activate(IMapObject[] targets) {
-        var movable = targets.Where(t => t is not ICanEnterHandler handler || handler.Movable).ToArray();
+        var movable = targets.Where(t => t.Object.CanRotate && (t is not ICanEnterHandler handler || handler.Movable)).ToArray();
         var routines = new IEnumerator[movable.Length];
         for (var i = 0; i < movable.Length; i++) {
             AddActivation();

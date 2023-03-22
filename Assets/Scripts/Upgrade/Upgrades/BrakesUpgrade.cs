@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Upgrade/Brakes")]
@@ -6,16 +7,21 @@ public class BrakesUpgrade : UpgradeCardData {
     [SerializeField] ProgramCardData _targetCard;
     [SerializeField] ProgramCardData _replacementCard;
     [SerializeField] OverlayData<Choice<bool>> _overlay;
-    
+
+    readonly List<Player> _activePlayers = new();
+
     public override void OnAdd(Player player) {
         ExecutionPhase.PlayerRegister += OnRegister;
+        _activePlayers.Add(player);
     }
     
     public override void OnRemove(Player player) {
         ExecutionPhase.PlayerRegister -= OnRegister;
+        _activePlayers.Remove(player);
     }
 
     void OnRegister(ProgramExecution execution) {
+        if (!_activePlayers.Contains(execution.Player)) return;
         if (execution.CurrentCard != _targetCard) return;
         TaskScheduler.PushRoutine(Task());
         

@@ -29,11 +29,12 @@ public class CacheMemoryUpgrade : UpgradeCardData {
                 OutputArray = result,
                 MinChoices = 1
             });
-            foreach (var card in result) {
+            var cardResults = result.Where(card => card != null).ToArray();
+            foreach (var card in cardResults) {
                 player.Hand.RemoveCard(card);
                 player.DrawPile.AddCard(card, CardPlacement.Top);
             }
-            Log.Instance.RawMessage($"{Log.PlayerString(player)} cached {string.Join(",", result.Select(Log.ProgramString))}");
+            Log.Instance.RawMessage($"{Log.PlayerString(player)} cached {string.Join(", ", cardResults.Select(Log.ProgramString))}");
         }
     }
 }

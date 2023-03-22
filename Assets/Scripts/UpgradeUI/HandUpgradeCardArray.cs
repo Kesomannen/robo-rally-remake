@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -12,19 +13,28 @@ public class HandUpgradeCardArray : MonoBehaviour {
 
     HandUpgradeCard[] _cards;
 
+    IEnumerable<HandUpgradeCard> Cards {
+        get {
+            if (_cards != null) return _cards;
+
+            _cards = new HandUpgradeCard[Owner.Upgrades.Count];
+            for (var i = 0; i < Owner.Upgrades.Count; i++) {
+                var upgrade = Owner.Upgrades[i];
+                if (upgrade == null) continue;
+                CreateCard(upgrade, i);
+            }
+
+            return _cards;
+        }
+    }
+
     static Player Owner => PlayerSystem.LocalPlayer;
 
     void Start() {
-        _cards = new HandUpgradeCard[Owner.Upgrades.Count];
-        for (var i = 0; i < Owner.Upgrades.Count; i++) {
-            var upgrade = Owner.Upgrades[i];
-            if (upgrade == null) continue;
-            CreateCard(upgrade, i);
-        }
-        Owner.OnUpgradeAdded += CreateCard;
-        Owner.OnUpgradeRemoved += RemoveCard;
+        Owner.UpgradeAdded += CreateCard;
+        Owner.UpgradeRemoved += RemoveCard;
         
-        PhaseSystem.Current.OnValueChanged += OnPhaseChanged;
+        PhaseSystem.Current.ValueChanged += OnPhaseChanged;
         ProgrammingPhase.PlayerLockedIn += OnPlayerLockedIn;
         ExecutionPhase.PlayerRegistersComplete += UpdateAvailability;
         ExecutionPhase.PlayerRegister += OnPlayerRegister;
@@ -34,10 +44,10 @@ public class HandUpgradeCardArray : MonoBehaviour {
     }
 
     void OnDestroy() {
-        Owner.OnUpgradeAdded -= CreateCard;
-        Owner.OnUpgradeRemoved -= RemoveCard;
+        Owner.UpgradeAdded -= CreateCard;
+        Owner.UpgradeRemoved -= RemoveCard;
         
-        PhaseSystem.Current.OnValueChanged -= OnPhaseChanged;
+        PhaseSystem.Current.ValueChanged -= OnPhaseChanged;
         ProgrammingPhase.PlayerLockedIn -= OnPlayerLockedIn;
         ExecutionPhase.PlayerRegistersComplete -= UpdateAvailability;
         ExecutionPhase.PlayerRegister += OnPlayerRegister;
@@ -78,7 +88,7 @@ public class HandUpgradeCardArray : MonoBehaviour {
     }
     
     void UpdatePositions() {
-        var cards = _cards.Where(c => c != null).ToArray();
+        var cards = Cards.Where(c => c != null).ToArray();
         var rows = Mathf.CeilToInt(cards.Length / (float)_cardsPerRow);
         var columns = Mathf.CeilToInt(cards.Length / (float)rows);
         
@@ -97,7 +107,7 @@ public class HandUpgradeCardArray : MonoBehaviour {
     }
 
     void UpdateAvailability() {
-        foreach (var card in _cards) {
+        foreach (var card in Cards) {
             if (card == null) continue;
             card.UpdateAvailability();
         }

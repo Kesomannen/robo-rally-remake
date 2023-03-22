@@ -21,7 +21,7 @@ public class TopButtons : MonoBehaviour {
 
     void OnEnable() {
         Chat.MessageSent += OnNewChat;
-        PhaseSystem.Current.OnValueChanged += OnPhaseChanged;
+        PhaseSystem.Current.ValueChanged += OnPhaseChanged;
         
         _toggleSettings.Enable();
         _toggleSettings.performed += OnToggleSettingsPerformed;
@@ -29,7 +29,7 @@ public class TopButtons : MonoBehaviour {
     
     void OnDisable() {
         Chat.MessageSent -= OnNewChat;
-        PhaseSystem.Current.OnValueChanged -= OnPhaseChanged;
+        PhaseSystem.Current.ValueChanged -= OnPhaseChanged;
         
         _toggleSettings.Disable();
         _toggleSettings.performed -= OnToggleSettingsPerformed;
@@ -73,6 +73,6 @@ public class TopButtons : MonoBehaviour {
 
     public void ToggleShop() {
         if (OverlaySystem.Instance.IsOverlayActive) return;
-        OverlaySystem.Instance.PushAndShowOverlay(_shopOverlay).Init(_upgradePrefab, ShopPhase.ShopCards);
+        OverlaySystem.Instance.PushAndShowOverlay(_shopOverlay).Init(_upgradePrefab, ShopPhase.Instance.ShopCards);
     }
 }

@@ -6,9 +6,13 @@ public class PhaseSystem : Singleton<PhaseSystem> {
 
     public static ObservableField<Phase> Current { get; } = new();
 
+    protected override void OnDestroy() {
+        base.OnDestroy();
+        StopPhaseSystem();
+    }
+
     public void StartPhaseRoutine() {
         if (_isRunning) return;
-        Debug.Log("Starting phase system...");
         StartCoroutine(PhaseSystemRoutine());
     }
 
@@ -18,15 +22,13 @@ public class PhaseSystem : Singleton<PhaseSystem> {
 
     static IEnumerator PhaseSystemRoutine() {
         _isRunning = true;
+        yield return DoPhaseRoutine(SetupPhase.Instance.DoPhase(), Phase.Setup);
         while (true) {
             if (PlayerSystem.EnergyEnabled) {
                 yield return DoPhaseRoutine(ShopPhase.Instance.DoPhase(), Phase.Shop);   
             }
-            if (!_isRunning) yield break;   
-            yield return DoPhaseRoutine(ProgrammingPhase.DoPhase(), Phase.Programming);
-            if (!_isRunning) yield break;
-            yield return DoPhaseRoutine(ExecutionPhase.DoPhase(), Phase.Execution);
-            if (!_isRunning) yield break;
+            yield return DoPhaseRoutine(ProgrammingPhase.Instance.DoPhase(), Phase.Programming);
+            yield return DoPhaseRoutine(ExecutionPhase.Instance.DoPhase(), Phase.Execution);
         }
         
         IEnumerator DoPhaseRoutine(IEnumerator routine, Phase phase) {
@@ -42,4 +44,5 @@ public enum Phase {
     Programming,
     Execution,
     Shop,
+    Setup
 }

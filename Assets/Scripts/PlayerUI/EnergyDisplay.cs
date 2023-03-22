@@ -10,7 +10,7 @@ public class EnergyDisplay : MonoBehaviour, ITooltipable {
     static Player Owner => PlayerSystem.LocalPlayer;
 
     void Start() {
-        Owner.Energy.OnValueChanged += UpdateText;
+        Owner.Energy.ValueChanged += UpdateText;
         UpdateText(0, Owner.Energy.Value);
         gameObject.SetActive(PlayerSystem.EnergyEnabled);
     }

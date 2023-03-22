@@ -10,7 +10,7 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
     // ReSharper disable once InconsistentNaming
     [ReadOnly] public Vector2Int GridPos;
 
-    protected virtual bool CanRotate => false;
+    public virtual bool CanRotate => false;
 
     public event Action<int> RotationChanged;
 

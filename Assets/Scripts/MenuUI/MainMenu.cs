@@ -4,7 +4,7 @@ public class MainMenu : Menu {
     public async void CreateGame() {
         var lobbyData = new LobbyData {
             MapID = (byte) MapData.GetRandom().GetLookupId(),
-            MaxPlayers = (byte) GameSettings.Instance.MaxPlayers,
+            MaxPlayers = LobbySystem.MaxPlayers,
             IsPrivate = false
         };
         

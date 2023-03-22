@@ -12,7 +12,7 @@ public class Player : IPlayer {
     public readonly ulong ClientId;
     
     // Robot
-    public readonly PlayerModel Model;
+    public PlayerModel Model { get; private set; }
     public readonly RobotData RobotData;
     
     public readonly ObservableField<bool> IsRebooted;
@@ -41,13 +41,13 @@ public class Player : IPlayer {
 
     public override string ToString() => _name;
     
-    public event Action<CardAffector> OnCardAffectorApplied;
+    public event Action<CardAffector> CardAffectorApplied;
     public event Action<ProgramCardData> OnDraw, OnDiscard;
     
-    public event Action<UpgradeCardData, int> OnUpgradeAdded, OnUpgradeRemoved;
-    public event Action<UpgradeCardData> OnUpgradeUsed;
+    public event Action<UpgradeCardData, int> UpgradeAdded, UpgradeRemoved;
+    public event Action<UpgradeCardData> UpgradeUsed;
     
-    public event Action<ProgramExecution> OnProgramCardExecuted; 
+    public event Action<ProgramExecution> ProgramCardExecuted; 
 
     public Player(PlayerArgs args) {
         _name = args.Name;
@@ -80,20 +80,23 @@ public class Player : IPlayer {
         
         // Robot
         CurrentCheckpoint = new ObservableField<int>();
-        Model = MapSystem.Instance.CreateObject (
-            args.ModelPrefab,
-            args.SpawnPoint.GridPos,
-            args.SpawnPoint.transform.rotation
-        );
         IsRebooted = new ObservableField<bool>();
 
         // Initialize
-        Model.Init(this, args.SpawnPoint);
-        RobotData.OnSpawn(this);
-
         ExecutionPhase.PhaseEnd += () => {
             IsRebooted.Value = false;
         };
+    }
+
+    public void CreateModel(PlayerModel modelPrefab, RebootToken spawnPoint) {
+        Model = MapSystem.Instance.CreateObject (
+            modelPrefab,
+            spawnPoint.GridPos,
+            spawnPoint.transform.rotation
+        );
+        
+        Model.Init(this, spawnPoint);
+        RobotData.OnSpawn(this);
     }
     
     #endregion
@@ -224,7 +227,7 @@ public class Player : IPlayer {
         RemoveUpgrade(index);
         _upgrades[index] = upgrade;
         upgrade.OnAdd(this);
-        OnUpgradeAdded?.Invoke(upgrade, index);
+        UpgradeAdded?.Invoke(upgrade, index);
     }
 
     public void UseUpgrade(UpgradeCardData upgrade) => UseUpgrade(_upgrades.IndexOf(upgrade));
@@ -234,7 +237,7 @@ public class Player : IPlayer {
         Log.Instance.UseUpgradeMessage(this, upgrade);
         upgrade.Use(this);
         
-        OnUpgradeUsed?.Invoke(upgrade);
+        UpgradeUsed?.Invoke(upgrade);
 
         if (upgrade.Type == UpgradeType.Temporary) {
             RemoveUpgrade(index);
@@ -249,13 +252,13 @@ public class Player : IPlayer {
         
         upgrade.OnRemove(this);
         _upgrades[index] = null;
-        OnUpgradeRemoved?.Invoke(upgrade, index);
+        UpgradeRemoved?.Invoke(upgrade, index);
     }
     
     #endregion
 
     public void OnExecute(ProgramExecution execution) {
-        OnProgramCardExecuted?.Invoke(execution);
+        ProgramCardExecuted?.Invoke(execution);
     }
     
     public void Reboot(IBoard board, bool takeDamage = true) {
@@ -279,7 +282,7 @@ public class Player : IPlayer {
         foreach (var card in affector.Cards) {
             pile.AddCard(card, affector.Placement);
         }
-        OnCardAffectorApplied?.Invoke(affector);
+        CardAffectorApplied?.Invoke(affector);
     }
 
     public void SerializeRegisters(out byte playerIndex, out byte[] registers) {
@@ -295,9 +298,7 @@ public enum Pile {
 }
 
 public struct PlayerArgs {
-    public RebootToken SpawnPoint;
     public RobotData RobotData;
-    public PlayerModel ModelPrefab;
     public int StartingEnergy;
     public int CardsPerTurn;
     public int RegisterCount;

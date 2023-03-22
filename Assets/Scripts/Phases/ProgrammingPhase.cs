@@ -7,23 +7,29 @@ using System.Linq;
 
 public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
     public static bool IsStressed { get; private set; }
-    public static IEnumerable<Player> PlayersLockedIn => _playersLockedIn;
-    static bool LocalPlayerLockedIn { get; set; }
-    
-    public static readonly ObservableField<int> StressTimer = new();
+    static bool _localPlayerLockedIn;
 
-    static readonly List<Player> _playersLockedIn = new();
+    public static ObservableField<int> StressTimer;
+
+    readonly List<Player> _playersLockedIn = new();
+    public IEnumerable<Player> PlayersLockedIn => _playersLockedIn;
 
     public static event Action PhaseStarted, StressStarted;
     public static event Action<Player> PlayerLockedIn;
 
-    public static IEnumerator DoPhase() {
+    protected override void Awake() {
+        base.Awake();
+        StressTimer = new ObservableField<int>(LobbySystem.LobbySettings.StressTime.Value);
+        IsStressed = false;
+    }
+
+    public IEnumerator DoPhase() {
         yield return UIManager.Instance.ChangeState(UIState.Programming);
 
         IsStressed = false;
         PlayerUIRegister.Locked = false;
-        LocalPlayerLockedIn = false;
         StressTimer.Value = LobbySystem.LobbySettings.StressTime.Value;
+        _localPlayerLockedIn = false;
         
         PhaseStarted?.Invoke();
         
@@ -55,18 +61,19 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
      void LockPlayerRegister(byte playerIndex, IEnumerable<byte> registerCardIds) {
          var player = PlayerSystem.Players[playerIndex];
          var stressEnabled = LobbySystem.LobbySettings.StressTime.Enabled;
-         
+         var cards = registerCardIds.Select(c => ProgramCardData.GetById(c)).ToArray();
+
          _playersLockedIn.Add(player);
          PlayerLockedIn?.Invoke(player);
          
+         Debug.Log($"Player {player} locked in with {string.Join(", ", cards.Select(c => c.ToString()))}, players left: {PlayerSystem.Players.Count - _playersLockedIn.Count}");
+         
          if (PlayerSystem.IsLocal(player)) {
              PlayerUIRegister.Locked = true;
-             LocalPlayerLockedIn = true;
+             _localPlayerLockedIn = true;
          } else {
-             var cards = registerCardIds.Select(c => ProgramCardData.GetById(c)).ToArray();
              for (var i = 0; i < cards.Length; i++) {
                  player.Program.SetRegister(i, cards[i]);
-                 Debug.Log($"Register {i} of player {playerIndex} is now {cards[i]}");
              }
              
              if (!IsStressed && stressEnabled) {
@@ -81,8 +88,8 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
     IEnumerator StressRoutine() {
         IsStressed = true;
 
-        while (!LocalPlayerLockedIn) {
-            StressTimer.Value--;
+        while (!_localPlayerLockedIn && PhaseSystem.Current.Value == Phase.Programming) {
+            StressTimer.Value--;    
             if (StressTimer.Value <= 0) {
                 FillRegisters();
                 IsStressed = false;
@@ -112,7 +119,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
         LockRegisterServerRpc(playerIndex, registerCardIds);
     }
 
-    public static void Continue() {
+    public void Continue() {
         _playersLockedIn.Add(PlayerSystem.LocalPlayer);
     }
 }

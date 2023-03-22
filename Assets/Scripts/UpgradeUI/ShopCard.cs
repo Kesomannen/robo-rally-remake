@@ -21,7 +21,7 @@ public class ShopCard : UpgradeCard, IPointerClickHandler, IPointerEnterHandler 
             var localPlayer = PlayerSystem.LocalPlayer;
 
             return gameObject.activeInHierarchy
-                   && ShopPhase.CurrentPlayer == localPlayer
+                   && ShopPhase.Instance.CurrentPlayer == localPlayer
                    && Content != null
                    && Content.Cost <= localPlayer.Energy.Value
                    && !localPlayer.Upgrades.Contains(Content);
@@ -29,10 +29,6 @@ public class ShopCard : UpgradeCard, IPointerClickHandler, IPointerEnterHandler 
     }
 
     public event Action<ShopCard> CardClicked;
-
-    void Awake() {
-        gameObject.SetActive(false);
-    }
 
     void OnEnable() {
         UpdateAvailability();
@@ -61,8 +57,6 @@ public class ShopCard : UpgradeCard, IPointerClickHandler, IPointerEnterHandler 
         yield return CoroutineUtils.Wait(_restockTweenDuration / 2);
         _restockParticle.Play();
         yield return CoroutineUtils.Wait(_restockTweenDuration / 2);
-        
-        gameObject.SetActive(true); 
     }
 
     public IEnumerator BuyAnimation(Transform target) {

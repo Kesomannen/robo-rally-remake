@@ -1,17 +1,19 @@
+using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 
-public class RebootToken : MapObject, ITooltipable {
+public class RebootToken : MapObject, ITooltipable, IPointerClickHandler {
     [SerializeField] Vector2Int _direction;
     [SerializeField] bool _isSpawnPoint;
     [SerializeField] OverlayData<Choice<Vector2Int>> _directionChoiceOverlay;
 
     Vector2Int _startPos;
-
-    public bool IsSpawnPoint => _isSpawnPoint;
     
+    public static event Action<RebootToken> RebootTokenClicked; 
+
     public string Header => _isSpawnPoint ? "Spawn Point" : "Reboot Token";
     public string Description {
         get {
@@ -23,6 +25,8 @@ public class RebootToken : MapObject, ITooltipable {
             return playerBoard == board ? "You will respawn here if you reboot." : "Robots rebooting on this board will respawn here.";
         }
     }
+
+    public bool IsSpawnPoint => _isSpawnPoint;
 
     void Start() {
         _startPos = GridPos;
@@ -56,5 +60,10 @@ public class RebootToken : MapObject, ITooltipable {
         });
         var targetRot = VectorHelper.GetRotationSteps(result[0]);
         yield return obj.RotateRoutine(targetRot - obj.Rotator.RotZ);
+    }
+
+    public void OnPointerClick(PointerEventData eventData) {
+        if (eventData.button == PointerEventData.InputButton.Right) return;
+        RebootTokenClicked?.Invoke(this);
     }
 }

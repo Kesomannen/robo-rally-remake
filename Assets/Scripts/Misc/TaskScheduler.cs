@@ -9,15 +9,15 @@ public class TaskScheduler : Singleton<TaskScheduler> {
     
     public static int TaskCount => _tasks.Count;
 
-    static float _defaultTaskDelay;
+    public static float DefaultTaskDelay { get; private set; }
 
     protected override void Awake() {
         base.Awake();
-        _defaultTaskDelay = 0.85f / LobbySystem.LobbySettings.GameSpeed.Value;
+        DefaultTaskDelay = 0.85f / LobbySystem.LobbySettings.GameSpeed.Value;
     }
 
     public static void PushRoutine(IEnumerator routine, float delay = -1, Action onComplete = null) {
-        if (delay < 0) delay = _defaultTaskDelay;
+        if (delay < 0) delay = DefaultTaskDelay;
         
         _tasks.Push((routine, onComplete, delay));
         if (_isRunning) return;
@@ -27,7 +27,7 @@ public class TaskScheduler : Singleton<TaskScheduler> {
     }
     
     public static void PushSequence(float delay = -1, params IEnumerator[] routines) {
-        if (delay < 0) delay = _defaultTaskDelay;
+        if (delay < 0) delay = DefaultTaskDelay;
         
         for (var i = routines.Length - 1; i >= 0; i--){
             _tasks.Push((routines[i], () => {}, delay));
@@ -40,7 +40,7 @@ public class TaskScheduler : Singleton<TaskScheduler> {
     }
     
     public static void PushSequence(float delay = -1, params Action[] actions) {
-        if (delay < 0) delay = _defaultTaskDelay;
+        if (delay < 0) delay = DefaultTaskDelay;
         
         for (var i = actions.Length - 1; i >= 0; i--) {
             _tasks.Push((WrapAction(actions[i]), () => {}, delay));

@@ -3,38 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class PlayerSystem : Singleton<PlayerSystem> {
-    [SerializeField] PlayerModel _playerModelPrefab;
     [SerializeField] ScriptableCardAffector _rebootAffector;
 
-    static readonly List<Player> _players = new();
+    static List<Player> _players;
     public static IReadOnlyList<Player> Players => _players;
     public static Player LocalPlayer { get; private set; }
-
-    static List<RebootToken> _unoccupiedSpawnPoints;
 
     public static bool IsLocal(Player player) => player == LocalPlayer;
     public static bool EnergyEnabled => !LobbySystem.LobbySettings.BeginnerGame.Enabled;
     
     public static event Action<Player> PlayerRemoved;
-    
+
     protected override void Awake() {
         base.Awake();
-        MapSystem.OnMapLoaded += OnMapLoaded;
-    }
-
-    protected override void OnDestroy() {
-        base.OnDestroy();
-        MapSystem.OnMapLoaded -= OnMapLoaded;
-    }
-
-    static void OnMapLoaded() {
-        _unoccupiedSpawnPoints = MapSystem
-            .GetByType<RebootToken>()
-            .Where(x => x.IsSpawnPoint)
-            .ToList();
+        _players = new List<Player>();
     }
 
     public static void RemovePlayer(Player player) {
@@ -44,24 +28,12 @@ public class PlayerSystem : Singleton<PlayerSystem> {
         _players.Remove(player);
     }
     
-    public void CreatePlayer(ulong id, LobbyPlayerData data, bool randomizeSpawn) {
+    public void CreatePlayer(ulong id, LobbyPlayerData data) {
         var settings = LobbySystem.LobbySettings;
         var robotData = RobotData.GetById(data.RobotId);
-        
-        RebootToken spawnPoint;
-        if (randomizeSpawn) {
-            var randomIndex = Random.Range(0, _unoccupiedSpawnPoints.Count);
-            spawnPoint = _unoccupiedSpawnPoints[randomIndex];
-            _unoccupiedSpawnPoints.RemoveAt(randomIndex);
-        } else {
-            spawnPoint = _unoccupiedSpawnPoints[0];
-            _unoccupiedSpawnPoints.RemoveAt(0);
-        }
-            
+
         var playerArgs = new PlayerArgs {
             RobotData = robotData,
-            ModelPrefab = _playerModelPrefab,
-            SpawnPoint = spawnPoint,
             StartingEnergy = settings.StartingEnergy,
             CardsPerTurn = settings.CardsPerTurn,
             RegisterCount = ExecutionPhase.RegisterCount,
@@ -73,9 +45,8 @@ public class PlayerSystem : Singleton<PlayerSystem> {
 
         var newPlayer = new Player(playerArgs);
         _players.Add(newPlayer);
-    
-        var networkManager = NetworkManager.Singleton;
-        if (networkManager == null || networkManager.LocalClientId == id) {
+        
+        if (NetworkManager.Singleton.LocalClientId == id) {
             LocalPlayer = newPlayer;
         }
 

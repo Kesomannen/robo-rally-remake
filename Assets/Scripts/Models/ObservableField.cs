@@ -1,7 +1,7 @@
 using System;
 
 public class ObservableField<T> {
-    public event Action<T, T> OnValueChanged;
+    public event Action<T, T> ValueChanged;
 
     public T Value {
         get => _value;
@@ -9,7 +9,7 @@ public class ObservableField<T> {
             if (value.Equals(_value)) return;
             var prev = _value;
             _value = value;
-            OnValueChanged?.Invoke(prev, _value);
+            ValueChanged?.Invoke(prev, _value);
         }
     }
 

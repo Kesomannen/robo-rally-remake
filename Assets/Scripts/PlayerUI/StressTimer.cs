@@ -23,13 +23,13 @@ public class StressTimer : MonoBehaviour, ITooltipable {
     void Awake() {
         _text.text = "---";
         
-        ProgrammingPhase.StressTimer.OnValueChanged += OnStressValueChanged;
+        ProgrammingPhase.StressTimer.ValueChanged += OnStressValueChanged;
         ProgrammingPhase.PhaseStarted += OnPhaseStarted;
         ProgrammingPhase.StressStarted += OnStressStart;
     }
 
     void OnDestroy(){
-        ProgrammingPhase.StressTimer.OnValueChanged -= OnStressValueChanged;
+        ProgrammingPhase.StressTimer.ValueChanged -= OnStressValueChanged;
         ProgrammingPhase.PhaseStarted -= OnPhaseStarted;
         ProgrammingPhase.StressStarted += OnStressStart;
     }

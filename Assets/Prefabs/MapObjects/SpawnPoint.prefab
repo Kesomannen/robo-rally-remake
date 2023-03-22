@@ -52,6 +52,11 @@ MonoBehaviour:
   GridPos: {x: 0, y: 0}
   _direction: {x: 0, y: 1}
   _isSpawnPoint: 1
+  _directionChoiceOverlay:
+    _header: Choose a direction
+    _subtitle: to spawn your robot in
+    _prefab: {fileID: -383597599178427649, guid: da1f6f1fa3b5eca4fb2e2b3463bbb8f5, type: 3}
+    _canPreview: 1
 --- !u!212 &-5728226564931831390
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -167,3 +172,4 @@ MonoBehaviour:
   - {fileID: 507223725, guid: 5d925723b0d12a74e9196342256d672d, type: 3}
   - {fileID: 187754901, guid: 5d925723b0d12a74e9196342256d672d, type: 3}
   - {fileID: -615026018, guid: 5d925723b0d12a74e9196342256d672d, type: 3}
+  _looping: 1

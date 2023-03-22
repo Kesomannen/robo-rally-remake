@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -23,13 +24,21 @@ public class RoomMapPanel : Container<MapData> {
     static int MapID => LobbySystem.LobbyMap.Value;
 
     void Awake() {
-        LobbySystem.LobbyMap.OnValueChanged += OnMapChanged;
+        LobbySystem.LobbyMap.ValueChanged += OnMapChanged;
         RoomMenu.LocalPlayerReady += OnLocalPlayerReady;
     }
     
     void OnDestroy() {
-        LobbySystem.LobbyMap.OnValueChanged -= OnMapChanged;
+        LobbySystem.LobbyMap.ValueChanged -= OnMapChanged;
         RoomMenu.LocalPlayerReady -= OnLocalPlayerReady;
+    }
+
+    void OnEnable() {
+        Serialize(MapID);
+        
+        var isServer = NetworkManager.Singleton.IsServer;
+        _nextButton.interactable = isServer;
+        _prevButton.interactable = isServer;
     }
 
     void OnMapChanged(int _, int next) => Serialize(next);
@@ -41,11 +50,6 @@ public class RoomMapPanel : Container<MapData> {
 
     void Start() {
         _maps = MapData.GetAll().ToArray();
-        Serialize(MapID);
-        
-        var isServer = NetworkManager.Singleton.IsServer;
-        _nextButton.interactable = isServer;
-        _prevButton.interactable = isServer;
     }
 
     public void GoNext() => LobbySystem.Instance.SetLobbyMap(MapID + 1 >= _maps.Length ? 0 : MapID + 1);

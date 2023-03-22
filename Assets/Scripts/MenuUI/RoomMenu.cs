@@ -12,11 +12,15 @@ public class RoomMenu : Menu {
     [SerializeField] LobbyPlayerPanel _playerPanelPrefab;
     [SerializeField] Transform _playerPanelParent;
     [SerializeField] TMP_Text _lobbyCodeText;
-    [SerializeField] SettingsPanelProperty _startingEnergyProperty, _cardsPerTurnProperty, _stressTimeProperty, _shopCardsProperty, _upgradeSlotsProperty, _beginnerGameProperty, _advancedGameProperty, _gameSpeedProperty;
+    [SerializeField] SettingsPanelProperty _startingEnergyProperty, _cardsPerTurnProperty, _stressTimeProperty, _upgradeSlotsProperty, _beginnerGameProperty, _advancedGameProperty, _gameSpeedProperty;
 
     readonly List<LobbyPlayerPanel> _playerPanels = new();
     
-    public static event Action LocalPlayerReady; 
+    public static event Action LocalPlayerReady;
+
+    void Awake() {
+        Debug.Log($"Hey {this}", this);
+    }
 
     public override void Show() {
         base.Show();
@@ -36,7 +40,6 @@ public class RoomMenu : Menu {
         _startingEnergyProperty.LobbyProperty = settings.StartingEnergy;
         _cardsPerTurnProperty.LobbyProperty = settings.CardsPerTurn;
         _stressTimeProperty.LobbyProperty = settings.StressTime;
-        _shopCardsProperty.LobbyProperty = settings.ShopCards;
         _upgradeSlotsProperty.LobbyProperty = settings.UpgradeSlots;
         _beginnerGameProperty.LobbyProperty = settings.BeginnerGame;
         _advancedGameProperty.LobbyProperty = settings.AdvancedGame;
@@ -44,7 +47,14 @@ public class RoomMenu : Menu {
 
         _readyButton.gameObject.SetActive(true);
         _startGameButton.gameObject.SetActive(false);
+    }
 
+    void OnDisable() {
+        LobbySystem.PlayerUpdatedOrAdded -= UpdatePanel;
+        LobbySystem.PlayerRemoved -= RemovePanel;
+    }
+
+    void OnEnable() {
         LobbySystem.PlayerUpdatedOrAdded += UpdatePanel;
         LobbySystem.PlayerRemoved += RemovePanel;
     }
@@ -52,9 +62,6 @@ public class RoomMenu : Menu {
     public override async void Hide() {
         base.Hide();
 
-        LobbySystem.PlayerUpdatedOrAdded -= UpdatePanel;
-        LobbySystem.PlayerRemoved -= RemovePanel;
-    
         using (new LoadingScreen("Leaving Lobby...")) {
             await LobbySystem.Instance.LeaveLobby();
         }
@@ -68,9 +75,10 @@ public class RoomMenu : Menu {
         }
         playerPanel.SetContent(playerId, playerData);
 
+        Debug.Log(this, this);
         _startGameButton.SetActive(
             NetworkManager.Singleton.IsHost &&
-            LobbySystem.PlayersInLobby.Count >= GameSettings.Instance.MinPlayers &&
+            LobbySystem.PlayersInLobby.Count >= LobbySystem.MinPlayers &&
             LobbySystem.PlayersInLobby.All(p => p.Value.IsReady)
         );
     }

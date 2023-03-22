@@ -27,9 +27,9 @@ public class PlayerUIPlayerPanel : PlayerPanel {
     protected override void Serialize(Player player) {
         base.Serialize(player);
         
-        Content.OnUpgradeUsed += OnUpgradeUsed;
-        Content.Energy.OnValueChanged += OnEnergyChanged;
-        Content.OnCardAffectorApplied += OnCardGet;
+        Content.UpgradeUsed += OnUpgradeUsed;
+        Content.Energy.ValueChanged += OnEnergyChanged;
+        Content.CardAffectorApplied += OnCardGet;
 
         ProgrammingPhase.PhaseStarted += OnPhaseStarted;
         ProgrammingPhase.PlayerLockedIn += OnPlayerProgramDone;

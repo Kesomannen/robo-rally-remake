@@ -72,10 +72,10 @@ public class PlayerExecutionPanel : Container<Player>, IPointerClickHandler {
         _rebootedOverlay.SetActive(player.IsRebooted.Value);
         _robotImage.sprite = player.RobotData.Icon;
 
-        player.Energy.OnValueChanged += OnEnergyChanged;
-        player.IsRebooted.OnValueChanged += (_, next) => _rebootedOverlay.SetActive(next);
-        player.CurrentCheckpoint.OnValueChanged += (_, next) => _checkpointText.text = next.ToString();
-        player.OnCardAffectorApplied += OnCardAffectorApplied;
+        player.Energy.ValueChanged += OnEnergyChanged;
+        player.IsRebooted.ValueChanged += (_, next) => _rebootedOverlay.SetActive(next);
+        player.CurrentCheckpoint.ValueChanged += (_, next) => _checkpointText.text = next.ToString();
+        player.CardAffectorApplied += OnCardAffectorApplied;
     }
     
     void OnRegisterChanged(int index, ProgramCardData prev, ProgramCardData next) {

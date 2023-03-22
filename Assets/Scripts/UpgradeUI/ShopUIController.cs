@@ -14,19 +14,26 @@ public class ShopUIController : Singleton<ShopUIController> {
     [SerializeField] ShopCard _shopCardPrefab;
 
     ShopCard[] _shopCards;
+
+    ShopCard[] ShopCards {
+        get {
+            if (_shopCards != null) return _shopCards;
+
+            _shopCards = new ShopCard[PlayerSystem.Players.Count];
+            for (var i = 0; i < _shopCards.Length; i++) {
+                var card = Instantiate(_shopCardPrefab, _upgradeParent);
+                card.CardClicked += OnCardClicked;
+                _shopCards[i] = card;
+            }
+            return _shopCards;
+        }
+    }
     
     public OverlayData<Choice<UpgradeCardData>> OverrideOverlay => _overrideOverlay;
 
     protected override void Awake() {
         base.Awake();
-        
-        _shopCards = new ShopCard[LobbySystem.LobbySettings.ShopCards];
-        for (var i = 0; i < _shopCards.Length; i++) {
-            var card = Instantiate(_shopCardPrefab, _upgradeParent);
-            card.CardClicked += OnCardClicked;
-            _shopCards[i] = card;
-        }
-        
+
         gameObject.SetActive(false);
         ShopPhase.Restock += OnRestock;
         ShopPhase.PlayerDecision += OnPlayerDecision;
@@ -40,7 +47,7 @@ public class ShopUIController : Singleton<ShopUIController> {
         ShopPhase.PlayerDecision -= OnPlayerDecision;
         ShopPhase.NewPlayer -= OnNewPlayer;
     }
-    
+
     void OnNewPlayer(Player player) {
         if (player == null) {
             _currentPlayerText.text = "All players skipped, restocking...";
@@ -51,7 +58,7 @@ public class ShopUIController : Singleton<ShopUIController> {
     }
 
     void OnRestock(int index, UpgradeCardData card) {
-        var shopCard = _shopCards[index];
+        var shopCard = ShopCards[index];
         UpdateCards();
         Debug.Log($"Restocking {card} at index {index}");
         TaskScheduler.PushRoutine(shopCard.RestockAnimation(card));
@@ -84,7 +91,7 @@ public class ShopUIController : Singleton<ShopUIController> {
         if (skipped) {
             
         } else {
-            TaskScheduler.PushRoutine(_shopCards.First(c => c.Content == card)
+            TaskScheduler.PushRoutine(ShopCards.First(c => c.Content == card)
                 .BuyAnimation(_panelArray.Panels.First(p => p.Content == player).transform));
         }
     }
@@ -94,7 +101,7 @@ public class ShopUIController : Singleton<ShopUIController> {
     }
 
     void UpdateCards() {
-        foreach (var card in _shopCards) {
+        foreach (var card in ShopCards) {
             card.UpdateAvailability();
         }
     }

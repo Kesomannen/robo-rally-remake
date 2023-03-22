@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class UIMap : Singleton<UIMap>, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler {
+public class UIMap : Singleton<UIMap>, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler, IPointerClickHandler {
     [Header("Animation")]
     [SerializeField] float _lerpTime;
     [Space]
@@ -20,6 +20,7 @@ public class UIMap : Singleton<UIMap>, IPointerEnterHandler, IPointerExitHandler
     [SerializeField] [ReadOnly] bool _inFullscreen;
 
     public bool CanFocus { get; set; } = true;
+    public bool IsCallingHover { get; set; } = true;
 
     RectTransform _rectTransform;
     Physics2DRaycaster _raycaster;
@@ -73,8 +74,13 @@ public class UIMap : Singleton<UIMap>, IPointerEnterHandler, IPointerExitHandler
     }
     
     public void OnPointerMove(PointerEventData e) {
-        if (_lastMousePos == e.position) return;
+        if (!IsCallingHover || _lastMousePos == e.position) return;
         Raycast(e, ExecuteEvents.pointerMoveHandler);
+    }
+    
+    public void OnPointerClick(PointerEventData e) {
+        if (IsCallingHover) return;
+        Raycast(e, ExecuteEvents.pointerClickHandler);
     }
 
     readonly List<RaycastResult> _raycastResults = new();
@@ -96,7 +102,10 @@ public class UIMap : Singleton<UIMap>, IPointerEnterHandler, IPointerExitHandler
         
         _raycastResults.Clear();
         _raycaster.Raycast(eventData, _raycastResults);
-        switch (_raycastResults.Count){
+        
+        //Debug.Log(_raycastResults.Count);
+        
+        switch (_raycastResults.Count) {
             case 0: return;
             case > 1:
                 ExecuteEvents.Execute(_raycastResults.OrderByDescending(r => r.sortingOrder).First().gameObject, eventData, func);

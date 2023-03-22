@@ -28,13 +28,13 @@ public class OverlaySystem : Singleton<OverlaySystem>, IPointerClickHandler {
     }
 
     void OnEnable() {
-        PhaseSystem.Current.OnValueChanged += OnPhaseChanged;
+        PhaseSystem.Current.ValueChanged += OnPhaseChanged;
         _exitAction.performed += OnExitAction;
         _exitAction.Enable();
     }
     
     void OnDisable() {
-        PhaseSystem.Current.OnValueChanged -= OnPhaseChanged;
+        PhaseSystem.Current.ValueChanged -= OnPhaseChanged;
         _exitAction.performed -= OnExitAction;
         _exitAction.Disable();
     }

@@ -49,6 +49,8 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
     public static string LobbyJoinCode => Matchmaking.CurrentLobby.LobbyCode;
     
     const string PlayerPrefsNameKey = "PlayerName";
+    public const int MinPlayers = 1;
+    public const int MaxPlayers = 4;
     
     void Start() {
         NetworkObject.DestroyWithScene = true;
@@ -188,6 +190,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
     [ClientRpc]
     void UpdateLobbySettingsClientRpc(byte propertyId, byte value, bool enabled) {
         if (IsServer) return;
+        
         var property = LobbySettings.Properties[propertyId];
         property.Enabled = enabled;
         property.Value = value;

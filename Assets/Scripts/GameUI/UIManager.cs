@@ -58,6 +58,7 @@ public class UIManager : Singleton<UIManager> {
         }
 
         void Shop() {
+            UIMap.Instance.gameObject.SetActive(false);
             _shopUIParent.gameObject.SetActive(true); 
         }
     }

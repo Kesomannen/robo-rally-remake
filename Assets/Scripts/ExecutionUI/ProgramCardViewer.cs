@@ -23,8 +23,8 @@ public class ProgramCardViewer : MonoBehaviour {
     
     void Start() {
         foreach (var player in PlayerSystem.Players) {
-            player.OnProgramCardExecuted += OnProgramCardPlayed;
-            player.OnUpgradeUsed += upgrade => OnUpgradeUsed(player, upgrade);
+            player.ProgramCardExecuted += OnProgramCardPlayed;
+            player.UpgradeUsed += upgrade => OnUpgradeUsed(player, upgrade);
         }
     }
     
@@ -36,7 +36,6 @@ public class ProgramCardViewer : MonoBehaviour {
     }
     
     void OnProgramCardPlayed(ProgramExecution execution) {
-        Debug.Log($"OnProgramCardPlayed: {execution.CurrentCard}");
         StartCoroutine(AddCard(_programCardPrefab, execution.CurrentCard, _lastPlayer != execution.Player));
         _lastPlayer = execution.Player;
     }

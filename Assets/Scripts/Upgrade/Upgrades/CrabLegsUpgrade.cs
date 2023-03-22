@@ -7,11 +7,11 @@ public class CrabLegsUpgrade : UpgradeCardData {
     [SerializeField] OverlayData<Choice<Vector2Int>> _overlay;
     
     public override void OnAdd(Player player) {
-        player.OnProgramCardExecuted += OnExecute;
+        player.ProgramCardExecuted += OnExecute;
     }
     
     public override void OnRemove(Player player) {
-        player.OnProgramCardExecuted -= OnExecute;
+        player.ProgramCardExecuted -= OnExecute;
     }
 
     void OnExecute(ProgramExecution execution) {

@@ -14,6 +14,11 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
     [SerializeField] TMP_Text _waitingText;
     
     public static Context LoadContext { get; set; } = Context.Singleplayer;
+    public static LobbyPlayerData SingleplayerPlayerData { get; set; } = new() {
+        IsHost = true,
+        RobotId = 2,
+        Name = "Player"
+    };
     
     public enum Context {
         Singleplayer,
@@ -34,12 +39,10 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
         MapSystem.Instance.LoadMap(MapData.GetById(LobbySystem.LobbyMap.Value));
         
         if (LoadContext == Context.Singleplayer) {
-            PlayerSystem.Instance.CreatePlayer(NetworkManager.LocalClientId,
-                new LobbyPlayerData {Name = LobbySystem.PlayerName, RobotId = 2},
-                true);
+            PlayerSystem.Instance.CreatePlayer(NetworkManager.LocalClientId, SingleplayerPlayerData);
         } else {
             foreach (var (id, data) in LobbySystem.PlayersInLobby.OrderBy(value => value.Key)) {
-                PlayerSystem.Instance.CreatePlayer(id, data, false);
+                PlayerSystem.Instance.CreatePlayer(id, data);
             }
         }
         
@@ -54,13 +57,13 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
         }
 
         NetworkManager.OnClientDisconnectCallback += OnClientDisconnect;
-
+        
         _waitingOverlay.SetActive(true);
         _waitingText.text = "Waiting for players to load...";
         
         if (IsServer) {
-            if (LoadContext == Context.Multiplayer) {
-                StartCoroutine(WaitForPlayers());   
+            if (LoadContext == Context.Multiplayer && NetworkManager.ConnectedClientsList.Count > 1) {
+                StartCoroutine(WaitForPlayers());
             } else {
                 PhaseSystem.Instance.StartPhaseRoutine();
             }

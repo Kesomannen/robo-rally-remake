@@ -7,14 +7,14 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class ShopPhase : NetworkSingleton<ShopPhase> {
-    static UpgradeCardData[] _shopCards;
-    static UpgradeCardData[] _restockCards;
-    static List<UpgradeCardData> _availableCards;
-    static int _skippedPlayers;
-    static bool _currentPlayerReady;
+    UpgradeCardData[] _shopCards;
+    UpgradeCardData[] _restockCards;
+    List<UpgradeCardData> _availableCards;
+    int _skippedPlayers;
+    bool _currentPlayerReady;
     
-    public static Player CurrentPlayer { get; private set; }
-    public static IEnumerable<UpgradeCardData> ShopCards => _shopCards;
+    public Player CurrentPlayer { get; private set; }
+    public IEnumerable<UpgradeCardData> ShopCards => _shopCards;
 
     public static event Action<Player, bool, UpgradeCardData> PlayerDecision;
     public static event Action<Player> NewPlayer;
@@ -22,12 +22,9 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
 
     public static event Action PhaseStarted;
 
-    protected override void Awake() {
-        base.Awake();
-        _shopCards = new UpgradeCardData[LobbySystem.LobbySettings.ShopCards];
-    }
-
     public IEnumerator DoPhase() {
+        _shopCards ??= new UpgradeCardData[PlayerSystem.Players.Count];
+        
         yield return UIManager.Instance.ChangeState(UIState.Shop);
         PhaseStarted?.Invoke();
 
@@ -49,7 +46,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
         yield return TaskScheduler.WaitUntilClear();
     }
 
-    static IEnumerator DoPlayerTurn(Player player) {
+    IEnumerator DoPlayerTurn(Player player) {
         CurrentPlayer = player;
         NewPlayer?.Invoke(player);
         
@@ -57,7 +54,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
         _currentPlayerReady = false;
     }
 
-    static UpgradeCardData DrawRandomCard() {
+    UpgradeCardData DrawRandomCard() {
         if (_availableCards == null || _availableCards.Count == 0) {
             _availableCards = UpgradeCardData.GetAll().ToList();
         }
@@ -121,7 +118,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
         SetReady(skipped, UpgradeCardData.GetById(upgradeID), index);
     }
     
-    static void SetReady(bool skipped, UpgradeCardData upgrade, int playerUpgradeIndex) {
+    void SetReady(bool skipped, UpgradeCardData upgrade, int playerUpgradeIndex) {
         if (skipped) {
             _skippedPlayers++;
             
