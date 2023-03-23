@@ -39,7 +39,7 @@ public class PlayerUIPlayerPanel : PlayerPanel {
     
     void OnCardGet(CardAffector affector) {
         if (!gameObject.activeInHierarchy) return;
-        if (PhaseSystem.Current.Value != Phase.Programming) return;
+        if (GameSystem.CurrentPhase.Value != Phase.Programming) return;
         
         var objects = new Transform[affector.Cards.Count];
         for (var i = 0; i < objects.Length; i++) {

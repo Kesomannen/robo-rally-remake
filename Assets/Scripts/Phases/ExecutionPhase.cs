@@ -58,7 +58,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
         }
 
         TaskScheduler.PushSequence(
-            delay: -1,
+            delay: 0,
             DoSubPhase(ExecutionSubPhase.Registers, () => {
                 TaskScheduler.PushSequence(routines: registerRoutines);
                 return PlayerSystem.Players.Any(p => !p.IsRebooted.Value);

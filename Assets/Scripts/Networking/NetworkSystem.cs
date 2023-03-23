@@ -19,7 +19,9 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
         RobotId = 2,
         Name = "Player"
     };
-    
+
+    public static GameSystem.GameOptions? GameOptions { get; set; }
+
     public enum Context {
         Singleplayer,
         Multiplayer
@@ -65,7 +67,7 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
             if (LoadContext == Context.Multiplayer && NetworkManager.ConnectedClientsList.Count > 1) {
                 StartCoroutine(WaitForPlayers());
             } else {
-                PhaseSystem.Instance.StartPhaseRoutine();
+                StartGame();
             }
         }
 
@@ -74,7 +76,7 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
             var loaded = false;
             yield return new WaitUntil(() => loaded);
             StartGameClientRpc();
-            PhaseSystem.Instance.StartPhaseRoutine();
+            StartGame();
 
             void LoadEventCompleted(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut) {
                 NetworkManager.SceneManager.OnLoadEventCompleted -= LoadEventCompleted;
@@ -93,7 +95,7 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
     [ClientRpc]
     void StartGameClientRpc() {
         if (IsServer) return;
-        PhaseSystem.Instance.StartPhaseRoutine();
+        StartGame();
     }
     
     void OnClientDisconnect(ulong id) {
@@ -110,6 +112,17 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
     void PlayerDisconnectedClientRpc(ulong id) {
         if (IsServer) return;
         PlayerSystem.RemovePlayer(PlayerSystem.Players.First(p => p.ClientId == id));
+    }
+
+    void StartGame() {
+        if (GameOptions.HasValue) {
+            GameSystem.Instance.StartGame(GameOptions.Value);
+        } else {
+            GameSystem.Instance.StartGame(new GameSystem.GameOptions() {
+                DoSetupPhase = true,
+                ShopEnabled = PlayerSystem.EnergyEnabled
+            });
+        }
     }
 
     public override void OnDestroy() {

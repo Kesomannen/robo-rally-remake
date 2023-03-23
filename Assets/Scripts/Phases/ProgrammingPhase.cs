@@ -7,7 +7,7 @@ using System.Linq;
 
 public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
     public static bool IsStressed { get; private set; }
-    static bool _localPlayerLockedIn;
+    public static bool LocalPlayerLockedIn { get; private set; }
 
     public static ObservableField<int> StressTimer;
 
@@ -29,7 +29,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
         IsStressed = false;
         PlayerUIRegister.Locked = false;
         StressTimer.Value = LobbySystem.LobbySettings.StressTime.Value;
-        _localPlayerLockedIn = false;
+        LocalPlayerLockedIn = false;
         
         PhaseStarted?.Invoke();
         
@@ -70,7 +70,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
          
          if (PlayerSystem.IsLocal(player)) {
              PlayerUIRegister.Locked = true;
-             _localPlayerLockedIn = true;
+             LocalPlayerLockedIn = true;
          } else {
              for (var i = 0; i < cards.Length; i++) {
                  player.Program.SetRegister(i, cards[i]);
@@ -88,15 +88,26 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
     IEnumerator StressRoutine() {
         IsStressed = true;
 
-        while (!_localPlayerLockedIn && PhaseSystem.Current.Value == Phase.Programming) {
+        while (!LocalPlayerLockedIn && GameSystem.CurrentPhase.Value == Phase.Programming) {
             StressTimer.Value--;    
             if (StressTimer.Value <= 0) {
                 FillRegisters();
+                TimeOutServerRpc();
                 IsStressed = false;
                 yield break;
             }
             yield return CoroutineUtils.Wait(1);
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void TimeOutServerRpc() {
+        TimeOutClientRpc();
+    }
+    
+    [ClientRpc]
+    void TimeOutClientRpc() {
+        Log.Instance.RawMessage($"{Log.PlayerString(PlayerSystem.LocalPlayer)} did not finish their programming in time and had their registers randomized");
     }
 
     void FillRegisters() {

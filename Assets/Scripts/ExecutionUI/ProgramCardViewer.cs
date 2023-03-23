@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,7 +21,19 @@ public class ProgramCardViewer : MonoBehaviour {
     readonly List<Transform> _cards = new();
     Player _lastPlayer;
     bool _isAnimating;
+
+    void OnEnable() {
+        ExecutionPhase.PlayerRegister += OnRegister;
+    }
+
+    void OnDisable() {
+        ExecutionPhase.PlayerRegister -= OnRegister;
+    }
     
+    void OnRegister(ProgramExecution execution) {
+        StartCoroutine(ClearCards());
+    }
+
     void Start() {
         foreach (var player in PlayerSystem.Players) {
             player.ProgramCardExecuted += OnProgramCardPlayed;

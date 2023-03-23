@@ -1447,7 +1447,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7690793692004752885, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7690793692004752885, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1857,7 +1857,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7690793692004752885, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7690793692004752885, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
       propertyPath: m_AnchorMax.x
@@ -4871,7 +4871,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7690793692004752885, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7690793692004752885, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
       propertyPath: m_AnchorMax.x
@@ -8697,9 +8697,9 @@ MonoBehaviour:
     Port: 7777
     ServerListenAddress: 
   DebugSimulator:
-    PacketDelayMS: 0
+    PacketDelayMS: 200
     PacketJitterMS: 0
-    PacketDropRate: 0
+    PacketDropRate: 5
 --- !u!1001 &2048720994
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9276,7 +9276,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7690793692004752885, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7690793692004752885, guid: f27b38d5c94e9e34a99ff59dc86125f6, type: 3}
       propertyPath: m_AnchorMax.x

@@ -51,7 +51,7 @@ public class PlayerExecutionPanel : Container<Player>, IPointerClickHandler {
     }
 
     void OnExecutionStart() {
-        Content.Program.OnRegisterChanged += OnRegisterChanged;
+        Content.Program.RegisterChanged += OnRegisterChanged;
         
         var isLocal = PlayerSystem.IsLocal(Content);
         for (var i = 0; i < _registers.Length; i++) {
@@ -62,7 +62,7 @@ public class PlayerExecutionPanel : Container<Player>, IPointerClickHandler {
     }
 
     void OnExecutionEnd() {
-        Content.Program.OnRegisterChanged -= OnRegisterChanged;
+        Content.Program.RegisterChanged -= OnRegisterChanged;
     }
 
     protected override void Serialize(Player player) {

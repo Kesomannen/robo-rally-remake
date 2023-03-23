@@ -35,12 +35,12 @@ public class PlayerUIRegister : MonoBehaviour, IPointerClickHandler {
     }
 
     void Start() {
-        Owner.Program.OnRegisterChanged += OnRegisterChanged;
+        Owner.Program.RegisterChanged += OnRegisterChanged;
         LockedChanged += OnLockedChanged;
     }
     
     void OnDestroy() {
-        Owner.Program.OnRegisterChanged -= OnRegisterChanged;
+        Owner.Program.RegisterChanged -= OnRegisterChanged;
         LockedChanged -= OnLockedChanged;
     }
     

@@ -23,9 +23,9 @@ public class RobotSelection : MonoBehaviour {
         LobbySystem.PlayerRemoved += OnPlayerRemoved;
         RoomMenu.LocalPlayerReady += OnLocalPlayerReady;
         
-        LeanTween.delayedCall(0.3f, () => {
+        LeanTween.delayedCall(0.5f, () => {
             _playerRobots = LobbySystem.PlayersInLobby.ToDictionary(pair => pair.Key, pair => RobotData.GetById(pair.Value.RobotId));
-            _panels.ForEach(UpdatePanel);
+            UpdatePanels();
         });
     }
 
@@ -43,19 +43,14 @@ public class RobotSelection : MonoBehaviour {
     }
 
     void OnPlayerRemoved(ulong id) {
-        UpdatePanel(_playerRobots[id]);
         _playerRobots.Remove(id);
+        UpdatePanels();
     }
     
     void OnPlayerUpdatedOrAdded(ulong id, LobbyPlayerData data) {
-        var isUpdate = _playerRobots.TryGetValue(id, out var prev);
-
         _playerRobots[id] = RobotData.GetById(data.RobotId);
-        if (isUpdate) UpdatePanel(prev);
-        UpdatePanel(_playerRobots[id]);
+        UpdatePanels();
     }
-
-    void UpdatePanel(RobotData robotData) => UpdatePanel(_panels.First(p => p.Content == robotData));
 
     void UpdatePanel(RobotPanel panel) {
         var localId = NetworkManager.Singleton.LocalClientId;
@@ -67,6 +62,12 @@ public class RobotSelection : MonoBehaviour {
             panel.SetState(RobotPanel.State.Unavailable);
         } else {
             panel.SetState(RobotPanel.State.Available);
+        }
+    }
+    
+    void UpdatePanels() {
+        foreach (var panel in _panels) {
+            UpdatePanel(panel);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 public static class UpgradeUtils {
     public static bool IsProgramming(Player player) {
-        return PhaseSystem.Current.Value == Phase.Programming 
+        return GameSystem.CurrentPhase.Value == Phase.Programming 
                && !ProgrammingPhase.Instance.PlayersLockedIn.Contains(player);
     }
 }

@@ -21,7 +21,7 @@ public class TopButtons : MonoBehaviour {
 
     void OnEnable() {
         Chat.MessageSent += OnNewChat;
-        PhaseSystem.Current.ValueChanged += OnPhaseChanged;
+        GameSystem.CurrentPhase.ValueChanged += OnPhaseChanged;
         
         _toggleSettings.Enable();
         _toggleSettings.performed += OnToggleSettingsPerformed;
@@ -29,7 +29,7 @@ public class TopButtons : MonoBehaviour {
     
     void OnDisable() {
         Chat.MessageSent -= OnNewChat;
-        PhaseSystem.Current.ValueChanged -= OnPhaseChanged;
+        GameSystem.CurrentPhase.ValueChanged -= OnPhaseChanged;
         
         _toggleSettings.Disable();
         _toggleSettings.performed -= OnToggleSettingsPerformed;

@@ -9,6 +9,7 @@ public class Tooltip : Singleton<Tooltip> {
     [SerializeField] int _characterWrapLimit;
     [SerializeField] float _fadeInSpeed;
     [SerializeField] float _popupDuration;
+    [SerializeField] bool _static;
 
     [Header("References")]
     [SerializeField] Image _background;
@@ -88,6 +89,7 @@ public class Tooltip : Singleton<Tooltip> {
     }
 
     void Update() {
+        if (_static) return;
         UpdatePosition();
     }
 

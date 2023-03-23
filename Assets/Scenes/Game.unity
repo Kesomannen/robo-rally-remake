@@ -4768,7 +4768,7 @@ MonoBehaviour:
     m_FadeDuration: 0.1
   m_SpriteState:
     m_HighlightedSprite: {fileID: 1771208147, guid: ce1bd1a75c4ee174e90048deee922b6c, type: 3}
-    m_PressedSprite: {fileID: -14477223, guid: ce1bd1a75c4ee174e90048deee922b6c, type: 3}
+    m_PressedSprite: {fileID: 1936603887, guid: ce1bd1a75c4ee174e90048deee922b6c, type: 3}
     m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: -1669254054, guid: ce1bd1a75c4ee174e90048deee922b6c, type: 3}
   m_AnimationTriggers:
@@ -4838,6 +4838,11 @@ MonoBehaviour:
   _shakeDuration: 0.2
   _shakeMagnitude: 0.2
   _invalidSound: {fileID: 11400000, guid: 2fcc7a57b0e0882419a2f859329f2cda, type: 2}
+  _availableSprite: {fileID: -14477223, guid: ce1bd1a75c4ee174e90048deee922b6c, type: 3}
+  _availableHighlightedSprite: {fileID: -1669254054, guid: ce1bd1a75c4ee174e90048deee922b6c, type: 3}
+  _unavailableSprite: {fileID: 1257299831, guid: ce1bd1a75c4ee174e90048deee922b6c, type: 3}
+  _unavailableHighlightedSprite: {fileID: 1771208147, guid: ce1bd1a75c4ee174e90048deee922b6c, type: 3}
+  _lockedSprite: {fileID: -725622239, guid: ce1bd1a75c4ee174e90048deee922b6c, type: 3}
 --- !u!224 &1258290542 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 984570601044314468, guid: 30bbfb4f75b9cc14faa0a16c6b973e2f, type: 3}

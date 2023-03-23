@@ -34,7 +34,7 @@ public class HandUpgradeCardArray : MonoBehaviour {
         Owner.UpgradeAdded += CreateCard;
         Owner.UpgradeRemoved += RemoveCard;
         
-        PhaseSystem.Current.ValueChanged += OnPhaseChanged;
+        GameSystem.CurrentPhase.ValueChanged += OnPhaseChanged;
         ProgrammingPhase.PlayerLockedIn += OnPlayerLockedIn;
         ExecutionPhase.PlayerRegistersComplete += UpdateAvailability;
         ExecutionPhase.PlayerRegister += OnPlayerRegister;
@@ -47,7 +47,7 @@ public class HandUpgradeCardArray : MonoBehaviour {
         Owner.UpgradeAdded -= CreateCard;
         Owner.UpgradeRemoved -= RemoveCard;
         
-        PhaseSystem.Current.ValueChanged -= OnPhaseChanged;
+        GameSystem.CurrentPhase.ValueChanged -= OnPhaseChanged;
         ProgrammingPhase.PlayerLockedIn -= OnPlayerLockedIn;
         ExecutionPhase.PlayerRegistersComplete -= UpdateAvailability;
         ExecutionPhase.PlayerRegister += OnPlayerRegister;

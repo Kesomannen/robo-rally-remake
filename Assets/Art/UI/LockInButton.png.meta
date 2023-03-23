@@ -199,6 +199,48 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: LockInButton_4
+      rect:
+        serializedVersion: 2
+        x: 252
+        y: 0
+        width: 63
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1a1fe943f03dd2540b8bdcd4de09d289
+      internalID: 1936603887
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LockInButton_5
+      rect:
+        serializedVersion: 2
+        x: 315
+        y: 0
+        width: 63
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d60250f607d166643815e100fc2f806b
+      internalID: -725622239
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -211,8 +253,10 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       LockInButton_3: -1669254054
+      LockInButton_4: 1936603887
       LockInButton_1: 1771208147
       LockInButton_0: 1257299831
+      LockInButton_5: -725622239
       LockInButton_2: -14477223
   spritePackingTag: 
   pSDRemoveMatte: 0

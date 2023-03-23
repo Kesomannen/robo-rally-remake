@@ -13,11 +13,11 @@ public class Program {
         get => _registers[index];
     }
 
-    public event Action<int, ProgramCardData, ProgramCardData> OnRegisterChanged;
+    public event Action<int, ProgramCardData, ProgramCardData> RegisterChanged;
 
     public void SetRegister(int index, ProgramCardData card) {
         var oldCard = _registers[index];
         _registers[index] = card;
-        OnRegisterChanged?.Invoke(index, oldCard, card);
+        RegisterChanged?.Invoke(index, oldCard, card);
     }
 }

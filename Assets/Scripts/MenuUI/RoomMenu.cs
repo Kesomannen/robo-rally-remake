@@ -18,10 +18,6 @@ public class RoomMenu : Menu {
     
     public static event Action LocalPlayerReady;
 
-    void Awake() {
-        Debug.Log($"Hey {this}", this);
-    }
-
     public override void Show() {
         base.Show();
         
@@ -74,8 +70,7 @@ public class RoomMenu : Menu {
             _playerPanels.Add(playerPanel);
         }
         playerPanel.SetContent(playerId, playerData);
-
-        Debug.Log(this, this);
+        
         _startGameButton.SetActive(
             NetworkManager.Singleton.IsHost &&
             LobbySystem.PlayersInLobby.Count >= LobbySystem.MinPlayers &&

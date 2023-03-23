@@ -26,7 +26,7 @@ public class CheckpointSystem : Singleton<CheckpointSystem> {
     }
 
     static IEnumerator OnPlayerReachedLast(Player player) {
-        PhaseSystem.StopPhaseSystem();
+        GameSystem.StopGame();
         Debug.Log($"{player} won the game!");
         // TODO: Show win screen
         yield return CoroutineUtils.Wait(3);

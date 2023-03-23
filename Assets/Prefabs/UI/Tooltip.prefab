@@ -292,6 +292,7 @@ MonoBehaviour:
   _characterWrapLimit: 40
   _fadeInSpeed: 7.5
   _popupDuration: 0.3
+  _static: 0
   _background: {fileID: 2602325722009559281}
   _headerText: {fileID: 2602325722040696173}
   _descriptionText: {fileID: 2602325720826837955}

@@ -25,7 +25,7 @@ public class HandProgramCard : ProgramCard, IDragHandler, IBeginDragHandler, IEn
     RectTransform _rectTransform;
     int _scaleTweenId;
 
-    static bool IsProgramming => PhaseSystem.Current.Value == Phase.Programming;
+    static bool IsProgramming => GameSystem.CurrentPhase.Value == Phase.Programming;
 
     void SetHighlighted(bool value) {
         if (_isHighlighted == value) return;
