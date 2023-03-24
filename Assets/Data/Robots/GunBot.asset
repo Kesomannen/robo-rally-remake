@@ -40,5 +40,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 18607977aaffdee4e93c7b63daed4cf9, type: 2}
   _laserDamage: {fileID: 11400000, guid: 62b9f46bf38d5c248aef57a59d49e9b8, type: 2}
   _pushDamage: {fileID: 11400000, guid: f12f970e8a61e8b4a8ff670aee35dece, type: 2}
+  _rebootDamage: {fileID: 11400000, guid: 574c1b6113180c94b81fb77410b90faa, type: 2}
   _onSpawnAffectors:
   - {fileID: 11400000, guid: d2e0fc17bca3efc45b0d841a9486213e, type: 2}

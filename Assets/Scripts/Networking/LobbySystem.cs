@@ -39,12 +39,12 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
     static readonly Dictionary<ulong, LobbyPlayerData> _playersInLobby = new();
     public static IReadOnlyDictionary<ulong, LobbyPlayerData> PlayersInLobby => _playersInLobby;
     
-    public static LobbySettings LobbySettings { get; private set; } = new();
+    public static GameSettings GameSettings { get; private set; } = new();
     public static readonly ObservableField<int> LobbyMap = new();
 
     public static event Action<ulong, LobbyPlayerData> PlayerUpdatedOrAdded;
     public static event Action<ulong> PlayerRemoved;
-    public static event Action<LobbyProperty> LobbySettingsPropertyUpdated;
+    public static event Action<GameProperty> LobbySettingsPropertyUpdated;
 
     public static string LobbyJoinCode => Matchmaking.CurrentLobby.LobbyCode;
     
@@ -83,7 +83,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
             var id = NetworkManager.LocalClientId;
             NetworkManager.OnClientConnectedCallback += OnClientConnected;
 
-            LobbySettings = new LobbySettings();
+            GameSettings = new GameSettings();
             _playersInLobby[id] = new LobbyPlayerData {
                 Name = PlayerName,
                 IsHost = true,
@@ -139,8 +139,8 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         foreach (var (id, data) in _playersInLobby) {
             UpdatePlayerClientRpc(id, data);
         }
-        for (byte i = 0; i < LobbySettings.Properties.Count; i++) {
-            var property = LobbySettings.Properties[i];
+        for (byte i = 0; i < GameSettings.Properties.Count; i++) {
+            var property = GameSettings.Properties[i];
             UpdateLobbySettingsClientRpc(i, property.Value, property.Enabled);
         }
         UpdateLobbyMapClientRpc((byte) LobbyMap.Value);
@@ -191,7 +191,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
     void UpdateLobbySettingsClientRpc(byte propertyId, byte value, bool enabled) {
         if (IsServer) return;
         
-        var property = LobbySettings.Properties[propertyId];
+        var property = GameSettings.Properties[propertyId];
         property.Enabled = enabled;
         property.Value = value;
         LobbySettingsPropertyUpdated?.Invoke(property);
@@ -200,16 +200,16 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
     [ClientRpc]
     void StartGameClientRpc() {
         if (IsServer) return;
-        NetworkSystem.LoadContext = NetworkSystem.Context.Multiplayer;
-        MenuUtils.Instance.ShowOverlay("Game starting...");
+        NetworkSystem.CurrentGameType = NetworkSystem.GameType.Multiplayer;
+        CanvasHelpers.Instance.ShowOverlay("Game starting...");
     }
 
     # region Public Methods
 
-    public void RefreshLobbyProperty(LobbyProperty property) {
+    public void RefreshLobbyProperty(GameProperty property) {
         if (!IsServer) return;
         LobbySettingsPropertyUpdated?.Invoke(property);
-        var id = LobbySettings.Properties.IndexOf(property);
+        var id = GameSettings.Properties.IndexOf(property);
         UpdateLobbySettingsClientRpc((byte) id, property.Value, property.Enabled);
     }
     
@@ -267,7 +267,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         var succeeded = false;
         var failed = false;
         
-        NetworkSystem.LoadContext = NetworkSystem.Context.Multiplayer;
+        NetworkSystem.CurrentGameType = NetworkSystem.GameType.Multiplayer;
         
         sceneManager.OnLoadEventCompleted += LoadComplete;
         sceneManager.LoadScene("Game", LoadSceneMode.Single);

@@ -2,7 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 
-public class MenuUtils : Singleton<MenuUtils> {
+public class CanvasHelpers : Singleton<CanvasHelpers> {
     [SerializeField] TMP_Text _messageText;
     [SerializeField] GameObject _overlay;
     [Space]
@@ -28,6 +28,10 @@ public class MenuUtils : Singleton<MenuUtils> {
         _overlay.SetActive(true);
         _messageText.text = message;
     }
+
+    public void SetOverlayText(string text) {
+        _messageText.text = text;
+    }
     
     public void HideOverlay() {
         _overlay.SetActive(false);
@@ -49,10 +53,10 @@ public class MenuUtils : Singleton<MenuUtils> {
 
 public struct LoadingScreen : IDisposable {
     public LoadingScreen(string message) {
-        MenuUtils.Instance.ShowOverlay(message);
+        CanvasHelpers.Instance.ShowOverlay(message);
     }
     
     public void Dispose() {
-        MenuUtils.Instance.HideOverlay();    
+        CanvasHelpers.Instance.HideOverlay();    
     }
 }

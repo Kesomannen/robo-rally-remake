@@ -10,7 +10,7 @@ public class SettingsPanelProperty : MonoBehaviour {
     [SerializeField] Toggle _toggle;
     [SerializeField] TMP_Text _text;
 
-    LobbyProperty _lobbyProperty;
+    GameProperty _gameSettingsProperty;
 
     void OnEnable() {
         LobbySystem.LobbySettingsPropertyUpdated += UpdateSettingsProperty;
@@ -20,30 +20,31 @@ public class SettingsPanelProperty : MonoBehaviour {
         LobbySystem.LobbySettingsPropertyUpdated -= UpdateSettingsProperty;
     }
     
-    void UpdateSettingsProperty(LobbyProperty property) {
-        if (property != _lobbyProperty) return;
+    void UpdateSettingsProperty(GameProperty settingsProperty) {
+        if (settingsProperty != _gameSettingsProperty) return;
 
-        if (property.CanToggle) {
-            _toggle.isOn = property.Enabled;
+        if (settingsProperty.CanToggle) {
+            _toggle.isOn = settingsProperty.Enabled;
         }
 
-        var sliderActive = property.HasValue && property.Enabled;
+        var sliderActive = settingsProperty.HasValue && settingsProperty.Enabled;
         _slider.gameObject.SetActive(sliderActive);
         if (!sliderActive) return;
 
-        _slider.value = property.Value;
+        _slider.value = settingsProperty.Value;
         var intValue = Mathf.RoundToInt(_slider.value);
         _text.text = $"{_name}: {intValue}{_valueAffix}";
     }
 
-    public LobbyProperty LobbyProperty {
+    public GameProperty GameProperty {
         set {
-            if (_lobbyProperty != null) {
+            if (_gameSettingsProperty != null) {
                 _slider.onValueChanged.RemoveListener(RegisterValue);
                 _toggle.onValueChanged.RemoveListener(RegisterToggle);
             }
             
-            _lobbyProperty = value;
+            _gameSettingsProperty = value;
+            
             _slider.minValue = value.Min;
             _slider.maxValue = value.Max;
             _slider.value = value.Value;
@@ -53,11 +54,11 @@ public class SettingsPanelProperty : MonoBehaviour {
             _slider.interactable = isServer;
             _toggle.interactable = isServer;
             
-            _slider.gameObject.SetActive(_lobbyProperty.HasValue);
-            _toggle.gameObject.SetActive(_lobbyProperty.CanToggle);
+            _slider.gameObject.SetActive(_gameSettingsProperty.HasValue);
+            _toggle.gameObject.SetActive(_gameSettingsProperty.CanToggle);
 
-            RegisterValue(_lobbyProperty.Value);
-            RegisterToggle(_lobbyProperty.Enabled);
+            RegisterValue(_gameSettingsProperty.Value);
+            RegisterToggle(_gameSettingsProperty.Enabled);
             
             if (!isServer) return;
             _slider.onValueChanged.AddListener(RegisterValue);
@@ -66,20 +67,20 @@ public class SettingsPanelProperty : MonoBehaviour {
     }
     
     void RegisterToggle(bool value) {
-        _lobbyProperty.Enabled = value;
+        _gameSettingsProperty.Enabled = value;
         _slider.interactable = value;
         if (!value) {
             _text.text = _name;
         }
-        LobbySystem.Instance.RefreshLobbyProperty(_lobbyProperty);
+        LobbySystem.Instance.RefreshLobbyProperty(_gameSettingsProperty);
     }
 
     void RegisterValue(float value) {
         var intValue = Mathf.RoundToInt(value);
         _text.text = $"{_name}: {intValue}{_valueAffix}";
         
-        if (intValue == _lobbyProperty.Value) return;
-        _lobbyProperty.Value = (byte) intValue;
-        LobbySystem.Instance.RefreshLobbyProperty(_lobbyProperty);
+        if (intValue == _gameSettingsProperty.Value) return;
+        _gameSettingsProperty.Value = (byte) intValue;
+        LobbySystem.Instance.RefreshLobbyProperty(_gameSettingsProperty);
     }
 }

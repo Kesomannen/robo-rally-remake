@@ -18,12 +18,12 @@ public class SetupPhase : NetworkSingleton<SetupPhase> {
 
     protected override void Awake() {
         base.Awake();
-        MapSystem.OnMapLoaded += OnMapLoaded;
+        MapSystem.MapLoaded += OnMapLoaded;
     }
 
     public override void OnDestroy() {
         base.OnDestroy();
-        MapSystem.OnMapLoaded -= OnMapLoaded;
+        MapSystem.MapLoaded -= OnMapLoaded;
     }
 
     void OnMapLoaded() {
@@ -31,6 +31,11 @@ public class SetupPhase : NetworkSingleton<SetupPhase> {
     }
 
     public IEnumerator DoPhase() {
+        if (_tokens.Count == 1) {
+            PlayerSystem.Players[0].CreateModel(Instance._playerModelPrefab, _tokens[0]);
+            yield break;
+        }
+        
         UIMap.Instance.SetActive(true);
         UIMap.Instance.ZoomToFullscreen();
         UIMap.Instance.CanFocus = false;
@@ -40,30 +45,34 @@ public class SetupPhase : NetworkSingleton<SetupPhase> {
         Instance._statusImage.SetActive(true);
         
         foreach (var player in PlayerSystem.Players) {
-            var isLocal = PlayerSystem.IsLocal(player);
-            if (isLocal) {
-                foreach (var token in _tokens) {
-                    token.GetComponent<Highlight>().enabled = true;
-                    token.GetComponent<PhysicsTooltipTrigger>().enabled = false;
-                }
-                RebootToken.RebootTokenClicked += RebootTokenClicked;
+            if (_tokens.Count > 1) {
+                var isLocal = PlayerSystem.IsLocal(player);
+                if (isLocal) {
+                    foreach (var token in _tokens) {
+                        token.GetComponent<Highlight>().enabled = true;
+                        token.GetComponent<PhysicsTooltipTrigger>().enabled = false;
+                    }
+                    RebootToken.RebootTokenClicked += RebootTokenClicked;
                 
-                Instance._statusText.text = "Choose a spawn point";
-            } else {
-                Instance._statusText.text = $"{player} is choosing a spawn point";
-            }
-            Instance._statusImage.sprite = player.RobotData.Icon;
-            
-            yield return new WaitUntil(() => _playerMadeDecision);
-            
-            if (isLocal) {
-                foreach (var token in _tokens) {
-                    token.GetComponent<Highlight>().enabled = false;
-                    token.GetComponent<PhysicsTooltipTrigger>().enabled = true;
+                    Instance._statusText.text = "Choose a spawn point";
+                } else {
+                    Instance._statusText.text = $"{player} is choosing a spawn point";
                 }
-                RebootToken.RebootTokenClicked -= RebootTokenClicked;
-            }
+                Instance._statusImage.sprite = player.RobotData.Icon;
             
+                yield return new WaitUntil(() => _playerMadeDecision);
+            
+                if (isLocal) {
+                    foreach (var token in _tokens) {
+                        token.GetComponent<Highlight>().enabled = false;
+                        token.GetComponent<PhysicsTooltipTrigger>().enabled = true;
+                    }
+                    RebootToken.RebootTokenClicked -= RebootTokenClicked;
+                }
+            } else {
+                _playerDecision = _tokens[0];
+            }
+
             player.CreateModel(Instance._playerModelPrefab, _playerDecision);
             _tokens.Remove(_playerDecision);
             

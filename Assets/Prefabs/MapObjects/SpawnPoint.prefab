@@ -50,13 +50,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GridPos: {x: 0, y: 0}
-  _direction: {x: 0, y: 1}
+  _direction: {x: 1, y: 0}
   _isSpawnPoint: 1
   _directionChoiceOverlay:
-    _header: Choose a direction
-    _subtitle: to spawn your robot in
-    _prefab: {fileID: -383597599178427649, guid: da1f6f1fa3b5eca4fb2e2b3463bbb8f5, type: 3}
-    _canPreview: 1
+    _enabled: 0
+    _value:
+      _header: 
+      _subtitle: 
+      _prefab: {fileID: 0}
+      _canPreview: 0
 --- !u!212 &-5728226564931831390
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -16,7 +16,7 @@ public class SpamProgram : ProgramCardData {
 
         do {
             cards.Clear();
-            yield return NetworkSystem.Instance.QueryPlayerCards(player, Pile.DrawPile, i * SearchDepth, (i + 1) * SearchDepth, cards);
+            yield return NetworkUtils.Instance.QueryPlayerCards(player, Pile.DrawPile, i * SearchDepth, (i + 1) * SearchDepth, cards);
             i++;
         } while (!cards.Any(c => c.CanPlace(player, register)));
         var card = cards.First(c => c.CanPlace(player, register));

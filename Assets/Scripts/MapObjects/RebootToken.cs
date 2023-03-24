@@ -8,7 +8,7 @@ using UnityEngine.Serialization;
 public class RebootToken : MapObject, ITooltipable, IPointerClickHandler {
     [SerializeField] Vector2Int _direction;
     [SerializeField] bool _isSpawnPoint;
-    [SerializeField] OverlayData<Choice<Vector2Int>> _directionChoiceOverlay;
+    [SerializeField] Optional<OverlayData<Choice<Vector2Int>>> _directionChoiceOverlay;
 
     Vector2Int _startPos;
     
@@ -17,7 +17,7 @@ public class RebootToken : MapObject, ITooltipable, IPointerClickHandler {
     public string Header => _isSpawnPoint ? "Spawn Point" : "Reboot Token";
     public string Description {
         get {
-            if (_isSpawnPoint){
+            if (_isSpawnPoint) {
                 return "Robots spawn here at the start of the game.";
             }
             var playerBoard = MapSystem.GetParentBoard(PlayerSystem.LocalPlayer.Model);
@@ -40,6 +40,7 @@ public class RebootToken : MapObject, ITooltipable, IPointerClickHandler {
         var obj = player.Object;
         var tile = MapSystem.GetTile(GridPos);
         var obstructions = tile.OfType<ICanEnterHandler>().Where(o => o.Object != obj);
+        
         foreach (var obstruct in obstructions) {
             if (Interaction.Push(obstruct.Object, _direction, out var moveAction)) {
                 yield return Interaction.EaseEvent(moveAction);
@@ -49,16 +50,21 @@ public class RebootToken : MapObject, ITooltipable, IPointerClickHandler {
         }
         MapSystem.Instance.MoveObjectInstant(obj, GridPos);
 
-        var result = new Vector2Int[1];
-        yield return ChoiceSystem.DoChoice(new ChoiceData<Vector2Int> {
-            Overlay = _directionChoiceOverlay,
-            Player = player.Owner,
-            Options = DirectionChoice.DirectionsWithoutZero,
-            Message = "choosing a direction to respawn",
-            OutputArray = result,
-            MinChoices = 1
-        });
-        var targetRot = VectorHelper.GetRotationSteps(result[0]);
+        int targetRot;
+        if (_directionChoiceOverlay.Enabled) {
+            var result = new Vector2Int[1];
+            yield return ChoiceSystem.DoChoice(new ChoiceData<Vector2Int> {
+                Overlay = _directionChoiceOverlay.Value,
+                Player = player.Owner,
+                Options = DirectionChoice.DirectionsWithoutZero,
+                Message = "choosing a direction to respawn",
+                OutputArray = result,
+                MinChoices = 1
+            });
+            targetRot = VectorHelper.GetRotationSteps(result[0]);
+        } else {
+            targetRot = VectorHelper.GetRotationSteps(_direction);
+        }
         yield return obj.RotateRoutine(targetRot - obj.Rotator.RotZ);
     }
 

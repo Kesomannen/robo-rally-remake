@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TaskScheduler : Singleton<TaskScheduler> {
+    [SerializeField] [ReadOnly] float _defaultTaskDelay;
+    
     static readonly Stack<(IEnumerator Routine, Action Callback, float Delay)> _tasks = new();
     static bool _isRunning;
     
@@ -11,9 +13,9 @@ public class TaskScheduler : Singleton<TaskScheduler> {
 
     public static float DefaultTaskDelay { get; private set; }
 
-    protected override void Awake() {
-        base.Awake();
-        DefaultTaskDelay = 0.85f / LobbySystem.LobbySettings.GameSpeed.Value;
+    void Start() {
+        DefaultTaskDelay = 0.75f / GameSystem.Settings.GameSpeed.Value;
+        _defaultTaskDelay = DefaultTaskDelay;
     }
 
     public static void PushRoutine(IEnumerator routine, float delay = -1, Action onComplete = null) {
@@ -37,24 +39,6 @@ public class TaskScheduler : Singleton<TaskScheduler> {
         
         _isRunning = true;
         Instance.StartCoroutine(RunTasks());
-    }
-    
-    public static void PushSequence(float delay = -1, params Action[] actions) {
-        if (delay < 0) delay = DefaultTaskDelay;
-        
-        for (var i = actions.Length - 1; i >= 0; i--) {
-            _tasks.Push((WrapAction(actions[i]), () => {}, delay));
-        }
-        
-        if (_isRunning) return;
-        
-        _isRunning = true;
-        Instance.StartCoroutine(RunTasks());
-
-        IEnumerator WrapAction(Action action) {
-            action();
-            yield break;
-        }
     }
 
     static IEnumerator RunTasks() {

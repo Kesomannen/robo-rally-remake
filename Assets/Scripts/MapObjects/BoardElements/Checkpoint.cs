@@ -9,7 +9,7 @@ public class Checkpoint : BoardElement<Checkpoint, IPlayer>, ITooltipable, ITrig
     [SerializeField] ParticleSystem _particle;
     [SerializeField] SoundEffect _sound;
 
-    public event Action<Player> OnPlayerReached;
+    public event Action<Player> PlayerReached;
 
     public int Index => _index;
     
@@ -42,7 +42,7 @@ public class Checkpoint : BoardElement<Checkpoint, IPlayer>, ITooltipable, ITrig
             
             IEnumerator Routine() {
                 current.Value = _index;
-                OnPlayerReached?.Invoke(player);
+                PlayerReached?.Invoke(player);
                 Log.Instance.CheckpointMessage(player, _index);
                 
                 _particle.Play();

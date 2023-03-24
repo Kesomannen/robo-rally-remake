@@ -17,7 +17,7 @@ public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
     static readonly List<(Vector2Int pos, bool final, MapEvent mapEvent)> _moves = new();
     
     public string Header => "Conveyor";
-    public string Description => $"Moves objects {StringUtils.FormatMultiple(1f / _cost, "tile")} after each register.";
+    public string Description => $"Moves objects {StringUtils.FormatMultiple(1f / _cost, "space")} after each register.";
 
     protected override void Awake() {
         base.Awake();

@@ -55,7 +55,7 @@ public class Player : IPlayer {
         RobotData = args.RobotData;
 
         var startingDeck = args.RobotData.StartingDeck;
-        if (!PlayerSystem.EnergyEnabled) {
+        if (!GameSystem.Settings.EnergyEnabled) {
             // Take out energy cards
             startingDeck = startingDeck.Where(x => x.Type != ProgramCardData.CardType.Utility);
         }
@@ -71,7 +71,7 @@ public class Player : IPlayer {
         CardsPerTurn = args.CardsPerTurn;
 
         // Damage
-        RebootAffector = args.RebootAffector;
+        RebootAffector = RobotData.GetRebootDamage();
         LaserAffector = RobotData.GetLaserDamage();
         PushAffector = RobotData.GetPushDamage();
         
@@ -302,7 +302,6 @@ public struct PlayerArgs {
     public int StartingEnergy;
     public int CardsPerTurn;
     public int RegisterCount;
-    public CardAffector RebootAffector;
     public int UpgradeSlots;
     public string Name;
     public ulong ClientId;

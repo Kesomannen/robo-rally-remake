@@ -9,7 +9,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
     public static bool IsStressed { get; private set; }
     public static bool LocalPlayerLockedIn { get; private set; }
 
-    public static ObservableField<int> StressTimer;
+    public static readonly ObservableField<int> StressTimer = new();
 
     readonly List<Player> _playersLockedIn = new();
     public IEnumerable<Player> PlayersLockedIn => _playersLockedIn;
@@ -19,7 +19,6 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
 
     protected override void Awake() {
         base.Awake();
-        StressTimer = new ObservableField<int>(LobbySystem.LobbySettings.StressTime.Value);
         IsStressed = false;
     }
 
@@ -28,7 +27,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
 
         IsStressed = false;
         PlayerUIRegister.Locked = false;
-        StressTimer.Value = LobbySystem.LobbySettings.StressTime.Value;
+        StressTimer.Value = GameSystem.Settings.StressTime.Value;
         LocalPlayerLockedIn = false;
         
         PhaseStarted?.Invoke();
@@ -40,7 +39,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
         yield return new WaitUntil(() => _playersLockedIn.Count >= PlayerSystem.Players.Count);
         _playersLockedIn.Clear();
 
-        if (LobbySystem.LobbySettings.AdvancedGame.Enabled) yield break;
+        if (GameSystem.Settings.AdvancedGame.Enabled) yield break;
         foreach (var player in PlayerSystem.Players) {
             player.DiscardHand();
         }
@@ -60,7 +59,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
 
      void LockPlayerRegister(byte playerIndex, IEnumerable<byte> registerCardIds) {
          var player = PlayerSystem.Players[playerIndex];
-         var stressEnabled = LobbySystem.LobbySettings.StressTime.Enabled;
+         var stressEnabled = GameSystem.Settings.StressTime.Enabled;
          var cards = registerCardIds.Select(c => ProgramCardData.GetById(c)).ToArray();
 
          _playersLockedIn.Add(player);
@@ -128,9 +127,5 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
         // Lock registers
         player.SerializeRegisters(out var playerIndex, out var registerCardIds);
         LockRegisterServerRpc(playerIndex, registerCardIds);
-    }
-
-    public void Continue() {
-        _playersLockedIn.Add(PlayerSystem.LocalPlayer);
     }
 }

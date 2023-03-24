@@ -14,6 +14,7 @@ public class RobotData : Lookup<RobotData>, ITooltipable {
     [SerializeField] ProgramCardData[] _startingDeck;
     [SerializeField] ScriptableCardAffector _laserDamage;
     [SerializeField] ScriptableCardAffector _pushDamage;
+    [SerializeField] ScriptableCardAffector _rebootDamage;
     [SerializeField] ScriptableAffector<Player>[] _onSpawnAffectors;
 
     public string Name => _name;
@@ -27,6 +28,7 @@ public class RobotData : Lookup<RobotData>, ITooltipable {
 
     public CardAffector GetLaserDamage() => _laserDamage.ToInstance();
     public CardAffector GetPushDamage() => _pushDamage.ToInstance();
+    public CardAffector GetRebootDamage() => _rebootDamage.ToInstance();
 
     public void OnSpawn(Player player) {
         foreach (var affector in _onSpawnAffectors) {

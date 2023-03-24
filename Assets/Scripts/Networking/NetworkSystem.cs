@@ -1,8 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
@@ -10,65 +8,34 @@ using UnityEngine.SceneManagement;
 #pragma warning disable 4014
 
 public class NetworkSystem : NetworkSingleton<NetworkSystem> {
-    [SerializeField] GameObject _waitingOverlay;
-    [SerializeField] TMP_Text _waitingText;
-    
-    public static Context LoadContext { get; set; } = Context.Singleplayer;
-    public static LobbyPlayerData SingleplayerPlayerData { get; set; } = new() {
-        IsHost = true,
-        RobotId = 2,
-        Name = "Player"
-    };
+    [SerializeField] RobotData _singleplayerRobot;
 
-    public static GameSystem.GameOptions? GameOptions { get; set; }
+    public static GameType CurrentGameType { get; set; } = GameType.Tutorial;
 
-    public enum Context {
+    public enum GameType {
         Singleplayer,
-        Multiplayer
+        Multiplayer,
+        Tutorial
     }
-    
+
     void Start() {
         NetworkObject.DestroyWithScene = true;
         
-        if (LoadContext != Context.Singleplayer) return;
+        if (CurrentGameType == GameType.Multiplayer || NetworkManager.IsListening) return;
         NetworkManager.StartHost();
     }
 
     public override void OnNetworkSpawn() {
-        base.OnNetworkSpawn();
-
-        Debug.Log("NetworkSystem spawned, loading map...");
-        MapSystem.Instance.LoadMap(MapData.GetById(LobbySystem.LobbyMap.Value));
+        Debug.Log("NetworkSystem spawned");
         
-        if (LoadContext == Context.Singleplayer) {
-            PlayerSystem.Instance.CreatePlayer(NetworkManager.LocalClientId, SingleplayerPlayerData);
-        } else {
-            foreach (var (id, data) in LobbySystem.PlayersInLobby.OrderBy(value => value.Key)) {
-                PlayerSystem.Instance.CreatePlayer(id, data);
-            }
-        }
-        
-        if (!PlayerSystem.EnergyEnabled) {
-            var spaces = MapSystem.GetByType<EnergySpace>().ToArray();
-            // ReSharper disable once ForCanBeConvertedToForeach
-            // Collection was modified; enumeration operation may not execute.
-            for (var i = 0; i < spaces.Length; i++) {
-                var energySpace = spaces[i];
-                MapSystem.DestroyObject(energySpace);
-            }
-        }
-
         NetworkManager.OnClientDisconnectCallback += OnClientDisconnect;
-        
-        _waitingOverlay.SetActive(true);
-        _waitingText.text = "Waiting for players to load...";
-        
-        if (IsServer) {
-            if (LoadContext == Context.Multiplayer && NetworkManager.ConnectedClientsList.Count > 1) {
+
+        if (CurrentGameType == GameType.Multiplayer) {
+            if (IsServer) {
                 StartCoroutine(WaitForPlayers());
-            } else {
-                StartGame();
             }
+        } else {
+            StartGame();
         }
 
         IEnumerator WaitForPlayers() {
@@ -82,10 +49,13 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
                 NetworkManager.SceneManager.OnLoadEventCompleted -= LoadEventCompleted;
                 if (clientsTimedOut.Count > 0) {
                     Debug.LogError($"Clients timed out: {string.Join(", ", clientsTimedOut)}");
+                    CanvasHelpers.Instance.ShowError($"{StringUtils.FormatMultiple(clientsCompleted.Count, "player")} timed out");
                 }
 
-                if (clientsCompleted.Count < NetworkManager.ConnectedClientsList.Count) {
+                var failedToLoad = NetworkManager.ConnectedClientsList.Count - clientsCompleted.Count;
+                if (failedToLoad > 0) {
                     Debug.LogError($"Clients did not load: {string.Join(", ", NetworkManager.ConnectedClientsList.Select(c => c.ClientId).Except(clientsCompleted))}");
+                    CanvasHelpers.Instance.ShowError($"{StringUtils.FormatMultiple(failedToLoad, "player")} timed out");
                 }
                 loaded = true;
             }
@@ -96,6 +66,35 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
     void StartGameClientRpc() {
         if (IsServer) return;
         StartGame();
+    }
+
+    void StartGame() {
+        if (CurrentGameType == GameType.Tutorial) {
+            Tutorial.Instance.Initialize();
+        } else {
+            List<GameSystem.PlayerData> players = new();
+
+            if (CurrentGameType == GameType.Singleplayer) {
+                players.Add(new GameSystem.PlayerData {
+                    Id = NetworkManager.Singleton.LocalClientId,
+                    Name = LobbySystem.PlayerName,
+                    RobotData = _singleplayerRobot
+                });
+            } else {
+                foreach (var (id, playerData) in LobbySystem.PlayersInLobby) {
+                    players.Add(new GameSystem.PlayerData {
+                        Id = id,
+                        Name = playerData.Name,
+                        RobotData = RobotData.GetById(playerData.RobotId)
+                    });
+                }
+            }
+            
+            GameSystem.Initialize(LobbySystem.GameSettings, MapData.GetById(LobbySystem.LobbyMap.Value), players);
+        }
+        
+        Debug.Log("Initialization complete, starting phase system");
+        GameSystem.Instance.StartPhaseSystem();
     }
     
     void OnClientDisconnect(ulong id) {
@@ -119,25 +118,13 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
         PlayerSystem.RemovePlayer(player);
     }
 
-    void StartGame() {
-        if (GameOptions.HasValue) {
-            GameSystem.Instance.StartGame(GameOptions.Value);
-        } else {
-            GameSystem.Instance.StartGame(new GameSystem.GameOptions() {
-                DoSetupPhase = true,
-                ShopEnabled = PlayerSystem.EnergyEnabled
-            });
-        }
-    }
-
     public override void OnDestroy() {
         base.OnDestroy();
 
-        if (NetworkManager.Singleton == null) return;
-
-        NetworkManager.OnClientDisconnectCallback -= OnClientDisconnect;
-        
         Matchmaking.LeaveLobbyAsync();
+        
+        if (NetworkManager.Singleton == null) return;
+        NetworkManager.OnClientDisconnectCallback -= OnClientDisconnect;
         NetworkManager.Shutdown();
     }
 
@@ -165,97 +152,5 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
     void UseUpgradeClientRpc(byte playerIndex, byte upgradeIndex) {
         if (IsServer || PlayerSystem.Players.IndexOf(PlayerSystem.LocalPlayer) == playerIndex) return;
         PlayerSystem.Players[playerIndex].UseUpgrade(upgradeIndex);
-    }
-    
-    readonly List<ulong> _playersReady = new();
-
-    public IEnumerator SyncPlayers() {
-        _waitingOverlay.SetActive(true);
-        PlayerReadyServerRpc(NetworkManager.LocalClientId);
-        while (_playersReady.Count < PlayerSystem.Players.Count) {
-            _waitingText.text = $"Waiting for players... ({_playersReady.Count}/{PlayerSystem.Players.Count})";
-            yield return null;
-        }
-        _waitingOverlay.SetActive(false);
-        _playersReady.Clear();
-    }
-    
-    [ServerRpc(RequireOwnership = false)]
-    void PlayerReadyServerRpc(ulong id) {
-        _playersReady.Add(id);
-        PlayerReadyClientRpc(id);
-    }
-    
-    [ClientRpc]
-    void PlayerReadyClientRpc(ulong id) {
-        if (IsServer) return;
-        _playersReady.Add(id);
-    }
-
-    static readonly Queue<ProgramCardData[]> _queryResults = new();
-    static bool _querying;
-
-    [ClientRpc]
-    void QueryClientRpc(byte playerIndex, byte pile, byte startIndex, byte endIndex) {
-        var localPlayer = PlayerSystem.LocalPlayer;
-        if (PlayerSystem.Players[playerIndex] != localPlayer) return;
-        Debug.Log($"Querying {PlayerSystem.Players[playerIndex]}'s {(Pile)pile} pile from {startIndex} to {endIndex}");
-        
-        if (!GetQuery((Pile) pile, startIndex, endIndex, localPlayer, out var result)) {
-            return;
-        }
-
-        SendQueryResultsServerRpc(result);
-    }
-    
-    static bool GetQuery(Pile pile, int startIndex, int endIndex, Player player, out byte[] result) {
-        var depth = endIndex - startIndex;
-        var collection = player.GetCollection(pile);
-        
-        if (collection.Cards.Count <= startIndex + depth) {
-            if (pile == Pile.DrawPile) {
-                player.ShuffleDeck();
-            } else {
-                Debug.LogError($"Cannot query {player}'s {pile} pile from {startIndex} to {endIndex}; not enough cards");
-                result = null;
-                return false;
-            }
-        }
-
-        result = collection.Cards
-            .Skip(startIndex)
-            .Take(depth)
-            .Select(c => (byte)c.GetLookupId())
-            .ToArray();
-        return true;
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    void SendQueryResultsServerRpc(byte[] cardIds) {
-        var cards = cardIds.Select(c => ProgramCardData.GetById(c)).ToArray();
-        _queryResults.Enqueue(cards);
-        SendQueryResultsClientRpc(cardIds);
-    }
-    
-    [ClientRpc]
-    void SendQueryResultsClientRpc(byte[] cardIds) {
-        if (IsServer) return;
-        var cards = cardIds.Select(c => ProgramCardData.GetById(c)).ToArray();
-        _queryResults.Enqueue(cards);
-        Debug.Log($"Received query results: {string.Join(", ", cards.Select(c => c.Name))}");
-    }
-
-    public IEnumerator QueryPlayerCards(Player player, Pile pile, int startIndex, int endIndex, List<ProgramCardData> result) {
-        if (_querying) throw new InvalidOperationException("Cannot query while another query is in progress.");
-        _querying = true;
-        
-        if (IsServer) {
-            var playerIndex = PlayerSystem.Players.IndexOf(player);
-            QueryClientRpc((byte) playerIndex, (byte) pile, (byte) startIndex, (byte) endIndex);
-        }
-        yield return new WaitUntil(() => _queryResults.Count > 0);
-        
-        result.AddRange(_queryResults.Dequeue());
-        _querying = false;
     }
 }

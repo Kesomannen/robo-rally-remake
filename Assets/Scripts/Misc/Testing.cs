@@ -5,7 +5,7 @@ public class Testing : MonoBehaviour {
     [SerializeField] Optional<MapData> _mapToLoad;
 
     void Awake() {
-        if (NetworkSystem.LoadContext != NetworkSystem.Context.Singleplayer) {
+        if (NetworkSystem.CurrentGameType != NetworkSystem.GameType.Singleplayer) {
             Destroy(this);
             return;
         }

@@ -47,7 +47,7 @@ public class JoinGameMenu : Menu {
         if (successful) {
             MenuSystem.Instance.PushMenu(MenuState.Room);   
         } else {
-            MenuUtils.Instance.ShowError("Failed to join lobby");
+            CanvasHelpers.Instance.ShowError("Failed to join lobby");
         }
     }
 }

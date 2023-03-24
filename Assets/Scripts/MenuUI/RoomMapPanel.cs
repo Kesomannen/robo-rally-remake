@@ -18,8 +18,8 @@ public class RoomMapPanel : Container<MapData> {
     [SerializeField] Image _lengthImage;
     [SerializeField] TMP_Text _lengthText;
     [SerializeField] Sprite[] _lengthSprites;
-
-    MapData[] _maps;
+    [Space]
+    [SerializeField] MapData[] _availableMaps;
 
     static int MapID => LobbySystem.LobbyMap.Value;
 
@@ -48,12 +48,8 @@ public class RoomMapPanel : Container<MapData> {
         _prevButton.interactable = false;
     }
 
-    void Start() {
-        _maps = MapData.GetAll().ToArray();
-    }
-
-    public void GoNext() => LobbySystem.Instance.SetLobbyMap(MapID + 1 >= _maps.Length ? 0 : MapID + 1);
-    public void GoPrevious() => LobbySystem.Instance.SetLobbyMap(MapID == 0 ? _maps.Length - 1 : MapID - 1);
+    public void GoNext() => LobbySystem.Instance.SetLobbyMap(MapID + 1 >= _availableMaps.Length ? 0 : MapID + 1);
+    public void GoPrevious() => LobbySystem.Instance.SetLobbyMap(MapID == 0 ? _availableMaps.Length - 1 : MapID - 1);
 
     void Serialize(int id) => Serialize(MapData.GetById(id));
 

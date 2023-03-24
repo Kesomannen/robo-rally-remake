@@ -32,14 +32,14 @@ public class RoomMenu : Menu {
             UpdatePanel(id, data);
         }
         
-        var settings = LobbySystem.LobbySettings;
-        _startingEnergyProperty.LobbyProperty = settings.StartingEnergy;
-        _cardsPerTurnProperty.LobbyProperty = settings.CardsPerTurn;
-        _stressTimeProperty.LobbyProperty = settings.StressTime;
-        _upgradeSlotsProperty.LobbyProperty = settings.UpgradeSlots;
-        _beginnerGameProperty.LobbyProperty = settings.BeginnerGame;
-        _advancedGameProperty.LobbyProperty = settings.AdvancedGame;
-        _gameSpeedProperty.LobbyProperty = settings.GameSpeed;
+        var settings = LobbySystem.GameSettings;
+        _startingEnergyProperty.GameProperty = settings.StartingEnergy;
+        _cardsPerTurnProperty.GameProperty = settings.CardsPerTurn;
+        _stressTimeProperty.GameProperty = settings.StressTime;
+        _upgradeSlotsProperty.GameProperty = settings.UpgradeSlots;
+        _beginnerGameProperty.GameProperty = settings.BeginnerGame;
+        _advancedGameProperty.GameProperty = settings.AdvancedGame;
+        _gameSpeedProperty.GameProperty = settings.GameSpeed;
 
         _readyButton.gameObject.SetActive(true);
         _startGameButton.gameObject.SetActive(false);

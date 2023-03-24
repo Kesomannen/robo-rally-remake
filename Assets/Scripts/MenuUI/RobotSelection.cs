@@ -6,12 +6,13 @@ using UnityEngine;
 public class RobotSelection : MonoBehaviour {
     [SerializeField] RobotPanel _robotPanelPrefab;
     [SerializeField] Transform _robotPanelParent;
+    [SerializeField] RobotData[] _availableRobots;
 
     readonly List<RobotPanel> _panels = new();
     Dictionary<ulong, RobotData> _playerRobots;
 
     void Awake() {
-        foreach (var robotData in RobotData.GetAll()) {
+        foreach (var robotData in _availableRobots) {
             var newPanel = Instantiate(_robotPanelPrefab, _robotPanelParent);
             newPanel.SetContent(robotData);
             _panels.Add(newPanel);

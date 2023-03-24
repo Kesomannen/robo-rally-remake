@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 public class TopButtons : MonoBehaviour {
     [SerializeField] GameObject _log, _chat;
-    [SerializeField] GameObject _shopButton;
+    [SerializeField] GameObject _shopButton, _chatButton;
     [SerializeField] GameObject _chatNotification;
     [SerializeField] Container<UpgradeCardData> _upgradePrefab;
     [SerializeField] OverlayData<SettingsOverlay> _settingsOverlay;
@@ -16,7 +16,8 @@ public class TopButtons : MonoBehaviour {
     }
 
     void Start() {
-        _shopButton.SetActive(PlayerSystem.EnergyEnabled);
+        _shopButton.SetActive(GameSystem.Settings.EnergyEnabled);
+        _chatButton.SetActive(PlayerSystem.Players.Count > 1);
     }
 
     void OnEnable() {

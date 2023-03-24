@@ -149,6 +149,7 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
     }
     
     public IEnumerator MoveSteps(IEnumerable<Vector2Int> dirs, bool relative, float delay = -1) {
+        if (delay < 0) delay = TaskScheduler.DefaultTaskDelay;
         _canFall = !Hovering;
         
         foreach (var dir in dirs) {

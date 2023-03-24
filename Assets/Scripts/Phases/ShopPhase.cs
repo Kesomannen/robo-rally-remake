@@ -42,7 +42,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
         NewPlayer?.Invoke(null);
 
         if (_skippedPlayers != PlayerSystem.Players.Count) yield break;
-        Log.Instance.RawMessage("All players skipped buying an upgrade and the shop restocked");
+        Log.Instance.RawMessage("The shop was fully restocked due to all players skipping their turn");
         yield return RestockCards(false);
         yield return TaskScheduler.WaitUntilClear();
     }

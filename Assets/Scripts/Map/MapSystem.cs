@@ -4,20 +4,17 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-# pragma warning disable 0252
-
 public class MapSystem : Singleton<MapSystem> {
     [SerializeField] Grid _grid;
     [SerializeField] Camera _mapCamera;
     [SerializeField] float _cameraMargin = 1f;
-   
-
+    
     static Dictionary<Vector2Int, List<MapObject>> _tiles;
     static Dictionary<Tilemap, IBoard> _boards;
     
     GameObject _currentMap;
 
-    public static Action OnMapLoaded;
+    public static Action MapLoaded;
 
     public void LoadMap(MapData mapData) {
         Debug.Log($"Loading map {mapData}...");
@@ -52,7 +49,7 @@ public class MapSystem : Singleton<MapSystem> {
         
         PositionCamera();
         
-        OnMapLoaded?.Invoke();
+        MapLoaded?.Invoke();
         Debug.Log($"Map {mapData} loaded.");
     }
     

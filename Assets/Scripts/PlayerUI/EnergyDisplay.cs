@@ -12,7 +12,7 @@ public class EnergyDisplay : MonoBehaviour, ITooltipable {
     void Start() {
         Owner.Energy.ValueChanged += UpdateText;
         UpdateText(0, Owner.Energy.Value);
-        gameObject.SetActive(PlayerSystem.EnergyEnabled);
+        gameObject.SetActive(GameSystem.Settings.EnergyEnabled);
     }
     
     void UpdateText(int prev, int next){

@@ -1,49 +1,69 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameSystem : Singleton<GameSystem> {
-    [SerializeField] PlayerModel _playerModelPrefab;
+    bool _isPlaying;
     
-    static bool _isPlaying;
-    static GameOptions _options;
+    public static GameSettings Settings { get; private set; }
+    public static readonly ObservableField<Phase> CurrentPhase = new();
 
-    public static ObservableField<Phase> CurrentPhase { get; } = new();
+    [Serializable]
+    public struct PlayerData {
+        [SerializeField] RobotData _robotData;
+        [SerializeField] string _name;
 
-    protected override void OnDestroy() {
-        base.OnDestroy();
-        StopGame();
-    }
-
-    public void StartGame(GameOptions options) {
-        if (_isPlaying) return;
-        _options = options;
-        StartCoroutine(PhaseSystemRoutine());
-    }
-
-    public struct GameOptions {
-        public bool ShopEnabled;
-        public bool DoSetupPhase;
-        public IReadOnlyDictionary<Player, RebootToken> PlayerSpawns;
-    }
-
-    public static void StopGame() {
-        _isPlaying = false;
-    }
-
-    IEnumerator PhaseSystemRoutine() {
-        _isPlaying = true;
+        public RobotData RobotData {
+            get => _robotData;
+            set => _robotData = value;
+        }
         
-        if (_options.DoSetupPhase) {
-            yield return DoPhaseRoutine(SetupPhase.Instance.DoPhase(), Phase.Setup);   
-        } else {
-            foreach (var player in PlayerSystem.Players) {
-                player.CreateModel(_playerModelPrefab, _options.PlayerSpawns[player]);
+        public string Name {
+            get => _name;
+            set => _name = value;
+        }
+        
+        public ulong Id { get; set; }
+    }
+
+    public static void Initialize(GameSettings gameSettings, MapData map, IEnumerable<PlayerData> players) {
+        Settings = gameSettings;
+        
+        MapSystem.Instance.LoadMap(map);
+        
+        Debug.Log("Creating energy spaces");
+        if (!gameSettings.EnergyEnabled) {
+            var spaces = MapSystem.GetByType<EnergySpace>().ToArray();
+            // ReSharper disable once ForCanBeConvertedToForeach
+            // Collection was modified; enumeration operation may not execute.
+            for (var i = 0; i < spaces.Length; i++) {
+                var energySpace = spaces[i];
+                MapSystem.DestroyObject(energySpace);
             }
         }
+        
+        // Create players       
+        Debug.Log("Creating players");
+        foreach (var playerData in players) {
+            PlayerSystem.CreatePlayer(playerData.Id, playerData.RobotData, playerData.Name);
+        }
+    }
+    
+    public void StartPhaseSystem() {
+        if (_isPlaying) return;
+        Debug.Log("Starting phase system");
+        StartCoroutine(PhaseRoutine());
+    }
+
+    IEnumerator PhaseRoutine() {
+        _isPlaying = true;
+        
+        yield return DoPhaseRoutine(SetupPhase.Instance.DoPhase(), Phase.Setup);   
 
         while (_isPlaying) {
-            if (_options.ShopEnabled) {
+            if (Settings.EnergyEnabled) {
                 yield return DoPhaseRoutine(ShopPhase.Instance.DoPhase(), Phase.Shop);   
             }
             yield return DoPhaseRoutine(ProgrammingPhase.Instance.DoPhase(), Phase.Programming);
@@ -52,8 +72,8 @@ public class GameSystem : Singleton<GameSystem> {
         
         IEnumerator DoPhaseRoutine(IEnumerator routine, Phase phase) {
             yield return TaskScheduler.WaitUntilClear();
+            yield return NetworkUtils.Instance.SyncPlayers();
             
-            yield return NetworkSystem.Instance.SyncPlayers();
             CurrentPhase.Value = phase;
             yield return routine;
         }

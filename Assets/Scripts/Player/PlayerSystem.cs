@@ -5,15 +5,12 @@ using Unity.Netcode;
 using UnityEngine;
 
 public class PlayerSystem : Singleton<PlayerSystem> {
-    [SerializeField] ScriptableCardAffector _rebootAffector;
-
     static List<Player> _players;
     public static IReadOnlyList<Player> Players => _players;
     public static Player LocalPlayer { get; private set; }
 
     public static bool IsLocal(Player player) => player == LocalPlayer;
-    public static bool EnergyEnabled => !LobbySystem.LobbySettings.BeginnerGame.Enabled;
-    
+
     public static event Action<Player> PlayerRemoved;
 
     protected override void Awake() {
@@ -28,18 +25,16 @@ public class PlayerSystem : Singleton<PlayerSystem> {
         _players.Remove(player);
     }
     
-    public void CreatePlayer(ulong id, LobbyPlayerData data) {
-        var settings = LobbySystem.LobbySettings;
-        var robotData = RobotData.GetById(data.RobotId);
+    public static void CreatePlayer(ulong id, RobotData robot, string playerName) {
+        var settings = GameSystem.Settings;
 
         var playerArgs = new PlayerArgs {
-            RobotData = robotData,
+            RobotData = robot,
             StartingEnergy = settings.StartingEnergy,
             CardsPerTurn = settings.CardsPerTurn,
             RegisterCount = ExecutionPhase.RegisterCount,
-            RebootAffector = _rebootAffector.ToInstance(),
             UpgradeSlots = settings.UpgradeSlots,
-            Name = data.Name,
+            Name = playerName,
             ClientId = id
         };
 
@@ -50,7 +45,7 @@ public class PlayerSystem : Singleton<PlayerSystem> {
             LocalPlayer = newPlayer;
         }
 
-        Debug.Log($"Created player for client {id}");
+        Debug.Log($"Created player {newPlayer}");
     }
 
     public static IEnumerable<Player> GetOrderedPlayers() {
