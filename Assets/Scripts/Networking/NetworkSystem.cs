@@ -100,7 +100,10 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
     
     void OnClientDisconnect(ulong id) {
         if (IsServer) {
-            PlayerSystem.RemovePlayer(PlayerSystem.Players.First(p => p.ClientId == id));
+            var player = PlayerSystem.Players.First(p => p.ClientId == id);
+            Log.Instance.RawMessage($"{Log.PlayerString(player)} left the game");
+            PlayerSystem.RemovePlayer(player);
+            
             PlayerDisconnectedClientRpc(id);
         } else {
             // Host disconnected
@@ -111,7 +114,9 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
     [ClientRpc]
     void PlayerDisconnectedClientRpc(ulong id) {
         if (IsServer) return;
-        PlayerSystem.RemovePlayer(PlayerSystem.Players.First(p => p.ClientId == id));
+        var player = PlayerSystem.Players.First(p => p.ClientId == id);
+        Log.Instance.RawMessage($"{Log.PlayerString(player)} left the game");
+        PlayerSystem.RemovePlayer(player);
     }
 
     void StartGame() {

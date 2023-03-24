@@ -1215,6 +1215,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85c1568dd6a7b674d8b0dd3f250a223f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerModelPrefab: {fileID: 0}
 --- !u!114 &349215625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2718,6 +2719,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _upgradesToLoad: []
+  _mapToLoad:
+    _enabled: 1
+    _value: {fileID: 11400000, guid: 741b8203fcf2ebe4ba4cc006047ce658, type: 2}
 --- !u!1 &772788829
 GameObject:
   m_ObjectHideFlags: 0
@@ -6335,7 +6339,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -245.96985, y: -119.5}
+  m_AnchoredPosition: {x: -245.96985, y: -119.49997}
   m_SizeDelta: {x: 429.94, y: -119.5}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1539960399
@@ -8248,7 +8252,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 78.79004, y: -159.69995}
+  m_AnchoredPosition: {x: 78.79004, y: -159.69992}
   m_SizeDelta: {x: 258.27, y: -338.09}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &1984671240

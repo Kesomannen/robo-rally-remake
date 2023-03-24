@@ -64,7 +64,7 @@ public class ExecutionUIController : MonoBehaviour {
         };
     }
 
-    Player[] _currentPlayerOrder;
+    Player[] _playerOrder;
 
     void Start() {
         var pos = _phaseIcon1.transform.position;
@@ -72,7 +72,7 @@ public class ExecutionUIController : MonoBehaviour {
         _phaseIcon2.transform.position = pos + Vector3.up * _phaseDistance * CanvasUtils.CanvasScale.y;
         _currentSubPhaseImage = _phaseIcon1;
 
-        _currentPlayerOrder = PlayerSystem.Players.ToArray();
+        _playerOrder = PlayerSystem.Players.ToArray();
         foreach (var player in PlayerSystem.Players) {
             _panelsController.CreatePanel(player);
         }
@@ -129,21 +129,20 @@ public class ExecutionUIController : MonoBehaviour {
 
     void OnPlayersOrdered(IReadOnlyList<Player> nextPlayerOrder) {
         var swaps = new List<(int first, int second)>();
-        var order = _currentPlayerOrder.Copy();
 
         for (var i = 0; i < nextPlayerOrder.Count; i++) {
             var player = nextPlayerOrder[i];
-            var current = order.IndexOf(player);
+            var current = _playerOrder.IndexOf(player);
             if (i == current) continue;
             
             swaps.Add((i, current));
-            (order[i], order[current]) = (order[current], order[i]);
+            (_playerOrder[i], _playerOrder[current]) = (_playerOrder[current], _playerOrder[i]);
         }
         
         TaskScheduler.PushRoutine(swaps.Select(swap => DoSwap(swap.first, swap.second)).GetEnumerator());
         TaskScheduler.PushRoutine(ChangeSubPhase(UISubPhase.OrderPlayers));
         
-        _currentPlayerOrder = nextPlayerOrder.ToArray();
+        _playerOrder = nextPlayerOrder.ToArray();
         
         IEnumerator DoSwap(int first, int second) {
             yield return Antenna.Instance.BeamAnimation(nextPlayerOrder[first]);

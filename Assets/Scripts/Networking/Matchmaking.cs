@@ -129,19 +129,24 @@ public static class Matchmaking {
             throw new InvalidOperationException("Cannot join a lobby while already in a lobby");
         }
 
-        CurrentLobby = await Lobbies.Instance.JoinLobbyByCodeAsync(lobbyCode);
-        var relayJoinCode = CurrentLobby.Data[RelayJoinCodeKey].Value;
-        Debug.Log($"Joined lobby {CurrentLobby.Id} using lobby code {CurrentLobby.LobbyCode}");
+        try {
+            CurrentLobby = await Lobbies.Instance.JoinLobbyByCodeAsync(lobbyCode);
+            var relayJoinCode = CurrentLobby.Data[RelayJoinCodeKey].Value;
+            Debug.Log($"Joined lobby {CurrentLobby.Id} using lobby code {CurrentLobby.LobbyCode}");
 
-        var alloc = await RelayService.Instance.JoinAllocationAsync(relayJoinCode);
-        Transport.SetClientRelayData(
-            alloc.RelayServer.IpV4,
-            (ushort)alloc.RelayServer.Port,
-            alloc.AllocationIdBytes,
-            alloc.Key,
-            alloc.ConnectionData,
-            alloc.HostConnectionData
-        );
+            var alloc = await RelayService.Instance.JoinAllocationAsync(relayJoinCode);
+            Transport.SetClientRelayData(
+                alloc.RelayServer.IpV4,
+                (ushort)alloc.RelayServer.Port,
+                alloc.AllocationIdBytes,
+                alloc.Key,
+                alloc.ConnectionData,
+                alloc.HostConnectionData
+            );
+        } catch (Exception e) {
+            Console.WriteLine($"Failed to join lobby: {e}");
+            throw;
+        }
     }
 
     public static async Task LockLobbyAsync() {

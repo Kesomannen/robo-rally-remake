@@ -42,6 +42,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
         NewPlayer?.Invoke(null);
 
         if (_skippedPlayers != PlayerSystem.Players.Count) yield break;
+        Log.Instance.RawMessage("All players skipped buying an upgrade and the shop restocked");
         yield return RestockCards(false);
         yield return TaskScheduler.WaitUntilClear();
     }
@@ -123,7 +124,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
             _skippedPlayers++;
             
             PlayerDecision?.Invoke(CurrentPlayer, true, null);
-            Log.Instance.SkipMessage(CurrentPlayer);
+                Log.Instance.SkipMessage(CurrentPlayer);
         } else {
             CurrentPlayer.Energy.Value -= upgrade.Cost;
             CurrentPlayer.ReplaceUpgradeAt(upgrade, playerUpgradeIndex);
