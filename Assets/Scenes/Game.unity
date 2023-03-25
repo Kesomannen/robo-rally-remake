@@ -2912,6 +2912,87 @@ MonoBehaviour:
     _enablePileUI: 0
     _enableTimer: 0
     _enablePlayerArray: 0
+  - _robot: {fileID: 11400000, guid: f5662703ca885694093898b0567926b5, type: 2}
+    _mapData: {fileID: 11400000, guid: 39c375713a4a68045b07599fa4acd747, type: 2}
+    _gameSettings:
+      _startingEnergy:
+        _enabled: 1
+        _value: 5
+      _cardsPerTurn:
+        _enabled: 1
+        _value: 9
+      _stressTime:
+        _enabled: 1
+        _value: 30
+      _upgradeSlots:
+        _enabled: 1
+        _value: 6
+      _advancedGame:
+        _enabled: 0
+        _value: 0
+      _beginnerGame:
+        _enabled: 1
+        _value: 0
+      _gameSpeed:
+        _enabled: 1
+        _value: 2
+    _enablePileUI: 1
+    _enableTimer: 0
+    _enablePlayerArray: 0
+  - _robot: {fileID: 11400000, guid: 320533cde685f6c4fb5fbdfadf60086b, type: 2}
+    _mapData: {fileID: 11400000, guid: 4c9ec0cae3080084397a4fff62485f6b, type: 2}
+    _gameSettings:
+      _startingEnergy:
+        _enabled: 1
+        _value: 5
+      _cardsPerTurn:
+        _enabled: 1
+        _value: 9
+      _stressTime:
+        _enabled: 1
+        _value: 30
+      _upgradeSlots:
+        _enabled: 1
+        _value: 6
+      _advancedGame:
+        _enabled: 0
+        _value: 0
+      _beginnerGame:
+        _enabled: 1
+        _value: 0
+      _gameSpeed:
+        _enabled: 1
+        _value: 3
+    _enablePileUI: 1
+    _enableTimer: 0
+    _enablePlayerArray: 1
+  - _robot: {fileID: 11400000, guid: 15f17d4ffc1e55b4fbfd3d6c4a1863d8, type: 2}
+    _mapData: {fileID: 11400000, guid: 741b8203fcf2ebe4ba4cc006047ce658, type: 2}
+    _gameSettings:
+      _startingEnergy:
+        _enabled: 1
+        _value: 5
+      _cardsPerTurn:
+        _enabled: 1
+        _value: 9
+      _stressTime:
+        _enabled: 1
+        _value: 30
+      _upgradeSlots:
+        _enabled: 1
+        _value: 6
+      _advancedGame:
+        _enabled: 0
+        _value: 0
+      _beginnerGame:
+        _enabled: 1
+        _value: 0
+      _gameSpeed:
+        _enabled: 1
+        _value: 3
+    _enablePileUI: 1
+    _enableTimer: 0
+    _enablePlayerArray: 1
 --- !u!114 &761913679
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -9,8 +9,7 @@ public class PlayerExecutionPanels : MonoBehaviour {
     [SerializeField] float _tweenTime;
     
     readonly List<PlayerExecutionPanel> _panels = new();
-    
-    public IReadOnlyList<PlayerExecutionPanel> Panels => _panels;
+    public IEnumerable<PlayerExecutionPanel> Panels => _panels;
 
     public IEnumerator Swap(int first, int second) {
         if (first == second) yield break;

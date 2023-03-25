@@ -11,7 +11,7 @@ public class PlayerSystem : Singleton<PlayerSystem> {
 
     public static bool IsLocal(Player player) => player == LocalPlayer;
 
-    public static event Action<Player> PlayerRemoved;
+    public static event Action<Player> PlayerCreated, PlayerRemoved;
 
     protected override void Awake() {
         base.Awake();
@@ -45,6 +45,7 @@ public class PlayerSystem : Singleton<PlayerSystem> {
             LocalPlayer = newPlayer;
         }
 
+        PlayerCreated?.Invoke(newPlayer);
         Debug.Log($"Created player {newPlayer}");
     }
 

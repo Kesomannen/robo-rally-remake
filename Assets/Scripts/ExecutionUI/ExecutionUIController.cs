@@ -64,7 +64,7 @@ public class ExecutionUIController : MonoBehaviour {
         };
     }
 
-    Player[] _playerOrder;
+    List<Player> _playerOrder = new();
 
     void Start() {
         var pos = _phaseIcon1.transform.position;
@@ -72,11 +72,6 @@ public class ExecutionUIController : MonoBehaviour {
         _phaseIcon2.transform.position = pos + Vector3.up * _phaseDistance * CanvasUtils.CanvasScale.y;
         _currentSubPhaseImage = _phaseIcon1;
 
-        _playerOrder = PlayerSystem.Players.ToArray();
-        foreach (var player in PlayerSystem.Players) {
-            _panelsController.CreatePanel(player);
-        }
-        
         gameObject.SetActive(false);
     }
 
@@ -114,17 +109,20 @@ public class ExecutionUIController : MonoBehaviour {
         ExecutionPhase.NewSubPhase += OnNewSubPhase;
         ExecutionPhase.PlayerRegister += OnPlayerRegister;
         ExecutionPhase.PlayersOrdered += OnPlayersOrdered;
+        PlayerSystem.PlayerCreated += OnPlayerCreated;
     }
-
-    void OnEnable() {
-        StartCoroutine(_programCardViewer.ClearCards());
-    }
-
+    
     void OnDestroy() {
         ExecutionPhase.PlayerRegistersComplete -= OnPlayerRegistersComplete;
         ExecutionPhase.NewSubPhase -= OnNewSubPhase;
         ExecutionPhase.PlayerRegister -= OnPlayerRegister;
         ExecutionPhase.PlayersOrdered -= OnPlayersOrdered;
+        PlayerSystem.PlayerCreated -= OnPlayerCreated;
+    }
+    
+    void OnPlayerCreated(Player player) {
+        _panelsController.CreatePanel(player);
+        _playerOrder.Add(player);
     }
 
     void OnPlayersOrdered(IReadOnlyList<Player> nextPlayerOrder) {
@@ -142,7 +140,7 @@ public class ExecutionUIController : MonoBehaviour {
         TaskScheduler.PushRoutine(swaps.Select(swap => DoSwap(swap.first, swap.second)).GetEnumerator());
         TaskScheduler.PushRoutine(ChangeSubPhase(UISubPhase.OrderPlayers));
         
-        _playerOrder = nextPlayerOrder.ToArray();
+        _playerOrder = nextPlayerOrder.ToList();
         
         IEnumerator DoSwap(int first, int second) {
             yield return Antenna.Instance.BeamAnimation(nextPlayerOrder[first]);

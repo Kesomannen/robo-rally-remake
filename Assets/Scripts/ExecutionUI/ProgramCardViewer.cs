@@ -24,23 +24,23 @@ public class ProgramCardViewer : MonoBehaviour {
 
     void OnEnable() {
         ExecutionPhase.PlayerRegister += OnRegister;
+        PlayerSystem.PlayerCreated += OnPlayerCreated;
     }
 
     void OnDisable() {
         ExecutionPhase.PlayerRegister -= OnRegister;
+        PlayerSystem.PlayerCreated -= OnPlayerCreated;
+    }
+    
+    void OnPlayerCreated(Player player) {
+        player.ProgramCardExecuted += OnProgramCardPlayed;
+        player.UpgradeUsed += upgrade => OnUpgradeUsed(player, upgrade);
     }
     
     void OnRegister(ProgramExecution execution) {
         StartCoroutine(ClearCards());
     }
 
-    void Start() {
-        foreach (var player in PlayerSystem.Players) {
-            player.ProgramCardExecuted += OnProgramCardPlayed;
-            player.UpgradeUsed += upgrade => OnUpgradeUsed(player, upgrade);
-        }
-    }
-    
     void OnUpgradeUsed(Player player, UpgradeCardData upgrade) {
         if (!enabled) return;
         
