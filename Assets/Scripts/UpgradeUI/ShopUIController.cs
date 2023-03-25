@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -15,29 +16,27 @@ public class ShopUIController : Singleton<ShopUIController> {
 
     ShopCard[] _shopCards;
 
-    ShopCard[] ShopCards {
-        get {
-            if (_shopCards != null) return _shopCards;
-
-            _shopCards = new ShopCard[PlayerSystem.Players.Count];
-            for (var i = 0; i < _shopCards.Length; i++) {
-                var card = Instantiate(_shopCardPrefab, _upgradeParent);
-                card.CardClicked += OnCardClicked;
-                _shopCards[i] = card;
-            }
-            return _shopCards;
-        }
-    }
-    
     public OverlayData<Choice<UpgradeCardData>> OverrideOverlay => _overrideOverlay;
 
     protected override void Awake() {
         base.Awake();
-
-        gameObject.SetActive(false);
+        
         ShopPhase.Restock += OnRestock;
         ShopPhase.PlayerDecision += OnPlayerDecision;
         ShopPhase.NewPlayer += OnNewPlayer;
+        
+        _shopCards = new ShopCard[PlayerSystem.Players.Count];
+        var cards = ShopPhase.Instance.ShopCards;
+        
+        for (var i = 0; i < _shopCards.Length; i++) {
+            var card = Instantiate(_shopCardPrefab, _upgradeParent);
+            card.CardClicked += OnCardClicked;
+            _shopCards[i] = card;
+            
+            if (cards[i] != null) {
+                card.SetContent(cards[i]);
+            }
+        }
     }
 
     protected override void OnDestroy() {
@@ -48,20 +47,26 @@ public class ShopUIController : Singleton<ShopUIController> {
         ShopPhase.NewPlayer -= OnNewPlayer;
     }
 
+    void OnEnable() {
+        UpdateCards();
+        OnNewPlayer(ShopPhase.Instance.CurrentPlayer);
+    }
+
     void OnNewPlayer(Player player) {
         if (player == null) {
-            _currentPlayerText.text = "All players skipped, restocking...";
+            _currentPlayerText.SetActive(false);
             return;
         }
+        
+        _currentPlayerText.SetActive(true);
         _currentPlayerText.text = $"{player} is buying...";
         UpdateCards();
     }
 
     void OnRestock(int index, UpgradeCardData card) {
-        var shopCard = ShopCards[index];
-        UpdateCards();
-        Debug.Log($"Restocking {card} at index {index}");
+        var shopCard = _shopCards[index];
         TaskScheduler.PushRoutine(shopCard.RestockAnimation(card));
+        UpdateCards();
     }
     
     void OnCardClicked(ShopCard shopCard) {
@@ -91,17 +96,13 @@ public class ShopUIController : Singleton<ShopUIController> {
         if (skipped) {
             
         } else {
-            TaskScheduler.PushRoutine(ShopCards.First(c => c.Content == card)
+            TaskScheduler.PushRoutine(_shopCards.First(c => c.Content == card)
                 .BuyAnimation(_panelArray.Panels.First(p => p.Content == player).transform));
         }
     }
-    
-    public void Skip() {
-        ShopPhase.Instance.MakeDecision(true, null, -1);
-    }
 
     void UpdateCards() {
-        foreach (var card in ShopCards) {
+        foreach (var card in _shopCards) {
             card.UpdateAvailability();
         }
     }

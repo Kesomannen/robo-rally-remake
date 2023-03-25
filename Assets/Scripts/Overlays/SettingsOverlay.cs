@@ -38,7 +38,7 @@ public class SettingsOverlay : Overlay {
     }
 
     public void LeaveGame() {
-        NetworkSystem.ReturnToLobby();
+        StartCoroutine(NetworkSystem.Instance.ReturnToLobby());
     }
 
     public void ChangeName() {

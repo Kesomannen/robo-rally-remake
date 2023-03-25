@@ -6,10 +6,13 @@ using JetBrains.Annotations;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+[Serializable]
 public class Player : IPlayer {
     # region Fields, Properties & Constructor
-    readonly string _name;
-    public readonly ulong ClientId;
+    [SerializeField] [ReadOnly] string _name;
+    [SerializeField] [ReadOnly] ulong _clientId;
+
+    public ulong ClientId => _clientId;
     
     // Robot
     public PlayerModel Model { get; private set; }
@@ -22,8 +25,8 @@ public class Player : IPlayer {
     public readonly CardCollection Hand, DrawPile, DiscardPile;
     public readonly Program Program;
 
-    public int CardsPerTurn;
-    public int BonusPriority;
+    public int CardsPerTurn { get; set; }
+    public int BonusPriority { get; set; }
 
     // Damage
     public readonly CardAffector RebootAffector;
@@ -51,7 +54,7 @@ public class Player : IPlayer {
 
     public Player(PlayerArgs args) {
         _name = args.Name;
-        ClientId = args.ClientId;
+        _clientId = args.ClientId;
         RobotData = args.RobotData;
 
         var startingDeck = args.RobotData.StartingDeck;

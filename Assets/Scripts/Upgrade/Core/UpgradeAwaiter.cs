@@ -11,7 +11,7 @@ public class UpgradeAwaiter : Singleton<UpgradeAwaiter> {
     public static readonly PlayerPauseEvent BeforeRegister = new();
     public static readonly PlayerPauseEvent AfterRegister = new();
 
-    public static event Action OnPauseEventStart, OnPauseEventEnd;
+    public static event Action PauseEventStart, PauseEventEnd;
 
     public static IEnumerator AwaitEvent(PlayerPauseEvent pauseEvent, Player arg) {
         if (!pauseEvent.ShouldAwait(arg)) yield break;
@@ -30,14 +30,14 @@ public class UpgradeAwaiter : Singleton<UpgradeAwaiter> {
     static IEnumerator Await() {
         var duration = 0f;
         var startTasks = TaskScheduler.TaskCount;
-        OnPauseEventStart?.Invoke();
+        PauseEventStart?.Invoke();
 
         while (duration < Instance._pauseTime && TaskScheduler.TaskCount == startTasks) {
             duration += Time.deltaTime;
             yield return null;
         }
         
-        OnPauseEventEnd?.Invoke();
+        PauseEventEnd?.Invoke();
     }
 
     public class PlayerPauseEvent {

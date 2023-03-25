@@ -6,10 +6,11 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SetupPhase : NetworkSingleton<SetupPhase> {
+public class SetupSystem : NetworkSingleton<SetupSystem> {
     [SerializeField] PlayerModel _playerModelPrefab;
     [SerializeField] TMP_Text _statusText;
     [SerializeField] Image _statusImage;
+    [SerializeField] GameObject _uiParent;
     [SerializeField] SoundEffect _playerPlacementSound;
 
     List<RebootToken> _tokens;
@@ -30,7 +31,8 @@ public class SetupPhase : NetworkSingleton<SetupPhase> {
         _tokens = MapSystem.GetByType<RebootToken>().Where(token => token.IsSpawnPoint).ToList();
     }
 
-    public IEnumerator DoPhase() {
+    public IEnumerator ChooseSpawnPoints() {
+        Debug.Log("Choosing spawn points");
         if (_tokens.Count == 1) {
             PlayerSystem.Players[0].CreateModel(Instance._playerModelPrefab, _tokens[0]);
             yield break;
@@ -40,9 +42,8 @@ public class SetupPhase : NetworkSingleton<SetupPhase> {
         UIMap.Instance.ZoomToFullscreen();
         UIMap.Instance.CanFocus = false;
         UIMap.Instance.IsCallingHover = false;
-
-        Instance._statusText.SetActive(true);
-        Instance._statusImage.SetActive(true);
+        
+        Instance._uiParent.SetActive(true);
         
         foreach (var player in PlayerSystem.Players) {
             if (_tokens.Count > 1) {
@@ -82,8 +83,7 @@ public class SetupPhase : NetworkSingleton<SetupPhase> {
             _playerMadeDecision = false;
         }
         
-        Instance._statusText.SetActive(false);
-        Instance._statusImage.SetActive(false);
+        Instance._uiParent.SetActive(false);
         
         UIMap.Instance.IsCallingHover = true;
         

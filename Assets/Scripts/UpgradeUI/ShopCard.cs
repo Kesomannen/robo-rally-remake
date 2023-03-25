@@ -30,10 +30,6 @@ public class ShopCard : UpgradeCard, IPointerClickHandler, IPointerEnterHandler 
 
     public event Action<ShopCard> CardClicked;
 
-    void OnEnable() {
-        UpdateAvailability();
-    }
-
     public void UpdateAvailability() {
         _unavailableOverlay.SetActive(!Available);
         Selectable.interactable = Available;

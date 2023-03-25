@@ -26,7 +26,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
         yield return UIManager.Instance.ChangeState(UIState.Programming);
 
         IsStressed = false;
-        PlayerUIRegister.Locked = false;
+        ProgrammingUIRegister.Locked = false;
         StressTimer.Value = GameSystem.Settings.StressTime.Value;
         LocalPlayerLockedIn = false;
         
@@ -68,7 +68,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
          Debug.Log($"Player {player} locked in with {string.Join(", ", cards.Select(c => c.ToString()))}, players left: {PlayerSystem.Players.Count - _playersLockedIn.Count}");
          
          if (PlayerSystem.IsLocal(player)) {
-             PlayerUIRegister.Locked = true;
+             ProgrammingUIRegister.Locked = true;
              LocalPlayerLockedIn = true;
          } else {
              for (var i = 0; i < cards.Length; i++) {

@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 514020554401031474}
   - component: {fileID: 514020554401031472}
-  - component: {fileID: 514020554401031475}
   m_Layer: 0
   m_Name: MusicChannel
   m_TagString: Untagged
@@ -129,19 +128,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &514020554401031475
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 514020554401031437}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fe90613a234400780edf8802abaef59, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _source: {fileID: 514020554401031472}
 --- !u!1 &514020555519445314
 GameObject:
   m_ObjectHideFlags: 0
@@ -152,7 +138,6 @@ GameObject:
   m_Component:
   - component: {fileID: 514020555519445313}
   - component: {fileID: 514020555519445312}
-  - component: {fileID: 514020555519445315}
   m_Layer: 0
   m_Name: SfxChannel
   m_TagString: Untagged
@@ -271,19 +256,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &514020555519445315
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 514020555519445314}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fe90613a234400780edf8802abaef59, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _source: {fileID: 514020555519445312}
 --- !u!1 &514020555523695582
 GameObject:
   m_ObjectHideFlags: 0
@@ -294,7 +266,6 @@ GameObject:
   m_Component:
   - component: {fileID: 514020555523695581}
   - component: {fileID: 514020555523695580}
-  - component: {fileID: 514020555523695583}
   m_Layer: 0
   m_Name: UIChannel
   m_TagString: Untagged
@@ -413,19 +384,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &514020555523695583
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 514020555523695582}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fe90613a234400780edf8802abaef59, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _source: {fileID: 514020555523695580}
 --- !u!1 &514020556175758218
 GameObject:
   m_ObjectHideFlags: 0
@@ -474,9 +432,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24731d3279f04028a5bb9b583f8ee3bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _musicChannel: {fileID: 514020554401031475}
-  _uiChannel: {fileID: 514020555523695583}
-  _sfxChannel: {fileID: 514020555519445315}
+  _musicChannel: {fileID: 514020554401031472}
+  _uiChannel: {fileID: 514020555523695580}
+  _sfxChannel: {fileID: 514020555519445312}
 --- !u!114 &3495286989864147276
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -33,32 +33,7 @@ public class PlayerExecutionRegister : MonoBehaviour, ITooltipable {
     ProgramCardData _content;
     bool _visible;
 
-    public bool Visible {
-        get => _visible;
-        set {
-            _visible = value;
-            _programCardImage.enabled = _visible;
-            _backgroundImage.sprite = _visible ? _sprite0 : _sprite1;
-            
-            var spriteState = _selectable.spriteState;
-            spriteState.highlightedSprite = _visible ? _sprite10 : _sprite11;
-            _selectable.spriteState = spriteState;
-        }
-    }
-
     Color _color;
-
-    public Color Color {
-        get => _color;
-        set {
-            if (value == _color) return;
-            _color = value;
-
-            _backgroundImage.color = _color;
-            _programCardImage.color = _color;
-        }
-    }
-
     Vector2 _baseSize;
     Vector2 _programCardBaseSize;
     float _scale = 1;
@@ -78,12 +53,25 @@ public class PlayerExecutionRegister : MonoBehaviour, ITooltipable {
             });
         }
     }
+    
+    public bool Visible {
+        set {
+            _visible = value;
+            _programCardImage.enabled = _visible;
+            _backgroundImage.sprite = _visible ? _sprite0 : _sprite1;
+            
+            var spriteState = _selectable.spriteState;
+            spriteState.highlightedSprite = _visible ? _sprite10 : _sprite11;
+            _selectable.spriteState = spriteState;
+        }
+    }
 
     void Awake() {
         _rectTransform = GetComponent<RectTransform>();
         _programCardTransform = _programCardImage.GetComponent<RectTransform>();
         _baseSize = _rectTransform.sizeDelta;
         _programCardBaseSize = _programCardTransform.sizeDelta;
+        
         Visible = false;
     }
 

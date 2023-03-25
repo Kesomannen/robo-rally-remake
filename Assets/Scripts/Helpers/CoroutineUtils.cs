@@ -9,10 +9,6 @@ public static class CoroutineUtils {
     public static WaitForSeconds Wait(float seconds) {
         return _cachedDelayObjects.EnforceKey(seconds, () => new WaitForSeconds(seconds));
     }
-    
-    public static IEnumerator WaitRoutine(float seconds) {
-        yield return Wait(seconds);
-    }
 
     static readonly WaitForEndOfFrame _endOfFrame = new();
     public static WaitForEndOfFrame WaitEndOfFrame() => _endOfFrame;

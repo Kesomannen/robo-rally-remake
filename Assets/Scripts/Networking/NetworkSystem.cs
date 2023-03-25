@@ -9,8 +9,13 @@ using UnityEngine.SceneManagement;
 
 public class NetworkSystem : NetworkSingleton<NetworkSystem> {
     [SerializeField] RobotData _singleplayerRobot;
+    
+    public const string GameScene = "Game";
+    const string LobbyScene = "Menu";
 
-    public static GameType CurrentGameType { get; set; } = GameType.Tutorial;
+    bool _shouldShutdownOnDestroy = true;
+
+    public static GameType CurrentGameType = GameType.Singleplayer;
 
     public enum GameType {
         Singleplayer,
@@ -20,7 +25,7 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
 
     void Start() {
         NetworkObject.DestroyWithScene = true;
-        
+
         if (CurrentGameType == GameType.Multiplayer || NetworkManager.IsListening) return;
         NetworkManager.StartHost();
     }
@@ -41,7 +46,11 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
         IEnumerator WaitForPlayers() {
             NetworkManager.SceneManager.OnLoadEventCompleted += LoadEventCompleted;
             var loaded = false;
-            yield return new WaitUntil(() => loaded);
+
+            using (new LoadingScreen("Waiting for players to load...")) {
+                yield return new WaitUntil(() => loaded);   
+            }
+
             StartGameClientRpc();
             StartGame();
 
@@ -81,7 +90,7 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
                     RobotData = _singleplayerRobot
                 });
             } else {
-                foreach (var (id, playerData) in LobbySystem.PlayersInLobby) {
+                foreach (var (id, playerData) in LobbySystem.PlayersInLobby.OrderBy(x => x.Key)) {
                     players.Add(new GameSystem.PlayerData {
                         Id = id,
                         Name = playerData.Name,
@@ -90,10 +99,10 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
                 }
             }
             
-            GameSystem.Initialize(LobbySystem.GameSettings, MapData.GetById(LobbySystem.LobbyMap.Value), players);
+            GameSystem.Instance.Initialize(LobbySystem.GameSettings, MapData.GetById(LobbySystem.LobbyMap.Value), players);
         }
         
-        Debug.Log("Initialization complete, starting phase system");
+        Debug.Log("Initialization complete, starting game");
         GameSystem.Instance.StartPhaseSystem();
     }
     
@@ -101,12 +110,12 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
         if (IsServer) {
             var player = PlayerSystem.Players.First(p => p.ClientId == id);
             Log.Instance.RawMessage($"{Log.PlayerString(player)} left the game");
-            PlayerSystem.RemovePlayer(player);
+            PlayerSystem.Instance.RemovePlayer(player);
             
             PlayerDisconnectedClientRpc(id);
         } else {
             // Host disconnected
-            ReturnToLobby();
+            StartCoroutine(ReturnToLobby());
         }
     }
 
@@ -115,7 +124,7 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
         if (IsServer) return;
         var player = PlayerSystem.Players.First(p => p.ClientId == id);
         Log.Instance.RawMessage($"{Log.PlayerString(player)} left the game");
-        PlayerSystem.RemovePlayer(player);
+        PlayerSystem.Instance.RemovePlayer(player);
     }
 
     public override void OnDestroy() {
@@ -123,15 +132,35 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
 
         Matchmaking.LeaveLobbyAsync();
         
-        if (NetworkManager.Singleton == null) return;
+        if (!_shouldShutdownOnDestroy || NetworkManager.Singleton == null) return;
         NetworkManager.OnClientDisconnectCallback -= OnClientDisconnect;
         NetworkManager.Shutdown();
     }
 
-    const int LobbySceneIndex = 0;
-    
-    public static void ReturnToLobby() {
-        SceneManager.LoadScene(LobbySceneIndex);
+    public IEnumerator ReturnToLobby() {
+        _shouldShutdownOnDestroy = true;
+
+        using (new LoadingScreen("Returning to lobby...")) {
+            yield return SceneManager.LoadSceneAsync(LobbyScene);
+        }
+    }
+
+    public IEnumerator ReloadScene() {
+        using (new LoadingScreen("Loading...")) {
+            var done = false;
+            _shouldShutdownOnDestroy = false;
+
+            var sceneManager = NetworkManager.SceneManager;
+            sceneManager.OnLoadEventCompleted += LoadEventCompleted;
+            sceneManager.LoadScene(GameScene, LoadSceneMode.Single);
+            
+            yield return new WaitUntil(() => done);
+            
+            void LoadEventCompleted(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut) {
+                sceneManager.OnLoadEventCompleted -= LoadEventCompleted;
+                done = true;
+            }
+        }
     }
 
     public void BroadcastUpgrade(int index) {

@@ -188,7 +188,7 @@ public static class Matchmaking {
 
     public static async Task LeaveLobbyAsync() {
         if (CurrentLobby == null) {
-            Debug.LogError("Cannot leave a lobby while not in a lobby");
+            Debug.LogWarning("Cannot leave a lobby while not in a lobby");
             return;
         }
 

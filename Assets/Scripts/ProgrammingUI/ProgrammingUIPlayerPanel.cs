@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class PlayerUIPlayerPanel : PlayerPanel {
+public class ProgrammingUIPlayerPanel : PlayerPanel {
     [Header("Upgrade Card")]
     [SerializeField] UpgradeCard _upgradeCardPrefab;
     [FormerlySerializedAs("_upgradeCardDuration")] 

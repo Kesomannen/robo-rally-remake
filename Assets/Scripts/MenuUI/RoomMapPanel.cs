@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using Unity.Netcode;
@@ -18,10 +19,9 @@ public class RoomMapPanel : Container<MapData> {
     [SerializeField] Image _lengthImage;
     [SerializeField] TMP_Text _lengthText;
     [SerializeField] Sprite[] _lengthSprites;
-    [Space]
-    [SerializeField] MapData[] _availableMaps;
 
     static int MapID => LobbySystem.LobbyMap.Value;
+    static IReadOnlyList<MapData> Maps => LobbySystem.Instance.AvailableMaps;
 
     void Awake() {
         LobbySystem.LobbyMap.ValueChanged += OnMapChanged;
@@ -48,8 +48,8 @@ public class RoomMapPanel : Container<MapData> {
         _prevButton.interactable = false;
     }
 
-    public void GoNext() => LobbySystem.Instance.SetLobbyMap(MapID + 1 >= _availableMaps.Length ? 0 : MapID + 1);
-    public void GoPrevious() => LobbySystem.Instance.SetLobbyMap(MapID == 0 ? _availableMaps.Length - 1 : MapID - 1);
+    public void GoNext() => LobbySystem.Instance.SetLobbyMap(MapID + 1 >= Maps.Count ? 0 : MapID + 1);
+    public void GoPrevious() => LobbySystem.Instance.SetLobbyMap(MapID == 0 ? Maps.Count - 1 : MapID - 1);
 
     void Serialize(int id) => Serialize(MapData.GetById(id));
 

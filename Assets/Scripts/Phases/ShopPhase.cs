@@ -14,7 +14,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
     bool _currentPlayerReady;
     
     public Player CurrentPlayer { get; private set; }
-    public IEnumerable<UpgradeCardData> ShopCards => _shopCards;
+    public IReadOnlyList<UpgradeCardData> ShopCards => _shopCards;
 
     public static event Action<Player, bool, UpgradeCardData> PlayerDecision;
     public static event Action<Player> NewPlayer;
@@ -32,7 +32,7 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
         yield return TaskScheduler.WaitUntilClear();
 
         _skippedPlayers = 0;
-        var orderedPlayers = PlayerSystem.GetOrderedPlayers();
+        var orderedPlayers = PlayerSystem.Instance.GetOrderedPlayers();
         foreach (var player in orderedPlayers) {
             yield return DoPlayerTurn(player);
             yield return TaskScheduler.WaitUntilClear();

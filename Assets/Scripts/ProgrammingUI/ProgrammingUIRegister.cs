@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class PlayerUIRegister : MonoBehaviour, IPointerClickHandler {
+public class ProgrammingUIRegister : MonoBehaviour, IPointerClickHandler {
     [SerializeField] int _index;
     [SerializeField] Container<ProgramCardData> _cardContainer;
     [SerializeField] SoundEffect _onPlaceSound, _onRemoveSound;
@@ -10,8 +10,8 @@ public class PlayerUIRegister : MonoBehaviour, IPointerClickHandler {
 
     static Player Owner => PlayerSystem.LocalPlayer;
 
-    static readonly PlayerUIRegister[] _registers = new PlayerUIRegister[ExecutionPhase.RegisterCount];
-    public static PlayerUIRegister GetRegister(int index) => _registers[index];
+    static readonly ProgrammingUIRegister[] _registers = new ProgrammingUIRegister[ExecutionPhase.RegisterCount];
+    public static ProgrammingUIRegister GetRegister(int index) => _registers[index];
 
     static bool _locked;
     public static bool Locked {

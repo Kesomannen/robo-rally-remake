@@ -17,18 +17,14 @@ public class MapSystem : Singleton<MapSystem> {
     public static Action MapLoaded;
 
     public void LoadMap(MapData mapData) {
-        Debug.Log($"Loading map {mapData}...");
-
         if (_currentMap != null) {
             Destroy(_currentMap);
         }
         
         _currentMap = Instantiate(mapData.Prefab, _grid.transform);
-
-        // Find tilemaps and boards
+        
         var tilemaps = _currentMap.GetComponentsInChildren<Tilemap>();
         _boards = tilemaps.ToDictionary(x => x, x => x.GetComponentInParent<IBoard>());
-        Debug.Log($"Registered {_boards.Count} boards.");
 
         // Register MapObjects
         _tiles = new Dictionary<Vector2Int, List<MapObject>>();
@@ -37,16 +33,14 @@ public class MapSystem : Singleton<MapSystem> {
             RegisterMapObject(obj);
             if (obj is IOnEnterHandler handler) onEnterHandlers.Add(handler);
         }
-        Debug.Log($"Registered {_tiles.Count} tiles.");
 
-        // Call OnEnter handlers
+        // Call OnEnter handlers for objects on the map
         foreach (var handler in onEnterHandlers) {
             foreach (var obj in _tiles[handler.Object.GridPos].Drop(handler.Object)) {
                 handler.OnEnter(obj);
             }
         }
-        Debug.Log($"Called OnEnter for {onEnterHandlers.Count} objects.");
-        
+
         PositionCamera();
         
         MapLoaded?.Invoke();

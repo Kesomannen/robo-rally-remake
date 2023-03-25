@@ -15,12 +15,8 @@ public class TopButtons : MonoBehaviour {
         _chatNotification.SetActive(false);
     }
 
-    void Start() {
-        _shopButton.SetActive(GameSystem.Settings.EnergyEnabled);
-        _chatButton.SetActive(PlayerSystem.Players.Count > 1);
-    }
-
     void OnEnable() {
+        GameSystem.Initialized += OnGameInitialized;
         Chat.MessageSent += OnNewChat;
         GameSystem.CurrentPhase.ValueChanged += OnPhaseChanged;
         
@@ -29,11 +25,17 @@ public class TopButtons : MonoBehaviour {
     }
     
     void OnDisable() {
+        GameSystem.Initialized -= OnGameInitialized;
         Chat.MessageSent -= OnNewChat;
         GameSystem.CurrentPhase.ValueChanged -= OnPhaseChanged;
         
         _toggleSettings.Disable();
         _toggleSettings.performed -= OnToggleSettingsPerformed;
+    }
+    
+    void OnGameInitialized(GameSettings settings) {
+        _shopButton.SetActive(settings.EnergyEnabled);
+        _chatButton.SetActive(PlayerSystem.Players.Count > 1);
     }
     
     void OnToggleSettingsPerformed(InputAction.CallbackContext _) => ToggleSettings();

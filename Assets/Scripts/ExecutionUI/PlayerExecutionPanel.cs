@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -40,8 +41,13 @@ public class PlayerExecutionPanel : Container<Player>, IPointerClickHandler {
         PlayerSystem.PlayerRemoved -= OnPlayerRemoved;
     }
 
+    void Start() {
+        UpdateRegisters();
+    }
+
     void OnEnable() {
         _energyText.text = Content?.Energy.ToString();
+        _checkpointText.text = Content?.CurrentCheckpoint.ToString();
     }
 
     void OnPlayerRemoved(Player player) {
@@ -52,17 +58,19 @@ public class PlayerExecutionPanel : Container<Player>, IPointerClickHandler {
 
     void OnExecutionStart() {
         Content.Program.RegisterChanged += OnRegisterChanged;
-        
+        UpdateRegisters();
+    }
+
+    void OnExecutionEnd() {
+        Content.Program.RegisterChanged -= OnRegisterChanged;
+    }
+
+    void UpdateRegisters() {
         var isLocal = PlayerSystem.IsLocal(Content);
         for (var i = 0; i < _registers.Length; i++) {
             _registers[i].SetContent(Content.Program[i]);
             _registers[i].Visible = isLocal;
         }
-        
-    }
-
-    void OnExecutionEnd() {
-        Content.Program.RegisterChanged -= OnRegisterChanged;
     }
 
     protected override void Serialize(Player player) {
@@ -108,7 +116,7 @@ public class PlayerExecutionPanel : Container<Player>, IPointerClickHandler {
         _energyText.text = next.ToString();
     }
 
-    IEnumerator DoAnimation(IReadOnlyList<Transform> objects) {
+    IEnumerator DoAnimation(IReadOnlyCollection<Transform> objects) {
         Debug.Log($"Doing animation for {objects.Count} object(s)");
         
         foreach (var obj in objects) {

@@ -22,21 +22,21 @@ public class ProgramCardViewer : MonoBehaviour {
     Player _lastPlayer;
     bool _isAnimating;
 
+    void Awake() {
+        foreach (var player in PlayerSystem.Players) {
+            player.ProgramCardExecuted += OnProgramCardPlayed;
+            player.UpgradeUsed += upgrade => OnUpgradeUsed(player, upgrade);
+        }
+    }
+
     void OnEnable() {
         ExecutionPhase.PlayerRegister += OnRegister;
-        PlayerSystem.PlayerCreated += OnPlayerCreated;
     }
 
     void OnDisable() {
         ExecutionPhase.PlayerRegister -= OnRegister;
-        PlayerSystem.PlayerCreated -= OnPlayerCreated;
     }
-    
-    void OnPlayerCreated(Player player) {
-        player.ProgramCardExecuted += OnProgramCardPlayed;
-        player.UpgradeUsed += upgrade => OnUpgradeUsed(player, upgrade);
-    }
-    
+
     void OnRegister(ProgramExecution execution) {
         StartCoroutine(ClearCards());
     }

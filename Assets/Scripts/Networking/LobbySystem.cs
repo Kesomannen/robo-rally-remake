@@ -17,6 +17,12 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
     [SerializeField] TMP_InputField _inputField;
     [SerializeField] GameObject _enterNameMenu;
     [SerializeField] int _minNameLength = 3;
+    [Space]
+    [SerializeField] MapData[] _availableMaps;
+    [SerializeField] RobotData[] _availableRobots;
+    
+    public IReadOnlyList<MapData> AvailableMaps => _availableMaps;
+    public IReadOnlyList<RobotData> AvailableRobots => _availableRobots;
 
     static string _playerName;
     public static string PlayerName {
@@ -65,6 +71,8 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
             
             _playerName = str;
             PlayerPrefs.SetString(PlayerPrefsNameKey, str);
+            PlayerPrefs.Save();
+            
             _enterNameMenu.SetActive(false);
             NameChanged?.Invoke(str);
         });
@@ -88,7 +96,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
                 Name = PlayerName,
                 IsHost = true,
                 IsReady = false,
-                RobotId = (byte)RobotData.GetRandom().GetLookupId()
+                RobotId = (byte) AvailableRobots.GetRandom().GetLookupId()
             };
             PlayerUpdatedOrAdded?.Invoke(id, _playersInLobby[id]);
 
@@ -172,6 +180,13 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
     
     [ServerRpc(RequireOwnership = false)]
     void UpdatePlayerServerRpc(ulong playerId, LobbyPlayerData newPlayerData) {
+        if (_playersInLobby.ContainsKey(playerId)) {
+            // Check if the robot is already taken
+            if (_playersInLobby.Where(pair => pair.Key != playerId).Any(pair => pair.Value.RobotId == newPlayerData.RobotId)) {
+                newPlayerData.RobotId = _playersInLobby[playerId].RobotId;
+            }
+        }
+        
         _playersInLobby[playerId] = newPlayerData;
         PlayerUpdatedOrAdded?.Invoke(playerId, newPlayerData);
         
@@ -270,7 +285,7 @@ public class LobbySystem : NetworkSingleton<LobbySystem> {
         NetworkSystem.CurrentGameType = NetworkSystem.GameType.Multiplayer;
         
         sceneManager.OnLoadEventCompleted += LoadComplete;
-        sceneManager.LoadScene("Game", LoadSceneMode.Single);
+        sceneManager.LoadScene(NetworkSystem.GameScene, LoadSceneMode.Single);
         yield return new WaitUntil(() => succeeded || failed);
 
         void LoadComplete(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut) {

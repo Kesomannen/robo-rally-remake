@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TaskScheduler : Singleton<TaskScheduler> {
+    // ReSharper disable once NotAccessedField.Local
     [SerializeField] [ReadOnly] float _defaultTaskDelay;
     
     static readonly Stack<(IEnumerator Routine, Action Callback, float Delay)> _tasks = new();
@@ -13,8 +14,22 @@ public class TaskScheduler : Singleton<TaskScheduler> {
 
     public static float DefaultTaskDelay { get; private set; }
 
-    void Start() {
-        DefaultTaskDelay = 0.75f / GameSystem.Settings.GameSpeed.Value;
+    protected override void Awake() {
+        base.Awake();
+        _tasks.Clear();
+        _isRunning = false;
+    }
+
+    void OnEnable() {
+        GameSystem.Initialized += OnGameInitialized;
+    }
+    
+    void OnDisable() {
+        GameSystem.Initialized -= OnGameInitialized;
+    }
+    
+    void OnGameInitialized(GameSettings gameSettings) {
+        DefaultTaskDelay = 0.75f / gameSettings.GameSpeed.Value;
         _defaultTaskDelay = DefaultTaskDelay;
     }
 
@@ -22,6 +37,7 @@ public class TaskScheduler : Singleton<TaskScheduler> {
         if (delay < 0) delay = DefaultTaskDelay;
         
         _tasks.Push((routine, onComplete, delay));
+        Debug.Log($"Pushed routine: {routine}");
         if (_isRunning) return;
         
         _isRunning = true;

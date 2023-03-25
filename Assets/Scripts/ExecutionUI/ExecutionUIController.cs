@@ -21,6 +21,8 @@ public class ExecutionUIController : MonoBehaviour {
 
     Vector3 _iconPosition;
     Image _currentSubPhaseImage;
+    List<Player> _playerPanelOrder;
+    Player _previousPlayer;
     
     [SerializeField] SubPhaseInfo 
         _orderPlayers,
@@ -64,17 +66,32 @@ public class ExecutionUIController : MonoBehaviour {
         };
     }
 
-    List<Player> _playerOrder = new();
+    void Awake() {
+        ExecutionPhase.PlayerRegistersComplete += OnPlayerRegistersComplete;
+        ExecutionPhase.NewSubPhase += OnNewSubPhase;
+        ExecutionPhase.PlayerRegister += OnPlayerRegister;
+        ExecutionPhase.PlayersOrdered += OnPlayersOrdered;
 
-    void Start() {
         var pos = _phaseIcon1.transform.position;
+        
         _iconPosition = pos;
         _phaseIcon2.transform.position = pos + Vector3.up * _phaseDistance * CanvasUtils.CanvasScale.y;
         _currentSubPhaseImage = _phaseIcon1;
-
-        gameObject.SetActive(false);
+        
+        _playerPanelOrder = new List<Player>();
+        foreach (var player in PlayerSystem.Instance.GetOrderedPlayers()) {
+            _panelsController.CreatePanel(player);
+            _playerPanelOrder.Add(player);
+        }
     }
-
+    
+    void OnDestroy() {
+        ExecutionPhase.PlayerRegistersComplete -= OnPlayerRegistersComplete;
+        ExecutionPhase.NewSubPhase -= OnNewSubPhase;
+        ExecutionPhase.PlayerRegister -= OnPlayerRegister;
+        ExecutionPhase.PlayersOrdered -= OnPlayersOrdered;
+    }
+    
     IEnumerator ChangeSubPhase(UISubPhase uiSubPhase) {
         var info = GetInfo(uiSubPhase);
         var distance = CanvasUtils.CanvasScale.x * _phaseDistance;
@@ -103,45 +120,22 @@ public class ExecutionUIController : MonoBehaviour {
         current.transform.position = _iconPosition + Vector3.up * distance;
         _currentSubPhaseImage = next;
     }
-
-    void Awake() {
-        ExecutionPhase.PlayerRegistersComplete += OnPlayerRegistersComplete;
-        ExecutionPhase.NewSubPhase += OnNewSubPhase;
-        ExecutionPhase.PlayerRegister += OnPlayerRegister;
-        ExecutionPhase.PlayersOrdered += OnPlayersOrdered;
-        PlayerSystem.PlayerCreated += OnPlayerCreated;
-    }
     
-    void OnDestroy() {
-        ExecutionPhase.PlayerRegistersComplete -= OnPlayerRegistersComplete;
-        ExecutionPhase.NewSubPhase -= OnNewSubPhase;
-        ExecutionPhase.PlayerRegister -= OnPlayerRegister;
-        ExecutionPhase.PlayersOrdered -= OnPlayersOrdered;
-        PlayerSystem.PlayerCreated -= OnPlayerCreated;
-    }
-    
-    void OnPlayerCreated(Player player) {
-        _panelsController.CreatePanel(player);
-        _playerOrder.Add(player);
-    }
-
     void OnPlayersOrdered(IReadOnlyList<Player> nextPlayerOrder) {
         var swaps = new List<(int first, int second)>();
 
         for (var i = 0; i < nextPlayerOrder.Count; i++) {
             var player = nextPlayerOrder[i];
-            var current = _playerOrder.IndexOf(player);
+            var current = _playerPanelOrder.IndexOf(player);
             if (i == current) continue;
             
             swaps.Add((i, current));
-            (_playerOrder[i], _playerOrder[current]) = (_playerOrder[current], _playerOrder[i]);
+            (_playerPanelOrder[i], _playerPanelOrder[current]) = (_playerPanelOrder[current], _playerPanelOrder[i]);
         }
         
-        TaskScheduler.PushRoutine(swaps.Select(swap => DoSwap(swap.first, swap.second)).GetEnumerator());
+        TaskScheduler.PushSequence(routines: swaps.Select(swap => DoSwap(swap.first, swap.second)).ToArray());
         TaskScheduler.PushRoutine(ChangeSubPhase(UISubPhase.OrderPlayers));
-        
-        _playerOrder = nextPlayerOrder.ToList();
-        
+
         IEnumerator DoSwap(int first, int second) {
             yield return Antenna.Instance.BeamAnimation(nextPlayerOrder[first]);
             yield return _panelsController.Swap(first, second);
@@ -155,9 +149,7 @@ public class ExecutionUIController : MonoBehaviour {
             register.Scale = register == target ? scale : balancedScale;
         }
     }
-    
-    Player _previousPlayer;
-    
+
     void OnPlayerRegister(ProgramExecution execution) {
         var player = execution.Player;
         

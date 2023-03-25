@@ -11,7 +11,9 @@ public class LockInButton : MonoBehaviour, IPointerClickHandler {
     [SerializeField] Color _invalidColor;
     [SerializeField] float _shakeDuration;
     [SerializeField] float _shakeMagnitude;
+    [Space]
     [SerializeField] SoundEffect _invalidSound;
+    [SerializeField] SoundEffect _lockInSound;
     
     [Header("Sprites")] 
     [SerializeField] Sprite _availableSprite;
@@ -32,22 +34,32 @@ public class LockInButton : MonoBehaviour, IPointerClickHandler {
     
     State _state;
     bool _isAnimating;
+    bool _pressed;
 
-    void OnEnable() {
+    void Awake() {
         Owner.Program.RegisterChanged += RegisterChanged;
+        ProgrammingPhase.PlayerLockedIn += PLayerLockedIn;
+        ProgrammingPhase.PhaseStarted += PhaseStarted;
+        
         UpdateState();
     }
 
-    void OnDisable() {
+    void OnDestroy() {
         Owner.Program.RegisterChanged -= RegisterChanged;
+        ProgrammingPhase.PlayerLockedIn -= PLayerLockedIn;
+        ProgrammingPhase.PhaseStarted -= PhaseStarted;
     }
-
-    void RegisterChanged(int register, ProgramCardData prev, ProgramCardData next) {
+    
+    void PhaseStarted() {
+        _pressed = false;
         UpdateState();
     }
+
+    void PLayerLockedIn(Player player) => UpdateState();
+    void RegisterChanged(int register, ProgramCardData prev, ProgramCardData next) => UpdateState();
 
     void UpdateState() {
-        if (ProgrammingPhase.LocalPlayerLockedIn) {
+        if (ProgrammingPhase.LocalPlayerLockedIn || _pressed) {
             _state = State.Locked;
         } else {
             _state = Owner.Program.Cards.Any(c => c == null) ? State.Unavailable : State.Available;
@@ -74,7 +86,7 @@ public class LockInButton : MonoBehaviour, IPointerClickHandler {
     }
 
     public void OnPointerClick(PointerEventData e) {
-        if (_isAnimating) return;
+        if (_isAnimating || ProgrammingPhase.LocalPlayerLockedIn) return;
         
         switch (_state) {
             case State.Locked: return;
@@ -84,6 +96,9 @@ public class LockInButton : MonoBehaviour, IPointerClickHandler {
             case State.Available:
                 Owner.SerializeRegisters(out var playerIndex, out var registers);
                 ProgrammingPhase.Instance.LockRegisterServerRpc(playerIndex, registers);
+                _lockInSound.Play();
+                _pressed = true;
+                UpdateState();
                 break;
             default: throw new ArgumentOutOfRangeException();
         }

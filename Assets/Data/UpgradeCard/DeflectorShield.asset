@@ -15,7 +15,7 @@ MonoBehaviour:
   _name: Deflector Shield
   _description: Before a register, you may pay one energy to negate all robot lasers
     during that register.
-  _icon: {fileID: 21300000, guid: 30fc70d2d652da84cb00f5d3d68187f3, type: 3}
+  _icon: {fileID: 21300000, guid: 747090e7a8c8b7945afb4f28610a453f, type: 3}
   _type: 2
   _cost: 2
   _usesPerTurn: 2147483647

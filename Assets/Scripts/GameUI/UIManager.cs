@@ -21,13 +21,9 @@ public class UIManager : Singleton<UIManager> {
             Enter(newState);
             _currentState = newState;
         });
-
-        OnStateChange?.Invoke(_currentState);
     }
 
     UIState _currentState = UIState.None;
-
-    public static event Action<UIState> OnStateChange;
 
     void Enter(UIState state) {
         Action action = state switch {

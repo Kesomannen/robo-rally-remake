@@ -11,6 +11,8 @@ public class CollectionOverlay : Overlay {
     readonly List<Transform> _objects = new();
 
     public void Init<T>(Container<T> prefab, IEnumerable<T> contents, bool shuffledView = false) {
+        if (contents == null) return;
+        
         var contentList = contents.Where(x => x != null).ToList();
         if (shuffledView) contentList.Shuffle();
         

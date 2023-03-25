@@ -9,6 +9,8 @@ public class GameSystem : Singleton<GameSystem> {
     
     public static GameSettings Settings { get; private set; }
     public static readonly ObservableField<Phase> CurrentPhase = new();
+    
+    public static event Action<GameSettings> Initialized; 
 
     [Serializable]
     public struct PlayerData {
@@ -28,12 +30,11 @@ public class GameSystem : Singleton<GameSystem> {
         public ulong Id { get; set; }
     }
 
-    public static void Initialize(GameSettings gameSettings, MapData map, IEnumerable<PlayerData> players) {
+    public void Initialize(GameSettings gameSettings, MapData map, IEnumerable<PlayerData> players) {
         Settings = gameSettings;
         
         MapSystem.Instance.LoadMap(map);
         
-        Debug.Log("Creating energy spaces");
         if (!gameSettings.EnergyEnabled) {
             var spaces = MapSystem.GetByType<EnergySpace>().ToArray();
             // ReSharper disable once ForCanBeConvertedToForeach
@@ -45,22 +46,26 @@ public class GameSystem : Singleton<GameSystem> {
         }
         
         // Create players       
-        Debug.Log("Creating players");
         foreach (var playerData in players) {
-            PlayerSystem.CreatePlayer(playerData.Id, playerData.RobotData, playerData.Name);
+            PlayerSystem.Instance.CreatePlayer(playerData.Id, playerData.RobotData, playerData.Name);
         }
+        
+        Initialized?.Invoke(gameSettings);
     }
     
     public void StartPhaseSystem() {
-        if (_isPlaying) return;
-        Debug.Log("Starting phase system");
         StartCoroutine(PhaseRoutine());
+    }
+    
+    public void StopPhaseSystem() {
+        Debug.Log("Stopping phase system...");
+        _isPlaying = false;
     }
 
     IEnumerator PhaseRoutine() {
         _isPlaying = true;
-        
-        yield return DoPhaseRoutine(SetupPhase.Instance.DoPhase(), Phase.Setup);   
+
+        yield return DoPhaseRoutine(SetupSystem.Instance.ChooseSpawnPoints(), Phase.Setup);   
 
         while (_isPlaying) {
             if (Settings.EnergyEnabled) {
@@ -71,7 +76,7 @@ public class GameSystem : Singleton<GameSystem> {
         }
         
         IEnumerator DoPhaseRoutine(IEnumerator routine, Phase phase) {
-            yield return TaskScheduler.WaitUntilClear();
+             yield return TaskScheduler.WaitUntilClear();
             yield return NetworkUtils.Instance.SyncPlayers();
             
             CurrentPhase.Value = phase;

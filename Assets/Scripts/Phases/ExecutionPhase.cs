@@ -45,7 +45,7 @@ public class ExecutionPhase : NetworkSingleton<ExecutionPhase> {
         yield return CoroutineUtils.Wait(TaskScheduler.DefaultTaskDelay);
         yield return UpgradeAwaiter.AwaitEvent(UpgradeAwaiter.BeforePlayerOrdering);
 
-        var orderedPlayers = PlayerSystem.GetOrderedPlayers().ToArray();
+        var orderedPlayers = PlayerSystem.Instance.GetOrderedPlayers().ToArray();
         if (_previousPlayerOrder != null && !_previousPlayerOrder.SequenceEqual(orderedPlayers)) {
             PlayersOrdered?.Invoke(orderedPlayers);
             yield return CoroutineUtils.Wait(TaskScheduler.DefaultTaskDelay);

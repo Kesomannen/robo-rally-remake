@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -12,22 +11,7 @@ public class HandUpgradeCardArray : MonoBehaviour {
     [SerializeField] GameObject _reminder;
 
     HandUpgradeCard[] _cards;
-
-    IEnumerable<HandUpgradeCard> Cards {
-        get {
-            if (_cards != null) return _cards;
-
-            _cards = new HandUpgradeCard[Owner.Upgrades.Count];
-            for (var i = 0; i < Owner.Upgrades.Count; i++) {
-                var upgrade = Owner.Upgrades[i];
-                if (upgrade == null) continue;
-                CreateCard(upgrade, i);
-            }
-
-            return _cards;
-        }
-    }
-
+    
     static Player Owner => PlayerSystem.LocalPlayer;
 
     void Start() {
@@ -39,8 +23,15 @@ public class HandUpgradeCardArray : MonoBehaviour {
         ExecutionPhase.PlayerRegistersComplete += UpdateAvailability;
         ExecutionPhase.PlayerRegister += OnPlayerRegister;
         
-        UpgradeAwaiter.OnPauseEventStart += OnPauseEventStart;
-        UpgradeAwaiter.OnPauseEventEnd += OnPauseEventEnd;
+        UpgradeAwaiter.PauseEventStart += OnPauseEventStart;
+        UpgradeAwaiter.PauseEventEnd += OnPauseEventEnd;
+        
+        _cards = new HandUpgradeCard[Owner.Upgrades.Count];
+        for (var i = 0; i < Owner.Upgrades.Count; i++) {
+            var upgrade = Owner.Upgrades[i];
+            if (upgrade == null) continue;
+            CreateCard(upgrade, i);
+        }
     }
 
     void OnDestroy() {
@@ -52,8 +43,8 @@ public class HandUpgradeCardArray : MonoBehaviour {
         ExecutionPhase.PlayerRegistersComplete -= UpdateAvailability;
         ExecutionPhase.PlayerRegister += OnPlayerRegister;
         
-        UpgradeAwaiter.OnPauseEventStart -= OnPauseEventStart;
-        UpgradeAwaiter.OnPauseEventEnd -= OnPauseEventEnd;
+        UpgradeAwaiter.PauseEventStart -= OnPauseEventStart;
+        UpgradeAwaiter.PauseEventEnd -= OnPauseEventEnd;
     }
     
     void OnPauseEventStart() { 
@@ -88,7 +79,7 @@ public class HandUpgradeCardArray : MonoBehaviour {
     }
     
     void UpdatePositions() {
-        var cards = Cards.Where(c => c != null).ToArray();
+        var cards = _cards.Where(c => c != null).ToArray();
         var rows = Mathf.CeilToInt(cards.Length / (float)_cardsPerRow);
         var columns = Mathf.CeilToInt(cards.Length / (float)rows);
         
@@ -107,7 +98,7 @@ public class HandUpgradeCardArray : MonoBehaviour {
     }
 
     void UpdateAvailability() {
-        foreach (var card in Cards) {
+        foreach (var card in _cards) {
             if (card == null) continue;
             card.UpdateAvailability();
         }
