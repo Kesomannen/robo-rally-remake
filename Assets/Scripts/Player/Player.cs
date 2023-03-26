@@ -237,7 +237,7 @@ public class Player : IPlayer {
 
     public void UseUpgrade(int index) {
         var upgrade = _upgrades[index];
-        Log.Instance.UseUpgradeMessage(this, upgrade);
+        Log.Message($"{Log.PlayerString(this)} used {Log.UpgradeString(upgrade)}");
         upgrade.Use(this);
         
         UpgradeUsed?.Invoke(upgrade);
@@ -266,14 +266,17 @@ public class Player : IPlayer {
     
     public void Reboot(IBoard board, bool takeDamage = true) {
         board.Respawn(Model);
-        if (takeDamage) ApplyCardAffector(RebootAffector);
+        if (takeDamage) {
+            ApplyCardAffector(RebootAffector);
+            Log.Message($"{Log.PlayerString(this)} {Log.RebootString()} and was dealt {string.Join(", ", RebootAffector.Cards.Select(Log.ProgramString))}");
+        } else {
+            Log.Message($"{Log.PlayerString(this)} {Log.RebootString()} but took no damage cards");
+        }
         
         DiscardHand();
         DiscardProgram();
         
         IsRebooted.Value = true;
-        
-        Log.Instance.RebootMessage(this);
     }
     
     public void RebootFromParentBoard(bool takeDamage = true) {

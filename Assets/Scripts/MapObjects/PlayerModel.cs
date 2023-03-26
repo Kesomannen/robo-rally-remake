@@ -119,13 +119,13 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
             
             foreach (var player in hits) {
                 if (player.Owner.Model.InvulnerableToLasers) {
-                    Log.Instance.RawMessage($"{Log.PlayerString(Owner)} shot {Log.PlayerString(player.Owner)} but they were invulnerable to lasers");
+                    Log.Message($"{Log.PlayerString(Owner)} shot {Log.PlayerString(player.Owner)} but they were invulnerable to lasers");
                     continue;
                 }
 
                 player.Owner.ApplyCardAffector(Owner.LaserAffector);
                 if (Owner.LaserAffector.Cards.Count > 0) {
-                    Log.Instance.RawMessage($"{Log.PlayerString(Owner)} shot {Log.PlayerString(player.Owner)} and dealt {string.Join(",", Owner.LaserAffector.Cards.Select(Log.ProgramString))}");
+                    Log.Message($"{Log.PlayerString(Owner)} shot {Log.PlayerString(player.Owner)} and dealt {string.Join(",", Owner.LaserAffector.Cards.Select(Log.ProgramString))}");
                 }
                 
                 OnShoot?.Invoke(new CallbackContext {
@@ -190,7 +190,7 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
         foreach (var player in mapEvent.MapObjects.OfType<IPlayer>().Select(m => m.Owner).Where(p => p != Owner)) {
             player.ApplyCardAffector(Owner.PushAffector);
             if (Owner.PushAffector.Cards.Count > 0) {
-                Log.Instance.RawMessage($"{Log.PlayerString(Owner)} pushed {Log.PlayerString(player.Owner)} and dealt {string.Join(",", Owner.PushAffector.Cards.Select(Log.ProgramString))})");
+                Log.Message($"{Log.PlayerString(Owner)} pushed {Log.PlayerString(player.Owner)} and dealt {string.Join(",", Owner.PushAffector.Cards.Select(Log.ProgramString))})");
             }
             
             OnPush?.Invoke(new CallbackContext {

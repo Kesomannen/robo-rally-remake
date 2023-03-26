@@ -50,7 +50,7 @@ public class LaserMoveUpgrade : UpgradeCardData {
         }
         
         IEnumerator MoveTarget() {
-            Log.Instance.RawMessage($"{Log.PlayerString(attacker)} {(_moveDistance < 0 ? "pulled" : "pushed")} {Log.PlayerString(target)} with {Log.UpgradeString(this)}");
+            Log.Message($"{Log.PlayerString(attacker)} {(_moveDistance < 0 ? "pulled" : "pushed")} {Log.PlayerString(target)} with {Log.UpgradeString(this)}");
             
             var delta = (int) Mathf.Sign(_moveDistance);
             for (var i = 0; i < Mathf.Abs(_moveDistance); i++) {

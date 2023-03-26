@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -20,35 +19,16 @@ public class Log : Singleton<Log> {
     const string PlayerSpritePrefix = "Log_Player_";
     const string IconSpritePrefix = "Log_Icon_";
 
-    public void UseUpgradeMessage(Player player, UpgradeCardData upgrade) => Publish(LogMessageType.UseUpgrade, args: new[] { IndexOf(player), upgrade.GetLookupId() });
-    public void BuyUpgradeMessage(Player player, UpgradeCardData upgrade) => Publish(LogMessageType.BuyUpgrade, args: new[] { IndexOf(player), upgrade.GetLookupId() });
-    public void CheckpointMessage(Player player, int checkpoint) => Publish(LogMessageType.Checkpoint, args: new[] { IndexOf(player), checkpoint });
-    public void RebootMessage(Player player) => Publish(LogMessageType.Rebooted, args: new[] { IndexOf(player) });
-    public void SkipMessage(Player player) => Publish(LogMessageType.Skip, args: new[] { IndexOf(player) });
-    public void RawMessage(string message) => Publish(LogMessageType.Raw, args: Array.Empty<int>(), message: message);
-
-    static int IndexOf(Player player) => PlayerSystem.Players.IndexOf(player);
-
     void OnEnable() {
         StartCoroutine(_scrollRect.ScrollToBottom());
     }
 
-    void Publish(LogMessageType type, IReadOnlyList<int> args, string message = null) {
-        var text = type switch {
-            LogMessageType.UseUpgrade => $"{PlayerString(args[0])} used {UpgradeString(args[1])}",
-            LogMessageType.BuyUpgrade => $"{PlayerString(args[0])} bought {UpgradeString(args[1])} for {EnergyString(UpgradeCardData.GetById(args[1]).Cost)}",
-            LogMessageType.Checkpoint => $"{PlayerString(args[0])} reached {CheckpointString(args[1])}",
-            LogMessageType.Rebooted => $"{PlayerString(args[0])} {RebootString()}{SetColor(_rebootColor)}rebooted",
-            LogMessageType.Skip => $"{PlayerString(args[0])} skipped buying an upgrade",
-            LogMessageType.Raw => "",
-            _ => throw new ArgumentOutOfRangeException()
-        };
-        text += $"{message}";
-
-        _messages.Add(text);
-        var obj = Instantiate(_messagePrefab, _messageParent);
-        obj.GetComponentInChildren<TMP_Text>().text = text;
-
+    public static void Message(string message) => Instance.MessageInternal(message);
+    
+    void MessageInternal(string message) {
+        _messages.Add(message);
+        Instantiate(_messagePrefab, _messageParent).GetComponentInChildren<TMP_Text>().text = message;
+        
         if (!enabled) return;
         StartCoroutine(_scrollRect.ScrollToBottom());
     }
@@ -72,19 +52,11 @@ public class Log : Singleton<Log> {
         return direction == Vector2Int.right ? "to the right" : direction.ToString();
     }
     
-    string ResetColor() => SetColor(_defaultTextColor);
-    string CheckpointString(int checkpointIndex) => $"{Sprite(IconSpritePrefix + "Checkpoint")}{SetColor(_checkpointColor)}#{checkpointIndex}{ResetColor()}";
+    public static string CheckpointString(int checkpointIndex) => $"{Sprite(IconSpritePrefix + "Checkpoint")}{SetColor(Instance._checkpointColor)}#{checkpointIndex}{Instance.ResetColor()}";
     public static string EnergyString(int energy) => $"{Sprite(IconSpritePrefix + "Energy")}{SetColor(Instance._energyColor)}{energy}{Instance.ResetColor()}";
-    static string RebootString() => $"{Sprite(IconSpritePrefix + "Reboot")}";
+    public static string RebootString() => $"{Sprite(IconSpritePrefix + "Reboot")}{SetColor(Instance._rebootColor)}rebooted{Instance.ResetColor()}";
+    
     static string Sprite(string name) => $"<sprite name=\"{name}\" color=#{ColorUtility.ToHtmlStringRGB(Color.white)}>";
     static string SetColor(Color color) => $"<color=#{ColorUtility.ToHtmlStringRGB(color)}>";
-
-    enum LogMessageType {
-        UseUpgrade,
-        BuyUpgrade,
-        Checkpoint,
-        Rebooted,
-        Skip,
-        Raw
-    }
+    string ResetColor() => SetColor(_defaultTextColor);
 }

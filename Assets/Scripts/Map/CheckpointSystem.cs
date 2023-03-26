@@ -28,7 +28,7 @@ public class CheckpointSystem : Singleton<CheckpointSystem> {
     }
 
     static IEnumerator OnPlayerReachedLast(Player player) {
-        Debug.Log($"{player} won the game!");
+        Log.Message($"{Log.PlayerString(player)} won the game!");
         PlayerWon?.Invoke(player);
         yield break;
     }

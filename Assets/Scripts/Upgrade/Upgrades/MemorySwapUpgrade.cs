@@ -29,7 +29,7 @@ public class MemorySwapUpgrade : UpgradeCardData {
                 player.DrawPile.AddCard(card, CardPlacement.Top);
             }
             
-            Log.Instance.RawMessage($"{Log.PlayerString(player)} cached {Log.ProgramString(result[0])}, {Log.ProgramString(result[1])}, and {Log.ProgramString(result[2])}");
+            Log.Message($"{Log.PlayerString(player)} cached {Log.ProgramString(result[0])}, {Log.ProgramString(result[1])}, and {Log.ProgramString(result[2])}");
         }
     }
 }

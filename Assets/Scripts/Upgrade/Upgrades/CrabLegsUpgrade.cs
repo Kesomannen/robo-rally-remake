@@ -43,7 +43,7 @@ public class CrabLegsUpgrade : UpgradeCardData {
         var dir = result[0];
         if (dir == Vector2Int.zero) yield break;
 
-        Log.Instance.RawMessage($"{Log.PlayerString(execution.Player)} moved one space {Log.DirectionString(dir)} and forward with {Log.UpgradeString(this)}");
+        Log.Message($"{Log.PlayerString(execution.Player)} moved one space {Log.DirectionString(dir)} and forward with {Log.UpgradeString(this)}");
         TaskScheduler.PushRoutine(model.MoveSteps(new[] { dir, model.Rotator.Identity }, false));
     }
 }

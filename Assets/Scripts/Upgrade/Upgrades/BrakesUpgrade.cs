@@ -37,7 +37,7 @@ public class BrakesUpgrade : UpgradeCardData {
             });
             if (!result[0]) yield break;
             execution.CardOverride = _replacementCard;
-            Log.Instance.RawMessage($"{Log.PlayerString(execution.Player)} treated their {Log.ProgramString(_targetCard)} as a {Log.ProgramString(_replacementCard)} with {Log.UpgradeString(this)}");
+            Log.Message($"{Log.PlayerString(execution.Player)} treated their {Log.ProgramString(_targetCard)} as a {Log.ProgramString(_replacementCard)} with {Log.UpgradeString(this)}");
         }
     }
 }

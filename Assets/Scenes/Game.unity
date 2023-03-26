@@ -2804,7 +2804,65 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2351552a46a45cbb1e2f19cf4ee5367, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _taskDelayCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.8
+      inSlope: -1.3346574
+      outSlope: -1.3346574
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.079166666
+    - serializedVersion: 3
+      time: 1
+      value: 0.1
+      inSlope: -0.41799673
+      outSlope: -0.41799673
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.16250002
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _timeScaleCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.85
+      inSlope: 0.29999995
+      outSlope: 0.29999995
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.5
+      value: 1
+      inSlope: 0.29999995
+      outSlope: 0.29999995
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1.15
+      inSlope: 0.29999995
+      outSlope: 0.29999995
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   _defaultTaskDelay: 0
+  _timeScale: 0
 --- !u!114 &761913673
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2902,7 +2960,7 @@ MonoBehaviour:
         _value: 5
       _cardsPerTurn:
         _enabled: 1
-        _value: 8
+        _value: 7
       _stressTime:
         _enabled: 1
         _value: 30

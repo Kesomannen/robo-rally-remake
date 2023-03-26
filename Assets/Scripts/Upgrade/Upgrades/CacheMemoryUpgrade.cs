@@ -34,7 +34,7 @@ public class CacheMemoryUpgrade : UpgradeCardData {
                 player.Hand.RemoveCard(card);
                 player.DrawPile.AddCard(card, CardPlacement.Top);
             }
-            Log.Instance.RawMessage($"{Log.PlayerString(player)} cached {string.Join(", ", cardResults.Select(Log.ProgramString))}");
+            Log.Message($"{Log.PlayerString(player)} cached {string.Join(", ", cardResults.Select(Log.ProgramString))}");
         }
     }
 }

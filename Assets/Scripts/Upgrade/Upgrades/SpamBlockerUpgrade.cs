@@ -15,6 +15,6 @@ public class SpamBlockerUpgrade : UpgradeCardData {
         }
         player.DrawCards(cards.Length);
         
-        Log.Instance.RawMessage($"{Log.PlayerString(player)} discarded {cards.Length} damage cards");
+        Log.Message($"{Log.PlayerString(player)} discarded {cards.Length} damage cards");
     }
 }

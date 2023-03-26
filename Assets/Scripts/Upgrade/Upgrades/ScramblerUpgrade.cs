@@ -18,6 +18,6 @@ public class ScramblerUpgrade : UpgradeCardData {
         if (register >= ExecutionPhase.RegisterCount - 1) return;
         context.Target.Program.SetRegister(register + 1, null);
         
-        Log.Instance.RawMessage($"{Log.PlayerString(context.Attacker)} discarded register {register + 1} of {Log.PlayerString(context.Target)} with {Log.UpgradeString(this)}");
+        Log.Message($"{Log.PlayerString(context.Attacker)} discarded register {register + 1} of {Log.PlayerString(context.Target)} with {Log.UpgradeString(this)}");
     }
 }

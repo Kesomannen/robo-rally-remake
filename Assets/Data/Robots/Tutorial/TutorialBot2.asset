@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 111a43a4336770a4abbe25e078ef58bc, type: 3}
+  m_Name: TutorialBot2
+  m_EditorClassIdentifier: 
+  _name: Hulk x90
+  _description: Deal a Hull Damage card instead of a Spam to robots you shoot.
+  _icon: {fileID: 21300000, guid: 2824c472c382a1f4693079c1ee2e3803, type: 3}
+  _sprite: {fileID: 21300000, guid: 2824c472c382a1f4693079c1ee2e3803, type: 3}
+  _color: {r: 0.7169812, g: 0.31694043, b: 0.26041296, a: 1}
+  _startingDeck:
+  - {fileID: 11400000, guid: 2cb459cf240aad04daea347bb26fee55, type: 2}
+  - {fileID: 11400000, guid: 7d66565cef5302d4c98375131e02105f, type: 2}
+  - {fileID: 11400000, guid: 7d66565cef5302d4c98375131e02105f, type: 2}
+  - {fileID: 11400000, guid: 7d66565cef5302d4c98375131e02105f, type: 2}
+  - {fileID: 11400000, guid: 7d66565cef5302d4c98375131e02105f, type: 2}
+  - {fileID: 11400000, guid: 7284b567fda938c48ba9df3c7528a65a, type: 2}
+  - {fileID: 11400000, guid: 7284b567fda938c48ba9df3c7528a65a, type: 2}
+  - {fileID: 11400000, guid: 7284b567fda938c48ba9df3c7528a65a, type: 2}
+  - {fileID: 11400000, guid: bce61d717821cc64d8b4cff5e98ee1d3, type: 2}
+  - {fileID: 11400000, guid: 77ee3c9c9ce971d45895324e00412f43, type: 2}
+  - {fileID: 11400000, guid: a0c176612c85f9c45aa2ceba06c64869, type: 2}
+  - {fileID: 11400000, guid: a0c176612c85f9c45aa2ceba06c64869, type: 2}
+  - {fileID: 11400000, guid: a0c176612c85f9c45aa2ceba06c64869, type: 2}
+  - {fileID: 11400000, guid: 789c848c7ae69f4479f9670eb7ec46ac, type: 2}
+  - {fileID: 11400000, guid: 789c848c7ae69f4479f9670eb7ec46ac, type: 2}
+  - {fileID: 11400000, guid: 789c848c7ae69f4479f9670eb7ec46ac, type: 2}
+  - {fileID: 11400000, guid: 18607977aaffdee4e93c7b63daed4cf9, type: 2}
+  - {fileID: 11400000, guid: 18607977aaffdee4e93c7b63daed4cf9, type: 2}
+  _laserDamage: {fileID: 11400000, guid: 62b9f46bf38d5c248aef57a59d49e9b8, type: 2}
+  _pushDamage: {fileID: 11400000, guid: f12f970e8a61e8b4a8ff670aee35dece, type: 2}
+  _rebootDamage: {fileID: 11400000, guid: f2286a8f112dd0c43825d8a56e885705, type: 2}
+  _onSpawnAffectors: []

@@ -43,7 +43,7 @@ public class Checkpoint : BoardElement<Checkpoint, IPlayer>, ITooltipable, ITrig
             IEnumerator Routine() {
                 current.Value = _index;
                 PlayerReached?.Invoke(player);
-                Log.Instance.CheckpointMessage(player, _index);
+                Log.Message($"{Log.PlayerString(player)} reached {Log.CheckpointString(Index)}");
                 
                 _particle.Play();
                 _sound.Play();

@@ -21,7 +21,7 @@ public class HackUpgrade : UpgradeCardData {
         IEnumerator Task() {
             var register = ExecutionPhase.CurrentRegister;
             var card = player.Program[register];
-            Log.Instance.RawMessage($"{Log.PlayerString(player)} executes {Log.ProgramString(card)} again");
+            Log.Message($"{Log.PlayerString(player)} executes {Log.ProgramString(card)} again");
             yield return new ProgramExecution(() => card, player, register).Execute();
         }
     }

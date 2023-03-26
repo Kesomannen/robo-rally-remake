@@ -4,8 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TaskScheduler : Singleton<TaskScheduler> {
-    // ReSharper disable once NotAccessedField.Local
+    [SerializeField] AnimationCurve _taskDelayCurve;
+    [SerializeField] AnimationCurve _timeScaleCurve;
+
+    // ReSharper disable twice NotAccessedField.Local
     [SerializeField] [ReadOnly] float _defaultTaskDelay;
+    [SerializeField] [ReadOnly] float _timeScale;
     
     static readonly Stack<(IEnumerator Routine, Action Callback, float Delay)> _tasks = new();
     static bool _isRunning;
@@ -29,8 +33,13 @@ public class TaskScheduler : Singleton<TaskScheduler> {
     }
     
     void OnGameInitialized(GameSettings gameSettings) {
-        DefaultTaskDelay = 0.75f / gameSettings.GameSpeed.Value;
-        _defaultTaskDelay = DefaultTaskDelay;
+        var gameSpeed = Mathf.InverseLerp(1, 5, gameSettings.GameSpeed.Value);
+        
+        _defaultTaskDelay = _taskDelayCurve.Evaluate(gameSpeed);
+        DefaultTaskDelay = _defaultTaskDelay;
+
+        _timeScale = _timeScaleCurve.Evaluate(gameSpeed);
+        Time.timeScale = _timeScale;
     }
 
     public static void PushRoutine(IEnumerator routine, float delay = -1, Action onComplete = null) {

@@ -35,7 +35,7 @@ public class MoveUpgrade : UpgradeCardData {
                 OutputArray = result,
                 MinChoices = 1
             });
-            Log.Instance.RawMessage($"{Log.PlayerString(player)} moved one space {Log.DirectionString(result[0])}");
+            Log.Message($"{Log.PlayerString(player)} moved one space {Log.DirectionString(result[0])}");
             yield return model.MoveSteps(result[0], false, 1);
         }
     }

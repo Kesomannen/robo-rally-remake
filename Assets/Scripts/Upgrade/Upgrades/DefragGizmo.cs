@@ -31,7 +31,7 @@ public class DefragGizmo : UpgradeCardData {
                 MinChoices = 1
             });
                         
-            Log.Instance.RawMessage($"{Log.PlayerString(player)} permanently discarded {Log.ProgramString(result[0])}");
+            Log.Message($"{Log.PlayerString(player)} permanently discarded {Log.ProgramString(result[0])}");
             
             player.Hand.RemoveCard(result[0]);
             player.DrawCards(1);

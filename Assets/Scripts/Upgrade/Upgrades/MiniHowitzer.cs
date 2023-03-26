@@ -31,7 +31,7 @@ public class MiniHowitzer : UpgradeCardData {
                 MinChoices = 1
             });
             if (!result[0]) yield break;
-            Log.Instance.RawMessage($"{Log.PlayerString(attacker)} spent {Log.EnergyString(1)} to push {Log.PlayerString(context.Target)} with {Log.UpgradeString(this)}");
+            Log.Message($"{Log.PlayerString(attacker)} spent {Log.EnergyString(1)} to push {Log.PlayerString(context.Target)} with {Log.UpgradeString(this)}");
             if (Interaction.Push(context.Target.Model, context.OutgoingDirection, out var mapEvent)) {
                 yield return Interaction.EaseEvent(mapEvent);
                 if (_countAsPush) attacker.Model.RegisterPush(mapEvent);

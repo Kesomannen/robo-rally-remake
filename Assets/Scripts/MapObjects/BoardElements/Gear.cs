@@ -8,10 +8,8 @@ public class Gear : BoardElement<Gear, IMapObject>, ITooltipable {
     public string Header => "Gear";
     public string Description {
         get {
-            var degrees = Mathf.Abs(90 * _rotationSteps);
             var direction = _rotationSteps < 0 ? "right" : "left";
-            
-            return $"Rotates objects {degrees} degrees to the {direction} after each register.";
+            return $"Rotates objects to the {direction} after each register.";
         }
     }
 

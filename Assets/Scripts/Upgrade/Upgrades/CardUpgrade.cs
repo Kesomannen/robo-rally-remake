@@ -16,6 +16,6 @@ public class CardUpgrade : UpgradeCardData {
             Pile.DrawPile => "draw pile",
             _ => "unknown pile"
         };
-        Log.Instance.RawMessage($"{Log.PlayerString(player)} added a {Log.ProgramString(_cardAffector.Cards[0])} to their {pileName}");
+        Log.Message($"{Log.PlayerString(player)} added a {Log.ProgramString(_cardAffector.Cards[0])} to their {pileName}");
     }
 }

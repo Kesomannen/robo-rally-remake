@@ -106,7 +106,7 @@ public class ProgrammingPhase : NetworkSingleton<ProgrammingPhase> {
     
     [ClientRpc]
     void TimeOutClientRpc() {
-        Log.Instance.RawMessage($"{Log.PlayerString(PlayerSystem.LocalPlayer)} did not finish their programming in time and had their registers randomized");
+        Log.Message($"{Log.PlayerString(PlayerSystem.LocalPlayer)} did not finish their programming in time and had their registers randomized");
     }
 
     void FillRegisters() {
