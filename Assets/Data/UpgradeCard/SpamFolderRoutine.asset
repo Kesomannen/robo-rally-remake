@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 29d1b36d46494aeda7c626a325e4aa64, type: 3}
-  m_Name: SpamFolder
+  m_Name: SpamFolderRoutine
   m_EditorClassIdentifier: 
   _name: Spam Folder Routine
   _description: Add a Spam Folder to your discard pile.

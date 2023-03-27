@@ -30,11 +30,15 @@ public class GameSystem : Singleton<GameSystem> {
         public ulong Id { get; set; }
     }
 
-    public void Initialize(GameSettings gameSettings, MapData map, IEnumerable<PlayerData> players) {
+    protected override void Awake() {
+        base.Awake();
+        Settings = null;
+    }
+
+    public static void Initialize(GameSettings gameSettings, MapData map, IEnumerable<PlayerData> players, IEnumerable<UpgradeCardData> shopCards) {
         Settings = gameSettings;
         
         MapSystem.Instance.LoadMap(map);
-        
         if (!gameSettings.EnergyEnabled) {
             var spaces = MapSystem.GetByType<EnergySpace>().ToArray();
             // ReSharper disable once ForCanBeConvertedToForeach
@@ -49,6 +53,9 @@ public class GameSystem : Singleton<GameSystem> {
         foreach (var playerData in players) {
             PlayerSystem.Instance.CreatePlayer(playerData.Id, playerData.RobotData, playerData.Name);
         }
+        
+        // Initialize systems
+        ShopPhase.Instance.Initialize(shopCards);
         
         Initialized?.Invoke(gameSettings);
     }

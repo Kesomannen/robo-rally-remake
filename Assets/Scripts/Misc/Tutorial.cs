@@ -1,11 +1,16 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Tutorial : Singleton<Tutorial> {
+    [FormerlySerializedAs("_tutorialText")]
+    [SerializeField] TMP_Text _programmingText;
+    [SerializeField] TMP_Text _executionText;
+    [SerializeField] TMP_Text _shopText;
+    [Space]
     [SerializeField] GameObject _drawPile, _discardPile;
-    [SerializeField] GameObject _timer;
     [SerializeField] GameObject _playerArray;
     [SerializeField] GameObject _logButton;
     [Space]
@@ -14,27 +19,6 @@ public class Tutorial : Singleton<Tutorial> {
     [SerializeField] [ReadOnly] int _level;
     [SerializeField] [ReadOnly] bool _setup;
     [SerializeField] TutorialLevelData[] _levelData;
-
-    [Serializable]
-    struct TutorialLevelData {
-        [SerializeField] RobotData _robot;
-        [SerializeField] MapData _mapData;
-        [SerializeField] GameSettings _gameSettings;
-        [Space]
-        [SerializeField] bool _enablePileUI;
-        [SerializeField] bool _enableTimer;
-        [SerializeField] bool _enablePlayerArray;
-        [SerializeField] bool _enableLogButton;
-        
-        public RobotData Robot => _robot;
-        public MapData MapData => _mapData;
-        public GameSettings GameSettings => _gameSettings;
-        
-        public bool EnablePileUI => _enablePileUI;
-        public bool EnableTimer => _enableTimer;
-        public bool EnablePlayerArray => _enablePlayerArray;
-        public bool EnableLogButton => _enableLogButton;
-    }
 
     static int _currentLevel;
 
@@ -48,24 +32,31 @@ public class Tutorial : Singleton<Tutorial> {
 
     public void Initialize() {
         var level = _levelData[_currentLevel];
-        GameSystem.Instance.Initialize(level.GameSettings, level.MapData, new [] {
-            new GameSystem.PlayerData {
-                Id = NetworkManager.Singleton.LocalClientId,
-                RobotData = level.Robot,
-                Name = LobbySystem.PlayerName
-            }
-        });
+        
+        var player = new GameSystem.PlayerData {
+            Id = NetworkManager.Singleton.LocalClientId,
+            RobotData = level.Robot,
+            Name = LobbySystem.PlayerName
+        };
+        GameSystem.Initialize(level.GameSettings, level.MapData, new [] { player }, level.ShopCards);
         
         _drawPile.SetActive(level.EnablePileUI);
         _discardPile.SetActive(level.EnablePileUI);
-        _timer.SetActive(level.EnableTimer);
         _playerArray.SetActive(level.EnablePlayerArray);
         _logButton.SetActive(level.EnableLogButton);
-        
+
+        RegisterText(level.ProgrammingText, _programmingText);
+        RegisterText(level.ExecutionText, _executionText);
+        RegisterText(level.ShopText, _shopText);
+
         CheckpointSystem.PlayerWon += PlayerWon;
-        
-        _currentLevel++;
         _setup = true;
+
+        void RegisterText(Optional<string> text, TMP_Text ui) {
+            ui.SetActive(text.Enabled);
+            if (!text.Enabled) return;
+            ui.text = text.Value;
+        }
     }
 
     protected override void OnDestroy() {
@@ -80,10 +71,11 @@ public class Tutorial : Singleton<Tutorial> {
 
         IEnumerator Task() {
             yield return CoroutineUtils.Wait(1f);
-            
+
             if (_currentLevel >= _levelData.Length) {
                 yield return NetworkSystem.Instance.ReturnToLobby();
             } else {
+                _currentLevel++;
                 yield return NetworkSystem.Instance.ReloadScene();
             }
         }

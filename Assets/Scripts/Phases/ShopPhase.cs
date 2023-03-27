@@ -9,7 +9,9 @@ using Random = UnityEngine.Random;
 public class ShopPhase : NetworkSingleton<ShopPhase> {
     UpgradeCardData[] _shopCards;
     UpgradeCardData[] _restockCards;
-    List<UpgradeCardData> _availableCards;
+    List<UpgradeCardData> _cardsInDeck;
+    UpgradeCardData[] _availableCards;
+    
     int _skippedPlayers;
     bool _currentPlayerReady;
     
@@ -22,6 +24,10 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
 
     public static event Action PhaseStarted;
 
+    public void Initialize(IEnumerable<UpgradeCardData> availableCards) {
+        _availableCards = availableCards.ToArray();
+    }
+    
     public IEnumerator DoPhase() {
         _shopCards ??= new UpgradeCardData[PlayerSystem.Players.Count];
         
@@ -56,15 +62,15 @@ public class ShopPhase : NetworkSingleton<ShopPhase> {
     }
 
     UpgradeCardData DrawRandomCard() {
-        if (_availableCards == null || _availableCards.Count == 0) {
-            _availableCards = UpgradeCardData.GetAll().ToList();
-        }
-        
         UpgradeCardData card;
         do {
-            var randomIndex = Random.Range(0, _availableCards.Count);
-            card = _availableCards[randomIndex];
-            _availableCards.RemoveAt(randomIndex);
+            if (_cardsInDeck == null || _cardsInDeck.Count == 0) {
+                _cardsInDeck = new List<UpgradeCardData>(_availableCards);
+            }
+            
+            var randomIndex = Random.Range(0, _cardsInDeck.Count);
+            card = _cardsInDeck[randomIndex];
+            _cardsInDeck.RemoveAt(randomIndex);
         } while (_shopCards.Contains(card));
         
         return card;

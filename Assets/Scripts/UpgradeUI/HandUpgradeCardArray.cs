@@ -14,11 +14,10 @@ public class HandUpgradeCardArray : MonoBehaviour {
     
     static Player Owner => PlayerSystem.LocalPlayer;
 
-    void Start() {
+    void Awake() {
         Owner.UpgradeAdded += CreateCard;
         Owner.UpgradeRemoved += RemoveCard;
         
-        GameSystem.CurrentPhase.ValueChanged += OnPhaseChanged;
         ProgrammingPhase.PlayerLockedIn += OnPlayerLockedIn;
         ExecutionPhase.PlayerRegistersComplete += UpdateAvailability;
         ExecutionPhase.PlayerRegister += OnPlayerRegister;
@@ -38,7 +37,6 @@ public class HandUpgradeCardArray : MonoBehaviour {
         Owner.UpgradeAdded -= CreateCard;
         Owner.UpgradeRemoved -= RemoveCard;
         
-        GameSystem.CurrentPhase.ValueChanged -= OnPhaseChanged;
         ProgrammingPhase.PlayerLockedIn -= OnPlayerLockedIn;
         ExecutionPhase.PlayerRegistersComplete -= UpdateAvailability;
         ExecutionPhase.PlayerRegister += OnPlayerRegister;
@@ -49,7 +47,7 @@ public class HandUpgradeCardArray : MonoBehaviour {
     
     void OnPauseEventStart() { 
         UpdateAvailability();
-        _reminder.SetActive(_cards.Any(c => c != null && c.Available));
+        _reminder.SetActive(_cards.Any(card => card != null && card.Available));
     }
     
     void OnPauseEventEnd() {
@@ -57,7 +55,6 @@ public class HandUpgradeCardArray : MonoBehaviour {
         _reminder.SetActive(false);
     }
     
-    void OnPhaseChanged(Phase prev, Phase next) => UpdateAvailability();
     void OnPlayerLockedIn(Player _) => UpdateAvailability();
     void OnPlayerRegister(ProgramExecution _) => UpdateAvailability();
 

@@ -21,6 +21,7 @@ public class StressTimer : MonoBehaviour, ITooltipable {
     }
     
     void Awake() {
+        gameObject.SetActive(GameSystem.Settings.StressTime.Enabled);
         _text.text = "---";
         
         ProgrammingPhase.StressTimer.ValueChanged += OnStressValueChanged;

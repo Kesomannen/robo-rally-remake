@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b51cf4c924f4cb4ace2400c32f352e2, type: 3}
+  m_Name: Tutorial1
+  m_EditorClassIdentifier: 
+  _programmingText: 'Conveyors move objects after each register.
+
+
+    <color=#64a1c2>Blue
+    conveyors
+
+    </color> move objects two spaces.
+
+
+    <color=#aac39e>Green conveyors</color>
+    move objects one space.'
+  _executionText: After each <b>register</b>, board elements such as <b>conveyors</b>
+    activate.
+  _shopText: 
+  _robot: {fileID: 11400000, guid: 0167d11df786a90408a57128ce165f7c, type: 2}
+  _mapData: {fileID: 11400000, guid: f3274ca18e59381439f0bac76a642a12, type: 2}
+  _gameSettings:
+    _startingEnergy:
+      _enabled: 1
+      _value: 0
+    _cardsPerTurn:
+      _enabled: 1
+      _value: 7
+    _stressTime:
+      _enabled: 0
+      _value: 30
+    _upgradeSlots:
+      _enabled: 1
+      _value: 6
+    _advancedGame:
+      _enabled: 0
+      _value: 0
+    _beginnerGame:
+      _enabled: 1
+      _value: 0
+    _gameSpeed:
+      _enabled: 1
+      _value: 2
+  _shopCards: []
+  _enablePileUI: 0
+  _enablePlayerArray: 1
+  _enableLogButton: 0

@@ -99,7 +99,7 @@ public class NetworkSystem : NetworkSingleton<NetworkSystem> {
                 }
             }
             
-            GameSystem.Instance.Initialize(LobbySystem.GameSettings, MapData.GetById(LobbySystem.LobbyMap.Value), players);
+            GameSystem.Initialize(LobbySystem.GameSettings, MapData.GetById(LobbySystem.LobbyMap.Value), players, UpgradeCardData.GetAll());
         }
         
         Debug.Log("Initialization complete, starting game");

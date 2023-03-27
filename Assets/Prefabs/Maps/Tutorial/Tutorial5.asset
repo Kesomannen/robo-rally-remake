@@ -16,4 +16,4 @@ MonoBehaviour:
   _difficulty: 0
   _length: 0
   _thumbnail: {fileID: 21300000, guid: 6a5450d7b3cc4474785a3b5a2e89d44d, type: 3}
-  _prefab: {fileID: 7585425554144749906, guid: 60efe53730d769244aa9687c2d032321, type: 3}
+  _prefab: {fileID: 7585425554144749906, guid: 6582ec2b35ec5164b933f62efa2f44a2, type: 3}

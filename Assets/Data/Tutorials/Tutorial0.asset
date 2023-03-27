@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b51cf4c924f4cb4ace2400c32f352e2, type: 3}
+  m_Name: Tutorial0
+  m_EditorClassIdentifier: 
+  _programmingText: 'Program your robot to reach the <color=#f5a95b>checkpoint</color>!
+
+
+    Hover
+    over objects to see more information.'
+  _executionText: Your <b>program</b> is now being executed!
+  _robot: {fileID: 11400000, guid: 1962312293e537749affcb04b083a350, type: 2}
+  _mapData: {fileID: 11400000, guid: f7a83e4af91273f4bacb0a1847b1a14f, type: 2}
+  _gameSettings:
+    _startingEnergy:
+      _enabled: 1
+      _value: 0
+    _cardsPerTurn:
+      _enabled: 1
+      _value: 6
+    _stressTime:
+      _enabled: 0
+      _value: 30
+    _upgradeSlots:
+      _enabled: 1
+      _value: 6
+    _advancedGame:
+      _enabled: 0
+      _value: 0
+    _beginnerGame:
+      _enabled: 1
+      _value: 0
+    _gameSpeed:
+      _enabled: 1
+      _value: 1
+  _shopCards: []
+  _enablePileUI: 0
+  _enablePlayerArray: 0
+  _enableLogButton: 0

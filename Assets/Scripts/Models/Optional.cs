@@ -6,8 +6,8 @@ public struct Optional<T> {
     [SerializeField] bool _enabled;
     [SerializeField] T _value;
     
-    public Optional(T initialValue) {
-        _enabled = true;
+    public Optional(T initialValue, bool enabled = true) {
+        _enabled = enabled;
         _value = initialValue;
     }
 

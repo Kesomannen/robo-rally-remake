@@ -29,7 +29,7 @@ public class MapSystem : Singleton<MapSystem> {
         // Register MapObjects
         _tiles = new Dictionary<Vector2Int, List<MapObject>>();
         var onEnterHandlers = new List<IOnEnterHandler>();
-        foreach (var obj in _grid.GetComponentsInChildren<MapObject>(true)) {
+        foreach (var obj in _grid.GetComponentsInChildren<MapObject>()) {
             RegisterMapObject(obj);
             if (obj is IOnEnterHandler handler) onEnterHandlers.Add(handler);
         }
