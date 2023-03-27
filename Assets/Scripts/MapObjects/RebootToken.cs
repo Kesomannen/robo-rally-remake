@@ -38,17 +38,18 @@ public class RebootToken : MapObject, ITooltipable, IPointerClickHandler {
 
     public IEnumerator RespawnRoutine(IPlayer player) {
         var obj = player.Object;
-        var tile = MapSystem.GetTile(GridPos);
-        var obstructions = tile.OfType<ICanEnterHandler>().Where(o => o.Object != obj).ToArray();
-        if (obstructions.Length > 0) {
+        var obstructions = MapSystem.GetTile(GridPos).OfType<ICanEnterHandler>().Where(o => o.Object != obj).ToArray();
+        
+        if (obstructions.Length > 1) {
             Debug.LogWarning("RebootToken is obstructed!", this);
+        } else if (obstructions.Length == 1) {
+            if (Interaction.Push(obstructions[0].Object, _direction, out var moveAction)) {
+                yield return Interaction.EaseEvent(moveAction);
+            } else {
+                Debug.LogWarning("RebootToken is obstructed!", this);
+            }    
         }
         
-        if (Interaction.Push(obstructions.First().Object, _direction, out var moveAction)) {
-            yield return Interaction.EaseEvent(moveAction);
-        } else {
-            Debug.LogWarning("RebootToken is obstructed!", this);
-        }
         MapSystem.Instance.MoveObjectInstant(obj, GridPos);
 
         int targetRot;

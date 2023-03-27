@@ -2980,7 +2980,7 @@ MonoBehaviour:
     _enableTimer: 0
     _enablePlayerArray: 0
     _enableLogButton: 0
-  - _robot: {fileID: 11400000, guid: f5662703ca885694093898b0567926b5, type: 2}
+  - _robot: {fileID: 11400000, guid: cd901c92ce4da444eadd2411a7239733, type: 2}
     _mapData: {fileID: 11400000, guid: 39c375713a4a68045b07599fa4acd747, type: 2}
     _gameSettings:
       _startingEnergy:
