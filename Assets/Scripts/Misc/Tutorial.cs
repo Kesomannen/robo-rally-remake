@@ -53,7 +53,7 @@ public class Tutorial : Singleton<Tutorial> {
         _setup = true;
 
         void RegisterText(Optional<string> text, TMP_Text ui) {
-            ui.SetActive(text.Enabled);
+            ui.transform.parent.SetActive(text.Enabled);
             if (!text.Enabled) return;
             ui.text = text.Value;
         }

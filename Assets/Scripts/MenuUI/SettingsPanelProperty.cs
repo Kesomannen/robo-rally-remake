@@ -13,6 +13,7 @@ public class SettingsPanelProperty : MonoBehaviour {
     GameProperty _gameSettingsProperty;
 
     void OnEnable() {
+        UpdateSettingsProperty(_gameSettingsProperty);
         LobbySystem.LobbySettingsPropertyUpdated += UpdateSettingsProperty;
     }
     
@@ -51,6 +52,7 @@ public class SettingsPanelProperty : MonoBehaviour {
             _toggle.isOn = value.Enabled;
 
             var isServer = NetworkManager.Singleton.IsServer;
+            Debug.Log($"isServer: {isServer}");
             _slider.interactable = isServer;
             _toggle.interactable = isServer;
             

@@ -36,6 +36,7 @@ public class ChoiceSystem : NetworkSingleton<ChoiceSystem> {
         if (data.Time <= 0) {
             data.Time = DefaultTime;
         }
+        Debug.Log($"Choice started with {data.Options.Count} options");
         
         var isLocal = PlayerSystem.IsLocal(data.Player);
         Coroutine countdown = null;
@@ -56,6 +57,7 @@ public class ChoiceSystem : NetworkSingleton<ChoiceSystem> {
         
         var result = _receivedResults.Dequeue();
         for (var i = 0; i < Mathf.Min(data.OutputArray.Length, result.Choices.Length); i++) {
+            Debug.Log($"Choice {i} is {data.Options[result.Choices[i]]}");
             data.OutputArray[i] = data.Options[result.Choices[i]];
         }
         if (isLocal) {

@@ -116,6 +116,11 @@ public class Player : IPlayer {
     }
 
     public void ShuffleDeck() {
+        if (DiscardPile.Cards.Count == 0) {
+            Debug.LogError("Tried to shuffle deck with no discard pile!");
+            return;
+        }
+        
         DrawPile.AddRange(DiscardPile.Cards, CardPlacement.Top);
         DiscardPile.Clear();
         DrawPile.Shuffle();
@@ -207,7 +212,7 @@ public class Player : IPlayer {
         ReplaceUpgradeAt(upgrade, output[0]);
     }
 
-    IEnumerator GetUpgradeSlot(int[] output, string message = "choosing an upgrade to replace") {
+    IEnumerator GetUpgradeSlot(IList<int> output, string message = "choosing an upgrade to replace") {
         for (var i = 0; i < _upgrades.Length; i++) {
             if (_upgrades[i] != null) continue;
             output[0] = i;
