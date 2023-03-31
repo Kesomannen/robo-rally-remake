@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public abstract class MapObject : MonoBehaviour, IMapObject {
+    [SerializeField] protected float _fallTweenDuration = 0.5f;
+    [SerializeField] protected LeanTweenType _fallTweenType = LeanTweenType.easeInQuad;
+    
     public MapObject Object => this;
     public TransformRotator Rotator { get; private set; }
     
@@ -15,7 +18,13 @@ public abstract class MapObject : MonoBehaviour, IMapObject {
     public event Action<int> RotationChanged;
 
     public virtual void Fall(IBoard board) {
-        MapSystem.DestroyObject(this);
+        LeanTween
+            .scale(gameObject, Vector3.zero, _fallTweenDuration)
+            .setOnComplete(() => { MapSystem.DestroyObject(this); });
+    }
+
+    public virtual void OnRespawn() {
+        transform.localScale = Vector3.one;
     }
 
     protected virtual void Awake(){

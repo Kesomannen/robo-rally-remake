@@ -8939,9 +8939,9 @@ MonoBehaviour:
     Port: 7777
     ServerListenAddress: 
   DebugSimulator:
-    PacketDelayMS: 0
+    PacketDelayMS: 200
     PacketJitterMS: 0
-    PacketDropRate: 0
+    PacketDropRate: 5
 --- !u!1001 &2048720994
 PrefabInstance:
   m_ObjectHideFlags: 0

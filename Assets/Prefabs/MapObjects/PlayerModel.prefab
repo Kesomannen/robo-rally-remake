@@ -4917,6 +4917,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 588dca8960a8d324faf68aa09249a005, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _fallTweenDuration: 1
+  _fallTweenType: 3
   GridPos: {x: 0, y: 0}
   _laserPrefab: {fileID: 7356243174931234761, guid: ac3e6873540355d4faa9585b0340f4f1, type: 3}
   _hitParticle: {fileID: 8478819144765323679}

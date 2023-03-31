@@ -9,6 +9,8 @@ public class Checkpoint : BoardElement<Checkpoint, IPlayer>, ITooltipable, ITrig
     [SerializeField] ParticleSystem _particle;
     [SerializeField] SoundEffect _sound;
 
+    Vector2Int _startPos;
+    
     public event Action<Player> PlayerReached;
 
     public int Index => _index;
@@ -25,6 +27,14 @@ public class Checkpoint : BoardElement<Checkpoint, IPlayer>, ITooltipable, ITrig
         }
     }
 
+    void Start() {
+        _startPos = GridPos;
+    }
+
+    public override void Fall(IBoard board) {
+        MapSystem.Instance.MoveObjectInstant(Object, _startPos);
+    }
+    
     public void TriggerAwake() => Awake();
     protected override void Awake() {
         base.Awake();

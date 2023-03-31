@@ -14,7 +14,7 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
     [Header("Tween")]
     [SerializeField] LeanTweenType _moveTweenType;
     [SerializeField] float _moveTweenSpeed;
-    
+
     [Header("Audio")]
     [SerializeField] SoundEffect _moveSound;
     [SerializeField] SoundEffect _rotateSound;
@@ -54,8 +54,26 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
 
     public override void Fall(IBoard board) {
         if (!_canFall) return;
-        _rebootSound.Play();
-        Owner.Reboot(board);
+        LeanTween
+            .scale(gameObject, Vector3.zero, _fallTweenDuration)
+            .setEase(_fallTweenType)
+            .setOnComplete(() => {
+                _rebootSound.Play();
+                Owner.Reboot(board); 
+            });
+
+        LeanTween
+            .rotateZ(gameObject, 360, _fallTweenDuration)
+            .setEase(_fallTweenType);
+    }
+
+    public override void OnRespawn() {
+        var t = transform;
+                
+        var rotation = t.eulerAngles;
+        rotation.z = 0;
+        t.eulerAngles = rotation;
+        t.localScale = Vector3.one;
     }
 
     protected override void Awake() {

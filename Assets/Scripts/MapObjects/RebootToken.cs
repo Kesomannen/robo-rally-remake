@@ -3,7 +3,6 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 
 public class RebootToken : MapObject, ITooltipable, IPointerClickHandler {
     [SerializeField] Vector2Int _direction;
@@ -28,29 +27,21 @@ public class RebootToken : MapObject, ITooltipable, IPointerClickHandler {
 
     public bool IsSpawnPoint => _isSpawnPoint;
 
-    void Start() {
-        _startPos = GridPos;
-    }
-
-    public override void Fall(IBoard board) {
-        MapSystem.Instance.MoveObjectInstant(Object, _startPos);
-    }
-
     public IEnumerator RespawnRoutine(IPlayer player) {
         var obj = player.Object;
         var obstructions = MapSystem.GetTile(GridPos).OfType<ICanEnterHandler>().Where(o => o.Object != obj).ToArray();
         
-        if (obstructions.Length > 1) {
-            Debug.LogWarning("RebootToken is obstructed!", this);
-        } else if (obstructions.Length == 1) {
-            if (Interaction.Push(obstructions[0].Object, _direction, out var moveAction)) {
+        switch (obstructions.Length) {
+            case 1 when Interaction.Push(obstructions[0].Object, _direction, out var moveAction):
                 yield return Interaction.EaseEvent(moveAction);
-            } else {
+                break;
+            default:
                 Debug.LogWarning("RebootToken is obstructed!", this);
-            }    
+                break;
         }
         
         MapSystem.Instance.MoveObjectInstant(obj, GridPos);
+        player.Owner.Model.OnRespawn();
 
         int targetRot;
         if (_directionChoiceOverlay.Enabled) {
