@@ -1,4 +1,5 @@
-﻿// <author>
+﻿# if UNITY_EDITOR
+// <author>
 //   douduck08: https://github.com/douduck08
 //   Use Reflection to get instance of Unity's SerializedProperty in Custom Editor.
 //   Modified codes from 'Unity Answers', in order to apply on nested List<T> or Array. 
@@ -105,3 +106,4 @@ public static class SerializedPropertyExtensions {
         return true;
     }
 }
+#endif

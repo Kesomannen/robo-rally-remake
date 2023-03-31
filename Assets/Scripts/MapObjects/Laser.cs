@@ -10,7 +10,7 @@ public class Laser : MapObject, IOnEnterExitHandler {
     [SerializeField] SpriteRenderer[] _renderers;
     [SerializeField] Color _activeColor, _inactiveColor;
     
-    public event Action<Laser, MapObject> OnObstructed, OnUnobstructed;
+    public event Action<Laser, MapObject> Obstructed, Unobstructed;
 
     public void SetActiveVisual(bool active) {
         for (var i = 0; i < _lights.Length; i++) {
@@ -22,11 +22,11 @@ public class Laser : MapObject, IOnEnterExitHandler {
     }
     
     public void OnEnter(MapObject mapObject) {
-        OnObstructed?.Invoke(this, mapObject);
+        Obstructed?.Invoke(this, mapObject);
     }
 
     public void OnExit(MapObject mapObject) {
-        OnUnobstructed?.Invoke(this, mapObject);
+        Unobstructed?.Invoke(this, mapObject);
     }
 
     public static List<T> ShootLaser<T>(T prefab, MapObject source, Vector2Int dir, int maxDistance = 20, bool ignoreSource = true, IReadOnlyList<Type> ignoredTypes = null) where T : Laser {

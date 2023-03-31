@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -24,7 +25,7 @@ public class PlayerPanel : Container<Player>, IPointerClickHandler {
     [SerializeField] LeanTweenType _tweenType;
 
     static bool EnergyEnabled => GameSystem.Settings.EnergyEnabled;
-    
+
     void Start() {
         if (EnergyEnabled || !_energyText.Enabled) return;
         _energyText.Value.gameObject.SetActive(false);

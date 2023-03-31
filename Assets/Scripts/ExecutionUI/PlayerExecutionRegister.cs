@@ -25,7 +25,7 @@ public class PlayerExecutionRegister : MonoBehaviour, ITooltipable {
     [SerializeField] Sprite _sprite11;
     [SerializeField] Sprite _emptySprite;
 
-    public string Header => _visible ? (_content == null ? "Empty" : _content.Header) : "???";
+    public string Header => _visible ? _content == null ? "Empty" : _content.Header : "???";
     public string Description => _visible ? _content == null ? "" : _content.Description : "???";
 
     RectTransform _rectTransform;
@@ -51,6 +51,17 @@ public class PlayerExecutionRegister : MonoBehaviour, ITooltipable {
                 _rectTransform.sizeDelta = v * _baseSize;
                 _programCardTransform.sizeDelta = v * _programCardBaseSize;
             });
+        }
+    }
+    
+    public Color Color {
+        get => _color;
+        set {
+            if (value == _color) return;
+            _color = value;
+
+            _backgroundImage.color = _color;
+            _programCardImage.color = _color;
         }
     }
     

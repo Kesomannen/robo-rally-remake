@@ -1,12 +1,17 @@
 using System;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class LockInButton : MonoBehaviour, IPointerClickHandler {
     [SerializeField] Image _image;
     [SerializeField] Selectable _selectable;
+    [SerializeField] TMP_Text _errorText;
+    [SerializeField] InputAction _submitAction;
+    [Space]
     [SerializeField] Color _invalidColor;
     [SerializeField] float _shakeDuration;
     [SerializeField] float _shakeMagnitude;
@@ -48,7 +53,21 @@ public class LockInButton : MonoBehaviour, IPointerClickHandler {
         ProgrammingPhase.PlayerLockedIn -= PLayerLockedIn;
         ProgrammingPhase.PhaseStarted -= PhaseStarted;
     }
+
+    void OnEnable() {
+        _submitAction.Enable();
+        _submitAction.performed += OnSubmit;
+    }
     
+    void OnDisable() {
+        _submitAction.Disable();
+        _submitAction.performed -= OnSubmit;
+    }
+
+    void OnSubmit(InputAction.CallbackContext context) {
+        OnPointerClick(null);
+    }
+
     void PhaseStarted() {
         _pressed = false;
         UpdateState();
@@ -110,6 +129,9 @@ public class LockInButton : MonoBehaviour, IPointerClickHandler {
         _image.color = _invalidColor;
         LeanTween.value(gameObject, _image.color, Color.white, _shakeDuration)
             .setOnUpdate(c => _image.color = c);
+        
+        LeanTween.value(gameObject, Color.white, Color.clear, _shakeDuration * 6)
+            .setOnUpdate(c => _errorText.color = c);
 
         var pos = transform.position;
         LeanTween

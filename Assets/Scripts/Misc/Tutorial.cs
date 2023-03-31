@@ -72,7 +72,7 @@ public class Tutorial : Singleton<Tutorial> {
         IEnumerator Task() {
             yield return CoroutineUtils.Wait(1f);
 
-            if (_currentLevel >= _levelData.Length) {
+            if (_currentLevel >= _levelData.Length - 1) {
                 yield return NetworkSystem.Instance.ReturnToLobby();
             } else {
                 _currentLevel++;

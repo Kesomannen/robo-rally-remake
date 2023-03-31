@@ -23,7 +23,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 789c848c7ae69f4479f9670eb7ec46ac, type: 2}
   - {fileID: 11400000, guid: 7d66565cef5302d4c98375131e02105f, type: 2}
   - {fileID: 11400000, guid: 7284b567fda938c48ba9df3c7528a65a, type: 2}
-  - {fileID: 11400000, guid: bce61d717821cc64d8b4cff5e98ee1d3, type: 2}
+  - {fileID: 11400000, guid: 7284b567fda938c48ba9df3c7528a65a, type: 2}
   - {fileID: 11400000, guid: 2cb459cf240aad04daea347bb26fee55, type: 2}
   _laserDamage: {fileID: 11400000, guid: 62b9f46bf38d5c248aef57a59d49e9b8, type: 2}
   _pushDamage: {fileID: 11400000, guid: f12f970e8a61e8b4a8ff670aee35dece, type: 2}
