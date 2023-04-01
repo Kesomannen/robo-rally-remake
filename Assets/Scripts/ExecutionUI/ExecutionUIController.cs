@@ -4,12 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class ExecutionUIController : MonoBehaviour {
     [Header("References")]
     [SerializeField] PlayerExecutionPanels _panelsController;
     [SerializeField] ProgramCardViewer _programCardViewer;
+    
+    [Header("Colors")]
+    [SerializeField] Color _unHighlightedColor;
+    [SerializeField] Color _highlightedColor;
+    [SerializeField] Color _activeColor;
     
     [Header("SubPhase")]
     [SerializeField] TMP_Text _subPhaseText;
@@ -142,6 +148,16 @@ public class ExecutionUIController : MonoBehaviour {
         }
     }
 
+    static void SetColor(PlayerExecutionPanel panel, Color color) {
+        foreach (var register in panel.Registers) {
+            register.Color = color;
+        }
+    }
+    
+    static void BalanceScale(PlayerExecutionPanel panel, int index, float scale) {
+        BalanceScale(panel, panel.Registers[index], scale);
+    }
+    
     static void BalanceScale(PlayerExecutionPanel panel, PlayerExecutionRegister target, float scale) {
         var registerCount = panel.Registers.Count;
         var balancedScale = (registerCount - scale) / (registerCount - 1);
@@ -159,14 +175,18 @@ public class ExecutionUIController : MonoBehaviour {
         var register = panel.Registers[execution.Register];
         
         register.Visible = true;
-        BalanceScale(panel, register, register.Scale + 0.2f);
+        register.Color = _activeColor;
+        BalanceScale(panel, register, register.Scale + 0.15f);
 
         if (_previousPlayer != null) {
             // Unhighlight previous player
             _previousPlayer.Model.Highlight(false);
+            
             var prevPanel = _panelsController.Panels.First(prevPanel => prevPanel.Content == _previousPlayer);
             var prevRegister = prevPanel.Registers[execution.Register];
-            BalanceScale(prevPanel, prevRegister, prevRegister.Scale - 0.2f);
+            
+            prevRegister.Color = _highlightedColor;
+            BalanceScale(prevPanel, prevRegister, prevRegister.Scale - 0.15f);
         }
         _previousPlayer = player;
     }
@@ -174,16 +194,20 @@ public class ExecutionUIController : MonoBehaviour {
     void OnPlayerRegistersComplete() {
         StartCoroutine(_programCardViewer.ClearCards());
         foreach (var playerPanel in _panelsController.Panels) {
-            BalanceScale(playerPanel, playerPanel.Registers[ExecutionPhase.CurrentRegister], 1);
+            BalanceScale(playerPanel, ExecutionPhase.CurrentRegister, 1);
+            SetColor(playerPanel, _unHighlightedColor);
             playerPanel.Content.Model.Highlight(false);
         }
         _previousPlayer = null;
     }
 
     void OnNewSubPhase(ExecutionSubPhase executionSubPhase) {
+        var register = ExecutionPhase.CurrentRegister;
+        
         if ((int)executionSubPhase == 0) {
             foreach (var playerPanel in _panelsController.Panels) {
-                BalanceScale(playerPanel, playerPanel.Registers[ExecutionPhase.CurrentRegister], 1.05f);
+                BalanceScale(playerPanel, register, 1.05f);
+                playerPanel.Registers[register].Color = _highlightedColor;
             }
         }
 

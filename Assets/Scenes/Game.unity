@@ -3210,6 +3210,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4735e0729b9422a9d5343cb9756b57f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _disableWhenUnInteractable: 1
   _onHover:
     _enabled: 0
     _value: {fileID: 11400000, guid: 47a9cb90251471c4987ed5e2327b77eb, type: 2}
@@ -5017,6 +5018,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4735e0729b9422a9d5343cb9756b57f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _disableWhenUnInteractable: 1
   _onHover:
     _enabled: 1
     _value: {fileID: 11400000, guid: 47a9cb90251471c4987ed5e2327b77eb, type: 2}
@@ -5364,6 +5366,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4735e0729b9422a9d5343cb9756b57f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _disableWhenUnInteractable: 1
   _onHover:
     _enabled: 0
     _value: {fileID: 11400000, guid: 47a9cb90251471c4987ed5e2327b77eb, type: 2}
@@ -5558,6 +5561,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _panelsController: {fileID: 1539960399}
   _programCardViewer: {fileID: 28818516}
+  _unHighlightedColor: {r: 0.6603774, g: 0.6603774, b: 0.6603774, a: 1}
+  _highlightedColor: {r: 0.8773585, g: 0.8773585, b: 0.8773585, a: 1}
+  _activeColor: {r: 1, g: 1, b: 1, a: 1}
   _subPhaseText: {fileID: 415317294}
   _phaseIcon1: {fileID: 943613233}
   _phaseIcon2: {fileID: 1069192122}
@@ -5843,6 +5849,7 @@ MonoBehaviour:
     _interval: 0.1
     _tweenType: 27
     _simultaneous: 0
+  _winSoundEffect: {fileID: 11400000, guid: 048ec0dcc57b109409d43b2b1b3baba1, type: 2}
 --- !u!224 &1215935604 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7757758964884273815, guid: 15de29b7c206cd143a95e907f6194a0b, type: 3}
@@ -9326,6 +9333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4735e0729b9422a9d5343cb9756b57f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _disableWhenUnInteractable: 1
   _onHover:
     _enabled: 0
     _value: {fileID: 11400000, guid: 47a9cb90251471c4987ed5e2327b77eb, type: 2}
@@ -9735,6 +9743,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4735e0729b9422a9d5343cb9756b57f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _disableWhenUnInteractable: 1
   _onHover:
     _enabled: 1
     _value: {fileID: 11400000, guid: 47a9cb90251471c4987ed5e2327b77eb, type: 2}
@@ -9982,6 +9991,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4735e0729b9422a9d5343cb9756b57f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _disableWhenUnInteractable: 1
   _onHover:
     _enabled: 0
     _value: {fileID: 11400000, guid: 47a9cb90251471c4987ed5e2327b77eb, type: 2}
@@ -10374,6 +10384,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4735e0729b9422a9d5343cb9756b57f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _disableWhenUnInteractable: 1
   _onHover:
     _enabled: 1
     _value: {fileID: 11400000, guid: 47a9cb90251471c4987ed5e2327b77eb, type: 2}

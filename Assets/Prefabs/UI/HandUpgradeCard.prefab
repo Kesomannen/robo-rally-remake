@@ -91,6 +91,10 @@ PrefabInstance:
       propertyPath: _onClick._enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5563013277522782113, guid: c74c614e9f3a9034e935ded9359f8dce, type: 3}
+      propertyPath: _disableWhenUnInteractable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5616511996089484015, guid: c74c614e9f3a9034e935ded9359f8dce, type: 3}
       propertyPath: _unavailableOverlay
       value: 
@@ -194,6 +198,25 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8197752021562342102, guid: c74c614e9f3a9034e935ded9359f8dce, type: 3}
   m_PrefabInstance: {fileID: 7122256252677595160}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &-8648842679111421842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1374462463899179726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4735e0729b9422a9d5343cb9756b57f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _disableWhenUnInteractable: 1
+  _onHover:
+    _enabled: 1
+    _value: {fileID: 11400000, guid: 47a9cb90251471c4987ed5e2327b77eb, type: 2}
+  _onClick:
+    _enabled: 1
+    _value: {fileID: 11400000, guid: ba93fa178869d8d4ba287294cfe48088, type: 2}
 --- !u!114 &2326441568909003353
 MonoBehaviour:
   m_ObjectHideFlags: 0

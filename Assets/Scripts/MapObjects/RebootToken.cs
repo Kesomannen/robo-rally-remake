@@ -31,13 +31,14 @@ public class RebootToken : MapObject, ITooltipable, IPointerClickHandler {
         var obj = player.Object;
         var obstructions = MapSystem.GetTile(GridPos).OfType<ICanEnterHandler>().Where(o => o.Object != obj).ToArray();
         
-        switch (obstructions.Length) {
-            case 1 when Interaction.Push(obstructions[0].Object, _direction, out var moveAction):
+        if (obstructions.Length == 1) {
+            if (Interaction.Push(obstructions[0].Object, _direction, out var moveAction)) {
                 yield return Interaction.EaseEvent(moveAction);
-                break;
-            default:
+            } else {
                 Debug.LogWarning("RebootToken is obstructed!", this);
-                break;
+            }    
+        } else if (obstructions.Length > 1) {
+            Debug.LogWarning("RebootToken is obstructed!", this);
         }
         
         MapSystem.Instance.MoveObjectInstant(obj, GridPos);

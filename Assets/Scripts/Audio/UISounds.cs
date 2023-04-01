@@ -3,10 +3,11 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class UISounds : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler {
+    [SerializeField] bool _disableWhenUnInteractable = true;
     [SerializeField] Optional<SoundEffect> _onHover, _onClick;
 
     Selectable _selectable;
-    bool Enabled => _selectable == null || _selectable.interactable;
+    bool Enabled => !_disableWhenUnInteractable || _selectable == null || _selectable.interactable;
     
     void Awake() {
         _selectable = GetComponent<Selectable>();

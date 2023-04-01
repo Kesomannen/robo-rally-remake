@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,6 +12,7 @@ public class SettingsPanelProperty : MonoBehaviour {
     [SerializeField] TMP_Text _text;
 
     GameProperty _gameSettingsProperty;
+    bool IsServer => NetworkManager.Singleton.IsServer;
 
     void OnEnable() {
         UpdateSettingsProperty(_gameSettingsProperty);
@@ -50,11 +52,9 @@ public class SettingsPanelProperty : MonoBehaviour {
             _slider.maxValue = value.Max;
             _slider.value = value.Value;
             _toggle.isOn = value.Enabled;
-
-            var isServer = NetworkManager.Singleton.IsServer;
-            Debug.Log($"isServer: {isServer}");
-            _slider.interactable = isServer;
-            _toggle.interactable = isServer;
+            
+            _slider.interactable = IsServer;
+            _toggle.interactable = IsServer;
             
             _slider.gameObject.SetActive(_gameSettingsProperty.HasValue);
             _toggle.gameObject.SetActive(_gameSettingsProperty.CanToggle);
@@ -62,7 +62,7 @@ public class SettingsPanelProperty : MonoBehaviour {
             RegisterValue(_gameSettingsProperty.Value);
             RegisterToggle(_gameSettingsProperty.Enabled);
             
-            if (!isServer) return;
+            if (!IsServer) return;
             _slider.onValueChanged.AddListener(RegisterValue);
             _toggle.onValueChanged.AddListener(RegisterToggle);
         }
@@ -70,7 +70,7 @@ public class SettingsPanelProperty : MonoBehaviour {
     
     void RegisterToggle(bool value) {
         _gameSettingsProperty.Enabled = value;
-        _slider.interactable = value;
+        _slider.interactable = value && IsServer;
         if (!value) {
             _text.text = _name;
         }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -26,6 +25,9 @@ public class PlayerExecutionPanel : Container<Player>, IPointerClickHandler {
     [SerializeField] float _tweenDistance;
     [SerializeField] LeanTweenType _tweenType;
     [SerializeField] float _spawnDelay;
+    
+    [Header("Sounds")]
+    [SerializeField] SoundEffect _gainCardSound;
 
     public IReadOnlyList<PlayerExecutionRegister> Registers => _registers;
 
@@ -136,6 +138,7 @@ public class PlayerExecutionPanel : Container<Player>, IPointerClickHandler {
                 .append(LeanTween.scale(obj.gameObject, Vector3.one, _tweenTime / 2).setEase(_tweenType))
                 .append(LeanTween.scale(obj.gameObject, Vector3.zero, _tweenTime / 2).setEase(_tweenType));
             yield return CoroutineUtils.Wait(_spawnDelay);
+            _gainCardSound.Play();
         }
         yield return CoroutineUtils.Wait(_tweenTime);
         foreach (var obj in objects) {

@@ -14,6 +14,8 @@ public class WinScreen : MonoBehaviour {
     [SerializeField] Transform _loserParent;
     [SerializeField] GameObject _previewButton;
     [SerializeField] DynamicUITween _tween;
+    [Space]
+    [SerializeField] SoundEffect _winSoundEffect;
 
     void Awake() {
         gameObject.SetActive(false);
@@ -41,6 +43,7 @@ public class WinScreen : MonoBehaviour {
             _previewButton.SetActive(true);
             GameSystem.Instance.StopPhaseSystem();
             
+            _winSoundEffect.Play();
             StartCoroutine(TweenHelper.DoUITween(_tween, objects));
 
             yield return new WaitUntil(() => !enabled);
