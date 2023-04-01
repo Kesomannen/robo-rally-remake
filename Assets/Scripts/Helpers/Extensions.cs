@@ -23,16 +23,7 @@ public static class Extensions {
         }
         return -1;
     }
-    
-    public static int IndexOf<T>(this IReadOnlyList<T> list, Func<T, bool> predicate) {
-        for (var i = 0; i < list.Count; i++) {
-            if (list[i] != null && predicate(list[i])) {
-                return i;
-            }
-        }
-        return -1;
-    }
-    
+
     public static T GetRandom<T>(this IReadOnlyList<T> list) => list[Random.Range(0, list.Count)];
 
     public static TValue EnforceKey<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue) {
@@ -50,7 +41,6 @@ public static class Extensions {
     }
     
     public static void SetActive(this Component component, bool active) => component.gameObject.SetActive(active);
-    public static T EnforceComponent<T>(this GameObject component) where T : Component => component.GetComponent<T>() ?? component.AddComponent<T>();
 
     public static IEnumerator ScrollToBottom(this ScrollRect rect) {
         yield return CoroutineUtils.Wait(0.1f);

@@ -121,9 +121,7 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
             } else {
                 var targetFilled = MapSystem.TryGetTile(pos + dir, out var tile);
                 if (!targetFilled) continue;
-
-                hits.AddRange(tile.OfType<PlayerModel>().Where(p => p.Owner != Owner)
-                    .Where(player => Interaction.CanMove(pos, dir, player, IgnoredObjectsForLaser)));
+                hits.AddRange(tile.OfType<PlayerModel>());
             }
             
             if (hits.Count == 0) continue;

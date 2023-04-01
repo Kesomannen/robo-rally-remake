@@ -12,11 +12,11 @@ public class CanvasHelpers : Singleton<CanvasHelpers> {
     [SerializeField] SoundEffect _errorSound;
 
     void OnEnable() {
-        MenuSystem.OnMenuChanged += OnMenuChanged;
+        MenuSystem.MenuChanged += OnMenuChanged;
     }
     
     void OnDisable() {
-        MenuSystem.OnMenuChanged -= OnMenuChanged;
+        MenuSystem.MenuChanged -= OnMenuChanged;
     }
     
     void OnMenuChanged() {

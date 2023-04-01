@@ -3820,6 +3820,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4735e0729b9422a9d5343cb9756b57f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _disableWhenUnInteractable: 1
   _onHover:
     _enabled: 1
     _value: {fileID: 11400000, guid: 47a9cb90251471c4987ed5e2327b77eb, type: 2}
@@ -4117,6 +4118,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4735e0729b9422a9d5343cb9756b57f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _disableWhenUnInteractable: 1
   _onHover:
     _enabled: 1
     _value: {fileID: 11400000, guid: 47a9cb90251471c4987ed5e2327b77eb, type: 2}
@@ -7715,6 +7717,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4735e0729b9422a9d5343cb9756b57f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _disableWhenUnInteractable: 1
   _onHover:
     _enabled: 1
     _value: {fileID: 11400000, guid: 47a9cb90251471c4987ed5e2327b77eb, type: 2}
@@ -8049,8 +8052,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fdcc374f8bfe0c042b9ecc1d07ca3169, type: 2}
   - {fileID: 11400000, guid: 464a53dfa8c43494e850987fdafa5bff, type: 2}
   - {fileID: 11400000, guid: 346b3615c1fadc54ab823ee53d2760fb, type: 2}
-  - {fileID: 11400000, guid: a97ceff9d04c69a4eb29a1c2bbd3c09e, type: 2}
   - {fileID: 11400000, guid: 202a02d45b84c9847af5c4a652557d7f, type: 2}
+  - {fileID: 11400000, guid: a97ceff9d04c69a4eb29a1c2bbd3c09e, type: 2}
   - {fileID: 11400000, guid: fe656fb49eafdf1449a7e72e132699e8, type: 2}
   - {fileID: 11400000, guid: 79c96ea45bc6ada44b9c6ee82d22f36e, type: 2}
   - {fileID: 11400000, guid: 35d4720e71d934e468cf518864aa49e3, type: 2}
@@ -8842,6 +8845,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4735e0729b9422a9d5343cb9756b57f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _disableWhenUnInteractable: 1
   _onHover:
     _enabled: 1
     _value: {fileID: 11400000, guid: 47a9cb90251471c4987ed5e2327b77eb, type: 2}
@@ -8939,9 +8943,9 @@ MonoBehaviour:
     Port: 7777
     ServerListenAddress: 
   DebugSimulator:
-    PacketDelayMS: 200
+    PacketDelayMS: 0
     PacketJitterMS: 0
-    PacketDropRate: 5
+    PacketDropRate: 0
 --- !u!1001 &2048720994
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9985,6 +9989,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4735e0729b9422a9d5343cb9756b57f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _disableWhenUnInteractable: 1
   _onHover:
     _enabled: 1
     _value: {fileID: 11400000, guid: 47a9cb90251471c4987ed5e2327b77eb, type: 2}
@@ -10137,6 +10142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4735e0729b9422a9d5343cb9756b57f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _disableWhenUnInteractable: 1
   _onHover:
     _enabled: 1
     _value: {fileID: 11400000, guid: 47a9cb90251471c4987ed5e2327b77eb, type: 2}
@@ -10289,6 +10295,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4735e0729b9422a9d5343cb9756b57f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _disableWhenUnInteractable: 1
   _onHover:
     _enabled: 1
     _value: {fileID: 11400000, guid: 47a9cb90251471c4987ed5e2327b77eb, type: 2}
@@ -10441,6 +10448,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4735e0729b9422a9d5343cb9756b57f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _disableWhenUnInteractable: 1
   _onHover:
     _enabled: 1
     _value: {fileID: 11400000, guid: 47a9cb90251471c4987ed5e2327b77eb, type: 2}

@@ -2,8 +2,10 @@ using UnityEngine;
 
 public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T> {
     public static T Instance {
-        get{
-            if (HasInstance) return _instance;
+        get {
+            if (HasInstance) {
+                return _instance;
+            }
             Debug.LogWarning($"A script is trying to access the singleton instance {typeof(T)}, but it doesn't exist yet.");
             return null;
         }

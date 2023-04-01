@@ -10,7 +10,7 @@ public class MenuSystem : Singleton<MenuSystem> {
 
     readonly Stack<Menu> _menuStack = new();
 
-    public static event Action OnMenuChanged;
+    public static event Action MenuChanged;
     
     void Start() {
         PushMenu(MenuState.Main);
@@ -24,7 +24,7 @@ public class MenuSystem : Singleton<MenuSystem> {
         newMenu.Show();
         _menuStack.Push(newMenu);
         
-        OnMenuChanged?.Invoke();
+        MenuChanged?.Invoke();
     }
 
     public void GoBack() {
@@ -34,7 +34,7 @@ public class MenuSystem : Singleton<MenuSystem> {
         oldMenu.Hide();
         newMenu.Show();
         
-        OnMenuChanged?.Invoke();
+        MenuChanged?.Invoke();
     }
 
     Menu GetMenu(MenuState state) => state switch {
