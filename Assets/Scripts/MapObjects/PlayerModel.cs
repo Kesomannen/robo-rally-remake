@@ -103,7 +103,7 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
             var pos = GridPos;
             for (var i = 0; i < maxDistance; i++) {
                 if (!Interaction.CanMove(pos, dir, this, IgnoredObjectsForLaser)) {
-                    continue;
+                    break;
                 }
                 pos += dir;
             }
@@ -121,7 +121,9 @@ public class PlayerModel : MapObject, IPlayer, ICanEnterExitHandler, ITooltipabl
             } else {
                 var targetFilled = MapSystem.TryGetTile(pos + dir, out var tile);
                 if (!targetFilled) continue;
-                hits.AddRange(tile.OfType<PlayerModel>().Where(p => p.Owner != Owner));
+
+                hits.AddRange(tile.OfType<PlayerModel>().Where(p => p.Owner != Owner)
+                    .Where(player => Interaction.CanMove(pos, dir, player, IgnoredObjectsForLaser)));
             }
             
             if (hits.Count == 0) continue;

@@ -27,7 +27,7 @@ public class WinScreenPanel : MonoBehaviour {
         }
         _background.color = player.RobotData.Color;
         if (_checkpointText.Enabled) {
-            _checkpointText.Value.text = $"#{player.CurrentCheckpoint.Value + 1}";
+            _checkpointText.Value.text = $"#{player.CurrentCheckpoint.Value}";
         }
 
         _objects = new List<Transform> {
