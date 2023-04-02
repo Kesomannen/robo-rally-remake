@@ -9,23 +9,14 @@ public class DirectionChoice : Choice<Vector2Int> {
     [SerializeField] Button _rightButton;
     [SerializeField] Button _zeroButton;
 
-    static readonly Vector2Int[] _directions = {
-        Vector2Int.up,
-        Vector2Int.down,
-        Vector2Int.left,
-        Vector2Int.right,
-        Vector2Int.zero
-    };
-    static readonly Vector2Int[] _directionsWithoutZero = {
-        Vector2Int.up,
-        Vector2Int.down,
-        Vector2Int.left,
-        Vector2Int.right,
-    };
     int ChoiceIndex(Vector2Int direction) => Options.IndexOf(direction);
 
-    public static IReadOnlyList<Vector2Int> Directions => _directions;
-    public static IReadOnlyList<Vector2Int> DirectionsWithoutZero => _directionsWithoutZero;
+    public static readonly IReadOnlyList<Vector2Int> DirectionsWithoutZero = new[] {
+        Vector2Int.up,
+        Vector2Int.down,
+        Vector2Int.left,
+        Vector2Int.right,
+    };
 
     protected override void OnInit() {
         Configure(_upButton, Vector2Int.up);

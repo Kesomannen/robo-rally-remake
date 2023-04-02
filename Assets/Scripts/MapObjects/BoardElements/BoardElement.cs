@@ -5,7 +5,7 @@ public abstract class BoardElement<T, THandler> : MapObject, IOnEnterExitHandler
     List<THandler> _handlers;
     protected static int ActiveElements;
     
-    protected static Action OnActivateEvent;
+    protected static Action ActivateEvent;
 
     protected abstract void Activate(THandler[] targets);
 
@@ -15,7 +15,7 @@ public abstract class BoardElement<T, THandler> : MapObject, IOnEnterExitHandler
     public static bool ActivateElement() {
         if (ActiveElements == 0) return false;
         _activations = 0;
-        OnActivateEvent?.Invoke();
+        ActivateEvent?.Invoke();
         return _activations > 0;
     }
     
@@ -24,14 +24,14 @@ public abstract class BoardElement<T, THandler> : MapObject, IOnEnterExitHandler
         ActiveElements++;
         _handlers ??= new List<THandler>();
         _handlers.Add(handler);
-        if (_handlers.Count == 1) OnActivateEvent += OnActivate;
+        if (_handlers.Count == 1) ActivateEvent += OnActivate;
     }
 
     public virtual void OnExit(MapObject mapObject) {
         if (mapObject is not THandler handler) return;
         ActiveElements--;
         _handlers?.Remove(handler);
-        if (_handlers is { Count: 0 }) OnActivateEvent -= OnActivate;
+        if (_handlers is { Count: 0 }) ActivateEvent -= OnActivate;
     }
 
     void OnActivate() => Activate(_handlers.ToArray());

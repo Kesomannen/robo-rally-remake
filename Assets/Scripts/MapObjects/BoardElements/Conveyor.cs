@@ -38,13 +38,13 @@ public class Conveyor : BoardElement<Conveyor, IMapObject>, ITooltipable {
         };
     }
     
-    public static new bool ActivateElement() {
+    public new static bool ActivateElement() {
         _progress.Clear();
         _moves.Clear();
         
         if (ActiveElements == 0) return false;
         
-        OnActivateEvent?.Invoke();
+        ActivateEvent?.Invoke();
 
         // Execute moves in reverse order they were added
         if (_moves.Count == 0) return false;
