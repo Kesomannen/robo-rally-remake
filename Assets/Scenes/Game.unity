@@ -3385,21 +3385,21 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.55
-      inSlope: -0.52197087
-      outSlope: -0.52197087
+      value: 0.45
+      inSlope: -0.46262684
+      outSlope: -0.46262684
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.10633148
+      outWeight: 0.108333334
     - serializedVersion: 3
       time: 1
-      value: 0.075
-      inSlope: -0.507353
-      outSlope: -0.507353
+      value: 0.05
+      inSlope: -0.32063028
+      outSlope: -0.32063028
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.10561156
+      inWeight: 0.15833336
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
